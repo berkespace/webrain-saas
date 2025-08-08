@@ -4,10 +4,10 @@ import { prisma } from "@/lib/prisma"
 // GET - Tek bir ambalajı getir
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
 
     const ambalaj = await prisma.ambalaj.findUnique({
       where: { id },
@@ -49,10 +49,10 @@ export async function GET(
 // PUT - Ambalaj güncelle
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
     const body = await request.json()
     const { ad, tipi, daraKg, aciklama, durum } = body
 
@@ -109,10 +109,10 @@ export async function PUT(
 // DELETE - Ambalaj sil
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
 
     // Ambalajın var olup olmadığını kontrol et
     const existingAmbalaj = await prisma.ambalaj.findUnique({

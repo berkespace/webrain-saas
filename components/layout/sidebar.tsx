@@ -166,6 +166,23 @@ export function Sidebar() {
           ]
         },
         {
+          title: 'Ambalajlar',
+          href: '/dashboard/ambalajlar',
+          icon: <Package className="h-4 w-4" />,
+          children: [
+            {
+              title: 'Ambalaj Listesi',
+              href: '/dashboard/ambalajlar/liste',
+              icon: <Package className="h-4 w-4" />
+            },
+            {
+              title: 'Yeni Ambalaj',
+              href: '/dashboard/ambalajlar/yeni',
+              icon: <Plus className="h-4 w-4" />
+            }
+          ]
+        },
+        {
           title: 'Ürünler',
           href: '/dashboard/urunler',
           icon: <Package className="h-4 w-4" />,
@@ -309,6 +326,23 @@ export function Sidebar() {
             {
               title: 'Yeni Özel Firma',
               href: '/dashboard/ozel-firmalar/yeni',
+              icon: <Plus className="h-4 w-4" />
+            }
+          ]
+        },
+        {
+          title: 'Ambalajlar',
+          href: '/dashboard/ambalajlar',
+          icon: <Package className="h-4 w-4" />,
+          children: [
+            {
+              title: 'Ambalaj Listesi',
+              href: '/dashboard/ambalajlar/liste',
+              icon: <Package className="h-4 w-4" />
+            },
+            {
+              title: 'Yeni Ambalaj',
+              href: '/dashboard/ambalajlar/yeni',
               icon: <Plus className="h-4 w-4" />
             }
           ]

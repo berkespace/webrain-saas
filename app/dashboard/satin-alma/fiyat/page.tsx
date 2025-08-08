@@ -17,6 +17,7 @@ import {
   Save
 } from 'lucide-react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
+import { useToast } from '@/components/ui/use-toast'
 
 // Mock faturalandırılmamış ürünler
 const mockBekleyenUrunler = [
@@ -76,6 +77,7 @@ const mockBekleyenUrunler = [
 export default function FiyatGirisi() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const { toast } = useToast()
   const [searchTerm, setSearchTerm] = useState('')
   const [filterUrun, setFilterUrun] = useState('')
   const [filterUretici, setFilterUretici] = useState('')
@@ -120,12 +122,22 @@ export default function FiyatGirisi() {
 
   const handleFiyatSave = async (id: number) => {
     if (!editingFiyat || parseFloat(editingFiyat) <= 0) {
-      alert('Lütfen geçerli bir fiyat girin')
+      toast({
+        title: "Hata",
+        description: "Lütfen geçerli bir fiyat girin",
+        variant: "destructive",
+      })
       return
     }
 
     // API call would go here
     console.log('Fiyat kaydediliyor:', { id, fiyat: editingFiyat })
+    
+    toast({
+      title: "Başarılı",
+      description: "Fiyat başarıyla kaydedildi",
+      variant: "success",
+    })
     
     setEditingId(null)
     setEditingFiyat('')
@@ -159,7 +171,7 @@ export default function FiyatGirisi() {
                 <div>
                   <p className="font-medium text-orange-800">Faturalandırılmamış Ürün Uyarısı</p>
                   <p className="text-sm text-orange-700">
-                    Faturalandırılmamış ürün sayısı {filteredUrunler.length}'e ulaştı. Lütfen acil olarak fiyat girişi yapın.
+                    Faturalandırılmamış ürün sayısı {filteredUrunler.length}&apos;e ulaştı. Lütfen acil olarak fiyat girişi yapın.
                   </p>
                 </div>
               </div>

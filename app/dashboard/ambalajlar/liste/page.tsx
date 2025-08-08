@@ -12,11 +12,8 @@ import {
   Search,
   Edit,
   Trash2,
-  Building,
-  Eye,
-  MapPin,
-  Phone,
-  User,
+  Package,
+  Scale,
   Loader2
 } from 'lucide-react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
@@ -36,40 +33,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import Link from 'next/link'
 import { useToast } from '@/components/ui/use-toast'
 
-interface OzelFirma {
+interface Ambalaj {
   id: string
-  firmaAdi: string
-  vkn?: string
-  yetkiliAdi?: string
-  yetkiliTelefon?: string
-  sehir: string
-  adres?: string
+  ad: string
+  tipi: 'PALET' | 'PLASTIK_KASA' | 'KARTON_KASA' | 'DİĞER'
+  daraKg: number
+  aciklama?: string
   durum: 'AKTIF' | 'PASIF'
   createdAt: string
   updatedAt: string
 }
 
-export default function OzelFirmaListesi() {
+export default function AmbalajListesi() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const { toast } = useToast()
-  const [ozelFirmalar, setOzelFirmalar] = useState<OzelFirma[]>([])
+  const [ambalajlar, setAmbalajlar] = useState<Ambalaj[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterStatus, setFilterStatus] = useState('all')
+  const [filterTipi, setFilterTipi] = useState('all')
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingFirma, setEditingFirma] = useState<OzelFirma | null>(null)
+  const [editingAmbalaj, setEditingAmbalaj] = useState<Ambalaj | null>(null)
   const [formData, setFormData] = useState({
-    firmaAdi: '',
-    vkn: '',
-    yetkiliAdi: '',
-    yetkiliTelefon: '',
-    sehir: '',
-    adres: '',
-    durum: 'AKTIF' as 'AKTIF' | 'PASIF'
+    ad: '',
+    tipi: 'PLASTIK_KASA',
+    daraKg: '',
+    aciklama: '',
+    durum: 'AKTIF'
   })
   const [submitting, setSubmitting] = useState(false)
 
@@ -77,26 +70,27 @@ export default function OzelFirmaListesi() {
     if (status === 'unauthenticated') {
       router.push('/login')
     } else if (status === 'authenticated') {
-      fetchOzelFirmalar()
+      fetchAmbalajlar()
     }
   }, [status, router])
 
-  const fetchOzelFirmalar = async () => {
+  const fetchAmbalajlar = async () => {
     try {
       setLoading(true)
       const params = new URLSearchParams()
       if (searchTerm) params.append('search', searchTerm)
       if (filterStatus !== 'all') params.append('status', filterStatus)
+      if (filterTipi !== 'all') params.append('tipi', filterTipi)
 
-      const response = await fetch(`/api/ozel-firmalar?${params.toString()}`)
+      const response = await fetch(`/api/ambalajlar?${params.toString()}`)
       if (response.ok) {
         const data = await response.json()
-        setOzelFirmalar(data)
+        setAmbalajlar(data)
       } else {
-        console.error('Özel firma listesi alınamadı')
+        console.error('Ambalaj listesi alınamadı')
       }
     } catch (error) {
-      console.error('Özel firma listesi hatası:', error)
+      console.error('Ambalaj listesi hatası:', error)
     } finally {
       setLoading(false)
     }
@@ -104,9 +98,9 @@ export default function OzelFirmaListesi() {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      fetchOzelFirmalar()
+      fetchAmbalajlar()
     }
-  }, [searchTerm, filterStatus])
+  }, [searchTerm, filterStatus, filterTipi])
 
   if (status === 'loading') {
     return (
@@ -130,11 +124,11 @@ export default function OzelFirmaListesi() {
     setSubmitting(true)
     
     try {
-      const url = editingFirma 
-        ? `/api/ozel-firmalar/${editingFirma.id}`
-        : '/api/ozel-firmalar'
+      const url = editingAmbalaj 
+        ? `/api/ambalajlar/${editingAmbalaj.id}`
+        : '/api/ambalajlar'
       
-      const method = editingFirma ? 'PUT' : 'POST'
+      const method = editingAmbalaj ? 'PUT' : 'POST'
       
       const response = await fetch(url, {
         method,
@@ -146,20 +140,18 @@ export default function OzelFirmaListesi() {
 
       if (response.ok) {
         setIsDialogOpen(false)
-        setEditingFirma(null)
+        setEditingAmbalaj(null)
         setFormData({
-          firmaAdi: '',
-          vkn: '',
-          yetkiliAdi: '',
-          yetkiliTelefon: '',
-          sehir: '',
-          adres: '',
-          durum: 'AKTIF' as 'AKTIF' | 'PASIF'
+          ad: '',
+          tipi: 'PLASTIK_KASA',
+          daraKg: '',
+          aciklama: '',
+          durum: 'AKTIF'
         })
-        fetchOzelFirmalar()
+        fetchAmbalajlar()
         toast({
           title: "Başarılı",
-          description: editingFirma ? "Özel firma başarıyla güncellendi" : "Özel firma başarıyla oluşturuldu",
+          description: editingAmbalaj ? "Ambalaj başarıyla güncellendi" : "Ambalaj başarıyla oluşturuldu",
           variant: "success",
         })
       } else {
@@ -171,7 +163,7 @@ export default function OzelFirmaListesi() {
         })
       }
     } catch (error) {
-      console.error('Özel firma kaydetme hatası:', error)
+      console.error('Ambalaj kaydetme hatası:', error)
       toast({
         title: "Hata",
         description: "Bir hata oluştu",
@@ -182,32 +174,30 @@ export default function OzelFirmaListesi() {
     }
   }
 
-  const handleEdit = (firma: OzelFirma) => {
-    setEditingFirma(firma)
+  const handleEdit = (ambalaj: Ambalaj) => {
+    setEditingAmbalaj(ambalaj)
     setFormData({
-      firmaAdi: firma.firmaAdi,
-      vkn: firma.vkn || '',
-      yetkiliAdi: firma.yetkiliAdi || '',
-      yetkiliTelefon: firma.yetkiliTelefon || '',
-      sehir: firma.sehir,
-      adres: firma.adres || '',
-      durum: firma.durum as 'AKTIF' | 'PASIF'
+      ad: ambalaj.ad,
+      tipi: ambalaj.tipi,
+      daraKg: ambalaj.daraKg.toString(),
+      aciklama: ambalaj.aciklama || '',
+      durum: ambalaj.durum
     })
     setIsDialogOpen(true)
   }
 
-  const handleDelete = async (firmaId: string) => {
-    if (confirm('Bu özel firmayı silmek istediğinizden emin misiniz?')) {
+  const handleDelete = async (ambalajId: string) => {
+    if (confirm('Bu ambalajı silmek istediğinizden emin misiniz?')) {
       try {
-        const response = await fetch(`/api/ozel-firmalar/${firmaId}`, {
+        const response = await fetch(`/api/ambalajlar/${ambalajId}`, {
           method: 'DELETE',
         })
 
         if (response.ok) {
-          fetchOzelFirmalar()
+          fetchAmbalajlar()
           toast({
             title: "Başarılı",
-            description: "Özel firma başarıyla silindi",
+            description: "Ambalaj başarıyla silindi",
             variant: "success",
           })
         } else {
@@ -219,7 +209,7 @@ export default function OzelFirmaListesi() {
           })
         }
       } catch (error) {
-        console.error('Özel firma silme hatası:', error)
+        console.error('Ambalaj silme hatası:', error)
         toast({
           title: "Hata",
           description: "Silme işlemi sırasında hata oluştu",
@@ -235,111 +225,120 @@ export default function OzelFirmaListesi() {
       : 'bg-red-100 text-red-800'
   }
 
+  const getTipiLabel = (tipi: string) => {
+    switch (tipi) {
+      case 'PALET': return 'Palet'
+      case 'PLASTIK_KASA': return 'Plastik Kasa'
+      case 'KARTON_KASA': return 'Karton Kasa'
+      case 'DİĞER': return 'Diğer'
+      default: return tipi
+    }
+  }
+
+  const getTipiColor = (tipi: string) => {
+    switch (tipi) {
+      case 'PALET': return 'bg-blue-100 text-blue-800'
+      case 'PLASTIK_KASA': return 'bg-green-100 text-green-800'
+      case 'KARTON_KASA': return 'bg-yellow-100 text-yellow-800'
+      case 'DİĞER': return 'bg-gray-100 text-gray-800'
+      default: return 'bg-gray-100 text-gray-800'
+    }
+  }
+
   return (
     <DashboardLayout>
       <div className="p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Özel Firma Yönetimi</h1>
-            <p className="text-muted-foreground">Özel firma bilgilerini yönetin</p>
+            <h1 className="text-3xl font-bold text-foreground">Ambalaj Yönetimi</h1>
+            <p className="text-muted-foreground">Ambalaj bilgilerini yönetin</p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
               <Button>
                 <Plus className="mr-2 h-4 w-4" />
-                Yeni Özel Firma
+                Yeni Ambalaj
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[600px]">
+            <DialogContent className="sm:max-w-[500px]">
               <DialogHeader>
                 <DialogTitle>
-                  {editingFirma ? 'Özel Firma Düzenle' : 'Yeni Özel Firma Ekle'}
+                  {editingAmbalaj ? 'Ambalaj Düzenle' : 'Yeni Ambalaj Ekle'}
                 </DialogTitle>
                 <DialogDescription>
-                  {editingFirma ? 'Özel firma bilgilerini güncelleyin' : 'Yeni özel firma bilgilerini girin'}
+                  {editingAmbalaj ? 'Ambalaj bilgilerini güncelleyin' : 'Yeni ambalaj bilgilerini girin'}
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleSubmit}>
                 <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="firmaAdi">Firma Adı *</Label>
-                      <Input 
-                        id="firmaAdi" 
-                        value={formData.firmaAdi} 
-                        onChange={(e) => setFormData({...formData, firmaAdi: e.target.value})} 
-                        required 
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="vkn">VKN</Label>
-                      <Input 
-                        id="vkn" 
-                        value={formData.vkn} 
-                        onChange={(e) => setFormData({...formData, vkn: e.target.value})} 
-                        placeholder="Vergi kimlik numarası"
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="ad">Ambalaj Adı *</Label>
+                    <Input 
+                      id="ad" 
+                      value={formData.ad} 
+                      onChange={(e) => setFormData({...formData, ad: e.target.value})} 
+                      required 
+                    />
                   </div>
                   
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="yetkiliAdi">Yetkili Adı</Label>
-                      <Input 
-                        id="yetkiliAdi" 
-                        value={formData.yetkiliAdi} 
-                        onChange={(e) => setFormData({...formData, yetkiliAdi: e.target.value})} 
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="yetkiliTelefon">Yetkili Telefon</Label>
-                      <Input 
-                        id="yetkiliTelefon" 
-                        value={formData.yetkiliTelefon} 
-                        onChange={(e) => setFormData({...formData, yetkiliTelefon: e.target.value})} 
-                        placeholder="Telefon numarası"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="sehir">Şehir *</Label>
-                      <Input 
-                        id="sehir" 
-                        value={formData.sehir} 
-                        onChange={(e) => setFormData({...formData, sehir: e.target.value})} 
-                        required 
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="durum">Durum</Label>
-                      <Select 
-                        value={formData.durum} 
-                        onValueChange={(value: 'AKTIF' | 'PASIF') => setFormData({...formData, durum: value})}
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="AKTIF">Aktif</SelectItem>
-                          <SelectItem value="PASIF">Pasif</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="tipi">Ambalaj Tipi *</Label>
+                    <Select 
+                      value={formData.tipi} 
+                      onValueChange={(value) => setFormData({...formData, tipi: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="PALET">Palet</SelectItem>
+                        <SelectItem value="PLASTIK_KASA">Plastik Kasa</SelectItem>
+                        <SelectItem value="KARTON_KASA">Karton Kasa</SelectItem>
+                        <SelectItem value="DİĞER">Diğer</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="adres">Adres</Label>
+                    <Label htmlFor="daraKg">Dara KG *</Label>
+                    <Input 
+                      id="daraKg" 
+                      type="number"
+                      step="0.01"
+                      value={formData.daraKg} 
+                      onChange={(e) => setFormData({...formData, daraKg: e.target.value})} 
+                      required 
+                      placeholder="0.00"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="aciklama">Açıklama</Label>
                     <textarea
-                      id="adres"
-                      value={formData.adres}
-                      onChange={(e) => setFormData({...formData, adres: e.target.value})}
-                      placeholder="Firma adresi..."
+                      id="aciklama"
+                      value={formData.aciklama}
+                      onChange={(e) => setFormData({...formData, aciklama: e.target.value})}
+                      placeholder="Ambalaj açıklaması..."
                       rows={3}
                       className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                     />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="durum">Durum</Label>
+                    <Select 
+                      value={formData.durum} 
+                      onValueChange={(value) => setFormData({...formData, durum: value})}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="AKTIF">Aktif</SelectItem>
+                        <SelectItem value="PASIF">Pasif</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <DialogFooter>
@@ -350,10 +349,10 @@ export default function OzelFirmaListesi() {
                     {submitting ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {editingFirma ? 'Güncelleniyor...' : 'Oluşturuluyor...'}
+                        {editingAmbalaj ? 'Güncelleniyor...' : 'Oluşturuluyor...'}
                       </>
                     ) : (
-                      editingFirma ? 'Güncelle' : 'Oluştur'
+                      editingAmbalaj ? 'Güncelle' : 'Oluştur'
                     )}
                   </Button>
                 </DialogFooter>
@@ -363,15 +362,15 @@ export default function OzelFirmaListesi() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Toplam Firma</p>
-                  <p className="text-2xl font-bold">{ozelFirmalar.length}</p>
+                  <p className="text-sm text-muted-foreground">Toplam Ambalaj</p>
+                  <p className="text-2xl font-bold">{ambalajlar.length}</p>
                 </div>
-                <Building className="h-8 w-8 text-primary" />
+                <Package className="h-8 w-8 text-primary" />
               </div>
             </CardContent>
           </Card>
@@ -380,12 +379,26 @@ export default function OzelFirmaListesi() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Aktif Firma</p>
+                  <p className="text-sm text-muted-foreground">Palet</p>
+                  <p className="text-2xl font-bold text-blue-500">
+                    {ambalajlar.filter(a => a.tipi === 'PALET').length}
+                  </p>
+                </div>
+                <Package className="h-8 w-8 text-blue-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">Plastik Kasa</p>
                   <p className="text-2xl font-bold text-green-500">
-                    {ozelFirmalar.filter(f => f.durum === 'AKTIF').length}
+                    {ambalajlar.filter(a => a.tipi === 'PLASTIK_KASA').length}
                   </p>
                 </div>
-                <Building className="h-8 w-8 text-green-500" />
+                <Package className="h-8 w-8 text-green-500" />
               </div>
             </CardContent>
           </Card>
@@ -394,12 +407,12 @@ export default function OzelFirmaListesi() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Pasif Firma</p>
-                  <p className="text-2xl font-bold text-red-500">
-                    {ozelFirmalar.filter(f => f.durum === 'PASIF').length}
+                  <p className="text-sm text-muted-foreground">Karton Kasa</p>
+                  <p className="text-2xl font-bold text-yellow-500">
+                    {ambalajlar.filter(a => a.tipi === 'KARTON_KASA').length}
                   </p>
                 </div>
-                <Building className="h-8 w-8 text-red-500" />
+                <Package className="h-8 w-8 text-yellow-500" />
               </div>
             </CardContent>
           </Card>
@@ -412,7 +425,7 @@ export default function OzelFirmaListesi() {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Firma adı, şehir veya VKN ara..."
+                  placeholder="Ambalaj adı veya açıklama ara..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
@@ -429,18 +442,31 @@ export default function OzelFirmaListesi() {
                   <option value="PASIF">Pasif</option>
                 </select>
               </div>
+              <div>
+                <select
+                  value={filterTipi}
+                  onChange={(e) => setFilterTipi(e.target.value)}
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                >
+                  <option value="all">Tüm Tipler</option>
+                  <option value="PALET">Palet</option>
+                  <option value="PLASTIK_KASA">Plastik Kasa</option>
+                  <option value="KARTON_KASA">Karton Kasa</option>
+                  <option value="DİĞER">Diğer</option>
+                </select>
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Özel Firmalar Table */}
+        {/* Ambalajlar Table */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Building className="h-5 w-5" />
-              Özel Firma Listesi
+              <Package className="h-5 w-5" />
+              Ambalaj Listesi
             </CardTitle>
-            <CardDescription>Toplam {ozelFirmalar.length} özel firma</CardDescription>
+            <CardDescription>Toplam {ambalajlar.length} ambalaj</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
@@ -453,56 +479,49 @@ export default function OzelFirmaListesi() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b bg-muted/50">
-                      <th className="text-left py-3 px-2 font-medium">Firma Adı</th>
-                      <th className="text-left py-3 px-2 font-medium">VKN</th>
-                      <th className="text-left py-3 px-2 font-medium">Yetkili</th>
-                      <th className="text-left py-3 px-2 font-medium">İletişim</th>
-                      <th className="text-left py-3 px-2 font-medium">Şehir</th>
+                      <th className="text-left py-3 px-2 font-medium">Ambalaj Adı</th>
+                      <th className="text-left py-3 px-2 font-medium">Tipi</th>
+                      <th className="text-left py-3 px-2 font-medium">Dara KG</th>
+                      <th className="text-left py-3 px-2 font-medium">Açıklama</th>
                       <th className="text-left py-3 px-2 font-medium">Durum</th>
                       <th className="text-left py-3 px-2 font-medium">Kayıt Tarihi</th>
                       <th className="text-left py-3 px-2 font-medium">İşlemler</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {ozelFirmalar.map((firma) => (
-                      <tr key={firma.id} className="border-b hover:bg-muted/50">
+                    {ambalajlar.map((ambalaj) => (
+                      <tr key={ambalaj.id} className="border-b hover:bg-muted/50">
                         <td className="py-3 px-2 font-medium">
-                          {firma.firmaAdi}
-                        </td>
-                        <td className="py-3 px-2 text-sm">
-                          {firma.vkn || '-'}
+                          {ambalaj.ad}
                         </td>
                         <td className="py-3 px-2">
-                          {firma.yetkiliAdi || '-'}
-                        </td>
-                        <td className="py-3 px-2">
-                          {firma.yetkiliTelefon ? (
-                            <div className="flex items-center gap-2">
-                              <Phone className="h-3 w-3 text-muted-foreground" />
-                              {firma.yetkiliTelefon}
-                            </div>
-                          ) : '-'}
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getTipiColor(ambalaj.tipi)}`}>
+                            {getTipiLabel(ambalaj.tipi)}
+                          </span>
                         </td>
                         <td className="py-3 px-2">
                           <div className="flex items-center gap-2">
-                            <MapPin className="h-3 w-3 text-muted-foreground" />
-                            {firma.sehir}
+                            <Scale className="h-3 w-3 text-muted-foreground" />
+                            {ambalaj.daraKg} kg
                           </div>
                         </td>
+                        <td className="py-3 px-2 text-sm">
+                          {ambalaj.aciklama || '-'}
+                        </td>
                         <td className="py-3 px-2">
-                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(firma.durum)}`}>
-                            {firma.durum === 'AKTIF' ? 'Aktif' : 'Pasif'}
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(ambalaj.durum)}`}>
+                            {ambalaj.durum === 'AKTIF' ? 'Aktif' : 'Pasif'}
                           </span>
                         </td>
                         <td className="py-3 px-2 text-sm text-muted-foreground">
-                          {new Date(firma.createdAt).toLocaleDateString('tr-TR')}
+                          {new Date(ambalaj.createdAt).toLocaleDateString('tr-TR')}
                         </td>
                         <td className="py-3 px-2">
                           <div className="flex items-center gap-1">
-                            <Button variant="ghost" size="sm" onClick={() => handleEdit(firma)}>
+                            <Button variant="ghost" size="sm" onClick={() => handleEdit(ambalaj)}>
                               <Edit className="h-4 w-4" />
                             </Button>
-                            <Button variant="ghost" size="sm" onClick={() => handleDelete(firma.id)}>
+                            <Button variant="ghost" size="sm" onClick={() => handleDelete(ambalaj.id)}>
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>

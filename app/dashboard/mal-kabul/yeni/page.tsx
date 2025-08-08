@@ -26,6 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useToast } from '@/components/ui/use-toast'
 import Link from 'next/link'
 
 interface OzelFirma {
@@ -53,6 +54,15 @@ interface Uretici {
   soyad: string
   komisyoncuId?: string
   sehir: string
+  durum: 'AKTIF' | 'PASIF'
+}
+
+interface Ambalaj {
+  id: string
+  ad: string
+  tipi: 'PALET' | 'PLASTIK_KASA' | 'KARTON_KASA' | 'DİĞER'
+  daraKg: number
+  aciklama?: string
   durum: 'AKTIF' | 'PASIF'
 }
 
@@ -101,6 +111,7 @@ const mockUrunler = [
 export default function YeniMalKabul() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const { toast } = useToast()
   const [formData, setFormData] = useState({
     saticiTipi: 'OZEL_FIRMA',
     komisyoncuId: '',
@@ -108,19 +119,24 @@ export default function YeniMalKabul() {
     mustahsilId: '',
     ozelFirmaId: '',
     urunId: '',
+    paletId: '', // Yeni: Palet seçimi
+    ambalajId: '', // Yeni: Ambalaj seçimi (kasa vb.)
+    paletSayisi: '',
     kasaSayisi: '',
     brutKg: '',
-    dara: '',
+    daraKg: '',
     girisKg: '',
-    cikmaFire: '',
+    cikmaFireKg: '',
     netKg: '',
-    fiyat: '',
+    birimFiyat: '',
     notlar: ''
   })
   const [filteredUreticiler, setFilteredUreticiler] = useState<Uretici[]>(mockUreticiler)
   const [isBagimsizUretici, setIsBagimsizUretici] = useState(false)
   const [ozelFirmalar, setOzelFirmalar] = useState<OzelFirma[]>(mockOzelFirmalar)
   const [komisyoncular, setKomisyoncular] = useState<Komisyoncu[]>(mockKomisyoncular)
+  const [ambalajlar, setAmbalajlar] = useState<Ambalaj[]>([])
+  const [urunler, setUrunler] = useState<{ id: string; ad: string; kategori?: string; birim: string }[]>([])
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -129,6 +145,8 @@ export default function YeniMalKabul() {
     } else if (status === 'authenticated') {
       fetchOzelFirmalar()
       fetchKomisyoncular()
+      fetchAmbalajlar()
+      fetchUrunler()
     }
   }, [status, router])
 
@@ -160,6 +178,34 @@ export default function YeniMalKabul() {
     }
   }
 
+  const fetchAmbalajlar = async () => {
+    try {
+      const response = await fetch('/api/ambalajlar?status=AKTIF')
+      if (response.ok) {
+        const data = await response.json()
+        setAmbalajlar(data)
+      } else {
+        console.error('Ambalaj listesi alınamadı')
+      }
+    } catch (error) {
+      console.error('Ambalaj listesi hatası:', error)
+    }
+  }
+
+  const fetchUrunler = async () => {
+    try {
+      const response = await fetch('/api/urunler?status=AKTIF')
+      if (response.ok) {
+        const data = await response.json()
+        setUrunler(data)
+      } else {
+        console.error('Ürün listesi alınamadı')
+      }
+    } catch (error) {
+      console.error('Ürün listesi hatası:', error)
+    }
+  }
+
   if (status === 'loading') {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -182,7 +228,18 @@ export default function YeniMalKabul() {
       komisyoncuId: '', 
       ureticiId: '', 
       mustahsilId: '',
-      ozelFirmaId: ''
+      ozelFirmaId: '',
+      paletId: '', // Reset palet
+      ambalajId: '', // Reset ambalaj
+      paletSayisi: '',
+      kasaSayisi: '',
+      brutKg: '',
+      daraKg: '',
+      girisKg: '',
+      cikmaFireKg: '',
+      netKg: '',
+      birimFiyat: '',
+      notlar: ''
     })
     setIsBagimsizUretici(saticiTipi === 'MUSTAHSIL')
   }
@@ -213,11 +270,203 @@ export default function YeniMalKabul() {
     setFormData({ ...formData, ureticiId })
   }
 
+  const handlePaletChange = (paletId: string) => {
+    setFormData(prev => {
+      const newFormData = { ...prev, paletId, paletSayisi: '', daraKg: '', girisKg: '' }
+      
+      if (paletId) {
+        // Calculate dara with updated values
+        const palet = ambalajlar.find(a => a.id === paletId)
+        const ambalaj = ambalajlar.find(a => a.id === newFormData.ambalajId)
+        
+        let toplamDara = 0
+        
+        // Palet dara'sı
+        if (palet) {
+          const paletSayisi = parseInt(newFormData.paletSayisi) || 0
+          toplamDara += paletSayisi * palet.daraKg
+        }
+        
+        // Ambalaj dara'sı
+        if (ambalaj) {
+          const kasaSayisi = parseInt(newFormData.kasaSayisi) || 0
+          toplamDara += kasaSayisi * ambalaj.daraKg
+        }
+        
+        newFormData.daraKg = toplamDara.toString()
+        
+        // Giriş KG'yi da hesapla
+        if (newFormData.brutKg) {
+          const brutKg = parseFloat(newFormData.brutKg) || 0
+          const girisKg = brutKg - toplamDara
+          newFormData.girisKg = girisKg.toString()
+        }
+      }
+      
+      return newFormData
+    })
+  }
+
+  const handleAmbalajChange = (ambalajId: string) => {
+    setFormData(prev => {
+      const newFormData = { ...prev, ambalajId, kasaSayisi: '', daraKg: '', girisKg: '' }
+      
+      if (ambalajId) {
+        // Calculate dara with updated values
+        const palet = ambalajlar.find(a => a.id === newFormData.paletId)
+        const ambalaj = ambalajlar.find(a => a.id === ambalajId)
+        
+        let toplamDara = 0
+        
+        // Palet dara'sı
+        if (palet) {
+          const paletSayisi = parseInt(newFormData.paletSayisi) || 0
+          toplamDara += paletSayisi * palet.daraKg
+        }
+        
+        // Ambalaj dara'sı
+        if (ambalaj) {
+          const kasaSayisi = parseInt(newFormData.kasaSayisi) || 0
+          toplamDara += kasaSayisi * ambalaj.daraKg
+        }
+        
+        newFormData.daraKg = toplamDara.toString()
+        
+        // Giriş KG'yi da hesapla
+        if (newFormData.brutKg) {
+          const brutKg = parseFloat(newFormData.brutKg) || 0
+          const girisKg = brutKg - toplamDara
+          newFormData.girisKg = girisKg.toString()
+        }
+      }
+      
+      return newFormData
+    })
+  }
+
+  const handleKasaSayisiChange = (kasaSayisi: string) => {
+    setFormData(prev => {
+      const newFormData = { ...prev, kasaSayisi }
+      // Calculate dara with updated values
+      const palet = ambalajlar.find(a => a.id === newFormData.paletId)
+      const ambalaj = ambalajlar.find(a => a.id === newFormData.ambalajId)
+      
+      let toplamDara = 0
+      
+      // Palet dara'sı
+      if (palet) {
+        const paletSayisiNum = parseInt(newFormData.paletSayisi) || 0
+        toplamDara += paletSayisiNum * palet.daraKg
+      }
+      
+      // Ambalaj dara'sı
+      if (ambalaj) {
+        const kasaSayisiNum = parseInt(kasaSayisi) || 0
+        toplamDara += kasaSayisiNum * ambalaj.daraKg
+      }
+      
+      const updatedFormData = { ...newFormData, daraKg: toplamDara.toString() }
+      
+      // Giriş KG'yi da hesapla
+      if (newFormData.brutKg) {
+        const brutKg = parseFloat(newFormData.brutKg) || 0
+        const girisKg = brutKg - toplamDara
+        updatedFormData.girisKg = girisKg.toString()
+      }
+      
+      return updatedFormData
+    })
+  }
+
+  const handlePaletSayisiChange = (paletSayisi: string) => {
+    setFormData(prev => {
+      const newFormData = { ...prev, paletSayisi }
+      // Calculate dara with updated values
+      const palet = ambalajlar.find(a => a.id === newFormData.paletId)
+      const ambalaj = ambalajlar.find(a => a.id === newFormData.ambalajId)
+      
+      let toplamDara = 0
+      
+      // Palet dara'sı
+      if (palet) {
+        const paletSayisiNum = parseInt(paletSayisi) || 0
+        toplamDara += paletSayisiNum * palet.daraKg
+      }
+      
+      // Ambalaj dara'sı
+      if (ambalaj) {
+        const kasaSayisi = parseInt(newFormData.kasaSayisi) || 0
+        toplamDara += kasaSayisi * ambalaj.daraKg
+      }
+      
+      const updatedFormData = { ...newFormData, daraKg: toplamDara.toString() }
+      
+      // Giriş KG'yi da hesapla
+      if (newFormData.brutKg) {
+        const brutKg = parseFloat(newFormData.brutKg) || 0
+        const girisKg = brutKg - toplamDara
+        updatedFormData.girisKg = girisKg.toString()
+      }
+      
+      return updatedFormData
+    })
+  }
+
+  const handleBrutKgChange = (brutKg: string) => {
+    setFormData(prev => {
+      const newFormData = { ...prev, brutKg }
+      
+      // Recalculate dara
+      const palet = ambalajlar.find(a => a.id === newFormData.paletId)
+      const ambalaj = ambalajlar.find(a => a.id === newFormData.ambalajId)
+      
+      let toplamDara = 0
+      
+      // Palet dara'sı
+      if (palet) {
+        const paletSayisi = parseInt(newFormData.paletSayisi) || 0
+        toplamDara += paletSayisi * palet.daraKg
+      }
+      
+      // Ambalaj dara'sı
+      if (ambalaj) {
+        const kasaSayisi = parseInt(newFormData.kasaSayisi) || 0
+        toplamDara += kasaSayisi * ambalaj.daraKg
+      }
+      
+      newFormData.daraKg = toplamDara.toString()
+      
+      // Giriş KG'yi hesapla
+      const brutKgNum = parseFloat(brutKg) || 0
+      const girisKg = brutKgNum - toplamDara
+      newFormData.girisKg = girisKg.toString()
+      
+      return newFormData
+    })
+  }
+
+  const handleCikmaFireChange = (cikmaFireKg: string) => {
+    setFormData(prev => ({ ...prev, cikmaFireKg }))
+    if (formData.girisKg) {
+      const girisKg = parseFloat(formData.girisKg) || 0
+      const cikmaFireKgNum = parseFloat(cikmaFireKg) || 0
+      const netKg = girisKg - cikmaFireKgNum
+      setFormData(prev => ({ ...prev, netKg: netKg.toString() }))
+    }
+  }
+
+  const calculateGirisKg = () => {
+    const brutKg = parseFloat(formData.brutKg) || 0
+    const daraKg = parseFloat(formData.daraKg) || 0
+    const girisKg = brutKg - daraKg
+    setFormData(prev => ({ ...prev, girisKg: girisKg.toString() }))
+  }
+
   const calculateNetKg = () => {
     const girisKg = parseFloat(formData.girisKg) || 0
-    const cikmaFire = parseFloat(formData.cikmaFire) || 0
+    const cikmaFire = parseFloat(formData.cikmaFireKg) || 0
     const netKg = girisKg - cikmaFire
-    setFormData({ ...formData, netKg: netKg.toString() })
+    setFormData(prev => ({ ...prev, netKg: netKg.toString() }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -225,49 +474,139 @@ export default function YeniMalKabul() {
     
     // Validation
     if (formData.saticiTipi === 'OZEL_FIRMA' && !formData.ozelFirmaId) {
-      alert('Özel firma seçimi zorunludur')
+      toast({
+        title: "Hata",
+        description: "Özel firma seçimi zorunludur",
+        variant: "destructive",
+      })
       return
     }
     
     if (formData.saticiTipi === 'KOMISYONCU' && (!formData.komisyoncuId || !formData.ureticiId)) {
-      alert('Komisyoncu ve üretici seçimi zorunludur')
+      toast({
+        title: "Hata",
+        description: "Komisyoncu ve üretici seçimi zorunludur",
+        variant: "destructive",
+      })
       return
     }
     
     if (formData.saticiTipi === 'MUSTAHSIL' && !formData.mustahsilId) {
-      alert('Müstahsil seçimi zorunludur')
+      toast({
+        title: "Hata",
+        description: "Müstahsil seçimi zorunludur",
+        variant: "destructive",
+      })
       return
     }
     
     if (!formData.urunId) {
-      alert('Ürün seçimi zorunludur')
+      toast({
+        title: "Hata",
+        description: "Ürün seçimi zorunludur",
+        variant: "destructive",
+      })
       return
     }
     
-    if (formData.saticiTipi === 'MUSTAHSIL' && !formData.fiyat) {
-      alert('Müstahsil için fiyat zorunludur')
+    if (!formData.paletId && !formData.ambalajId) {
+      toast({
+        title: "Hata",
+        description: "Palet veya Ambalaj seçimi zorunludur",
+        variant: "destructive",
+      })
       return
     }
     
-    if (!formData.kasaSayisi || !formData.brutKg || !formData.dara || !formData.girisKg) {
-      alert('Ağırlık bilgileri zorunludur')
+    // Palet sayısı 0 olabilir, ama kasa sayısı 0 olmamalıdır
+    if (formData.paletId && formData.paletSayisi === '') {
+      toast({
+        title: "Hata",
+        description: "Palet seçildiğinde palet sayısı zorunludur",
+        variant: "destructive",
+      })
+      return
+    }
+    
+    if (formData.ambalajId && (!formData.kasaSayisi || parseInt(formData.kasaSayisi) === 0)) {
+      toast({
+        title: "Hata",
+        description: "Ambalaj seçildiğinde kasa sayısı 0'dan büyük olmalıdır",
+        variant: "destructive",
+      })
+      return
+    }
+    
+    if (!formData.brutKg) {
+      toast({
+        title: "Hata",
+        description: "Brüt KG alanı zorunludur",
+        variant: "destructive",
+      })
+      return
+    }
+    
+    if (formData.saticiTipi === 'MUSTAHSIL' && !formData.birimFiyat) {
+      toast({
+        title: "Hata",
+        description: "Müstahsil için fiyat zorunludur",
+        variant: "destructive",
+      })
       return
     }
     
     setLoading(true)
     
     try {
-      // TODO: API call to create mal kabul record
-      console.log('Form data:', formData)
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Redirect to list page
-      router.push('/dashboard/mal-kabul')
+      const response = await fetch('/api/mal-kabul', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          saticiTipi: formData.saticiTipi,
+          komisyoncuId: formData.komisyoncuId || null,
+          ureticiId: formData.ureticiId || null,
+          mustahsilId: formData.mustahsilId || null,
+          ozelFirmaId: formData.ozelFirmaId || null,
+          urunId: formData.urunId,
+          paletId: formData.paletId || null,
+          ambalajId: formData.ambalajId || null,
+          paletSayisi: formData.paletSayisi,
+          kasaSayisi: formData.kasaSayisi,
+          brutKg: formData.brutKg,
+          daraKg: formData.daraKg,
+          girisKg: formData.girisKg,
+          cikmaFireKg: formData.cikmaFireKg,
+          netKg: formData.netKg,
+          birimFiyat: formData.birimFiyat,
+          notlar: formData.notlar
+        }),
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        toast({
+          title: "Başarılı",
+          description: "Mal kabul kaydı başarıyla oluşturuldu!",
+          variant: "success",
+        })
+        router.push('/dashboard/mal-kabul')
+      } else {
+        const error = await response.json()
+        toast({
+          title: "Hata",
+          description: error.error || 'Mal kabul kaydı oluşturulurken hata oluştu',
+          variant: "destructive",
+        })
+      }
     } catch (error) {
       console.error('Mal kabul kaydetme hatası:', error)
-      alert('Mal kabul kaydedilirken hata oluştu')
+      toast({
+        title: "Hata",
+        description: "Mal kabul kaydedilirken hata oluştu",
+        variant: "destructive",
+      })
     } finally {
       setLoading(false)
     }
@@ -364,7 +703,7 @@ export default function YeniMalKabul() {
                           </SelectTrigger>
                           <SelectContent>
                             {filteredUreticiler.length === 0 ? (
-                              <SelectItem value="" disabled>
+                              <SelectItem value="no-uretici" disabled>
                                 {formData.komisyoncuId ? "Bu komisyoncuya bağlı üretici bulunamadı" : "Üretici seçmek için önce komisyoncu seçin"}
                               </SelectItem>
                             ) : (
@@ -399,7 +738,7 @@ export default function YeniMalKabul() {
                         </SelectTrigger>
                         <SelectContent>
                           {ozelFirmalar.length === 0 ? (
-                            <SelectItem value="" disabled>
+                            <SelectItem value="no-ozel-firma" disabled>
                               Özel firma bulunamadı
                             </SelectItem>
                           ) : (
@@ -447,53 +786,144 @@ export default function YeniMalKabul() {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Package className="h-5 w-5" />
-                    Ürün Bilgileri
+                    Ürün ve Ambalaj Bilgileri
                   </CardTitle>
-                  <CardDescription>Ürün ve miktar bilgileri</CardDescription>
+                  <CardDescription>Ürün, ambalaj ve miktar bilgileri</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="urun">Ürün</Label>
+                    <Label htmlFor="urun">Ürün *</Label>
                     <Select
                       value={formData.urunId}
                       onValueChange={(value) => setFormData({...formData, urunId: value})}
+                      required
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Ürün seçin" />
                       </SelectTrigger>
                       <SelectContent>
-                        {mockUrunler.map((urun) => (
-                          <SelectItem key={urun.id} value={urun.id.toString()}>
-                            {urun.ad}
+                        {urunler.length === 0 ? (
+                          <SelectItem value="no-urun" disabled>
+                            Ürün bulunamadı
                           </SelectItem>
-                        ))}
+                        ) : (
+                          urunler.map((urun) => (
+                            <SelectItem key={urun.id} value={urun.id.toString()}>
+                              {urun.ad}
+                            </SelectItem>
+                          ))
+                        )}
                       </SelectContent>
                     </Select>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="kasaSayisi">Kasa Sayısı</Label>
-                      <Input
-                        id="kasaSayisi"
-                        type="number"
-                        step="0.01"
-                        value={formData.kasaSayisi}
-                        onChange={(e) => setFormData({...formData, kasaSayisi: e.target.value})}
-                        placeholder="0.00"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="brutKg">Brüt KG</Label>
-                      <Input
-                        id="brutKg"
-                        type="number"
-                        step="0.01"
-                        value={formData.brutKg}
-                        onChange={(e) => setFormData({...formData, brutKg: e.target.value})}
-                        placeholder="0.00"
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="palet">Palet</Label>
+                    <Select
+                      value={formData.paletId}
+                      onValueChange={handlePaletChange}
+                      disabled={loading}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={loading ? "Yükleniyor..." : "Palet seçin"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ambalajlar.filter(a => a.tipi === 'PALET').length === 0 ? (
+                          <SelectItem value="no-palet" disabled>
+                            Palet bulunamadı
+                          </SelectItem>
+                        ) : (
+                          ambalajlar.filter(a => a.tipi === 'PALET').map((palet) => (
+                            <SelectItem key={palet.id} value={palet.id}>
+                              {palet.ad} - {palet.daraKg}kg
+                            </SelectItem>
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
+                    {formData.paletId && (
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="paletSayisi">Palet Sayısı</Label>
+                          <Input
+                            id="paletSayisi"
+                            type="number"
+                            step="1"
+                            value={formData.paletSayisi}
+                            onChange={(e) => handlePaletSayisiChange(e.target.value)}
+                            placeholder="0"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="paletDaraKg">Palet Dara KG</Label>
+                          <Input
+                            id="paletDaraKg"
+                            type="number"
+                            step="0.01"
+                            value={formData.paletId ? (ambalajlar.find(a => a.id === formData.paletId)?.daraKg || 0) * (parseInt(formData.paletSayisi) || 0) : '0'}
+                            placeholder="0.00"
+                            readOnly
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="ambalaj">Ambalaj</Label>
+                    <Select
+                      value={formData.ambalajId}
+                      onValueChange={handleAmbalajChange}
+                      disabled={loading}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={loading ? "Yükleniyor..." : "Ambalaj seçin"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ambalajlar.filter(a => a.tipi !== 'PALET').length === 0 ? (
+                          <SelectItem value="no-ambalaj" disabled>
+                            Ambalaj bulunamadı
+                          </SelectItem>
+                        ) : (
+                          ambalajlar.filter(a => a.tipi !== 'PALET').map((ambalaj) => (
+                            <SelectItem key={ambalaj.id} value={ambalaj.id}>
+                              {ambalaj.ad} - {ambalaj.daraKg}kg
+                            </SelectItem>
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
+                    {formData.ambalajId && (
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="kasaSayisi">Kasa Sayısı *</Label>
+                          <Input
+                            id="kasaSayisi"
+                            type="number"
+                            step="1"
+                            min="1"
+                            value={formData.kasaSayisi}
+                            onChange={(e) => handleKasaSayisiChange(e.target.value)}
+                            placeholder="1"
+                            required
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            Kasa sayısı 0&apos;dan büyük olmalıdır
+                          </p>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="ambalajDaraKg">Ambalaj Dara KG</Label>
+                          <Input
+                            id="ambalajDaraKg"
+                            type="number"
+                            step="0.01"
+                            value={formData.ambalajId ? (ambalajlar.find(a => a.id === formData.ambalajId)?.daraKg || 0) * (parseInt(formData.kasaSayisi) || 0) : '0'}
+                            placeholder="0.00"
+                            readOnly
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -508,21 +938,37 @@ export default function YeniMalKabul() {
                     <Scale className="h-5 w-5" />
                     Ağırlık Bilgileri
                   </CardTitle>
-                  <CardDescription>Dara, giriş ve fire bilgileri</CardDescription>
+                  <CardDescription>Brüt, dara, giriş ve fire bilgileri</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="dara">Dara</Label>
+                      <Label htmlFor="brutKg">Brüt KG *</Label>
                       <Input
-                        id="dara"
+                        id="brutKg"
                         type="number"
                         step="0.01"
-                        value={formData.dara}
-                        onChange={(e) => setFormData({...formData, dara: e.target.value})}
+                        value={formData.brutKg}
+                        onChange={(e) => handleBrutKgChange(e.target.value)}
                         placeholder="0.00"
+                        required
                       />
                     </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="daraKg">Dara KG</Label>
+                      <Input
+                        id="daraKg"
+                        type="number"
+                        step="0.01"
+                        value={formData.daraKg}
+                        onChange={(e) => setFormData({...formData, daraKg: e.target.value})}
+                        placeholder="0.00"
+                        readOnly
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="girisKg">Giriş KG</Label>
                       <Input
@@ -530,42 +976,35 @@ export default function YeniMalKabul() {
                         type="number"
                         step="0.01"
                         value={formData.girisKg}
-                        onChange={(e) => {
-                          setFormData({...formData, girisKg: e.target.value})
-                          calculateNetKg()
-                        }}
+                        onChange={(e) => setFormData({...formData, girisKg: e.target.value})}
+                        placeholder="0.00"
+                        readOnly
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="cikmaFireKg">Çıkma/Fire KG</Label>
+                      <Input
+                        id="cikmaFireKg"
+                        type="number"
+                        step="0.01"
+                        value={formData.cikmaFireKg}
+                        onChange={(e) => handleCikmaFireChange(e.target.value)}
                         placeholder="0.00"
                       />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="cikmaFire">Çıkma/Fire</Label>
-                      <Input
-                        id="cikmaFire"
-                        type="number"
-                        step="0.01"
-                        value={formData.cikmaFire}
-                        onChange={(e) => {
-                          setFormData({...formData, cikmaFire: e.target.value})
-                          calculateNetKg()
-                        }}
-                        placeholder="0.00"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="netKg">Net KG</Label>
-                      <Input
-                        id="netKg"
-                        type="number"
-                        step="0.01"
-                        value={formData.netKg}
-                        readOnly
-                        className="bg-muted"
-                        placeholder="0.00"
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="netKg">Net KG</Label>
+                    <Input
+                      id="netKg"
+                      type="number"
+                      step="0.01"
+                      value={formData.netKg}
+                      onChange={(e) => setFormData({...formData, netKg: e.target.value})}
+                      placeholder="0.00"
+                      readOnly
+                    />
                   </div>
                 </CardContent>
               </Card>
@@ -582,13 +1021,13 @@ export default function YeniMalKabul() {
                 <CardContent className="space-y-4">
                   {isBagimsizUretici && (
                     <div className="space-y-2">
-                      <Label htmlFor="fiyat">Fiyat (₺/kg) *</Label>
+                      <Label htmlFor="birimFiyat">Fiyat (₺/kg) *</Label>
                       <Input
-                        id="fiyat"
+                        id="birimFiyat"
                         type="number"
                         step="0.01"
-                        value={formData.fiyat}
-                        onChange={(e) => setFormData({...formData, fiyat: e.target.value})}
+                        value={formData.birimFiyat}
+                        onChange={(e) => setFormData({...formData, birimFiyat: e.target.value})}
                         placeholder="0.00"
                         required={isBagimsizUretici}
                       />

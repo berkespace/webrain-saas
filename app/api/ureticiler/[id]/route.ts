@@ -4,10 +4,10 @@ import { prisma } from "@/lib/prisma"
 // GET - Tek bir üreticiyi getir
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
 
     const uretici = await prisma.uretici.findUnique({
       where: { id },
@@ -55,10 +55,10 @@ export async function GET(
 // PUT - Üretici güncelle
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
     const body = await request.json()
     const { ad, soyad, tcNo, dogumTarihi, iletisim, sehir, cinsiyet, durum, komisyoncuId } = body
 
@@ -150,10 +150,10 @@ export async function PUT(
 // DELETE - Üretici sil
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
 
     // Üreticinin var olup olmadığını kontrol et
     const existingUretici = await prisma.uretici.findUnique({

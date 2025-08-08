@@ -1,0 +1,303 @@
+import { NextRequest, NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
+
+// GET - Tüm mal kabul kayıtlarını listele
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const search = searchParams.get('search')
+    const status = searchParams.get('status')
+    const saticiTipi = searchParams.get('saticiTipi')
+    const startDate = searchParams.get('startDate')
+    const endDate = searchParams.get('endDate')
+
+    // Filtreleme koşulları
+    const where: any = {}
+
+    if (search) {
+      where.OR = [
+        { fisNo: { contains: search, mode: 'insensitive' } },
+        { notlar: { contains: search, mode: 'insensitive' } },
+        { komisyoncu: { dukkanAdi: { contains: search, mode: 'insensitive' } } },
+        { uretici: { ad: { contains: search, mode: 'insensitive' } } },
+        { uretici: { soyad: { contains: search, mode: 'insensitive' } } },
+        { ozelFirma: { firmaAdi: { contains: search, mode: 'insensitive' } } },
+        { urun: { ad: { contains: search, mode: 'insensitive' } } }
+      ]
+    }
+
+    if (status && status !== 'all') {
+      where.status = status
+    }
+
+    if (saticiTipi && saticiTipi !== 'all') {
+      where.saticiTipi = saticiTipi
+    }
+
+    if (startDate && endDate) {
+      where.tarih = {
+        gte: new Date(startDate),
+        lte: new Date(endDate)
+      }
+    }
+
+    const malKabulRecords = await prisma.malKabulRecord.findMany({
+      where,
+      include: {
+        komisyoncu: {
+          select: {
+            id: true,
+            dukkanAdi: true,
+            sehir: true
+          }
+        },
+        uretici: {
+          select: {
+            id: true,
+            ad: true,
+            soyad: true,
+            sehir: true
+          }
+        },
+        ozelFirma: {
+          select: {
+            id: true,
+            firmaAdi: true,
+            sehir: true
+          }
+        },
+        mustahsil: {
+          select: {
+            id: true,
+            ad: true,
+            soyad: true
+          }
+        },
+        urun: {
+          select: {
+            id: true,
+            ad: true,
+            kategori: true
+          }
+        },
+        ambalaj: {
+          select: {
+            id: true,
+            ad: true,
+            tipi: true,
+            daraKg: true
+          }
+        },
+        malKabulcu: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true
+          }
+        }
+      },
+      orderBy: {
+        tarih: 'desc'
+      }
+    })
+
+    return NextResponse.json(malKabulRecords)
+  } catch (error) {
+    console.error("Mal kabul listesi hatası:", error)
+    return NextResponse.json(
+      { error: "Mal kabul listesi alınırken hata oluştu" },
+      { status: 500 }
+    )
+  }
+}
+
+// POST - Yeni mal kabul kaydı oluştur
+export async function POST(request: NextRequest) {
+  try {
+    const session = await getServerSession(authOptions)
+    
+    if (!session?.user?.email) {
+      return NextResponse.json(
+        { error: "Oturum açmanız gerekiyor" },
+        { status: 401 }
+      )
+    }
+
+    const body = await request.json()
+    const {
+      saticiTipi,
+      komisyoncuId,
+      ureticiId,
+      mustahsilId,
+      ozelFirmaId,
+      urunId,
+      paletId,
+      ambalajId,
+      paletSayisi,
+      kasaSayisi,
+      brutKg,
+      daraKg,
+      girisKg,
+      cikmaFireKg,
+      netKg,
+      fiyat,
+      notlar
+    } = body
+
+    // Validasyon
+    if (!urunId) {
+      return NextResponse.json(
+        { error: "Ürün seçimi zorunludur" },
+        { status: 400 }
+      )
+    }
+
+    if (!paletId && !ambalajId) {
+      return NextResponse.json(
+        { error: "Palet veya Ambalaj seçimi zorunludur" },
+        { status: 400 }
+      )
+    }
+
+    if (paletId && (!paletSayisi || paletSayisi === '')) {
+      return NextResponse.json(
+        { error: "Palet seçildiğinde palet sayısı zorunludur" },
+        { status: 400 }
+      )
+    }
+
+    if (ambalajId && (!kasaSayisi || parseInt(kasaSayisi) === 0)) {
+      return NextResponse.json(
+        { error: "Ambalaj seçildiğinde kasa sayısı 0'dan büyük olmalıdır" },
+        { status: 400 }
+      )
+    }
+
+    if (!brutKg) {
+      return NextResponse.json(
+        { error: "Brüt KG alanı zorunludur" },
+        { status: 400 }
+      )
+    }
+
+    // Mal kabulcu kullanıcısını bul
+    const malKabulcu = await prisma.user.findUnique({
+      where: { email: session.user.email }
+    })
+
+    if (!malKabulcu) {
+      return NextResponse.json(
+        { error: "Mal kabulcu kullanıcısı bulunamadı" },
+        { status: 404 }
+      )
+    }
+
+    // Fiş numarası oluştur (YYYYMMDD + 4 haneli sıra no)
+    const today = new Date()
+    const dateStr = today.getFullYear().toString() + 
+                   (today.getMonth() + 1).toString().padStart(2, '0') + 
+                   today.getDate().toString().padStart(2, '0')
+    
+    const todayRecords = await prisma.malKabulRecord.count({
+      where: {
+        fisNo: {
+          startsWith: dateStr
+        }
+      }
+    })
+    
+    const fisNo = dateStr + (todayRecords + 1).toString().padStart(4, '0')
+
+    // Mal kabul kaydını oluştur
+    const malKabulRecord = await prisma.malKabulRecord.create({
+      data: {
+        fisNo,
+        saticiTipi,
+        komisyoncuId: komisyoncuId || null,
+        ureticiId: ureticiId || null,
+        mustahsilId: mustahsilId || null,
+        ozelFirmaId: ozelFirmaId || null,
+        urunId,
+        ambalajId: ambalajId || null,
+        paletSayisi: parseInt(paletSayisi) || 0,
+        kasaSayisi: parseInt(kasaSayisi) || 0,
+        brutKg: parseFloat(brutKg) || 0,
+        daraKg: parseFloat(daraKg) || 0,
+        girisKg: parseFloat(girisKg) || 0,
+        cikmaFireKg: parseFloat(cikmaFireKg) || 0,
+        netKg: parseFloat(netKg) || 0,
+        miktar: parseFloat(girisKg) || 0,
+        birimFiyat: fiyat ? parseFloat(fiyat) : null,
+        toplamFiyat: fiyat && girisKg ? parseFloat(fiyat) * parseFloat(girisKg) : null,
+        notlar: notlar || null,
+        malKabulcuId: malKabulcu.id
+      },
+      include: {
+        komisyoncu: {
+          select: {
+            id: true,
+            dukkanAdi: true,
+            sehir: true
+          }
+        },
+        uretici: {
+          select: {
+            id: true,
+            ad: true,
+            soyad: true,
+            sehir: true
+          }
+        },
+        ozelFirma: {
+          select: {
+            id: true,
+            firmaAdi: true,
+            sehir: true
+          }
+        },
+        mustahsil: {
+          select: {
+            id: true,
+            ad: true,
+            soyad: true
+          }
+        },
+        urun: {
+          select: {
+            id: true,
+            ad: true,
+            kategori: true
+          }
+        },
+        ambalaj: {
+          select: {
+            id: true,
+            ad: true,
+            tipi: true,
+            daraKg: true
+          }
+        },
+        malKabulcu: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true
+          }
+        }
+      }
+    })
+
+    return NextResponse.json(
+      { message: "Mal kabul kaydı başarıyla oluşturuldu", malKabulRecord },
+      { status: 201 }
+    )
+  } catch (error) {
+    console.error("Mal kabul oluşturma hatası:", error)
+    return NextResponse.json(
+      { error: "Mal kabul kaydı oluşturulurken hata oluştu" },
+      { status: 500 }
+    )
+  }
+}

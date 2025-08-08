@@ -4,10 +4,10 @@ import { prisma } from "@/lib/prisma"
 // GET - Tek bir özel firmayı getir
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
 
     const ozelFirma = await prisma.ozelFirma.findUnique({
       where: { id },
@@ -48,10 +48,10 @@ export async function GET(
 // PUT - Özel firma güncelle
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
     const body = await request.json()
     const { firmaAdi, vkn, yetkiliAdi, yetkiliTelefon, sehir, adres, durum } = body
 
@@ -119,10 +119,10 @@ export async function PUT(
 // DELETE - Özel firma sil
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params
+    const { id } = await params
 
     // Özel firmanın var olup olmadığını kontrol et
     const existingFirma = await prisma.ozelFirma.findUnique({

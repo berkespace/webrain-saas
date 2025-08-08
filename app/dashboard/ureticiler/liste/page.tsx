@@ -38,6 +38,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import Link from 'next/link'
+import { useToast } from '@/components/ui/use-toast'
 
 interface Uretici {
   id: string
@@ -59,9 +60,18 @@ interface Uretici {
   updatedAt: string
 }
 
+interface Komisyoncu {
+  id: string
+  dukkanAdi: string
+  sehir: string
+  komisyonNo: string
+  durum: 'AKTIF' | 'PASIF'
+}
+
 export default function UreticiListesi() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const { toast } = useToast()
   const [ureticiler, setUreticiler] = useState<Uretici[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -81,12 +91,14 @@ export default function UreticiListesi() {
     komisyoncuId: ''
   })
   const [submitting, setSubmitting] = useState(false)
+  const [komisyoncular, setKomisyoncular] = useState<Komisyoncu[]>([])
 
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login')
     } else if (status === 'authenticated') {
       fetchUreticiler()
+      fetchKomisyoncular()
     }
   }, [status, router])
 
@@ -109,6 +121,20 @@ export default function UreticiListesi() {
       console.error('Üretici listesi hatası:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchKomisyoncular = async () => {
+    try {
+      const response = await fetch('/api/komisyoncular?status=AKTIF')
+      if (response.ok) {
+        const data = await response.json()
+        setKomisyoncular(data)
+      } else {
+        console.error('Komisyoncu listesi alınamadı:', response.status)
+      }
+    } catch (error) {
+      console.error('Komisyoncu listesi hatası:', error)
     }
   }
 
@@ -137,6 +163,44 @@ export default function UreticiListesi() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validation
+    if (!formData.komisyoncuId) {
+      toast({
+        title: "Hata",
+        description: "Komisyoncu seçimi zorunludur",
+        variant: "destructive",
+      })
+      return
+    }
+    
+    if (!formData.ad || !formData.soyad) {
+      toast({
+        title: "Hata",
+        description: "Ad ve soyad alanları zorunludur",
+        variant: "destructive",
+      })
+      return
+    }
+    
+    if (!formData.sehir) {
+      toast({
+        title: "Hata",
+        description: "Şehir alanı zorunludur",
+        variant: "destructive",
+      })
+      return
+    }
+    
+    if (!formData.cinsiyet) {
+      toast({
+        title: "Hata",
+        description: "Cinsiyet seçimi zorunludur",
+        variant: "destructive",
+      })
+      return
+    }
+    
     setSubmitting(true)
     
     try {
@@ -169,13 +233,26 @@ export default function UreticiListesi() {
           komisyoncuId: ''
         })
         fetchUreticiler()
+        toast({
+          title: "Başarılı",
+          description: editingUretici ? "Üretici başarıyla güncellendi" : "Üretici başarıyla oluşturuldu",
+          variant: "success",
+        })
       } else {
         const error = await response.json()
-        alert(error.error || 'Bir hata oluştu')
+        toast({
+          title: "Hata",
+          description: error.error || 'Bir hata oluştu',
+          variant: "destructive",
+        })
       }
     } catch (error) {
       console.error('Üretici kaydetme hatası:', error)
-      alert('Bir hata oluştu')
+      toast({
+        title: "Hata",
+        description: "Bir hata oluştu",
+        variant: "destructive",
+      })
     } finally {
       setSubmitting(false)
     }
@@ -206,13 +283,26 @@ export default function UreticiListesi() {
 
         if (response.ok) {
           fetchUreticiler()
+          toast({
+            title: "Başarılı",
+            description: "Üretici başarıyla silindi",
+            variant: "success",
+          })
         } else {
           const error = await response.json()
-          alert(error.error || 'Silme işlemi başarısız')
+          toast({
+            title: "Hata",
+            description: error.error || 'Silme işlemi başarısız',
+            variant: "destructive",
+          })
         }
       } catch (error) {
         console.error('Üretici silme hatası:', error)
-        alert('Silme işlemi sırasında hata oluştu')
+        toast({
+          title: "Hata",
+          description: "Silme işlemi sırasında hata oluştu",
+          variant: "destructive",
+        })
       }
     }
   }
@@ -350,6 +440,35 @@ export default function UreticiListesi() {
                         </SelectContent>
                       </Select>
                     </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="komisyoncuId">Komisyoncu *</Label>
+                    <Select
+                      value={formData.komisyoncuId}
+                      onValueChange={(value) => setFormData({...formData, komisyoncuId: value})}
+                      required
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={komisyoncular.length === 0 ? "Yükleniyor..." : "Komisyoncu seçin"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {komisyoncular.length === 0 ? (
+                          <SelectItem value="no-komisyoncu" disabled>
+                            Komisyoncu bulunamadı
+                          </SelectItem>
+                        ) : (
+                          komisyoncular.map((komisyoncu) => (
+                            <SelectItem key={komisyoncu.id} value={komisyoncu.id}>
+                              {komisyoncu.dukkanAdi} - {komisyoncu.sehir}
+                            </SelectItem>
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-muted-foreground">
+                      * Üreticiler mutlaka bir komisyoncuya bağlı olmalıdır.
+                    </p>
                   </div>
                 </div>
                 <DialogFooter>

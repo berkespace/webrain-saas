@@ -63,13 +63,16 @@ export default function YeniUretici() {
 
   const fetchKomisyoncular = async () => {
     try {
-      const response = await fetch('/api/komisyoncular')
+      const response = await fetch('/api/komisyoncular?status=AKTIF')
+      
       if (response.ok) {
         const data = await response.json()
         setKomisyoncular(data)
+      } else {
+        console.error('Komisyoncu listesi alınamadı:', response.status)
       }
     } catch (error) {
-      console.error('Komisyoncu listesi alınamadı:', error)
+      console.error('Komisyoncu listesi hatası:', error)
     }
   }
 
@@ -311,18 +314,24 @@ export default function YeniUretici() {
                       required
                     >
                       <SelectTrigger>
-                        <SelectValue placeholder="Komisyoncu seçin" />
+                        <SelectValue placeholder={komisyoncular.length === 0 ? "Yükleniyor..." : "Komisyoncu seçin"} />
                       </SelectTrigger>
                       <SelectContent>
-                        {komisyoncular.map((komisyoncu) => (
-                          <SelectItem key={komisyoncu.id} value={komisyoncu.id}>
-                            {komisyoncu.dukkanAdi} - {komisyoncu.sehir}
+                        {komisyoncular.length === 0 ? (
+                          <SelectItem value="no-komisyoncu" disabled>
+                            Komisyoncu bulunamadı
                           </SelectItem>
-                        ))}
+                        ) : (
+                          komisyoncular.map((komisyoncu) => (
+                            <SelectItem key={komisyoncu.id} value={komisyoncu.id}>
+                              {komisyoncu.dukkanAdi} - {komisyoncu.sehir}
+                            </SelectItem>
+                          ))
+                        )}
                       </SelectContent>
                     </Select>
                     <p className="text-xs text-muted-foreground">
-                      * Üreticiler mutlaka bir komisyoncuya bağlı olmalıdır. Bağımsız üreticiler için "Müstahsil" modülünü kullanın.
+                      * Üreticiler mutlaka bir komisyoncuya bağlı olmalıdır. Bağımsız üreticiler için &quot;Müstahsil&quot; modülünü kullanın.
                     </p>
                   </div>
                 </CardContent>

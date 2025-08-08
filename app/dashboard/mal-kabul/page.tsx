@@ -20,74 +20,231 @@ import {
   Download,
   Eye,
   Edit,
-  Trash2
+  Trash2,
+  Loader2
 } from 'lucide-react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { useToast } from '@/components/ui/use-toast'
+import Link from 'next/link'
 
-// Mock data based on Excel structure
-const mockData = [
-  {
-    id: 1,
-    tarih: '15.07.2025',
-    saticiTipi: 'OZEL_FIRMA',
-    saticiAdi: 'CİHAN TARIM',
-    urun: 'SİLÖR',
-    kasaSayisi: 115.00,
-    brutKg: 2.402,
-    dara: 230.00,
-    girisKg: 2172.00,
-    cikmaFire: 274.00,
-    durum: 'BEKLEM...',
-    netKg: 957.00,
-    fiyat: '35,00₺',
-    fisNo: 15066
-  },
-  {
-    id: 2,
-    tarih: '15.07.2025',
-    saticiTipi: 'KOMISYONCU',
-    saticiAdi: 'ÇALDIR KOM',
-    urun: 'SALATALIK',
-    kasaSayisi: 84.00,
-    brutKg: 1.957,
-    dara: 168.00,
-    girisKg: 1789.00,
-    cikmaFire: 820.00,
-    durum: 'NETLENDİ',
-    netKg: 480.00,
-    fiyat: '40,00₺',
-    fisNo: 15067
-  },
-  {
-    id: 3,
-    tarih: '16.07.2025',
-    saticiTipi: 'MUSTAHSIL',
-    saticiAdi: 'DURDAŞLAR',
-    urun: 'DOMATES',
-    kasaSayisi: 15.00,
-    brutKg: 217,
-    dara: 29.00,
-    girisKg: 188.00,
-    cikmaFire: 0.00,
-    durum: 'BEKLEM...',
-    netKg: 1006.00,
-    fiyat: '',
-    fisNo: 15072
+interface MalKabulRecord {
+  id: string
+  fisNo: string
+  tarih: string
+  saticiTipi: 'OZEL_FIRMA' | 'KOMISYONCU' | 'MUSTAHSIL'
+  komisyoncu?: {
+    id: string
+    dukkanAdi: string
+    sehir: string
   }
-]
+  uretici?: {
+    id: string
+    ad: string
+    soyad: string
+    sehir: string
+  }
+  ozelFirma?: {
+    id: string
+    firmaAdi: string
+    sehir: string
+  }
+  mustahsil?: {
+    id: string
+    ad: string
+    soyad: string
+  }
+  urun: {
+    id: string
+    ad: string
+    kategori: string
+  }
+  ambalaj?: {
+    id: string
+    ad: string
+    tipi: string
+    daraKg: number
+  }
+  paletSayisi: number
+  kasaSayisi: number
+  brutKg: number
+  daraKg: number
+  girisKg: number
+  cikmaFireKg: number
+  netKg: number
+  birimFiyat?: number
+  toplamFiyat?: number
+  status: 'FATURA_BEKLIYOR' | 'FATURALANDI' | 'TAMAMLANDI' | 'IPTAL'
+  notlar?: string
+  malKabulcu: {
+    id: string
+    firstName: string
+    lastName: string
+  }
+  createdAt: string
+  updatedAt: string
+}
 
 export default function MalKabulDashboard() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const { toast } = useToast()
+  const [malKabulRecords, setMalKabulRecords] = useState<MalKabulRecord[]>([])
+  const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterStatus, setFilterStatus] = useState('all')
   const [filterSaticiTipi, setFilterSaticiTipi] = useState('all')
+  const [selectedRecord, setSelectedRecord] = useState<MalKabulRecord | null>(null)
+  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login')
+    } else if (status === 'authenticated') {
+      fetchMalKabulRecords()
     }
   }, [status, router])
+
+  const fetchMalKabulRecords = async () => {
+    try {
+      setLoading(true)
+      const params = new URLSearchParams()
+      if (searchTerm) params.append('search', searchTerm)
+      if (filterStatus !== 'all') params.append('status', filterStatus)
+      if (filterSaticiTipi !== 'all') params.append('saticiTipi', filterSaticiTipi)
+
+      const response = await fetch(`/api/mal-kabul?${params.toString()}`)
+      if (response.ok) {
+        const data = await response.json()
+        setMalKabulRecords(data)
+      } else {
+        console.error('Mal kabul listesi alınamadı')
+      }
+    } catch (error) {
+      console.error('Mal kabul listesi hatası:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      fetchMalKabulRecords()
+    }
+  }, [searchTerm, filterStatus, filterSaticiTipi])
+
+  const handleDelete = async (recordId: string) => {
+    if (confirm('Bu mal kabul kaydını silmek istediğinizden emin misiniz?')) {
+      try {
+        const response = await fetch(`/api/mal-kabul/${recordId}`, {
+          method: 'DELETE',
+        })
+
+        if (response.ok) {
+          toast({
+            title: "Başarılı",
+            description: "Mal kabul kaydı başarıyla silindi",
+            variant: "success",
+          })
+          fetchMalKabulRecords()
+        } else {
+          const error = await response.json()
+          toast({
+            title: "Hata",
+            description: error.error || 'Silme işlemi başarısız',
+            variant: "destructive",
+          })
+        }
+      } catch (error) {
+        console.error('Mal kabul silme hatası:', error)
+        toast({
+          title: "Hata",
+          description: "Silme işlemi sırasında hata oluştu",
+          variant: "destructive",
+        })
+      }
+    }
+  }
+
+  const handleView = (record: MalKabulRecord) => {
+    setSelectedRecord(record)
+    setIsViewDialogOpen(true)
+  }
+
+  const getSaticiAdi = (record: MalKabulRecord) => {
+    switch (record.saticiTipi) {
+      case 'OZEL_FIRMA':
+        return record.ozelFirma?.firmaAdi || 'Bilinmiyor'
+      case 'KOMISYONCU':
+        return record.komisyoncu?.dukkanAdi || 'Bilinmiyor'
+      case 'MUSTAHSIL':
+        return record.mustahsil ? `${record.mustahsil.ad} ${record.mustahsil.soyad}` : 'Bilinmiyor'
+      default:
+        return 'Bilinmiyor'
+    }
+  }
+
+  const getSaticiTipiLabel = (tipi: string) => {
+    switch (tipi) {
+      case 'OZEL_FIRMA':
+        return 'Özel Firma'
+      case 'KOMISYONCU':
+        return 'Komisyoncu'
+      case 'MUSTAHSIL':
+        return 'Müstahsil'
+      default:
+        return tipi
+    }
+  }
+
+  const getSaticiTipiColor = (tipi: string) => {
+    switch (tipi) {
+      case 'OZEL_FIRMA':
+        return 'bg-blue-100 text-blue-800'
+      case 'KOMISYONCU':
+        return 'bg-green-100 text-green-800'
+      case 'MUSTAHSIL':
+        return 'bg-orange-100 text-orange-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
+    }
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'FATURA_BEKLIYOR':
+        return 'bg-orange-100 text-orange-800'
+      case 'FATURALANDI':
+        return 'bg-blue-100 text-blue-800'
+      case 'TAMAMLANDI':
+        return 'bg-green-100 text-green-800'
+      case 'IPTAL':
+        return 'bg-red-100 text-red-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
+    }
+  }
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'FATURA_BEKLIYOR':
+        return 'Fatura Bekliyor'
+      case 'FATURALANDI':
+        return 'Faturalandı'
+      case 'TAMAMLANDI':
+        return 'Tamamlandı'
+      case 'IPTAL':
+        return 'İptal'
+      default:
+        return status
+    }
+  }
 
   if (status === 'loading') {
     return (
@@ -104,35 +261,17 @@ export default function MalKabulDashboard() {
     return null
   }
 
-  const filteredData = mockData.filter(item => {
+  const filteredData = malKabulRecords.filter(item => {
     const matchesSearch = 
-      item.saticiAdi.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.urun.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.fisNo.toString().includes(searchTerm)
+      getSaticiAdi(item).toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.urun.ad.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.fisNo.toLowerCase().includes(searchTerm)
 
-    const matchesStatus = filterStatus === 'all' || item.durum === filterStatus
+    const matchesStatus = filterStatus === 'all' || item.status === filterStatus
     const matchesSaticiTipi = filterSaticiTipi === 'all' || item.saticiTipi === filterSaticiTipi
 
     return matchesSearch && matchesStatus && matchesSaticiTipi
   })
-
-  const getSaticiTipiLabel = (tipi: string) => {
-    switch (tipi) {
-      case 'OZEL_FIRMA': return 'Özel Firma'
-      case 'MUSTAHSIL': return 'Müstahsil'
-      case 'KOMISYONCU': return 'Komisyoncu'
-      default: return tipi
-    }
-  }
-
-  const getSaticiTipiColor = (tipi: string) => {
-    switch (tipi) {
-      case 'OZEL_FIRMA': return 'bg-blue-100 text-blue-800'
-      case 'MUSTAHSIL': return 'bg-green-100 text-green-800'
-      case 'KOMISYONCU': return 'bg-purple-100 text-purple-800'
-      default: return 'bg-gray-100 text-gray-800'
-    }
-  }
 
   return (
     <DashboardLayout>
@@ -162,7 +301,7 @@ export default function MalKabulDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">Toplam Kayıt</p>
-                  <p className="text-2xl font-bold">{mockData.length}</p>
+                  <p className="text-2xl font-bold">{malKabulRecords.length}</p>
                 </div>
                 <Package className="h-8 w-8 text-primary" />
               </div>
@@ -175,7 +314,7 @@ export default function MalKabulDashboard() {
                 <div>
                   <p className="text-sm text-muted-foreground">Bekleyen</p>
                   <p className="text-2xl font-bold text-orange-500">
-                    {mockData.filter(item => item.durum === 'BEKLEM...').length}
+                    {malKabulRecords.filter(item => item.status === 'FATURA_BEKLIYOR').length}
                   </p>
                 </div>
                 <Clock className="h-8 w-8 text-orange-500" />
@@ -187,9 +326,9 @@ export default function MalKabulDashboard() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Netlendi</p>
+                  <p className="text-sm text-muted-foreground">Tamamlandı</p>
                   <p className="text-2xl font-bold text-green-500">
-                    {mockData.filter(item => item.durum === 'NETLENDİ').length}
+                    {malKabulRecords.filter(item => item.status === 'TAMAMLANDI').length}
                   </p>
                 </div>
                 <CheckCircle className="h-8 w-8 text-green-500" />
@@ -203,7 +342,7 @@ export default function MalKabulDashboard() {
                 <div>
                   <p className="text-sm text-muted-foreground">Toplam KG</p>
                   <p className="text-2xl font-bold">
-                    {mockData.reduce((sum, item) => sum + (item.netKg || 0), 0).toLocaleString()}
+                    {malKabulRecords.reduce((sum, item) => sum + (item.netKg || 0), 0).toLocaleString()}
                   </p>
                 </div>
                 <TrendingUp className="h-8 w-8 text-blue-500" />
@@ -235,16 +374,28 @@ export default function MalKabulDashboard() {
                   Tümü
                 </Button>
                 <Button
-                  variant={filterStatus === 'BEKLEM...' ? 'default' : 'outline'}
-                  onClick={() => setFilterStatus('BEKLEM...')}
+                  variant={filterStatus === 'FATURA_BEKLIYOR' ? 'default' : 'outline'}
+                  onClick={() => setFilterStatus('FATURA_BEKLIYOR')}
                 >
-                  Bekleyen
+                  Fatura Bekliyor
                 </Button>
                 <Button
-                  variant={filterStatus === 'NETLENDİ' ? 'default' : 'outline'}
-                  onClick={() => setFilterStatus('NETLENDİ')}
+                  variant={filterStatus === 'FATURALANDI' ? 'default' : 'outline'}
+                  onClick={() => setFilterStatus('FATURALANDI')}
                 >
-                  Netlendi
+                  Faturalandı
+                </Button>
+                <Button
+                  variant={filterStatus === 'TAMAMLANDI' ? 'default' : 'outline'}
+                  onClick={() => setFilterStatus('TAMAMLANDI')}
+                >
+                  Tamamlandı
+                </Button>
+                <Button
+                  variant={filterStatus === 'IPTAL' ? 'default' : 'outline'}
+                  onClick={() => setFilterStatus('IPTAL')}
+                >
+                  İptal
                 </Button>
               </div>
               <div className="flex gap-2">
@@ -261,16 +412,16 @@ export default function MalKabulDashboard() {
                   Özel Firma
                 </Button>
                 <Button
-                  variant={filterSaticiTipi === 'MUSTAHSIL' ? 'default' : 'outline'}
-                  onClick={() => setFilterSaticiTipi('MUSTAHSIL')}
-                >
-                  Müstahsil
-                </Button>
-                <Button
                   variant={filterSaticiTipi === 'KOMISYONCU' ? 'default' : 'outline'}
                   onClick={() => setFilterSaticiTipi('KOMISYONCU')}
                 >
                   Komisyoncu
+                </Button>
+                <Button
+                  variant={filterSaticiTipi === 'MUSTAHSIL' ? 'default' : 'outline'}
+                  onClick={() => setFilterSaticiTipi('MUSTAHSIL')}
+                >
+                  Müstahsil
                 </Button>
               </div>
             </div>
@@ -281,7 +432,7 @@ export default function MalKabulDashboard() {
         <Card>
           <CardHeader>
             <CardTitle>Mal Kabul Kayıtları</CardTitle>
-            <CardDescription>Excel'deki verilerin dijital versiyonu</CardDescription>
+            <CardDescription>Excel&apos;deki verilerin dijital versiyonu</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
@@ -305,56 +456,103 @@ export default function MalKabulDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredData.map((item) => (
-                    <tr key={item.id} className="border-b hover:bg-muted/50">
-                      <td className="py-3 px-2 text-sm">{item.tarih}</td>
-                      <td className="py-3 px-2">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getSaticiTipiColor(item.saticiTipi)}`}>
-                          {getSaticiTipiLabel(item.saticiTipi)}
-                        </span>
-                      </td>
-                      <td className="py-3 px-2 font-medium">{item.saticiAdi}</td>
-                      <td className="py-3 px-2">{item.urun}</td>
-                      <td className="py-3 px-2 text-right">{item.kasaSayisi.toLocaleString()}</td>
-                      <td className="py-3 px-2 text-right">{item.brutKg.toLocaleString()}</td>
-                      <td className="py-3 px-2 text-right">{item.dara.toLocaleString()}</td>
-                      <td className="py-3 px-2 text-right">{item.girisKg.toLocaleString()}</td>
-                      <td className="py-3 px-2 text-right">{item.cikmaFire.toLocaleString()}</td>
-                      <td className="py-3 px-2">
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          item.durum === 'BEKLEM...' 
-                            ? 'bg-orange-100 text-orange-800' 
-                            : 'bg-green-100 text-green-800'
-                        }`}>
-                          {item.durum}
-                        </span>
-                      </td>
-                      <td className="py-3 px-2 text-right font-medium">
-                        {item.netKg ? item.netKg.toLocaleString() : '-'}
-                      </td>
-                      <td className="py-3 px-2 text-right">{item.fiyat || '-'}</td>
-                      <td className="py-3 px-2 font-medium">{item.fisNo}</td>
-                      <td className="py-3 px-2">
-                        <div className="flex items-center gap-1">
-                          <Button variant="ghost" size="sm">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
+                  {loading ? (
+                    <tr>
+                      <td colSpan={14} className="py-8 text-center">
+                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                        <p className="mt-2 text-muted-foreground">Mal Kabul Kayıtları yükleniyor...</p>
                       </td>
                     </tr>
-                  ))}
+                  ) : filteredData.length === 0 ? (
+                    <tr>
+                      <td colSpan={14} className="py-8 text-center text-muted-foreground">
+                        Aradığınız kriterlere uygun kayıt bulunamadı.
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredData.map((item) => (
+                      <tr key={item.id} className="border-b hover:bg-muted/50">
+                        <td className="py-3 px-2 text-sm">{item.tarih}</td>
+                        <td className="py-3 px-2">
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getSaticiTipiColor(item.saticiTipi)}`}>
+                            {getSaticiTipiLabel(item.saticiTipi)}
+                          </span>
+                        </td>
+                        <td className="py-3 px-2 font-medium">{getSaticiAdi(item)}</td>
+                        <td className="py-3 px-2">{item.urun.ad}</td>
+                        <td className="py-3 px-2 text-right">{item.kasaSayisi.toLocaleString()}</td>
+                        <td className="py-3 px-2 text-right">{item.brutKg.toLocaleString()}</td>
+                        <td className="py-3 px-2 text-right">{item.daraKg.toLocaleString()}</td>
+                        <td className="py-3 px-2 text-right">{item.girisKg.toLocaleString()}</td>
+                        <td className="py-3 px-2 text-right">{item.cikmaFireKg.toLocaleString()}</td>
+                        <td className="py-3 px-2">
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
+                            {getStatusLabel(item.status)}
+                          </span>
+                        </td>
+                        <td className="py-3 px-2 text-right font-medium">
+                          {item.netKg ? item.netKg.toLocaleString() : '-'}
+                        </td>
+                        <td className="py-3 px-2 text-right">{item.birimFiyat ? item.birimFiyat.toLocaleString() : '-'}</td>
+                        <td className="py-3 px-2 font-medium">{item.fisNo}</td>
+                        <td className="py-3 px-2">
+                          <div className="flex items-center gap-1">
+                            <Button variant="ghost" size="sm" onClick={() => handleView(item)}>
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                                                         <Link href={`/dashboard/mal-kabul/duzenle/${item.id}`}>
+                               <Button variant="ghost" size="sm">
+                                 <Edit className="h-4 w-4" />
+                               </Button>
+                             </Link>
+                                                         <Button variant="ghost" size="sm" onClick={() => handleDelete(item.id)}>
+                               <Trash2 className="h-4 w-4" />
+                             </Button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* View Dialog */}
+      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Mal Kabul Detayları</DialogTitle>
+            <DialogDescription>
+              {selectedRecord ? (
+                <div className="grid gap-4">
+                  <p><strong>Fatura No:</strong> {selectedRecord.fisNo}</p>
+                  <p><strong>Tarih:</strong> {selectedRecord.tarih}</p>
+                  <p><strong>Satıcı:</strong> {getSaticiAdi(selectedRecord)}</p>
+                  <p><strong>Ürün:</strong> {selectedRecord.urun.ad}</p>
+                  <p><strong>Kasa Sayısı:</strong> {selectedRecord.kasaSayisi.toLocaleString()}</p>
+                  <p><strong>Brüt KG:</strong> {selectedRecord.brutKg.toLocaleString()}</p>
+                  <p><strong>Dara KG:</strong> {selectedRecord.daraKg.toLocaleString()}</p>
+                  <p><strong>Giriş KG:</strong> {selectedRecord.girisKg.toLocaleString()}</p>
+                  <p><strong>Çıkma/Fire KG:</strong> {selectedRecord.cikmaFireKg.toLocaleString()}</p>
+                  <p><strong>Net KG:</strong> {selectedRecord.netKg.toLocaleString()}</p>
+                  <p><strong>Birim Fiyat:</strong> {selectedRecord.birimFiyat ? selectedRecord.birimFiyat.toLocaleString() : '-'}</p>
+                  <p><strong>Toplam Fiyat:</strong> {selectedRecord.toplamFiyat ? selectedRecord.toplamFiyat.toLocaleString() : '-'}</p>
+                  <p><strong>Durum:</strong> <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedRecord.status)}`}>{getStatusLabel(selectedRecord.status)}</span></p>
+                  <p><strong>Notlar:</strong> {selectedRecord.notlar || '-'}</p>
+                  <p><strong>Oluşturan:</strong> {selectedRecord.malKabulcu.firstName} {selectedRecord.malKabulcu.lastName}</p>
+                  <p><strong>Oluşturma Tarihi:</strong> {new Date(selectedRecord.createdAt).toLocaleDateString()}</p>
+                  <p><strong>Güncellenme Tarihi:</strong> {new Date(selectedRecord.updatedAt).toLocaleDateString()}</p>
+                </div>
+              ) : (
+                <p>Seçili kayıt bulunamadı.</p>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
   )
 }
