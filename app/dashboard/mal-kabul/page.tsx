@@ -102,6 +102,8 @@ export default function MalKabulDashboard() {
   const [filterSaticiTipi, setFilterSaticiTipi] = useState('all')
   const [selectedRecord, setSelectedRecord] = useState<MalKabulRecord | null>(null)
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false)
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [bulkLoading, setBulkLoading] = useState(false)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -246,6 +248,48 @@ export default function MalKabulDashboard() {
     }
   }
 
+  const toggleSelect = (id: string) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredData.length) {
+      setSelectedIds(new Set())
+    } else {
+      setSelectedIds(new Set(filteredData.map(r => r.id)))
+    }
+  }
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return
+    if (!confirm(`${selectedIds.size} kaydı silmek istediğinizden emin misiniz?`)) return
+    setBulkLoading(true)
+    try {
+      const res = await fetch('/api/mal-kabul/bulk-delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: Array.from(selectedIds) })
+      })
+      if (res.ok) {
+        toast({ title: 'Başarılı', description: 'Seçili kayıtlar silindi', variant: 'success' })
+        setSelectedIds(new Set())
+        fetchMalKabulRecords()
+      } else {
+        const err = await res.json()
+        toast({ title: 'Hata', description: err.error || 'Toplu silme başarısız', variant: 'destructive' })
+      }
+    } catch (e) {
+      toast({ title: 'Hata', description: 'Toplu silme sırasında hata oluştu', variant: 'destructive' })
+    } finally {
+      setBulkLoading(false)
+    }
+  }
+
   if (status === 'loading') {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -283,13 +327,15 @@ export default function MalKabulDashboard() {
             <p className="text-muted-foreground">Tarım ürünlerinin mal kabul süreçlerini yönetin</p>
           </div>
           <div className="flex items-center gap-3">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Yeni Mal Kabul
+            <Button asChild>
+              <Link href="/dashboard/mal-kabul/yeni">
+                <Plus className="mr-2 h-4 w-4" />
+                Yeni Mal Kabul
+              </Link>
             </Button>
-            <Button variant="outline">
-              <Download className="mr-2 h-4 w-4" />
-              Excel İndir
+            <Button variant="destructive" onClick={handleBulkDelete} disabled={selectedIds.size === 0 || bulkLoading}>
+              {bulkLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
+              Toplu Sil ({selectedIds.size})
             </Button>
           </div>
         </div>
@@ -428,94 +474,95 @@ export default function MalKabulDashboard() {
           </CardContent>
         </Card>
 
-        {/* Data Table */}
+        {/* Table with skeleton */}
         <Card>
           <CardHeader>
             <CardTitle>Mal Kabul Kayıtları</CardTitle>
-            <CardDescription>Excel&apos;deki verilerin dijital versiyonu</CardDescription>
+            <CardDescription>Excel'deki verilerin dijital versiyonu</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b bg-muted/50">
-                    <th className="text-left py-3 px-2 font-medium">TARİH</th>
-                    <th className="text-left py-3 px-2 font-medium">SATICI</th>
-                    <th className="text-left py-3 px-2 font-medium">ÜNVAN</th>
-                    <th className="text-left py-3 px-2 font-medium">ÜRÜN</th>
-                    <th className="text-left py-3 px-2 font-medium">KASA SAYISI</th>
-                    <th className="text-left py-3 px-2 font-medium">BRÜT KG</th>
-                    <th className="text-left py-3 px-2 font-medium">DARA</th>
-                    <th className="text-left py-3 px-2 font-medium">GİRİŞ KG</th>
-                    <th className="text-left py-3 px-2 font-medium">ÇIKMA/FİRE</th>
-                    <th className="text-left py-3 px-2 font-medium">DURUM</th>
-                    <th className="text-left py-3 px-2 font-medium">NET KG</th>
-                    <th className="text-left py-3 px-2 font-medium">FİYAT</th>
-                    <th className="text-left py-3 px-2 font-medium">FİŞ NO</th>
-                    <th className="text-left py-3 px-2 font-medium">İŞLEMLER</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr>
-                      <td colSpan={14} className="py-8 text-center">
-                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                        <p className="mt-2 text-muted-foreground">Mal Kabul Kayıtları yükleniyor...</p>
-                      </td>
+            {loading ? (
+              <div className="space-y-2">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="h-10 w-full bg-muted/50 rounded animate-pulse" />
+                ))}
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b bg-muted/50">
+                      <th className="py-3 px-2"><input type="checkbox" checked={selectedIds.size === filteredData.length && filteredData.length > 0} onChange={toggleSelectAll} /></th>
+                      <th className="text-left py-3 px-2 font-medium">TARİH</th>
+                      <th className="text-left py-3 px-2 font-medium">SATICI</th>
+                      <th className="text-left py-3 px-2 font-medium">ÜNVAN</th>
+                      <th className="text-left py-3 px-2 font-medium">ÜRÜN</th>
+                      <th className="text-left py-3 px-2 font-medium">KASA SAYISI</th>
+                      <th className="text-left py-3 px-2 font-medium">BRÜT KG</th>
+                      <th className="text-left py-3 px-2 font-medium">DARA</th>
+                      <th className="text-left py-3 px-2 font-medium">GİRİŞ KG</th>
+                      <th className="text-left py-3 px-2 font-medium">ÇIKMA/FİRE</th>
+                      <th className="text-left py-3 px-2 font-medium">DURUM</th>
+                      <th className="text-left py-3 px-2 font-medium">NET KG</th>
+                      <th className="text-left py-3 px-2 font-medium">FİYAT</th>
+                      <th className="text-left py-3 px-2 font-medium">FİŞ NO</th>
+                      <th className="text-left py-3 px-2 font-medium">İŞLEMLER</th>
                     </tr>
-                  ) : filteredData.length === 0 ? (
-                    <tr>
-                      <td colSpan={14} className="py-8 text-center text-muted-foreground">
-                        Aradığınız kriterlere uygun kayıt bulunamadı.
-                      </td>
-                    </tr>
-                  ) : (
-                    filteredData.map((item) => (
-                      <tr key={item.id} className="border-b hover:bg-muted/50">
-                        <td className="py-3 px-2 text-sm">{item.tarih}</td>
-                        <td className="py-3 px-2">
-                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getSaticiTipiColor(item.saticiTipi)}`}>
-                            {getSaticiTipiLabel(item.saticiTipi)}
-                          </span>
-                        </td>
-                        <td className="py-3 px-2 font-medium">{getSaticiAdi(item)}</td>
-                        <td className="py-3 px-2">{item.urun.ad}</td>
-                        <td className="py-3 px-2 text-right">{item.kasaSayisi.toLocaleString()}</td>
-                        <td className="py-3 px-2 text-right">{item.brutKg.toLocaleString()}</td>
-                        <td className="py-3 px-2 text-right">{item.daraKg.toLocaleString()}</td>
-                        <td className="py-3 px-2 text-right">{item.girisKg.toLocaleString()}</td>
-                        <td className="py-3 px-2 text-right">{item.cikmaFireKg.toLocaleString()}</td>
-                        <td className="py-3 px-2">
-                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
-                            {getStatusLabel(item.status)}
-                          </span>
-                        </td>
-                        <td className="py-3 px-2 text-right font-medium">
-                          {item.netKg ? item.netKg.toLocaleString() : '-'}
-                        </td>
-                        <td className="py-3 px-2 text-right">{item.birimFiyat ? item.birimFiyat.toLocaleString() : '-'}</td>
-                        <td className="py-3 px-2 font-medium">{item.fisNo}</td>
-                        <td className="py-3 px-2">
-                          <div className="flex items-center gap-1">
-                            <Button variant="ghost" size="sm" onClick={() => handleView(item)}>
-                              <Eye className="h-4 w-4" />
-                            </Button>
-                                                         <Link href={`/dashboard/mal-kabul/duzenle/${item.id}`}>
-                               <Button variant="ghost" size="sm">
-                                 <Edit className="h-4 w-4" />
-                               </Button>
-                             </Link>
-                                                         <Button variant="ghost" size="sm" onClick={() => handleDelete(item.id)}>
-                               <Trash2 className="h-4 w-4" />
-                             </Button>
-                          </div>
-                        </td>
+                  </thead>
+                  <tbody>
+                    {filteredData.length === 0 ? (
+                      <tr>
+                        <td colSpan={15} className="py-8 text-center text-muted-foreground">Kayıt bulunamadı.</td>
                       </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                    ) : (
+                      filteredData.map((item) => (
+                        <tr key={item.id} className="border-b hover:bg-muted/50">
+                          <td className="py-3 px-2"><input type="checkbox" checked={selectedIds.has(item.id)} onChange={() => toggleSelect(item.id)} /></td>
+                          <td className="py-3 px-2 text-sm">{item.tarih}</td>
+                          <td className="py-3 px-2">
+                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getSaticiTipiColor(item.saticiTipi)}`}>
+                              {getSaticiTipiLabel(item.saticiTipi)}
+                            </span>
+                          </td>
+                          <td className="py-3 px-2 font-medium">{getSaticiAdi(item)}</td>
+                          <td className="py-3 px-2">{item.urun.ad}</td>
+                          <td className="py-3 px-2 text-right">{item.kasaSayisi.toLocaleString()}</td>
+                          <td className="py-3 px-2 text-right">{item.brutKg.toLocaleString()}</td>
+                          <td className="py-3 px-2 text-right">{item.daraKg.toLocaleString()}</td>
+                          <td className="py-3 px-2 text-right">{item.girisKg.toLocaleString()}</td>
+                          <td className="py-3 px-2 text-right">{item.cikmaFireKg.toLocaleString()}</td>
+                          <td className="py-3 px-2">
+                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
+                              {getStatusLabel(item.status)}
+                            </span>
+                          </td>
+                          <td className="py-3 px-2 text-right font-medium">
+                            {item.netKg ? item.netKg.toLocaleString() : '-'}
+                          </td>
+                          <td className="py-3 px-2 text-right">{item.birimFiyat ? item.birimFiyat.toLocaleString() : '-'}</td>
+                          <td className="py-3 px-2 font-medium">{item.fisNo}</td>
+                          <td className="py-3 px-2">
+                            <div className="flex items-center gap-1">
+                              <Button variant="ghost" size="sm" onClick={() => handleView(item)}>
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <Link href={`/dashboard/mal-kabul/duzenle/${item.id}`}>
+                                <Button variant="ghost" size="sm">
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                              </Link>
+                              <Button variant="ghost" size="sm" onClick={() => handleDelete(item.id)}>
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

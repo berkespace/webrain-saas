@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/select"
 import Link from 'next/link'
 import { useToast } from '@/components/ui/use-toast'
+import { FormValidation, validateRequired } from '@/components/ui/form-validation'
 
 interface Uretici {
   id: string
@@ -92,6 +93,7 @@ export default function UreticiListesi() {
   })
   const [submitting, setSubmitting] = useState(false)
   const [komisyoncular, setKomisyoncular] = useState<Komisyoncu[]>([])
+  const [errors, setErrors] = useState<{ field: string; message: string; type: 'error' | 'warning' | 'info'}[]>([])
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -164,42 +166,13 @@ export default function UreticiListesi() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    // Validation
-    if (!formData.komisyoncuId) {
-      toast({
-        title: "Hata",
-        description: "Komisyoncu seçimi zorunludur",
-        variant: "destructive",
-      })
-      return
-    }
-    
-    if (!formData.ad || !formData.soyad) {
-      toast({
-        title: "Hata",
-        description: "Ad ve soyad alanları zorunludur",
-        variant: "destructive",
-      })
-      return
-    }
-    
-    if (!formData.sehir) {
-      toast({
-        title: "Hata",
-        description: "Şehir alanı zorunludur",
-        variant: "destructive",
-      })
-      return
-    }
-    
-    if (!formData.cinsiyet) {
-      toast({
-        title: "Hata",
-        description: "Cinsiyet seçimi zorunludur",
-        variant: "destructive",
-      })
-      return
-    }
+    const localErrors: any[] = []
+    if (!formData.komisyoncuId) localErrors.push({ field: 'Komisyoncu', message: 'Komisyoncu seçimi zorunludur', type: 'error' })
+    if (!formData.ad || !formData.soyad) localErrors.push({ field: 'Ad Soyad', message: 'Ad ve soyad alanları zorunludur', type: 'error' })
+    if (!formData.sehir) localErrors.push({ field: 'Şehir', message: 'Şehir alanı zorunludur', type: 'error' })
+    if (!formData.cinsiyet) localErrors.push({ field: 'Cinsiyet', message: 'Cinsiyet seçimi zorunludur', type: 'error' })
+    if (localErrors.length) { setErrors(localErrors); return }
+    setErrors([])
     
     setSubmitting(true)
     
@@ -344,6 +317,9 @@ export default function UreticiListesi() {
                   {editingUretici ? 'Üretici bilgilerini güncelleyin' : 'Yeni üretici bilgilerini girin'}
                 </DialogDescription>
               </DialogHeader>
+              {errors.length > 0 && (
+                <div className="mb-4"><FormValidation errors={errors} /></div>
+              )}
               <form onSubmit={handleSubmit}>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-2 gap-4">

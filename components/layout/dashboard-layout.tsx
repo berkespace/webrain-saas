@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
+import { NotificationCenter } from '@/components/ui/notification-center'
+import { useNotifications } from '@/components/notifications-provider'
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -20,6 +22,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const router = useRouter()
   const { theme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
+  const { notifications, markAsRead, markAllAsRead, remove } = useNotifications()
 
   useEffect(() => {
     setMounted(true)
@@ -82,10 +85,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
             
             {/* Notifications */}
-            <Button variant="ghost" size="sm" className="relative">
-              <Bell className="h-4 w-4" />
-              <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full"></span>
-            </Button>
+            <NotificationCenter 
+              notifications={notifications}
+              onMarkAsRead={markAsRead}
+              onMarkAllAsRead={markAllAsRead}
+              onDelete={remove}
+            />
             
             {/* Theme Toggle */}
             <ThemeToggle />

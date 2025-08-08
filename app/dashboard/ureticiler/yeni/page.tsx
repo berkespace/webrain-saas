@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useToast } from '@/components/ui/use-toast'
 import Link from 'next/link'
 
 interface Komisyoncu {
@@ -38,6 +39,7 @@ interface Komisyoncu {
 export default function YeniUretici() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const { toast } = useToast()
   const [komisyoncular, setKomisyoncular] = useState<Komisyoncu[]>([])
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
@@ -47,7 +49,7 @@ export default function YeniUretici() {
     dogumTarihi: '',
     iletisim: '',
     sehir: '',
-    cinsiyet: '',
+    cinsiyet: 'ERKEK' as 'ERKEK' | 'KADIN',
     durum: 'AKTIF',
     komisyoncuId: '',
     notlar: ''
@@ -98,22 +100,38 @@ export default function YeniUretici() {
     
     // Validation
     if (!formData.komisyoncuId) {
-      alert('Komisyoncu seçimi zorunludur')
+      toast({
+        title: "Hata",
+        description: "Komisyoncu seçimi zorunludur",
+        variant: "destructive",
+      })
       return
     }
     
     if (!formData.ad || !formData.soyad) {
-      alert('Ad ve soyad alanları zorunludur')
+      toast({
+        title: "Hata",
+        description: "Ad ve soyad alanları zorunludur",
+        variant: "destructive",
+      })
       return
     }
     
     if (!formData.sehir) {
-      alert('Şehir alanı zorunludur')
+      toast({
+        title: "Hata",
+        description: "Şehir alanı zorunludur",
+        variant: "destructive",
+      })
       return
     }
     
     if (!formData.cinsiyet) {
-      alert('Cinsiyet seçimi zorunludur')
+      toast({
+        title: "Hata",
+        description: "Cinsiyet seçimi zorunludur",
+        variant: "destructive",
+      })
       return
     }
     
@@ -129,15 +147,27 @@ export default function YeniUretici() {
       })
 
       if (response.ok) {
-        // Redirect to list page
+        toast({
+          title: "Başarılı",
+          description: "Üretici başarıyla oluşturuldu!",
+          variant: "success",
+        })
         router.push('/dashboard/ureticiler/liste')
       } else {
         const error = await response.json()
-        alert(error.error || 'Üretici oluşturulurken hata oluştu')
+        toast({
+          title: "Hata",
+          description: error.error || 'Üretici oluşturulurken hata oluştu',
+          variant: "destructive",
+        })
       }
     } catch (error) {
       console.error('Üretici oluşturma hatası:', error)
-      alert('Üretici oluşturulurken hata oluştu')
+      toast({
+        title: "Hata",
+        description: "Üretici oluşturulurken hata oluştu",
+        variant: "destructive",
+      })
     } finally {
       setLoading(false)
     }

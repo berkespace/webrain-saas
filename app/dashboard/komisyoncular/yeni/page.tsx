@@ -14,9 +14,12 @@ import {
   User,
   Phone,
   MapPin,
-  Hash
+  Hash,
+  Users,
+  Loader2
 } from 'lucide-react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
+import { useToast } from '@/components/ui/use-toast'
 import {
   Select,
   SelectContent,
@@ -29,6 +32,8 @@ import Link from 'next/link'
 export default function YeniKomisyoncu() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const { toast } = useToast()
+  const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     vkn: '',
     komisyonNo: '',
@@ -63,17 +68,52 @@ export default function YeniKomisyoncu() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    // Form validasyonu
-    if (!formData.komisyonNo || !formData.dukkanAdi || !formData.sehir) {
-      alert('Lütfen zorunlu alanları doldurun')
+    // Validation
+    if (!formData.dukkanAdi || !formData.komisyonNo || !formData.sehir) {
+      toast({
+        title: "Hata",
+        description: "Lütfen zorunlu alanları doldurun",
+        variant: "destructive",
+      })
       return
     }
-
-    // API call would go here
-    console.log('Form data:', formData)
     
-    // Başarılı kayıt sonrası yönlendirme
-    router.push('/dashboard/komisyoncular/liste')
+    setLoading(true)
+    
+    try {
+      const response = await fetch('/api/komisyoncular', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      if (response.ok) {
+        toast({
+          title: "Başarılı",
+          description: "Komisyoncu başarıyla oluşturuldu!",
+          variant: "success",
+        })
+        router.push('/dashboard/komisyoncular/liste')
+      } else {
+        const error = await response.json()
+        toast({
+          title: "Hata",
+          description: error.error || 'Komisyoncu oluşturulurken hata oluştu',
+          variant: "destructive",
+        })
+      }
+    } catch (error) {
+      console.error('Komisyoncu oluşturma hatası:', error)
+      toast({
+        title: "Hata",
+        description: "Komisyoncu oluşturulurken hata oluştu",
+        variant: "destructive",
+      })
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleInputChange = (field: string, value: string) => {
@@ -311,9 +351,13 @@ export default function YeniKomisyoncu() {
                 İptal
               </Button>
             </Link>
-            <Button type="submit">
-              <Save className="mr-2 h-4 w-4" />
-              Kaydet
+            <Button type="submit" disabled={loading}>
+              {loading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Save className="mr-2 h-4 w-4" />
+              )}
+              {loading ? "Kaydediliyor..." : "Kaydet"}
             </Button>
           </div>
         </form>

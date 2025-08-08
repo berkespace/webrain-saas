@@ -21,10 +21,12 @@ import {
   DollarSign,
   Calendar,
   BarChart3,
-  Activity
+  Activity,
+  Bell
 } from 'lucide-react'
 import Link from 'next/link'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
+import { useToast } from '@/components/ui/use-toast'
 
 interface DashboardStats {
   totalRecords: number
@@ -49,6 +51,7 @@ interface RecentActivity {
 export default function DashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const { toast } = useToast()
   const [stats, setStats] = useState<DashboardStats>({
     totalRecords: 0,
     pendingRecords: 0,
@@ -141,6 +144,14 @@ export default function DashboardPage() {
     }
   }
 
+  const testToast = () => {
+    toast({
+      title: "Test Bildirimi",
+      description: "Toast notification sistemi başarıyla çalışıyor!",
+      variant: "success",
+    })
+  }
+
   if (status === 'loading' || loading) {
     return (
       <DashboardLayout>
@@ -172,6 +183,10 @@ export default function DashboardPage() {
             </p>
           </div>
           <div className="flex gap-3">
+            <Button onClick={testToast} variant="outline">
+              <Bell className="mr-2 h-4 w-4" />
+              Toast Test
+            </Button>
             <Button asChild>
               <Link href="/dashboard/mal-kabul/yeni">
                 <Plus className="mr-2 h-4 w-4" />

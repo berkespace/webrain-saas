@@ -3,6 +3,12 @@ import { prisma } from "@/lib/prisma"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 
+// naive in-memory cache (replace with Redis in production)
+let cacheKey = ''
+let cacheData: any = null
+let cacheTime = 0
+const CACHE_TTL_MS = 10_000
+
 // GET - Tüm mal kabul kayıtlarını listele
 export async function GET(request: NextRequest) {
   try {
@@ -12,6 +18,14 @@ export async function GET(request: NextRequest) {
     const saticiTipi = searchParams.get('saticiTipi')
     const startDate = searchParams.get('startDate')
     const endDate = searchParams.get('endDate')
+
+    const key = JSON.stringify({ search, status, saticiTipi, startDate, endDate })
+    const now = Date.now()
+    if (cacheData && cacheKey === key && now - cacheTime < CACHE_TTL_MS) {
+      const res = NextResponse.json(cacheData)
+      res.headers.set('Cache-Control', 'public, max-age=10, s-maxage=10, stale-while-revalidate=59')
+      return res
+    }
 
     // Filtreleme koşulları
     const where: any = {}
@@ -46,64 +60,27 @@ export async function GET(request: NextRequest) {
     const malKabulRecords = await prisma.malKabulRecord.findMany({
       where,
       include: {
-        komisyoncu: {
-          select: {
-            id: true,
-            dukkanAdi: true,
-            sehir: true
-          }
-        },
-        uretici: {
-          select: {
-            id: true,
-            ad: true,
-            soyad: true,
-            sehir: true
-          }
-        },
-        ozelFirma: {
-          select: {
-            id: true,
-            firmaAdi: true,
-            sehir: true
-          }
-        },
-        mustahsil: {
-          select: {
-            id: true,
-            ad: true,
-            soyad: true
-          }
-        },
-        urun: {
-          select: {
-            id: true,
-            ad: true,
-            kategori: true
-          }
-        },
-        ambalaj: {
-          select: {
-            id: true,
-            ad: true,
-            tipi: true,
-            daraKg: true
-          }
-        },
-        malKabulcu: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true
-          }
-        }
+        komisyoncu: { select: { id: true, dukkanAdi: true, sehir: true } },
+        uretici: { select: { id: true, ad: true, soyad: true, sehir: true } },
+        ozelFirma: { select: { id: true, firmaAdi: true, sehir: true } },
+        mustahsil: { select: { id: true, ad: true, soyad: true } },
+        urun: { select: { id: true, ad: true, kategori: true } },
+        ambalaj: { select: { id: true, ad: true, tipi: true, daraKg: true } },
+        malKabulcu: { select: { id: true, firstName: true, lastName: true } }
       },
-      orderBy: {
-        tarih: 'desc'
-      }
+      orderBy: { tarih: 'desc' }
     })
 
-    return NextResponse.json(malKabulRecords)
+    const payload = malKabulRecords
+
+    // set cache
+    cacheKey = key
+    cacheData = payload
+    cacheTime = now
+
+    const res = NextResponse.json(payload)
+    res.headers.set('Cache-Control', 'public, max-age=10, s-maxage=10, stale-while-revalidate=59')
+    return res
   } catch (error) {
     console.error("Mal kabul listesi hatası:", error)
     return NextResponse.json(
