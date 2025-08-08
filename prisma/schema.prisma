@@ -1,0 +1,217 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  MAL_KABULCU
+  MUHASEBE
+  SATIN_ALMACI
+}
+
+enum ProductStatus {
+  FATURA_BEKLIYOR
+  FATURALANDI
+  TAMAMLANDI
+  IPTAL
+}
+
+enum Status {
+  AKTIF
+  PASIF
+}
+
+enum Gender {
+  ERKEK
+  KADIN
+}
+
+enum SaticiTipi {
+  OZEL_FIRMA
+  MUSTAHSIL
+  KOMISYONCU
+}
+
+enum AmbalajTipi {
+  PALET
+  PLASTIK_KASA
+  KARTON_KASA
+  DİĞER
+}
+
+model User {
+  id              String           @id @default(cuid())
+  firstName       String
+  lastName        String
+  email           String           @unique
+  password        String
+  role            UserRole         @default(MAL_KABULCU)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  faturalar       Fatura[]
+  malKabulRecords MalKabulRecord[]
+
+  @@map("users")
+}
+
+model Komisyoncu {
+  id              String           @id @default(cuid())
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  dukkanAdi       String
+  durum           Status           @default(AKTIF)
+  komisyonNo      String           @unique
+  sehir           String
+  vkn             String?
+  yetkiliAdi      String?
+  yetkiliTelefon  String?
+  malKabulRecords MalKabulRecord[]
+  ureticiler      Uretici[]
+
+  @@map("komisyoncular")
+}
+
+model OzelFirma {
+  id              String           @id @default(cuid())
+  firmaAdi        String
+  vkn             String?
+  yetkiliAdi      String?
+  yetkiliTelefon  String?
+  sehir           String
+  adres           String?
+  durum           Status           @default(AKTIF)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  malKabulRecords MalKabulRecord[]
+
+  @@map("ozel_firmalar")
+}
+
+model Uretici {
+  id              String           @id @default(cuid())
+  ad              String
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  cinsiyet        Gender
+  dogumTarihi     DateTime?
+  durum           Status           @default(AKTIF)
+  iletisim        String?
+  komisyoncuId    String?
+  sehir           String
+  soyad           String
+  tcNo            String?
+  malKabulRecords MalKabulRecord[]
+  komisyoncu      Komisyoncu?      @relation(fields: [komisyoncuId], references: [id])
+
+  @@map("ureticiler")
+}
+
+model Mustahsil {
+  id              String           @id @default(cuid())
+  ad              String
+  soyad           String
+  dogumTarihi     DateTime
+  tcKimlikNo      String           @unique
+  ibanAdresi      String?
+  adres           String?
+  cinsiyet        Gender
+  durum           Status           @default(AKTIF)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  malKabulRecords MalKabulRecord[]
+
+  @@map("mustahsil")
+}
+
+model Urun {
+  id              String           @id @default(cuid())
+  ad              String
+  kategori        String?
+  birim           String
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  durum           Status           @default(AKTIF)
+  malKabulRecords MalKabulRecord[]
+
+  @@map("urunler")
+}
+
+model Ambalaj {
+  id              String           @id @default(cuid())
+  ad              String
+  tipi            AmbalajTipi
+  daraKg          Float
+  aciklama        String?
+  durum           Status           @default(AKTIF)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  malKabulRecords MalKabulRecord[]
+
+  @@map("ambalajlar")
+}
+
+model MalKabulRecord {
+  id           String        @id @default(cuid())
+  tarih        DateTime      @default(now())
+  miktar       Float
+  birimFiyat   Float?
+  toplamFiyat  Float?
+  status       ProductStatus @default(FATURA_BEKLIYOR)
+  notlar       String?
+  malKabulcuId String
+  komisyoncuId String?
+  ureticiId    String?
+  urunId       String
+  faturaId     String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  fisNo        String        @unique
+  mustahsilId  String?
+  ozelFirmaId  String?
+  saticiTipi   SaticiTipi    @default(OZEL_FIRMA)
+  // Ambalaj bilgileri
+  ambalajId    String?
+  paletSayisi  Int           @default(0)
+  kasaSayisi   Int           @default(0)
+  brutKg       Float         @default(0)
+  daraKg       Float         @default(0)
+  girisKg      Float         @default(0)
+  cikmaFireKg  Float         @default(0)
+  netKg        Float         @default(0)
+  fatura       Fatura?       @relation(fields: [faturaId], references: [id])
+  komisyoncu   Komisyoncu?   @relation(fields: [komisyoncuId], references: [id])
+  malKabulcu   User          @relation(fields: [malKabulcuId], references: [id])
+  mustahsil    Mustahsil?    @relation(fields: [mustahsilId], references: [id])
+  uretici      Uretici?      @relation(fields: [ureticiId], references: [id])
+  ozelFirma    OzelFirma?    @relation(fields: [ozelFirmaId], references: [id])
+  urun         Urun          @relation(fields: [urunId], references: [id])
+  ambalaj      Ambalaj?      @relation(fields: [ambalajId], references: [id])
+
+  @@map("mal_kabul_records")
+}
+
+model Fatura {
+  id              String           @id @default(cuid())
+  faturaNo        String           @unique
+  tarih           DateTime         @default(now())
+  toplamTutar     Float
+  kdvOrani        Float            @default(18.0)
+  kdvTutari       Float
+  genelToplam     Float
+  notlar          String?
+  satinAlmaciId   String
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  satinAlmaci     User             @relation(fields: [satinAlmaciId], references: [id])
+  malKabulRecords MalKabulRecord[]
+
+  @@map("faturalar")
+}

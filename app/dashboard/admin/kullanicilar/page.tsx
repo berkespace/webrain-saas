@@ -1,0 +1,347 @@
+'use client'
+
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { 
+  Plus, 
+  Search, 
+  Edit, 
+  Trash2, 
+  Users,
+  Eye,
+  Shield
+} from 'lucide-react'
+import { DashboardLayout } from '@/components/layout/dashboard-layout'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
+// Mock kullanıcı verileri
+const mockUsers = [
+  {
+    id: 1,
+    firstName: 'Admin',
+    lastName: 'User',
+    email: 'admin@webrain.com',
+    role: 'ADMIN',
+    createdAt: '2024-01-01',
+    status: 'active'
+  },
+  {
+    id: 2,
+    firstName: 'Ahmet',
+    lastName: 'Mal Kabulcu',
+    email: 'mal@webrain.com',
+    role: 'MAL_KABULCU',
+    createdAt: '2024-01-02',
+    status: 'active'
+  },
+  {
+    id: 3,
+    firstName: 'Mehmet',
+    lastName: 'Satın Almacı',
+    email: 'satin@webrain.com',
+    role: 'SATIN_ALMACI',
+    createdAt: '2024-01-03',
+    status: 'active'
+  },
+  {
+    id: 4,
+    firstName: 'Fatma',
+    lastName: 'Muhasebe',
+    email: 'muhasebe@webrain.com',
+    role: 'MUHASEBE',
+    createdAt: '2024-01-04',
+    status: 'active'
+  }
+]
+
+export default function KullaniciYonetimi() {
+  const { data: session, status } = useSession()
+  const router = useRouter()
+  const [searchTerm, setSearchTerm] = useState('')
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [editingUser, setEditingUser] = useState<any>(null)
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    role: ''
+  })
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login')
+    } else if (session && (session.user as any)?.role !== 'ADMIN') {
+      router.push('/dashboard')
+    }
+  }, [status, session, router])
+
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Yükleniyor...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!session || (session.user as any)?.role !== 'ADMIN') {
+    return null
+  }
+
+  const filteredUsers = mockUsers.filter(user => 
+    user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.role.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    // API call would go here
+    console.log('Form data:', formData)
+    setIsDialogOpen(false)
+    setFormData({ firstName: '', lastName: '', email: '', password: '', role: '' })
+    setEditingUser(null)
+  }
+
+  const handleEdit = (user: any) => {
+    setEditingUser(user)
+    setFormData({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      password: '',
+      role: user.role
+    })
+    setIsDialogOpen(true)
+  }
+
+  const handleDelete = (userId: number) => {
+    if (confirm('Bu kullanıcıyı silmek istediğinizden emin misiniz?')) {
+      console.log('Delete user:', userId)
+    }
+  }
+
+  const getRoleLabel = (role: string) => {
+    const roleLabels: { [key: string]: string } = {
+      'ADMIN': 'Admin',
+      'MAL_KABULCU': 'Mal Kabulcu',
+      'SATIN_ALMACI': 'Satın Almacı',
+      'MUHASEBE': 'Muhasebe'
+    }
+    return roleLabels[role] || role
+  }
+
+  const getRoleColor = (role: string) => {
+    const roleColors: { [key: string]: string } = {
+      'ADMIN': 'bg-red-100 text-red-800',
+      'MAL_KABULCU': 'bg-blue-100 text-blue-800',
+      'SATIN_ALMACI': 'bg-green-100 text-green-800',
+      'MUHASEBE': 'bg-purple-100 text-purple-800'
+    }
+    return roleColors[role] || 'bg-gray-100 text-gray-800'
+  }
+
+  return (
+    <DashboardLayout>
+      <div className="p-6">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Kullanıcı Yönetimi</h1>
+            <p className="text-muted-foreground">Sistem kullanıcılarını yönetin</p>
+          </div>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Yeni Kullanıcı
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>
+                  {editingUser ? 'Kullanıcı Düzenle' : 'Yeni Kullanıcı Ekle'}
+                </DialogTitle>
+                <DialogDescription>
+                  {editingUser ? 'Kullanıcı bilgilerini güncelleyin' : 'Yeni kullanıcı bilgilerini girin'}
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleSubmit}>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="firstName">Ad</Label>
+                      <Input
+                        id="firstName"
+                        value={formData.firstName}
+                        onChange={(e) => setFormData({...formData, firstName: e.target.value})}
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="lastName">Soyad</Label>
+                      <Input
+                        id="lastName"
+                        value={formData.lastName}
+                        onChange={(e) => setFormData({...formData, lastName: e.target.value})}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">E-posta</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="password">
+                      {editingUser ? 'Yeni Şifre (boş bırakın değiştirmek istemiyorsanız)' : 'Şifre'}
+                    </Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      value={formData.password}
+                      onChange={(e) => setFormData({...formData, password: e.target.value})}
+                      required={!editingUser}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="role">Rol</Label>
+                    <Select value={formData.role} onValueChange={(value) => setFormData({...formData, role: value})}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Rol seçin" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ADMIN">Admin</SelectItem>
+                        <SelectItem value="MAL_KABULCU">Mal Kabulcu</SelectItem>
+                        <SelectItem value="SATIN_ALMACI">Satın Almacı</SelectItem>
+                        <SelectItem value="MUHASEBE">Muhasebe</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                    İptal
+                  </Button>
+                  <Button type="submit">
+                    {editingUser ? 'Güncelle' : 'Oluştur'}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        {/* Search */}
+        <Card className="mb-6">
+          <CardContent className="p-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Kullanıcı ara..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Users Table */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Kullanıcı Listesi
+            </CardTitle>
+            <CardDescription>Toplam {filteredUsers.length} kullanıcı</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b bg-muted/50">
+                    <th className="text-left py-3 px-2 font-medium">Ad Soyad</th>
+                    <th className="text-left py-3 px-2 font-medium">E-posta</th>
+                    <th className="text-left py-3 px-2 font-medium">Rol</th>
+                    <th className="text-left py-3 px-2 font-medium">Kayıt Tarihi</th>
+                    <th className="text-left py-3 px-2 font-medium">Durum</th>
+                    <th className="text-left py-3 px-2 font-medium">İşlemler</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredUsers.map((user) => (
+                    <tr key={user.id} className="border-b hover:bg-muted/50">
+                      <td className="py-3 px-2 font-medium">
+                        {user.firstName} {user.lastName}
+                      </td>
+                      <td className="py-3 px-2">{user.email}</td>
+                      <td className="py-3 px-2">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getRoleColor(user.role)}`}>
+                          <Shield className="mr-1 h-3 w-3" />
+                          {getRoleLabel(user.role)}
+                        </span>
+                      </td>
+                      <td className="py-3 px-2 text-sm text-muted-foreground">
+                        {new Date(user.createdAt).toLocaleDateString('tr-TR')}
+                      </td>
+                      <td className="py-3 px-2">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                          user.status === 'active' 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-red-100 text-red-800'
+                        }`}>
+                          {user.status === 'active' ? 'Aktif' : 'Pasif'}
+                        </span>
+                      </td>
+                      <td className="py-3 px-2">
+                        <div className="flex items-center gap-1">
+                          <Button variant="ghost" size="sm" onClick={() => handleEdit(user)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => handleDelete(user.id)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </DashboardLayout>
+  )
+}
