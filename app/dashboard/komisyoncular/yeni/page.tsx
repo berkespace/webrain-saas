@@ -37,7 +37,6 @@ export default function YeniKomisyoncu() {
   const [formData, setFormData] = useState({
     vkn: '',
     komisyonNo: '',
-    komisyonKodu: '',
     dukkanAdi: '',
     yetkiliAdi: '',
     yetkiliTelefon: '',
@@ -70,7 +69,7 @@ export default function YeniKomisyoncu() {
     e.preventDefault()
     
     // Validation
-    if (!formData.dukkanAdi || !formData.komisyonNo || !formData.komisyonKodu || !formData.sehir) {
+    if (!formData.dukkanAdi || !formData.komisyonNo || !formData.sehir) {
       toast({
         title: "Hata",
         description: "Lütfen zorunlu alanları doldurun",
@@ -163,10 +162,12 @@ export default function YeniKomisyoncu() {
                       id="komisyonNo"
                       value={formData.komisyonNo}
                       onChange={(e) => handleInputChange('komisyonNo', e.target.value)}
-                      placeholder="KOM001"
+                      placeholder="109"
                       required
                     />
                   </div>
+
+
 
                   <div className="space-y-2">
                     <Label htmlFor="dukkanAdi">Dükkan Adı *</Label>

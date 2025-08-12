@@ -4,11 +4,12 @@ import { prisma } from "@/lib/prisma"
 // GET - Tekil komisyoncu getir
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const komisyoncu = await prisma.komisyoncu.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         ureticiler: true
       }
@@ -34,27 +35,27 @@ export async function GET(
 // PUT - Komisyoncu güncelle
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const body = await request.json()
-    const { dukkanAdi, sehir, komisyonNo, komisyonKodu, vkn, yetkiliAdi, yetkiliTelefon, durum } = body
+    const { dukkanAdi, sehir, komisyonNo, vkn, yetkiliAdi, yetkiliTelefon, durum } = body
 
     // Validasyon
-    if (!dukkanAdi || !sehir || !komisyonNo || !komisyonKodu) {
+    if (!dukkanAdi || !sehir || !komisyonNo) {
       return NextResponse.json(
-        { error: "Dükkan adı, şehir, komisyon no ve komisyon kodu alanları zorunludur" },
+        { error: "Dükkan adı, şehir ve komisyon no alanları zorunludur" },
         { status: 400 }
       )
     }
 
     const komisyoncu = await prisma.komisyoncu.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         dukkanAdi,
         sehir,
         komisyonNo,
-        komisyonKodu,
         vkn: vkn || null,
         yetkiliAdi: yetkiliAdi || null,
         yetkiliTelefon: yetkiliTelefon || null,
@@ -75,12 +76,13 @@ export async function PUT(
 // DELETE - Komisyoncu sil
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     // Komisyoncuya bağlı üreticileri kontrol et
     const ureticiCount = await prisma.uretici.count({
-      where: { komisyoncuId: params.id }
+      where: { komisyoncuId: id }
     })
 
     if (ureticiCount > 0) {
@@ -95,7 +97,7 @@ export async function DELETE(
 
     // Mal kabul kayıtlarını kontrol et
     const malKabulCount = await prisma.malKabulRecord.count({
-      where: { komisyoncuId: params.id }
+      where: { komisyoncuId: id }
     })
 
     if (malKabulCount > 0) {
@@ -109,7 +111,7 @@ export async function DELETE(
     }
 
     await prisma.komisyoncu.delete({
-      where: { id: params.id }
+      where: { id }
     })
 
     return NextResponse.json(

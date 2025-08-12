@@ -49,7 +49,6 @@ export default function KomisyoncuDuzenle({ params }: { params: { id: string } }
     dukkanAdi: '',
     sehir: '',
     komisyonNo: '',
-    komisyonKodu: '',
     vkn: '',
     yetkiliAdi: '',
     yetkiliTelefon: '',
@@ -67,7 +66,6 @@ export default function KomisyoncuDuzenle({ params }: { params: { id: string } }
           dukkanAdi: data.dukkanAdi || '',
           sehir: data.sehir || '',
           komisyonNo: data.komisyonNo || '',
-          komisyonKodu: data.komisyonKodu || '',
           vkn: data.vkn || '',
           yetkiliAdi: data.yetkiliAdi || '',
           yetkiliTelefon: data.yetkiliTelefon || '',
@@ -240,16 +238,7 @@ export default function KomisyoncuDuzenle({ params }: { params: { id: string } }
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="komisyonKodu">Komisyon Kodu *</Label>
-                  <Input
-                    id="komisyonKodu"
-                    value={formData.komisyonKodu}
-                    onChange={(e) => setFormData({...formData, komisyonKodu: e.target.value})}
-                    placeholder="Örn: KOM0001"
-                    required
-                  />
-                </div>
+                
               </CardContent>
             </Card>
 

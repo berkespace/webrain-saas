@@ -25,6 +25,7 @@ interface Komisyoncu {
   id: string
   vkn: string | null
   komisyonNo: string
+  komisyonKodu: string
   dukkanAdi: string
   yetkiliAdi: string | null
   yetkiliTelefon: string | null
@@ -85,6 +86,7 @@ export default function KomisyoncuListesi() {
       const filtered = komisyoncular.filter(komisyoncu =>
         komisyoncu.dukkanAdi.toLowerCase().includes(searchTerm.toLowerCase()) ||
         komisyoncu.komisyonNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        komisyoncu.komisyonKodu.toLowerCase().includes(searchTerm.toLowerCase()) ||
         komisyoncu.sehir.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (komisyoncu.yetkiliAdi && komisyoncu.yetkiliAdi.toLowerCase().includes(searchTerm.toLowerCase()))
       )
@@ -243,6 +245,12 @@ export default function KomisyoncuListesi() {
                 <thead>
                   <tr className="border-b bg-muted/50">
                     <th className="text-left py-3 px-2 font-medium">Komisyon No</th>
+                    <th className="text-left py-3 px-2 font-medium">
+                      <div className="flex items-center gap-2">
+                        Komisyon Kodu
+                        <span className="text-xs text-muted-foreground font-normal">(Otomatik)</span>
+                      </div>
+                    </th>
                     <th className="text-left py-3 px-2 font-medium">Dükkan Adı</th>
                     <th className="text-left py-3 px-2 font-medium">Yetkili</th>
                     <th className="text-left py-3 px-2 font-medium">Telefon</th>
@@ -256,6 +264,14 @@ export default function KomisyoncuListesi() {
                   {filteredKomisyoncular.map((komisyoncu) => (
                     <tr key={komisyoncu.id} className="border-b hover:bg-muted/50">
                       <td className="py-3 px-2 font-medium">{komisyoncu.komisyonNo}</td>
+                      <td className="py-3 px-2">
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded text-sm">
+                            {komisyoncu.komisyonKodu}
+                          </span>
+                          <span className="text-xs text-muted-foreground">(Otomatik)</span>
+                        </div>
+                      </td>
                       <td className="py-3 px-2">{komisyoncu.dukkanAdi}</td>
                       <td className="py-3 px-2">{komisyoncu.yetkiliAdi || '-'}</td>
                       <td className="py-3 px-2">

@@ -45,33 +45,43 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { dukkanAdi, sehir, komisyonNo, komisyonKodu, vkn, yetkiliAdi, yetkiliTelefon } = body
+    const { dukkanAdi, sehir, komisyonNo, vkn, yetkiliAdi, yetkiliTelefon } = body
 
     // Validasyon
-    if (!dukkanAdi || !sehir || !komisyonNo || !komisyonKodu) {
+    if (!dukkanAdi || !sehir || !komisyonNo) {
       return NextResponse.json(
-        { error: "Dükkan adı, şehir, komisyon no ve komisyon kodu alanları zorunludur" },
+        { error: "Dükkan adı, şehir ve komisyon no alanları zorunludur" },
         { status: 400 }
       )
     }
 
-    // Komisyon kodu ve numarası kontrolü
-    if (komisyonNo && komisyonKodu) {
-      // Aynı komisyon no veya kodu ile kayıt var mı kontrol et
+    // Komisyon numarası kontrolü
+    if (komisyonNo) {
+      // Aynı komisyon no ile kayıt var mı kontrol et
       const existingKomisyoncu = await prisma.komisyoncu.findFirst({
-        where: {
-          OR: [
-            { komisyonNo },
-            { komisyonKodu }
-          ]
-        }
+        where: { komisyonNo }
       })
 
       if (existingKomisyoncu) {
         return NextResponse.json(
-          { error: "Bu komisyon no veya kodu zaten kullanılıyor" },
+          { error: "Bu komisyon no zaten kullanılıyor" },
           { status: 400 }
         )
+      }
+    }
+
+    // Otomatik komisyon kodu üret
+    const lastKomisyoncu = await prisma.komisyoncu.findFirst({
+      orderBy: { komisyonKodu: 'desc' }
+    })
+
+    let nextKomisyonKodu = 'KOM001'
+    if (lastKomisyoncu && lastKomisyoncu.komisyonKodu) {
+      if (lastKomisyoncu.komisyonKodu.startsWith('KOM')) {
+        const lastNumber = parseInt(lastKomisyoncu.komisyonKodu.substring(3))
+        if (!isNaN(lastNumber)) {
+          nextKomisyonKodu = `KOM${(lastNumber + 1).toString().padStart(3, '0')}`
+        }
       }
     }
 
@@ -80,7 +90,7 @@ export async function POST(request: NextRequest) {
         dukkanAdi,
         sehir,
         komisyonNo,
-        komisyonKodu,
+        komisyonKodu: nextKomisyonKodu,
         vkn: vkn || null,
         yetkiliAdi: yetkiliAdi || null,
         yetkiliTelefon: yetkiliTelefon || null,

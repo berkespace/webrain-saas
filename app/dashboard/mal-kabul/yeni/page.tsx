@@ -49,6 +49,7 @@ interface Komisyoncu {
   dukkanAdi: string
   sehir: string
   komisyonNo: string
+  komisyonKodu: string
   durum: 'AKTIF' | 'PASIF'
 }
 
@@ -202,16 +203,16 @@ export default function YeniMalKabul() {
       const suggestions: any[] = []
       console.log('🔍 Öneriler aranıyor...')
       
-      // Komisyoncu arama (KOM001, KOM002...)
+      // Komisyoncu arama (kom0001, kom0002...)
       if (globalInput.toLowerCase().startsWith('kom')) {
         console.log('🏪 Komisyoncu aranıyor:', globalInput)
         komisyoncular.forEach(kom => {
-          console.log('🔍 Kontrol edilen:', kom.komisyonNo, 'ID:', kom.id)
-          if (kom.komisyonNo.toLowerCase().includes(globalInput.toLowerCase()) || 
+          console.log('🔍 Kontrol edilen:', kom.komisyonKodu, 'ID:', kom.id)
+          if (kom.komisyonKodu.toLowerCase().includes(globalInput.toLowerCase()) || 
               kom.dukkanAdi.toLowerCase().includes(globalInput.toLowerCase().substring(3))) {
             suggestions.push({
               id: kom.id,
-              kod: kom.komisyonNo,
+              kod: kom.komisyonKodu,
               ad: kom.dukkanAdi,
               tip: 'KOMISYONCU',
               data: kom,
@@ -447,14 +448,15 @@ export default function YeniMalKabul() {
     if (value.length >= 2) {
       const suggestions: any[] = []
       
-      // Komisyoncu arama (Kom001, Kom002...)
+      // Komisyoncu arama (kom0001, kom0002...)
       if (value.toLowerCase().startsWith('kom')) {
         komisyoncular.forEach(kom => {
-          if (kom.dukkanAdi.toLowerCase().includes(value.toLowerCase().substring(3)) || 
+          if (kom.komisyonKodu.toLowerCase().includes(value.toLowerCase()) || 
+              kom.dukkanAdi.toLowerCase().includes(value.toLowerCase().substring(3)) || 
               kom.id.toLowerCase().includes(value.toLowerCase())) {
             suggestions.push({
               id: kom.id,
-              kod: `Kom${kom.id}`,
+              kod: kom.komisyonKodu,
               ad: kom.dukkanAdi,
               tip: 'KOMISYONCU',
               data: kom

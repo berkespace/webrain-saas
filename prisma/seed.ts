@@ -113,14 +113,32 @@ async function main() {
     },
   ]
 
-  for (const komisyoncuData of komisyoncular) {
-    await prisma.komisyoncu.upsert({
-      where: { komisyonNo: komisyoncuData.komisyonNo },
-      update: {},
-      create: komisyoncuData,
-    })
+  // Komisyoncuları oluştur (komisyonKodu manuel üretilir)
+  for (let i = 0; i < komisyoncular.length; i++) {
+    const komisyoncuData = komisyoncular[i]
+    const komisyonKodu = `KOM${(i + 1).toString().padStart(3, '0')}` // KOM001, KOM002, etc.
     
-    console.log(`Komisyoncu oluşturuldu:`, komisyoncuData.dukkanAdi)
+    try {
+      // Önce mevcut komisyoncu var mı kontrol et
+      const existingKomisyoncu = await prisma.komisyoncu.findUnique({
+        where: { komisyonNo: komisyoncuData.komisyonNo }
+      })
+
+      if (!existingKomisyoncu) {
+        // Yeni komisyoncu oluştur
+        const newKomisyoncu = await prisma.komisyoncu.create({
+          data: {
+            ...komisyoncuData,
+            komisyonKodu
+          }
+        })
+        console.log(`Komisyoncu oluşturuldu: ${komisyoncuData.dukkanAdi} (Kod: ${newKomisyoncu.komisyonKodu})`)
+      } else {
+        console.log(`Komisyoncu zaten mevcut: ${komisyoncuData.dukkanAdi}`)
+      }
+    } catch (error) {
+      console.error(`Komisyoncu oluşturulurken hata: ${komisyoncuData.dukkanAdi}`, error)
+    }
   }
 
   // Ürün verileri oluştur
