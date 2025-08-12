@@ -58,9 +58,39 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Son ürünü bul ve stok kodunu üret
+    const lastUrun = await prisma.urun.findFirst({
+      orderBy: { stokKodu: 'desc' }
+    })
+
+    console.log('🔍 Son ürün:', lastUrun)
+    console.log('🔍 Son ürün stokKodu:', lastUrun?.stokKodu)
+
+    let nextStokKodu = 'URN001'
+    if (lastUrun && lastUrun.stokKodu) {
+      // URN*** format kontrolü
+      if (lastUrun.stokKodu.startsWith('URN')) {
+        const lastNumber = parseInt(lastUrun.stokKodu.substring(3))
+        if (!isNaN(lastNumber)) {
+          console.log('🔍 Son numara:', lastNumber)
+          console.log('🔍 Son numara + 1:', lastNumber + 1)
+          nextStokKodu = `URN${(lastNumber + 1).toString().padStart(3, '0')}`
+        } else {
+          console.log('🔍 Eski format tespit edildi, yeni format kullanılıyor')
+          nextStokKodu = 'URN001'
+        }
+      } else {
+        console.log('🔍 Eski format tespit edildi, yeni format kullanılıyor')
+        nextStokKodu = 'URN001'
+      }
+    }
+
+    console.log('🔍 Üretilen stok kodu:', nextStokKodu)
+
     const urun = await prisma.urun.create({
       data: {
         ad,
+        stokKodu: nextStokKodu,
         kategori: kategori || null,
         birim,
         durum: durum || 'AKTIF'

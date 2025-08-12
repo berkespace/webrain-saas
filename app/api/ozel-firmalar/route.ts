@@ -47,33 +47,47 @@ export async function POST(request: NextRequest) {
     const { firmaAdi, vkn, yetkiliAdi, yetkiliTelefon, sehir, adres, durum } = body
 
     // Validasyon
-    if (!firmaAdi || !sehir) {
+    if (!firmaAdi || !vkn || !yetkiliAdi) {
       return NextResponse.json(
-        { error: "Firma adı ve şehir alanları zorunludur" },
+        { error: "Firma adı, VKN ve yetkili adı alanları zorunludur" },
         { status: 400 }
       )
     }
 
-    // VKN kontrolü (eğer girilmişse)
-    if (vkn) {
-      const existingFirma = await prisma.ozelFirma.findFirst({
-        where: { vkn }
-      })
-      if (existingFirma) {
-        return NextResponse.json(
-          { error: "Bu VKN numarası zaten kayıtlı" },
-          { status: 400 }
-        )
+    // VKN kontrolü (VKN zorunlu olduğu için her zaman kontrol et)
+    const existingFirma = await prisma.ozelFirma.findFirst({
+      where: { vkn }
+    })
+    if (existingFirma) {
+      return NextResponse.json(
+        { error: "Bu VKN numarası zaten kayıtlı" },
+        { status: 400 }
+      )
+    }
+
+    // Son özel firmayı bul ve firma numarasını üret
+    const lastFirma = await prisma.ozelFirma.findFirst({
+      orderBy: { firmaNo: 'desc' }
+    })
+
+    let nextFirmaNo = 'FRM001'
+    if (lastFirma && lastFirma.firmaNo) {
+      if (lastFirma.firmaNo.startsWith('FRM')) {
+        const lastNumber = parseInt(lastFirma.firmaNo.substring(3))
+        if (!isNaN(lastNumber)) {
+          nextFirmaNo = `FRM${(lastNumber + 1).toString().padStart(3, '0')}`
+        }
       }
     }
 
     const ozelFirma = await prisma.ozelFirma.create({
       data: {
         firmaAdi,
-        vkn: vkn || null,
-        yetkiliAdi: yetkiliAdi || null,
+        firmaNo: nextFirmaNo,
+        vkn,
+        yetkiliAdi,
         yetkiliTelefon: yetkiliTelefon || null,
-        sehir,
+        sehir: sehir || null,
         adres: adres || null,
         durum: durum || 'AKTIF'
       }

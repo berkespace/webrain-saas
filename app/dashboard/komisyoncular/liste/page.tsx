@@ -14,60 +14,87 @@ import {
   Users,
   Building2,
   Phone,
-  MapPin
+  MapPin,
+  AlertTriangle
 } from 'lucide-react'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import Link from 'next/link'
+import { useToast } from '@/components/ui/use-toast'
 
-// Mock komisyoncu verileri
-const mockKomisyoncular = [
-  {
-    id: 1,
-    vkn: '1234567890',
-    komisyonNo: 'KOM001',
-    dukkanAdi: 'CİHAN TARIM',
-    yetkiliAdi: 'Cihan Yılmaz',
-    yetkiliTelefon: '0532 123 45 67',
-    sehir: 'Antalya',
-    durum: 'AKTIF',
-    createdAt: '2024-01-01'
-  },
-  {
-    id: 2,
-    vkn: '0987654321',
-    komisyonNo: 'KOM002',
-    dukkanAdi: 'ÇALDIR KOM',
-    yetkiliAdi: 'Mehmet Çaldır',
-    yetkiliTelefon: '0533 987 65 43',
-    sehir: 'Mersin',
-    durum: 'AKTIF',
-    createdAt: '2024-01-02'
-  },
-  {
-    id: 3,
-    vkn: null,
-    komisyonNo: 'KOM003',
-    dukkanAdi: 'DURDAŞLAR',
-    yetkiliAdi: null,
-    yetkiliTelefon: null,
-    sehir: 'Adana',
-    durum: 'AKTIF',
-    createdAt: '2024-01-03'
-  }
-]
+interface Komisyoncu {
+  id: string
+  vkn: string | null
+  komisyonNo: string
+  dukkanAdi: string
+  yetkiliAdi: string | null
+  yetkiliTelefon: string | null
+  sehir: string
+  durum: 'AKTIF' | 'PASIF'
+  createdAt: string
+  updatedAt: string
+}
 
 export default function KomisyoncuListesi() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [searchTerm, setSearchTerm] = useState('')
+  const [komisyoncular, setKomisyoncular] = useState<Komisyoncu[]>([])
+  const [filteredKomisyoncular, setFilteredKomisyoncular] = useState<Komisyoncu[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [isDeleting, setIsDeleting] = useState<string | null>(null)
+  const { toast } = useToast()
+
+  // Komisyoncuları getir
+  const fetchKomisyoncular = async () => {
+    try {
+      const response = await fetch('/api/komisyoncular')
+      if (response.ok) {
+        const data = await response.json()
+        setKomisyoncular(data)
+        setFilteredKomisyoncular(data)
+      } else {
+        toast({
+          title: "Hata",
+          description: "Komisyoncular yüklenirken hata oluştu",
+          variant: "destructive"
+        })
+      }
+    } catch (error) {
+      console.error('Komisyoncular getirilemedi:', error)
+      toast({
+        title: "Hata",
+        description: "Komisyoncular yüklenirken hata oluştu",
+        variant: "destructive"
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login')
+    } else if (status === 'authenticated') {
+      fetchKomisyoncular()
     }
   }, [status, router])
 
-  if (status === 'loading') {
+  // Arama filtreleme
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = komisyoncular.filter(komisyoncu =>
+        komisyoncu.dukkanAdi.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        komisyoncu.komisyonNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        komisyoncu.sehir.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (komisyoncu.yetkiliAdi && komisyoncu.yetkiliAdi.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+      setFilteredKomisyoncular(filtered)
+    } else {
+      setFilteredKomisyoncular(komisyoncular)
+    }
+  }, [searchTerm, komisyoncular])
+
+  if (status === 'loading' || isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -82,16 +109,47 @@ export default function KomisyoncuListesi() {
     return null
   }
 
-  const filteredKomisyoncular = mockKomisyoncular.filter(komisyoncu => 
-    komisyoncu.dukkanAdi.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    komisyoncu.komisyonNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    komisyoncu.sehir.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (komisyoncu.yetkiliAdi && komisyoncu.yetkiliAdi.toLowerCase().includes(searchTerm.toLowerCase()))
-  )
 
-  const handleDelete = (id: number) => {
-    if (confirm('Bu komisyoncuyu silmek istediğinizden emin misiniz?')) {
-      console.log('Delete komisyoncu:', id)
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Bu komisyoncuyu silmek istediğinizden emin misiniz?')) return
+
+    setIsDeleting(id)
+    try {
+      const response = await fetch(`/api/komisyoncular/${id}`, {
+        method: 'DELETE'
+      })
+
+      if (response.ok) {
+        toast({
+          title: "Başarılı",
+          description: "Komisyoncu başarıyla silindi"
+        })
+        fetchKomisyoncular()
+      } else {
+        const error = await response.json()
+        if (error.details) {
+          toast({
+            title: "Silinemez",
+            description: error.details,
+            variant: "destructive"
+          })
+        } else {
+          toast({
+            title: "Hata",
+            description: error.error || "Komisyoncu silinirken hata oluştu",
+            variant: "destructive"
+          })
+        }
+      }
+    } catch (error) {
+      toast({
+        title: "Hata",
+        description: "Komisyoncu silinirken hata oluştu",
+        variant: "destructive"
+      })
+    } finally {
+      setIsDeleting(null)
     }
   }
 
@@ -134,7 +192,7 @@ export default function KomisyoncuListesi() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">Toplam Komisyoncu</p>
-                  <p className="text-2xl font-bold">{mockKomisyoncular.length}</p>
+                  <p className="text-2xl font-bold">{komisyoncular.length}</p>
                 </div>
                 <Building2 className="h-8 w-8 text-primary" />
               </div>
@@ -147,7 +205,7 @@ export default function KomisyoncuListesi() {
                 <div>
                   <p className="text-sm text-muted-foreground">Aktif Komisyoncu</p>
                   <p className="text-2xl font-bold text-green-500">
-                    {mockKomisyoncular.filter(k => k.durum === 'AKTIF').length}
+                    {komisyoncular.filter(k => k.durum === 'AKTIF').length}
                   </p>
                 </div>
                 <Users className="h-8 w-8 text-green-500" />
@@ -161,7 +219,7 @@ export default function KomisyoncuListesi() {
                 <div>
                   <p className="text-sm text-muted-foreground">Pasif Komisyoncu</p>
                   <p className="text-2xl font-bold text-red-500">
-                    {mockKomisyoncular.filter(k => k.durum === 'PASIF').length}
+                    {komisyoncular.filter(k => k.durum === 'PASIF').length}
                   </p>
                 </div>
                 <Users className="h-8 w-8 text-red-500" />
@@ -231,8 +289,17 @@ export default function KomisyoncuListesi() {
                               <Edit className="h-4 w-4" />
                             </Button>
                           </Link>
-                          <Button variant="ghost" size="sm" onClick={() => handleDelete(komisyoncu.id)}>
-                            <Trash2 className="h-4 w-4" />
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => handleDelete(komisyoncu.id)}
+                            disabled={isDeleting === komisyoncu.id}
+                          >
+                            {isDeleting === komisyoncu.id ? (
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                            ) : (
+                              <Trash2 className="h-4 w-4" />
+                            )}
                           </Button>
                         </div>
                       </td>

@@ -37,6 +37,7 @@ export default function YeniKomisyoncu() {
   const [formData, setFormData] = useState({
     vkn: '',
     komisyonNo: '',
+    komisyonKodu: '',
     dukkanAdi: '',
     yetkiliAdi: '',
     yetkiliTelefon: '',
@@ -69,7 +70,7 @@ export default function YeniKomisyoncu() {
     e.preventDefault()
     
     // Validation
-    if (!formData.dukkanAdi || !formData.komisyonNo || !formData.sehir) {
+    if (!formData.dukkanAdi || !formData.komisyonNo || !formData.komisyonKodu || !formData.sehir) {
       toast({
         title: "Hata",
         description: "Lütfen zorunlu alanları doldurun",

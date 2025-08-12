@@ -19,60 +19,23 @@ import {
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { useToast } from '@/components/ui/use-toast'
 
-// Mock faturalandırılmamış ürünler
-const mockBekleyenUrunler = [
-  {
-    id: 1,
-    fisNo: 15066,
-    tarih: '15.07.2025',
-    mustahsil: 'Bölge',
-    unvan: 'CİHAN TARIM',
-    uretici: 'ABBAS KAYMAZ',
-    urun: 'SİLÖR',
-    kasaSayisi: 115.00,
-    brutKg: 2.402,
-    dara: 230.00,
-    girisKg: 2172.00,
-    cikmaFire: 274.00,
-    netKg: 957.00,
-    durum: 'BEKLEM...',
-    fiyat: ''
-  },
-  {
-    id: 2,
-    fisNo: 15072,
-    tarih: '16.07.2025',
-    mustahsil: 'Müstahsil',
-    unvan: 'DURDAŞLAR',
-    uretici: 'HÜSEYİN URAL',
-    urun: 'DOMATES',
-    kasaSayisi: 15.00,
-    brutKg: 217,
-    dara: 29.00,
-    girisKg: 188.00,
-    cikmaFire: 0.00,
-    netKg: 1006.00,
-    durum: 'BEKLEM...',
-    fiyat: ''
-  },
-  {
-    id: 3,
-    fisNo: 15073,
-    tarih: '16.07.2025',
-    mustahsil: 'Müstahsil',
-    unvan: 'AHMET TORUN KOM',
-    uretici: 'ÖZKARADAĞ',
-    urun: 'SALATALIK',
-    kasaSayisi: 25.00,
-    brutKg: 450,
-    dara: 50.00,
-    girisKg: 400.00,
-    cikmaFire: 50.00,
-    netKg: 350.00,
-    durum: 'BEKLEM...',
-    fiyat: ''
-  }
-]
+interface BekleyenUrun {
+  id: number
+  fisNo: number
+  tarih: string
+  mustahsil: string
+  unvan: string
+  uretici: string
+  urun: string
+  kasaSayisi: number
+  brutKg: number
+  dara: number
+  girisKg: number
+  cikmaFire: number
+  netKg: number
+  durum: string
+  fiyat: string
+}
 
 export default function FiyatGirisi() {
   const { data: session, status } = useSession()
@@ -83,12 +46,35 @@ export default function FiyatGirisi() {
   const [filterUretici, setFilterUretici] = useState('')
   const [editingId, setEditingId] = useState<number | null>(null)
   const [editingFiyat, setEditingFiyat] = useState('')
+  const [bekleyenUrunler, setBekleyenUrunler] = useState<BekleyenUrun[]>([])
+  const [filteredBekleyenUrunler, setFilteredBekleyenUrunler] = useState<BekleyenUrun[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Bekleyen ürünleri getir
+  const fetchBekleyenUrunler = async () => {
+    try {
+      const response = await fetch('/api/mal-kabul/bekleyen')
+      if (response.ok) {
+        const data = await response.json()
+        setBekleyenUrunler(data)
+        setFilteredBekleyenUrunler(data)
+      } else {
+        console.error('Bekleyen ürünler yüklenirken hata oluştu')
+      }
+    } catch (error) {
+      console.error('Bekleyen ürünler getirilemedi:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login')
     } else if (session && (session.user as any)?.role !== 'SATIN_ALMACI') {
       router.push('/dashboard')
+    } else if (status === 'authenticated') {
+      fetchBekleyenUrunler()
     }
   }, [status, session, router])
 
@@ -103,22 +89,37 @@ export default function FiyatGirisi() {
     )
   }
 
+  // Arama filtreleme
+  useEffect(() => {
+    const filtered = bekleyenUrunler.filter(item => {
+      const matchesSearch = 
+        item.unvan.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.uretici.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.urun.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.fisNo.toString().includes(searchTerm)
+      
+      const matchesUrun = !filterUrun || item.urun === filterUrun
+      const matchesUretici = !filterUretici || item.uretici === filterUretici
+      
+      return matchesSearch && matchesUrun && matchesUretici
+    })
+    setFilteredBekleyenUrunler(filtered)
+  }, [searchTerm, filterUrun, filterUretici, bekleyenUrunler])
+
+  if (status === 'loading' || isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Yükleniyor...</p>
+        </div>
+      </div>
+    )
+  }
+
   if (!session || (session.user as any)?.role !== 'SATIN_ALMACI') {
     return null
   }
-
-  const filteredUrunler = mockBekleyenUrunler.filter(item => {
-    const matchesSearch = 
-      item.unvan.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.uretici.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.urun.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.fisNo.toString().includes(searchTerm)
-    
-    const matchesUrun = !filterUrun || item.urun === filterUrun
-    const matchesUretici = !filterUretici || item.uretici === filterUretici
-    
-    return matchesSearch && matchesUrun && matchesUretici
-  })
 
   const handleFiyatSave = async (id: number) => {
     if (!editingFiyat || parseFloat(editingFiyat) <= 0) {
@@ -148,8 +149,8 @@ export default function FiyatGirisi() {
     setEditingFiyat(currentFiyat)
   }
 
-  const uniqueUrunler = [...new Set(mockBekleyenUrunler.map(item => item.urun))]
-  const uniqueUreticiler = [...new Set(mockBekleyenUrunler.map(item => item.uretici))]
+  const uniqueUrunler = [...new Set(bekleyenUrunler.map(item => item.urun))]
+  const uniqueUreticiler = [...new Set(bekleyenUrunler.map(item => item.uretici))]
 
   return (
     <DashboardLayout>
@@ -292,7 +293,7 @@ export default function FiyatGirisi() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredUrunler.map((item) => (
+                  {filteredBekleyenUrunler.map((item) => (
                     <tr key={item.id} className="border-b hover:bg-muted/50">
                       <td className="py-3 px-2 font-medium">{item.fisNo}</td>
                       <td className="py-3 px-2 text-sm">{item.tarih}</td>

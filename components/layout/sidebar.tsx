@@ -520,6 +520,11 @@ export function Sidebar() {
   }
 
   const isActive = (href: string) => {
+    // Ana sayfa için özel kontrol
+    if (href === '/dashboard') {
+      return pathname === '/dashboard'
+    }
+    // Diğer sayfalar için exact match veya alt sayfa kontrolü
     return pathname === href || pathname.startsWith(href + '/')
   }
 

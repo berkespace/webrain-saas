@@ -10,9 +10,10 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
-import { ArrowLeft, Save, Loader2, Package, User, Building, Truck, Calendar, FileText, Scale, DollarSign } from 'lucide-react'
+import { ArrowLeft, Save, Loader2, Package, User, Building, Truck, Calendar, FileText, Scale, CheckCircle, AlertTriangle, Printer, X } from 'lucide-react'
 import { useToast } from '@/components/ui/use-toast'
 import Link from 'next/link'
+import { ThermalReceipt } from '@/components/ui/thermal-receipt'
 
 interface MalKabulRecord {
   id: string
@@ -33,9 +34,7 @@ interface MalKabulRecord {
   girisKg: number
   cikmaFireKg: number
   netKg: number
-  birimFiyat?: number
-  toplamFiyat?: number
-  status: 'FATURA_BEKLIYOR' | 'FATURALANDI' | 'TAMAMLANDI' | 'IPTAL'
+  status: 'FATURA_BEKLIYOR' | 'FATURALANDI' | 'NETLENDI' | 'TAMAMLANDI' | 'IPTAL'
   notlar?: string
   komisyoncu?: {
     id: string
@@ -126,6 +125,7 @@ export default function MalKabulDuzenle() {
 
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [showFinalReceipt, setShowFinalReceipt] = useState(false)
   const [record, setRecord] = useState<MalKabulRecord | null>(null)
   const [komisyoncular, setKomisyoncular] = useState<Komisyoncu[]>([])
   const [ureticiler, setUreticiler] = useState<Uretici[]>([])
@@ -152,17 +152,29 @@ export default function MalKabulDuzenle() {
     girisKg: '',
     cikmaFireKg: '',
     netKg: '',
-    birimFiyat: '',
-    toplamFiyat: '',
-    status: 'FATURA_BEKLIYOR' as 'FATURA_BEKLIYOR' | 'FATURALANDI' | 'TAMAMLANDI' | 'IPTAL',
+    status: 'FATURA_BEKLIYOR' as 'FATURA_BEKLIYOR' | 'FATURALANDI' | 'NETLENDI' | 'TAMAMLANDI' | 'IPTAL',
     notlar: ''
   })
+
+  const userRole = (session?.user as any)?.role
+
+  // Rol bazlı erişim kontrolü
+  const canEdit = userRole === 'MAL_KABULCU' || userRole === 'SATIN_ALMACI' || userRole === 'MUHASEBE' || userRole === 'ADMIN'
+  const canChangeStatus = userRole === 'MAL_KABULCU' || userRole === 'ADMIN'
+  const canEditBasicInfo = userRole === 'MAL_KABULCU' || userRole === 'ADMIN'
 
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login')
+    } else if (status === 'authenticated' && !canEdit) {
+      toast({
+        title: "Erişim Reddedildi",
+        description: "Bu sayfaya erişim yetkiniz bulunmamaktadır",
+        variant: "destructive",
+      })
+      router.push('/dashboard')
     }
-  }, [status, router])
+  }, [status, router, canEdit, toast])
 
   useEffect(() => {
     if (id) {
@@ -191,16 +203,11 @@ export default function MalKabulDuzenle() {
     const cikmaFireKgNum = parseFloat(formData.cikmaFireKg) || 0;
     const netKgNum = girisKgNum - cikmaFireKgNum;
     
-    // Calculate toplamFiyat if birimFiyat exists
-    const birimFiyatNum = parseFloat(formData.birimFiyat) || 0;
-    const toplamFiyatNum = birimFiyatNum * netKgNum;
-    
     setFormData(prev => ({
       ...prev,
       daraKg: toplamDara.toString(),
       girisKg: girisKgNum.toString(),
-      netKg: netKgNum.toString(),
-      toplamFiyat: toplamFiyatNum > 0 ? toplamFiyatNum.toString() : prev.toplamFiyat
+      netKg: netKgNum.toString()
     }));
   }, [
     formData.paletId,
@@ -209,7 +216,6 @@ export default function MalKabulDuzenle() {
     formData.kasaSayisi,
     formData.brutKg,
     formData.cikmaFireKg,
-    formData.birimFiyat,
     ambalajlar
   ]);
 
@@ -241,8 +247,6 @@ export default function MalKabulDuzenle() {
         girisKg: data.girisKg?.toString() || '',
         cikmaFireKg: data.cikmaFireKg?.toString() || '',
         netKg: data.netKg?.toString() || '',
-        birimFiyat: data.birimFiyat?.toString() || '',
-        toplamFiyat: data.toplamFiyat?.toString() || '',
         status: data.status || 'FATURA_BEKLIYOR',
         notlar: data.notlar || ''
       })
@@ -322,7 +326,18 @@ export default function MalKabulDuzenle() {
         description: "Mal kabul kaydı başarıyla güncellendi",
         variant: "success",
       })
-      router.push('/dashboard/mal-kabul')
+
+      // Eğer durum NETLENDI olarak değiştirildiyse, son fiş yazdır
+      if (formData.status === 'NETLENDI') {
+        setShowFinalReceipt(true)
+      } else {
+        // Eğer durum NETLENDI değilse, normal yönlendirme yap
+        if (userRole === 'MAL_KABULCU') {
+          router.push('/dashboard/satin-alma')
+        } else {
+          router.push('/dashboard/mal-kabul')
+        }
+      }
     } catch (error) {
       console.error('Güncelleme hatası:', error)
       toast({
@@ -337,6 +352,23 @@ export default function MalKabulDuzenle() {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
+  }
+
+  const getSaticiAdi = () => {
+    if (formData.saticiTipi === 'OZEL_FIRMA') {
+      return ozelFirmalar.find(f => f.id === formData.ozelFirmaId)?.firmaAdi || ''
+    } else if (formData.saticiTipi === 'KOMISYONCU') {
+      const komisyoncu = komisyoncular.find(k => k.id === formData.komisyoncuId)
+      const uretici = ureticiler.find(u => u.id === formData.ureticiId)
+      if (komisyoncu && uretici) {
+        return `${komisyoncu.dukkanAdi} - ${uretici.ad} ${uretici.soyad}`
+      }
+      return komisyoncu?.dukkanAdi || ''
+    } else if (formData.saticiTipi === 'MUSTAHSIL') {
+      // TODO: Gerçek müstahsil verisi API'den gelecek
+      return 'Müstahsil'
+    }
+    return ''
   }
 
   if (status === 'loading' || loading) {
@@ -354,6 +386,25 @@ export default function MalKabulDuzenle() {
 
   if (!session) {
     return null
+  }
+
+  if (!canEdit) {
+    return (
+      <DashboardLayout>
+        <div className="p-6">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-foreground">Erişim Reddedildi</h1>
+            <p className="text-muted-foreground mt-2">Bu sayfaya erişim yetkiniz bulunmamaktadır.</p>
+            <Link href="/dashboard">
+              <Button className="mt-4">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Dashboard'a Dön
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </DashboardLayout>
+    )
   }
 
   if (!record) {
@@ -389,7 +440,9 @@ export default function MalKabulDuzenle() {
             </Link>
             <div>
               <h1 className="text-3xl font-bold text-foreground">Mal Kabul Düzenle</h1>
-              <p className="text-muted-foreground">Mal kabul kaydını düzenleyin</p>
+              <p className="text-muted-foreground">
+                Mal kabul kaydını düzenleyin - {userRole} olarak giriş yapıldı
+              </p>
             </div>
           </div>
         </div>
@@ -414,6 +467,7 @@ export default function MalKabulDuzenle() {
                       value={formData.fisNo}
                       onChange={(e) => handleInputChange('fisNo', e.target.value)}
                       required
+                      readOnly={!canEditBasicInfo}
                     />
                   </div>
                   <div className="space-y-2">
@@ -424,6 +478,7 @@ export default function MalKabulDuzenle() {
                       value={formData.tarih}
                       onChange={(e) => handleInputChange('tarih', e.target.value)}
                       required
+                      readOnly={!canEditBasicInfo}
                     />
                   </div>
                 </div>
@@ -442,7 +497,11 @@ export default function MalKabulDuzenle() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="saticiTipi">Satıcı Tipi *</Label>
-                  <Select value={formData.saticiTipi || "OZEL_FIRMA"} onValueChange={(value) => handleInputChange('saticiTipi', value)}>
+                  <Select 
+                    value={formData.saticiTipi || "OZEL_FIRMA"} 
+                    onValueChange={(value) => handleInputChange('saticiTipi', value)}
+                    disabled={!canEditBasicInfo}
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -457,7 +516,11 @@ export default function MalKabulDuzenle() {
                 {formData.saticiTipi === 'OZEL_FIRMA' && (
                   <div className="space-y-2">
                     <Label htmlFor="ozelFirmaId">Özel Firma *</Label>
-                    <Select value={formData.ozelFirmaId || ""} onValueChange={(value) => handleInputChange('ozelFirmaId', value)}>
+                    <Select 
+                      value={formData.ozelFirmaId || ""} 
+                      onValueChange={(value) => handleInputChange('ozelFirmaId', value)}
+                      disabled={!canEditBasicInfo}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Özel firma seçin" />
                       </SelectTrigger>
@@ -476,7 +539,11 @@ export default function MalKabulDuzenle() {
                   <>
                     <div className="space-y-2">
                       <Label htmlFor="komisyoncuId">Komisyoncu *</Label>
-                      <Select value={formData.komisyoncuId || ""} onValueChange={(value) => handleInputChange('komisyoncuId', value)}>
+                      <Select 
+                        value={formData.komisyoncuId || ""} 
+                        onValueChange={(value) => handleInputChange('komisyoncuId', value)}
+                        disabled={!canEditBasicInfo}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Komisyoncu seçin" />
                         </SelectTrigger>
@@ -491,7 +558,11 @@ export default function MalKabulDuzenle() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="ureticiId">Üretici *</Label>
-                      <Select value={formData.ureticiId || ""} onValueChange={(value) => handleInputChange('ureticiId', value)}>
+                      <Select 
+                        value={formData.ureticiId || ""} 
+                        onValueChange={(value) => handleInputChange('ureticiId', value)}
+                        disabled={!canEditBasicInfo}
+                      >
                         <SelectTrigger>
                           <SelectValue placeholder="Üretici seçin" />
                         </SelectTrigger>
@@ -521,7 +592,11 @@ export default function MalKabulDuzenle() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="urunId">Ürün *</Label>
-                  <Select value={formData.urunId || ""} onValueChange={(value) => handleInputChange('urunId', value)}>
+                  <Select 
+                    value={formData.urunId || ""} 
+                    onValueChange={(value) => handleInputChange('urunId', value)}
+                    disabled={!canEditBasicInfo}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Ürün seçin" />
                     </SelectTrigger>
@@ -538,7 +613,11 @@ export default function MalKabulDuzenle() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="paletId">Palet</Label>
-                    <Select value={formData.paletId || "none"} onValueChange={(value) => handleInputChange('paletId', value === "none" ? "" : value)}>
+                    <Select 
+                      value={formData.paletId || "none"} 
+                      onValueChange={(value) => handleInputChange('paletId', value === "none" ? "" : value)}
+                      disabled={!canEditBasicInfo}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Palet seçin" />
                       </SelectTrigger>
@@ -554,7 +633,11 @@ export default function MalKabulDuzenle() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="ambalajId">Ambalaj *</Label>
-                    <Select value={formData.ambalajId || ""} onValueChange={(value) => handleInputChange('ambalajId', value)}>
+                    <Select 
+                      value={formData.ambalajId || ""} 
+                      onValueChange={(value) => handleInputChange('ambalajId', value)}
+                      disabled={!canEditBasicInfo}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Ambalaj seçin" />
                       </SelectTrigger>
@@ -580,6 +663,7 @@ export default function MalKabulDuzenle() {
                       value={formData.paletSayisi}
                       onChange={(e) => handleInputChange('paletSayisi', e.target.value)}
                       placeholder="0"
+                      readOnly={!canEditBasicInfo}
                     />
                   </div>
                   <div className="space-y-2">
@@ -593,20 +677,21 @@ export default function MalKabulDuzenle() {
                       onChange={(e) => handleInputChange('kasaSayisi', e.target.value)}
                       placeholder="1"
                       required
+                      readOnly={!canEditBasicInfo}
                     />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Ağırlık ve Fiyat */}
+            {/* Ağırlık Bilgileri */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Scale className="h-5 w-5" />
-                  Ağırlık ve Fiyat
+                  Ağırlık Bilgileri
                 </CardTitle>
-                <CardDescription>Ağırlık ve fiyat bilgileri</CardDescription>
+                <CardDescription>Ağırlık hesaplamaları</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
@@ -620,6 +705,7 @@ export default function MalKabulDuzenle() {
                       value={formData.brutKg}
                       onChange={(e) => handleInputChange('brutKg', e.target.value)}
                       required
+                      readOnly={!canEditBasicInfo}
                     />
                   </div>
                   <div className="space-y-2">
@@ -662,41 +748,15 @@ export default function MalKabulDuzenle() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="netKg">Net KG</Label>
-                    <Input
-                      id="netKg"
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      value={formData.netKg}
-                      onChange={(e) => handleInputChange('netKg', e.target.value)}
-                      readOnly
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="birimFiyat">Birim Fiyat</Label>
-                    <Input
-                      id="birimFiyat"
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      value={formData.birimFiyat}
-                      onChange={(e) => handleInputChange('birimFiyat', e.target.value)}
-                    />
-                  </div>
-                </div>
-
                 <div className="space-y-2">
-                  <Label htmlFor="toplamFiyat">Toplam Fiyat</Label>
+                  <Label htmlFor="netKg">Net KG (Ürün Son Durumu)</Label>
                   <Input
-                    id="toplamFiyat"
+                    id="netKg"
                     type="number"
                     step="0.01"
                     min="0"
-                    value={formData.toplamFiyat}
-                    onChange={(e) => handleInputChange('toplamFiyat', e.target.value)}
+                    value={formData.netKg}
+                    onChange={(e) => handleInputChange('netKg', e.target.value)}
                     readOnly
                   />
                 </div>
@@ -707,25 +767,60 @@ export default function MalKabulDuzenle() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <DollarSign className="h-5 w-5" />
+                  <CheckCircle className="h-5 w-5" />
                   Durum ve Notlar
                 </CardTitle>
-                <CardDescription>Durum ve ek notlar</CardDescription>
+                <CardDescription>Durum güncellemesi ve ek notlar</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="status">Durum</Label>
-                  <Select value={formData.status || "FATURA_BEKLIYOR"} onValueChange={(value) => handleInputChange('status', value)}>
+                  <Select 
+                    value={formData.status || "FATURA_BEKLIYOR"} 
+                    onValueChange={(value) => handleInputChange('status', value)}
+                    disabled={!canChangeStatus}
+                  >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="FATURA_BEKLIYOR">Fatura Bekliyor</SelectItem>
-                      <SelectItem value="FATURALANDI">Faturalandı</SelectItem>
-                      <SelectItem value="TAMAMLANDI">Tamamlandı</SelectItem>
-                      <SelectItem value="IPTAL">İptal</SelectItem>
+                      <SelectItem value="FATURA_BEKLIYOR">
+                        <div className="flex items-center gap-2">
+                          <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                          Fatura Bekliyor
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="FATURALANDI">
+                        <div className="flex items-center gap-2">
+                          <FileText className="h-4 w-4 text-blue-500" />
+                          Faturalandı
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="NETLENDI">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-500" />
+                          Netlendi (Ürün Son Durumu)
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="TAMAMLANDI">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4 text-green-600" />
+                          Tamamlandı
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="IPTAL">
+                        <div className="flex items-center gap-2">
+                          <AlertTriangle className="h-4 w-4 text-red-500" />
+                          İptal
+                        </div>
+                      </SelectItem>
                     </SelectContent>
                   </Select>
+                  {formData.status === 'NETLENDI' && (
+                    <p className="text-xs text-green-600 bg-green-50 p-2 rounded">
+                      ✓ Bu ürün netlendi. Satın almacı paneline anında düşecek.
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -734,7 +829,7 @@ export default function MalKabulDuzenle() {
                     id="notlar"
                     value={formData.notlar}
                     onChange={(e) => handleInputChange('notlar', e.target.value)}
-                    placeholder="Ek notlar..."
+                    placeholder="Ek notlar, düzenleme bilgileri..."
                     rows={4}
                   />
                 </div>
@@ -765,6 +860,258 @@ export default function MalKabulDuzenle() {
           </div>
         </form>
       </div>
+
+      {/* Son Fiş Yazdırma Modal */}
+      {showFinalReceipt && record && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-bold">Son Fiş Yazdır</h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowFinalReceipt(false)}
+                className="h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-2">
+                Ürün netlendi! Bu fiş ürünün son evrakıdır:
+              </p>
+              <ul className="text-sm text-gray-600 list-disc list-inside space-y-1">
+                <li>Net KG: {formData.netKg} kg</li>
+                <li>Çıkma/Fire KG: {formData.cikmaFireKg} kg</li>
+                <li>Durum: Netlendi (Ürün Son Durumu)</li>
+              </ul>
+            </div>
+
+            {/* Son Fiş Önizleme */}
+            <div className="mb-4">
+              <ThermalReceipt 
+                data={{
+                  fisNo: record.fisNo,
+                  tarih: record.tarih,
+                  saticiTipi: record.saticiTipi,
+                  saticiAdi: getSaticiAdi(),
+                  urunAdi: record.urun.ad,
+                  brutKg: record.brutKg,
+                  daraKg: record.daraKg,
+                  girisKg: record.girisKg,
+                  cikmaFireKg: parseFloat(formData.cikmaFireKg) || 0,
+                  netKg: parseFloat(formData.netKg) || 0,
+                  ambalajAdi: record.ambalaj?.ad,
+                  kasaSayisi: record.kasaSayisi,
+                  paletAdi: record.palet?.ad,
+                  paletSayisi: record.paletSayisi,
+                  notlar: formData.notlar,
+                  malKabulcuAdi: record.malKabulcu.firstName + ' ' + record.malKabulcu.lastName
+                }} 
+                type="SON_FIS" 
+                className="mx-auto"
+              />
+            </div>
+
+            {/* Yazdırma Butonu */}
+            <div className="flex gap-3 justify-center">
+                          <Button onClick={() => {
+              // Son fiş yazdırma işlemi
+              const finalReceiptData = {
+                fisNo: record.fisNo,
+                tarih: record.tarih,
+                saticiTipi: record.saticiTipi,
+                saticiAdi: getSaticiAdi(),
+                urunAdi: record.urun.ad,
+                brutKg: record.brutKg,
+                daraKg: record.daraKg,
+                girisKg: record.girisKg,
+                cikmaFireKg: parseFloat(formData.cikmaFireKg) || 0,
+                netKg: parseFloat(formData.netKg) || 0,
+                ambalajAdi: record.ambalaj?.ad,
+                kasaSayisi: record.kasaSayisi,
+                paletAdi: record.palet?.ad,
+                paletSayisi: record.paletSayisi,
+                notlar: formData.notlar,
+                malKabulcuAdi: record.malKabulcu.firstName + ' ' + record.malKabulcu.lastName
+              }
+              
+              // Fiş verilerini localStorage'a kaydet
+              localStorage.setItem('printFinalReceipt', JSON.stringify({
+                ...finalReceiptData,
+                type: 'SON_FIS'
+              }))
+              
+              // Yazdırma penceresini aç
+              const printWindow = window.open('', '_blank')
+              if (printWindow) {
+                printWindow.document.write(`
+                  <!DOCTYPE html>
+                  <html>
+                    <head>
+                      <title>Son Fiş Yazdır</title>
+                      <style>
+                        body { 
+                          font-family: monospace; 
+                          font-size: 12px; 
+                          width: 80mm; 
+                          margin: 0; 
+                          padding: 10px;
+                        }
+                        .header { text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 10px; }
+                        .section { margin-bottom: 10px; border-bottom: 1px solid #000; padding-bottom: 5px; }
+                        .row { display: flex; justify-content: space-between; margin-bottom: 5px; }
+                        .label { font-weight: bold; }
+                        .value { text-align: right; }
+                        .qr-placeholder { 
+                          text-align: center; 
+                          margin: 10px 0; 
+                          padding: 20px; 
+                          border: 2px dashed #ccc;
+                          color: #666;
+                        }
+                        .final-status { 
+                          background: #4ade80; 
+                          color: white; 
+                          padding: 5px; 
+                          text-align: center; 
+                          font-weight: bold;
+                          margin: 10px 0;
+                        }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="header">WEBRAIN</div>
+                      <div class="header">Tarım Ürünleri Yönetim Sistemi</div>
+                      <div class="header">80mm Termal Yazıcı</div>
+                      
+                      <div class="section">
+                        <div class="header">SON FİŞ</div>
+                        <div class="final-status">ÜRÜN SON EVRAKI</div>
+                        <div class="row">
+                          <span class="label">Fiş No:</span>
+                          <span class="value">${finalReceiptData.fisNo}</span>
+                        </div>
+                        <div class="row">
+                          <span class="label">Tarih:</span>
+                          <span class="value">${new Date(finalReceiptData.tarih).toLocaleDateString('tr-TR')}</span>
+                        </div>
+                        <div class="row">
+                          <span class="label">Saat:</span>
+                          <span class="value">${new Date(finalReceiptData.tarih).toLocaleTimeString('tr-TR')}</span>
+                        </div>
+                      </div>
+                      
+                      <div class="section">
+                        <div class="label">SATICI BİLGİLERİ</div>
+                        <div>Tip: ${finalReceiptData.saticiTipi}</div>
+                        <div class="label">${finalReceiptData.saticiAdi}</div>
+                      </div>
+                      
+                      <div class="section">
+                        <div class="label">ÜRÜN BİLGİLERİ</div>
+                        <div class="label">${finalReceiptData.urunAdi}</div>
+                        ${finalReceiptData.ambalajAdi ? `<div>Ambalaj: ${finalReceiptData.ambalajAdi} x ${finalReceiptData.kasaSayisi}</div>` : ''}
+                        ${finalReceiptData.paletAdi && finalReceiptData.paletSayisi ? `<div>Palet: ${finalReceiptData.paletAdi} x ${finalReceiptData.paletSayisi}</div>` : ''}
+                      </div>
+                      
+                      <div class="section">
+                        <div class="label">AĞIRLIK BİLGİLERİ</div>
+                        <div class="row">
+                          <span>Brüt KG:</span>
+                          <span class="value">${finalReceiptData.brutKg.toFixed(2)} kg</span>
+                        </div>
+                        <div class="row">
+                          <span>Dara KG:</span>
+                          <span>${finalReceiptData.daraKg.toFixed(2)} kg</span>
+                        </div>
+                        <div class="row">
+                          <span>Giriş KG:</span>
+                          <span>${finalReceiptData.girisKg.toFixed(2)} kg</span>
+                        </div>
+                        <div class="row">
+                          <span>Çıkma/Fire KG:</span>
+                          <span>${finalReceiptData.cikmaFireKg.toFixed(2)} kg</span>
+                        </div>
+                        <div class="row">
+                          <span>Net KG:</span>
+                          <span class="value" style="font-size: 16px; font-weight: bold;">${finalReceiptData.netKg.toFixed(2)} kg</span>
+                        </div>
+                      </div>
+                      
+                      ${finalReceiptData.notlar ? `
+                      <div class="section">
+                        <div class="label">NOTLAR</div>
+                        <div>${finalReceiptData.notlar}</div>
+                      </div>
+                      ` : ''}
+                      
+                      <div class="section">
+                        <div>Mal Kabulcu:</div>
+                        <div class="label">${finalReceiptData.malKabulcuAdi}</div>
+                      </div>
+                      
+                      <div class="section">
+                        <div class="label">QR Kod</div>
+                        <div class="qr-placeholder">
+                          QR Kod Buraya Gelecek<br>
+                          ${finalReceiptData.fisNo}|${finalReceiptData.tarih}|${finalReceiptData.saticiTipi}|${finalReceiptData.urunAdi}
+                        </div>
+                        <div style="text-align: center; font-size: 10px; color: #666;">
+                          Bu fiş ürünün son evrakıdır
+                        </div>
+                      </div>
+                      
+                      <div style="text-align: center; margin-top: 20px;">
+                        <div style="font-size: 10px; color: #666;">
+                          Ürün işlemi tamamlandı
+                        </div>
+                        <div style="font-size: 10px; margin-top: 5px;">
+                          ${new Date().toLocaleDateString('tr-TR')} - ${new Date().toLocaleTimeString('tr-TR')}
+                        </div>
+                      </div>
+                    </body>
+                  </html>
+                `)
+                printWindow.document.close()
+                printWindow.focus()
+                
+                // Yazdırma dialog'unu aç
+                setTimeout(() => {
+                  printWindow.print()
+                }, 500)
+              }
+              
+              toast({
+                title: "Son Fiş Yazdırılıyor",
+                description: "Son fiş yazdırma penceresi açıldı",
+                variant: "success",
+              })
+            }} className="flex-1 max-w-xs">
+                <Printer className="mr-2 h-4 w-4" />
+                Son Fiş Yazdır
+              </Button>
+            </div>
+
+            <div className="mt-4 text-center">
+              <Button 
+                onClick={() => {
+                  setShowFinalReceipt(false)
+                  if (userRole === 'MAL_KABULCU') {
+                    router.push('/dashboard/satin-alma')
+                  } else {
+                    router.push('/dashboard/mal-kabul')
+                  }
+                }}
+                variant="outline"
+              >
+                Tamamlandı
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </DashboardLayout>
   )
 }

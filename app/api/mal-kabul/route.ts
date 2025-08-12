@@ -14,12 +14,13 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const search = searchParams.get('search')
+    const fisNo = searchParams.get('fisNo')
     const status = searchParams.get('status')
     const saticiTipi = searchParams.get('saticiTipi')
     const startDate = searchParams.get('startDate')
     const endDate = searchParams.get('endDate')
 
-    const key = JSON.stringify({ search, status, saticiTipi, startDate, endDate })
+    const key = JSON.stringify({ search, fisNo, status, saticiTipi, startDate, endDate })
     const now = Date.now()
     if (cacheData && cacheKey === key && now - cacheTime < CACHE_TTL_MS) {
       const res = NextResponse.json(cacheData)
@@ -30,7 +31,9 @@ export async function GET(request: NextRequest) {
     // Filtreleme koşulları
     const where: any = {}
 
-    if (search) {
+    if (fisNo) {
+      where.fisNo = { equals: fisNo }
+    } else if (search) {
       where.OR = [
         { fisNo: { contains: search, mode: 'insensitive' } },
         { notlar: { contains: search, mode: 'insensitive' } },
@@ -71,7 +74,7 @@ export async function GET(request: NextRequest) {
       orderBy: { tarih: 'desc' }
     })
 
-    const payload = malKabulRecords
+    const payload = { records: malKabulRecords }
 
     // set cache
     cacheKey = key
@@ -122,6 +125,18 @@ export async function POST(request: NextRequest) {
       fiyat,
       notlar
     } = body
+
+    // Debug: Gelen verileri logla
+    console.log('Gelen veriler:', {
+      saticiTipi,
+      komisyoncuId,
+      ureticiId,
+      mustahsilId,
+      ozelFirmaId,
+      urunId,
+      paletId,
+      ambalajId
+    })
 
     // Validasyon
     if (!urunId) {
@@ -192,10 +207,10 @@ export async function POST(request: NextRequest) {
       data: {
         fisNo,
         saticiTipi,
-        komisyoncuId: komisyoncuId || null,
-        ureticiId: ureticiId || null,
-        mustahsilId: mustahsilId || null,
-        ozelFirmaId: ozelFirmaId || null,
+        komisyoncuId: komisyoncuId && komisyoncuId !== '' ? komisyoncuId : null,
+        ureticiId: ureticiId && ureticiId !== '' ? ureticiId : null,
+        mustahsilId: mustahsilId && mustahsilId !== '' ? mustahsilId : null,
+        ozelFirmaId: ozelFirmaId && ozelFirmaId !== '' ? ozelFirmaId : null,
         urunId,
         ambalajId: ambalajId || null,
         paletSayisi: parseInt(paletSayisi) || 0,
@@ -206,8 +221,7 @@ export async function POST(request: NextRequest) {
         cikmaFireKg: parseFloat(cikmaFireKg) || 0,
         netKg: parseFloat(netKg) || 0,
         miktar: parseFloat(girisKg) || 0,
-        birimFiyat: fiyat ? parseFloat(fiyat) : null,
-        toplamFiyat: fiyat && girisKg ? parseFloat(fiyat) * parseFloat(girisKg) : null,
+        
         notlar: notlar || null,
         malKabulcuId: malKabulcu.id
       },

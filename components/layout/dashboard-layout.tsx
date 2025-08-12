@@ -62,16 +62,10 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         {/* Top Header */}
         <header className="h-16 border-b border-border bg-card flex items-center justify-between px-6">
           <div className="flex items-center gap-4">
-            {mounted && (
-              <Image 
-                src={logoSrc} 
-                alt="WEBRAIN Logo" 
-                width={120} 
-                height={36} 
-                className="h-8 w-auto"
-                priority
-              />
-            )}
+            <div className="flex items-center gap-2">
+           
+              <span className="text-lg font-bold text-foreground">WEBRAIN</span>
+            </div>
           </div>
           
           <div className="flex items-center gap-4">

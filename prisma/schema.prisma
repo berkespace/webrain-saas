@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,43 +5,6 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-}
-
-enum UserRole {
-  ADMIN
-  MAL_KABULCU
-  MUHASEBE
-  SATIN_ALMACI
-}
-
-enum ProductStatus {
-  FATURA_BEKLIYOR
-  FATURALANDI
-  TAMAMLANDI
-  IPTAL
-}
-
-enum Status {
-  AKTIF
-  PASIF
-}
-
-enum Gender {
-  ERKEK
-  KADIN
-}
-
-enum SaticiTipi {
-  OZEL_FIRMA
-  MUSTAHSIL
-  KOMISYONCU
-}
-
-enum AmbalajTipi {
-  PALET
-  PLASTIK_KASA
-  KARTON_KASA
-  DİĞER
 }
 
 model User {
@@ -69,6 +29,7 @@ model Komisyoncu {
   dukkanAdi       String
   durum           Status           @default(AKTIF)
   komisyonNo      String           @unique
+  komisyonKodu    String           @unique
   sehir           String
   vkn             String?
   yetkiliAdi      String?
@@ -82,6 +43,7 @@ model Komisyoncu {
 model OzelFirma {
   id              String           @id @default(cuid())
   firmaAdi        String
+  firmaNo         String           @unique
   vkn             String?
   yetkiliAdi      String?
   yetkiliTelefon  String?
@@ -120,6 +82,7 @@ model Mustahsil {
   soyad           String
   dogumTarihi     DateTime
   tcKimlikNo      String           @unique
+  mustahsilNo     String           @unique
   ibanAdresi      String?
   adres           String?
   cinsiyet        Gender
@@ -134,6 +97,7 @@ model Mustahsil {
 model Urun {
   id              String           @id @default(cuid())
   ad              String
+  stokKodu        String           @unique
   kategori        String?
   birim           String
   createdAt       DateTime         @default(now())
@@ -177,7 +141,6 @@ model MalKabulRecord {
   mustahsilId  String?
   ozelFirmaId  String?
   saticiTipi   SaticiTipi    @default(OZEL_FIRMA)
-  // Ambalaj bilgileri
   ambalajId    String?
   paletSayisi  Int           @default(0)
   kasaSayisi   Int           @default(0)
@@ -186,14 +149,14 @@ model MalKabulRecord {
   girisKg      Float         @default(0)
   cikmaFireKg  Float         @default(0)
   netKg        Float         @default(0)
+  ambalaj      Ambalaj?      @relation(fields: [ambalajId], references: [id])
   fatura       Fatura?       @relation(fields: [faturaId], references: [id])
   komisyoncu   Komisyoncu?   @relation(fields: [komisyoncuId], references: [id])
   malKabulcu   User          @relation(fields: [malKabulcuId], references: [id])
   mustahsil    Mustahsil?    @relation(fields: [mustahsilId], references: [id])
-  uretici      Uretici?      @relation(fields: [ureticiId], references: [id])
   ozelFirma    OzelFirma?    @relation(fields: [ozelFirmaId], references: [id])
+  uretici      Uretici?      @relation(fields: [ureticiId], references: [id])
   urun         Urun          @relation(fields: [urunId], references: [id])
-  ambalaj      Ambalaj?      @relation(fields: [ambalajId], references: [id])
 
   @@map("mal_kabul_records")
 }
@@ -214,4 +177,42 @@ model Fatura {
   malKabulRecords MalKabulRecord[]
 
   @@map("faturalar")
+}
+
+enum UserRole {
+  ADMIN
+  MAL_KABULCU
+  MUHASEBE
+  SATIN_ALMACI
+}
+
+enum ProductStatus {
+  FATURA_BEKLIYOR
+  FATURALANDI
+  NETLENDI
+  TAMAMLANDI
+  IPTAL
+}
+
+enum Status {
+  AKTIF
+  PASIF
+}
+
+enum Gender {
+  ERKEK
+  KADIN
+}
+
+enum SaticiTipi {
+  OZEL_FIRMA
+  MUSTAHSIL
+  KOMISYONCU
+}
+
+enum AmbalajTipi {
+  PALET
+  PLASTIK_KASA
+  KARTON_KASA
+  // DİĞER
 }

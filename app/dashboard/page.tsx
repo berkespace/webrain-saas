@@ -22,11 +22,21 @@ import {
   Calendar,
   BarChart3,
   Activity,
-  Bell
+  Bell,
+  UserCheck,
+  Building,
+  Truck,
+  Scale,
+  Receipt,
+  Calculator,
+  Shield,
+  Database,
+  QrCode
 } from 'lucide-react'
 import Link from 'next/link'
 import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { useToast } from '@/components/ui/use-toast'
+import { QRScanner } from '@/components/ui/qr-scanner'
 
 interface DashboardStats {
   totalRecords: number
@@ -64,6 +74,7 @@ export default function DashboardPage() {
   })
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([])
   const [loading, setLoading] = useState(true)
+  const [showQRScanner, setShowQRScanner] = useState(false)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -72,10 +83,10 @@ export default function DashboardPage() {
   }, [status, router])
 
   useEffect(() => {
-    if (session?.user) {
+    if (status === 'authenticated' && session?.user) {
       fetchDashboardData()
     }
-  }, [session])
+  }, [status, session])
 
   const fetchDashboardData = async () => {
     try {
@@ -109,33 +120,8 @@ export default function DashboardPage() {
           weeklyGrowth: lastWeekRecords.length > 0 ? ((todayRecords.length - lastWeekRecords.length) / lastWeekRecords.length) * 100 : 0
         })
 
-        // Mock recent activity
-        setRecentActivity([
-          {
-            id: '1',
-            type: 'MAL_KABUL',
-            title: 'Yeni Mal Kabul Kaydı',
-            description: 'SİLÖR ürünü için yeni kayıt oluşturuldu',
-            timestamp: new Date().toISOString(),
-            status: 'SUCCESS'
-          },
-          {
-            id: '2',
-            type: 'FATURA',
-            title: 'Fatura Oluşturuldu',
-            description: 'CİHAN TARIM için fatura oluşturuldu',
-            timestamp: new Date(Date.now() - 3600000).toISOString(),
-            status: 'PENDING'
-          },
-          {
-            id: '3',
-            type: 'ODEME',
-            title: 'Ödeme Alındı',
-            description: 'DURDAŞLAR komisyoncusundan ödeme alındı',
-            timestamp: new Date(Date.now() - 7200000).toISOString(),
-            status: 'SUCCESS'
-          }
-        ])
+        // TODO: Gerçek recent activity verisi API'den gelecek
+        setRecentActivity([])
       }
     } catch (error) {
       console.error('Dashboard veri getirme hatası:', error)
@@ -152,7 +138,58 @@ export default function DashboardPage() {
     })
   }
 
-  if (status === 'loading' || loading) {
+  const handleQRScan = async (data: string) => {
+    try {
+      // QR kod verisini parse et
+      const parts = data.split('|')
+      let fisNo = data
+      
+      if (parts.length >= 4) {
+        fisNo = parts[0]
+      }
+      
+      // Fiş numarası ile mal kabul kaydını bul
+      const response = await fetch(`/api/mal-kabul?fisNo=${fisNo}`)
+      if (!response.ok) {
+        throw new Error('API yanıt vermedi')
+      }
+      
+      const result = await response.json()
+      const records = result.records || []
+      
+      if (records.length === 0) {
+        toast({
+          title: "Kayıt Bulunamadı",
+          description: `Fiş numarası ${fisNo} ile kayıt bulunamadı. Lütfen fiş numarasını kontrol edin.`,
+          variant: "destructive",
+        })
+        return
+      }
+      
+      // İlk kaydı al (fiş numarası unique olmalı)
+      const record = records[0]
+      
+      // ID ile düzenleme ekranına git
+      router.push(`/dashboard/mal-kabul/duzenle/${record.id}`)
+      setShowQRScanner(false)
+      
+      toast({
+        title: "Kayıt Bulundu",
+        description: `${fisNo} fiş numaralı kayıt düzenleme ekranına yönlendiriliyorsunuz.`,
+        variant: "success",
+      })
+      
+    } catch (error) {
+      console.error('QR kod tarama hatası:', error)
+      toast({
+        title: "Hata",
+        description: "QR kod verisi işlenirken hata oluştu. Lütfen tekrar deneyin.",
+        variant: "destructive",
+      })
+    }
+  }
+
+  if (status === 'loading') {
     return (
       <DashboardLayout>
         <div className="min-h-screen bg-background flex items-center justify-center">
@@ -165,81 +202,531 @@ export default function DashboardPage() {
     )
   }
 
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+            <p className="mt-4 text-muted-foreground">Veriler yükleniyor...</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    )
+  }
+
   if (!session) {
     return null
   }
 
   const userRole = (session.user as any)?.role
 
-  return (
-    <DashboardLayout>
-      <div className="p-6">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-            <p className="text-muted-foreground">
-              Hoş geldiniz, {session.user?.name}! Bugün nasıl gidiyor?
-            </p>
+  // Role-based dashboard content
+  const getRoleBasedContent = () => {
+    switch (userRole) {
+      case 'ADMIN':
+        return getAdminDashboard()
+      case 'MAL_KABULCU':
+        return getMalKabulcuDashboard()
+      case 'MUHASEBE':
+        return getMuhasebeDashboard()
+      case 'SATIN_ALMACI':
+        return getSatinAlmaDashboard()
+      default:
+        return getDefaultDashboard()
+    }
+  }
+
+  const getAdminDashboard = () => (
+    <>
+      {/* Admin Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Toplam Kullanıcı</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">24</div>
+            <p className="text-xs text-muted-foreground">Aktif kullanıcılar</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Sistem Durumu</CardTitle>
+            <Shield className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">100%</div>
+            <p className="text-xs text-muted-foreground">Tüm sistemler çalışıyor</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Toplam Kayıt</CardTitle>
+            <Database className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalRecords}</div>
+            <p className="text-xs text-muted-foreground">Tüm veriler</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Günlük İşlem</CardTitle>
+            <Activity className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.todayRecords}</div>
+            <p className="text-xs text-muted-foreground">Bugünkü işlemler</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Admin Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Link href="/dashboard/admin/kullanicilar">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <UserCheck className="h-5 w-5" />
+                Kullanıcı Yönetimi
+              </CardTitle>
+              <CardDescription>
+                Sistem kullanıcılarını yönet
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-bold">24</span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </CardContent>
+          </Link>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Link href="/dashboard/raporlar">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5" />
+                Sistem Raporları
+              </CardTitle>
+              <CardDescription>
+                Detaylı sistem analizleri
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-bold">12</span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </CardContent>
+          </Link>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Link href="/dashboard/sistem-yonetimi">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Settings className="h-5 w-5" />
+                Sistem Ayarları
+              </CardTitle>
+              <CardDescription>
+                Konfigürasyon ve ayarlar
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-bold">8</span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </CardContent>
+          </Link>
+        </Card>
+      </div>
+    </>
+  )
+
+  const getMalKabulcuDashboard = () => (
+    <>
+      {/* Mal Kabulcu Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Bugünkü Kabul</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.todayRecords}</div>
+            <p className="text-xs text-muted-foreground">Yeni kayıtlar</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Bekleyen İşlem</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-orange-600">{stats.pendingRecords}</div>
+            <p className="text-xs text-muted-foreground">Fatura bekleyen</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Toplam KG</CardTitle>
+            <Scale className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalKg.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">Toplam ağırlık</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Tamamlanan</CardTitle>
+            <CheckCircle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">{stats.completedRecords}</div>
+            <p className="text-xs text-muted-foreground">Tamamlanan işlemler</p>
+          </CardContent>
+        </Card>
           </div>
-          <div className="flex gap-3">
-            <Button onClick={testToast} variant="outline">
-              <Bell className="mr-2 h-4 w-4" />
-              Toast Test
-            </Button>
-            <Button asChild>
+
+      {/* Mal Kabulcu Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
               <Link href="/dashboard/mal-kabul/yeni">
-                <Plus className="mr-2 h-4 w-4" />
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Plus className="h-5 w-5" />
                 Yeni Mal Kabul
+              </CardTitle>
+              <CardDescription>
+                Yeni mal kabul kaydı oluştur
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-bold">+</span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </CardContent>
+          </Link>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Link href="/dashboard/mal-kabul">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Package className="h-5 w-5" />
+                Mal Kabul Listesi
+              </CardTitle>
+              <CardDescription>
+                Tüm kayıtları görüntüle
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-bold">{stats.totalRecords}</span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </CardContent>
               </Link>
-            </Button>
-            <Button variant="outline" asChild>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
               <Link href="/dashboard/raporlar">
-                <BarChart3 className="mr-2 h-4 w-4" />
-                Raporlar
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5" />
+                Performans Raporu
+              </CardTitle>
+              <CardDescription>
+                Kişisel performans analizi
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-bold">📊</span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </CardContent>
+          </Link>
+        </Card>
+      </div>
+    </>
+  )
+
+  const getMuhasebeDashboard = () => (
+    <>
+      {/* Muhasebe Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Toplam Ciro</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">₺{stats.totalValue.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">Genel toplam</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Bekleyen Faturalar</CardTitle>
+            <Receipt className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-orange-600">{stats.pendingRecords}</div>
+            <p className="text-xs text-muted-foreground">Faturalanacak</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Günlük İşlem</CardTitle>
+            <Calculator className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.todayRecords}</div>
+            <p className="text-xs text-muted-foreground">Bugünkü işlemler</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Aylık Büyüme</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.monthlyGrowth > 0 ? '+' : ''}{stats.monthlyGrowth.toFixed(1)}%</div>
+            <p className="text-xs text-muted-foreground">Geçen aya göre</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Muhasebe Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Link href="/dashboard/muhasebe/faturalar">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Receipt className="h-5 w-5" />
+                Fatura Yönetimi
+              </CardTitle>
+              <CardDescription>
+                Fatura oluştur ve yönet
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-bold">{stats.pendingRecords}</span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </CardContent>
+          </Link>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Link href="/dashboard/muhasebe/raporlar">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5" />
+                Finansal Raporlar
+              </CardTitle>
+              <CardDescription>
+                Detaylı finansal analizler
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-bold">💰</span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </CardContent>
+          </Link>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Link href="/dashboard/muhasebe/odeme">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <DollarSign className="h-5 w-5" />
+                Ödeme Takibi
+              </CardTitle>
+              <CardDescription>
+                Ödemeleri takip et
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-bold">💳</span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </CardContent>
               </Link>
-            </Button>
+        </Card>
           </div>
+    </>
+  )
+
+  const getSatinAlmaDashboard = () => (
+    <>
+      {/* Satın Alma Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Bekleyen Fiyat</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-orange-600">{stats.pendingRecords}</div>
+            <p className="text-xs text-muted-foreground">Fiyat girilecek</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Toplam Değer</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">₺{stats.totalValue.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">Toplam satın alma</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Günlük İşlem</CardTitle>
+            <Activity className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.todayRecords}</div>
+            <p className="text-xs text-muted-foreground">Bugünkü işlemler</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Haftalık Büyüme</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.weeklyGrowth > 0 ? '+' : ''}{stats.weeklyGrowth.toFixed(1)}%</div>
+            <p className="text-xs text-muted-foreground">Geçen haftaya göre</p>
+          </CardContent>
+        </Card>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {/* Satın Alma Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Link href="/dashboard/satin-alma/fiyat">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Fiyat Girişi
+              </CardTitle>
+              <CardDescription>
+                Bekleyen ürünlere fiyat gir
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-bold">{stats.pendingRecords}</span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </CardContent>
+          </Link>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Link href="/dashboard/satin-alma/tedarikci">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Building className="h-5 w-5" />
+                Tedarikçi Yönetimi
+              </CardTitle>
+              <CardDescription>
+                Tedarikçileri yönet
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-bold">🏢</span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </CardContent>
+          </Link>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
+          <Link href="/dashboard/satin-alma/raporlar">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5" />
+                Satın Alma Raporu
+              </CardTitle>
+              <CardDescription>
+                Satın alma analizleri
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <span className="text-2xl font-bold">📈</span>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </CardContent>
+          </Link>
+        </Card>
+      </div>
+    </>
+  )
+
+  const getDefaultDashboard = () => (
+    <>
+      {/* Default Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Toplam Kayıt</CardTitle>
               <Package className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.totalRecords.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
-                {stats.monthlyGrowth > 0 ? '+' : ''}{stats.monthlyGrowth.toFixed(1)}% geçen aya göre
-              </p>
+            <div className="text-2xl font-bold">{stats.totalRecords}</div>
+            <p className="text-xs text-muted-foreground">Genel toplam</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Bekleyen İşlemler</CardTitle>
+            <CardTitle className="text-sm font-medium">Bekleyen İşlem</CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-orange-600">{stats.pendingRecords}</div>
-              <p className="text-xs text-muted-foreground">
-                Faturalandırılmayı bekleyen kayıtlar
-              </p>
+            <p className="text-xs text-muted-foreground">Bekleyen işlemler</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Toplam KG</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <Scale className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalKg.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
-                {stats.weeklyGrowth > 0 ? '+' : ''}{stats.weeklyGrowth.toFixed(1)}% geçen haftaya göre
-              </p>
+            <p className="text-xs text-muted-foreground">Toplam ağırlık</p>
             </CardContent>
           </Card>
 
@@ -250,24 +737,22 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">₺{stats.totalValue.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground">
-                Tüm işlemlerin toplam değeri
-              </p>
+            <p className="text-xs text-muted-foreground">Genel toplam</p>
             </CardContent>
           </Card>
         </div>
 
-        {/* Quick Actions */}
+      {/* Default Quick Actions */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
             <Link href="/dashboard/mal-kabul">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Package className="h-5 w-5" />
-                  Mal Kabul Yönetimi
+                Mal Kabul
                 </CardTitle>
                 <CardDescription>
-                  Mal kabul kayıtlarını görüntüle ve yönet
+                Mal kabul işlemleri
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -287,12 +772,12 @@ export default function DashboardPage() {
                   Raporlar
                 </CardTitle>
                 <CardDescription>
-                  Detaylı analiz ve raporları görüntüle
+                Sistem raporları
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold">4</span>
+                <span className="text-2xl font-bold">📊</span>
                   <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </div>
               </CardContent>
@@ -300,25 +785,59 @@ export default function DashboardPage() {
           </Card>
 
           <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-            <Link href="/dashboard/satin-alma">
+          <Link href="/dashboard/profil">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  Satın Alma
+                <UserCheck className="h-5 w-5" />
+                Profil
                 </CardTitle>
                 <CardDescription>
-                  Fiyat girişi ve fatura işlemleri
+                Kullanıcı profili
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold">{stats.pendingRecords}</span>
+                <span className="text-2xl font-bold">👤</span>
                   <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </div>
               </CardContent>
             </Link>
           </Card>
         </div>
+    </>
+  )
+
+  return (
+    <DashboardLayout>
+      <div className="p-6">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+            <p className="text-muted-foreground">
+              Hoş geldiniz, {session.user?.name}! ({userRole})
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <Button onClick={() => setShowQRScanner(true)} variant="outline">
+              <QrCode className="mr-2 h-4 w-4" />
+              QR Kod Tara
+            </Button>
+            <Button onClick={testToast} variant="outline">
+              <Bell className="mr-2 h-4 w-4" />
+              Toast Test
+            </Button>
+            <Button asChild>
+              <Link href="/dashboard/mal-kabul/yeni">
+                <Plus className="mr-2 h-4 w-4" />
+                Yeni Mal Kabul
+              </Link>
+            </Button>
+          </div>
+        </div>
+
+        {/* Role-based Content */}
+        {getRoleBasedContent()}
 
         {/* Recent Activity */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -385,6 +904,13 @@ export default function DashboardPage() {
           </Card>
         </div>
       </div>
+
+      {/* QR Scanner Modal */}
+      <QRScanner
+        isOpen={showQRScanner}
+        onClose={() => setShowQRScanner(false)}
+        onScan={handleQRScan}
+      />
     </DashboardLayout>
   )
 }

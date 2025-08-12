@@ -69,7 +69,7 @@ async function main() {
     {
       dukkanAdi: 'CİHAN TARIM',
       sehir: 'Antalya',
-      komisyonNo: 'K001',
+      komisyonNo: 'K109',
       vkn: '1234567890',
       yetkiliAdi: 'Cihan Yılmaz',
       yetkiliTelefon: '0555 123 4567',
@@ -78,7 +78,7 @@ async function main() {
     {
       dukkanAdi: 'ÇALDIR KOM',
       sehir: 'Mersin',
-      komisyonNo: 'K002',
+      komisyonNo: 'K110',
       vkn: '1234567891',
       yetkiliAdi: 'Ahmet Çaldır',
       yetkiliTelefon: '0555 123 4568',
@@ -87,7 +87,7 @@ async function main() {
     {
       dukkanAdi: 'DURDAŞLAR',
       sehir: 'İzmir',
-      komisyonNo: 'K003',
+      komisyonNo: 'K111',
       vkn: '1234567892',
       yetkiliAdi: 'Mehmet Durdaş',
       yetkiliTelefon: '0555 123 4569',
@@ -96,7 +96,7 @@ async function main() {
     {
       dukkanAdi: 'AHMET TORUN KOM',
       sehir: 'Bursa',
-      komisyonNo: 'K004',
+      komisyonNo: 'K112',
       vkn: '1234567893',
       yetkiliAdi: 'Ahmet Torun',
       yetkiliTelefon: '0555 123 4570',
@@ -127,48 +127,56 @@ async function main() {
   const urunler = [
     {
       ad: 'SİLÖR',
+      stokKodu: 'BIB001',
       kategori: 'Sebze',
       birim: 'kg',
       durum: 'AKTIF' as const,
     },
     {
       ad: 'SALATALIK',
+      stokKodu: 'SAL001',
       kategori: 'Sebze',
       birim: 'kg',
       durum: 'AKTIF' as const,
     },
     {
       ad: 'DOMATES',
+      stokKodu: 'DOM001',
       kategori: 'Sebze',
       birim: 'kg',
       durum: 'AKTIF' as const,
     },
     {
       ad: 'SİVRİ',
+      stokKodu: 'BIB002',
       kategori: 'Sebze',
       birim: 'kg',
       durum: 'AKTIF' as const,
     },
     {
       ad: 'DOLMA',
+      stokKodu: 'URN001',
       kategori: 'Sebze',
       birim: 'kg',
       durum: 'AKTIF' as const,
     },
     {
       ad: 'ÜÇBURUN',
+      stokKodu: 'URN002',
       kategori: 'Sebze',
       birim: 'kg',
       durum: 'AKTIF' as const,
     },
     {
       ad: 'ÇARLİ',
+      stokKodu: 'URN003',
       kategori: 'Sebze',
       birim: 'kg',
       durum: 'AKTIF' as const,
     },
     {
       ad: 'SALKIM KOK',
+      stokKodu: 'URN004',
       kategori: 'Sebze',
       birim: 'kg',
       durum: 'AKTIF' as const,
@@ -176,14 +184,105 @@ async function main() {
   ]
 
   for (const urunData of urunler) {
-    try {
-      await prisma.urun.create({
-        data: urunData,
-      })
-      console.log(`Ürün oluşturuldu:`, urunData.ad)
-    } catch (error) {
-      console.log(`Ürün zaten mevcut:`, urunData.ad)
-    }
+    await prisma.urun.create({
+      data: urunData,
+    })
+    console.log(`Ürün oluşturuldu:`, urunData.ad)
+  }
+
+  // Müstahsil verisi sistemden eklenir, otomatik kod alır (M001, M002...)
+  console.log('Müstahsil verisi sistemden eklenir, otomatik kod alır')
+
+  // Üretici verileri oluştur
+  const ureticiler = [
+    {
+      ad: 'ALİ',
+      soyad: 'YILMAZ',
+      tcNo: '12345678905',
+      dogumTarihi: new Date('1985-03-15'),
+      cinsiyet: 'ERKEK' as const,
+      sehir: 'Antalya',
+      iletisim: '0555 123 4570',
+      durum: 'AKTIF' as const,
+      komisyoncuId: null, // CİHAN TARIM'a bağlı olacak
+    },
+    {
+      ad: 'FATMA',
+      soyad: 'KAYA',
+      tcNo: '12345678906',
+      dogumTarihi: new Date('1988-07-22'),
+      cinsiyet: 'KADIN' as const,
+      sehir: 'Mersin',
+      iletisim: '0555 123 4571',
+      durum: 'AKTIF' as const,
+      komisyoncuId: null, // ÇALDIR KOM'a bağlı olacak
+    },
+    {
+      ad: 'MEHMET',
+      soyad: 'DEMİR',
+      tcNo: '12345678907',
+      dogumTarihi: new Date('1990-11-08'),
+      cinsiyet: 'ERKEK' as const,
+      sehir: 'İzmir',
+      iletisim: '0555 123 4572',
+      durum: 'AKTIF' as const,
+      komisyoncuId: null, // DURDAŞLAR'a bağlı olacak
+    },
+    {
+      ad: 'AYŞE',
+      soyad: 'ÖZ',
+      tcNo: '12345678908',
+      dogumTarihi: new Date('1987-04-12'),
+      cinsiyet: 'KADIN' as const,
+      sehir: 'Bursa',
+      iletisim: '0555 123 4573',
+      durum: 'AKTIF' as const,
+      komisyoncuId: null, // AHMET TORUN KOM'a bağlı olacak
+    },
+  ]
+
+  // Önce üreticileri oluştur
+  for (const ureticiData of ureticiler) {
+    await prisma.uretici.create({
+      data: ureticiData,
+    })
+    console.log(`Üretici oluşturuldu:`, `${ureticiData.ad} ${ureticiData.soyad}`)
+  }
+
+  // Sonra üreticileri komisyonculara bağla
+  const komisyoncuIds = await prisma.komisyoncu.findMany({
+    select: { id: true },
+    orderBy: { createdAt: 'asc' }
+  })
+
+  if (komisyoncuIds.length >= 4) {
+    // ALİ YILMAZ -> CİHAN TARIM (1. komisyoncu)
+    await prisma.uretici.updateMany({
+      where: { ad: 'ALİ', soyad: 'YILMAZ' },
+      data: { komisyoncuId: komisyoncuIds[0].id }
+    })
+    console.log('ALİ YILMAZ -> CİHAN TARIM komisyoncusuna bağlandı')
+
+    // FATMA KAYA -> ÇALDIR KOM (2. komisyoncu)
+    await prisma.uretici.updateMany({
+      where: { ad: 'FATMA', soyad: 'KAYA' },
+      data: { komisyoncuId: komisyoncuIds[1].id }
+    })
+    console.log('FATMA KAYA -> ÇALDIR KOM komisyoncusuna bağlandı')
+
+    // MEHMET DEMİR -> DURDAŞLAR (3. komisyoncu)
+    await prisma.uretici.updateMany({
+      where: { ad: 'MEHMET', soyad: 'DEMİR' },
+      data: { komisyoncuId: komisyoncuIds[2].id }
+    })
+    console.log('MEHMET DEMİR -> DURDAŞLAR komisyoncusuna bağlandı')
+
+    // AYŞE ÖZ -> AHMET TORUN KOM (4. komisyoncu)
+    await prisma.uretici.updateMany({
+      where: { ad: 'AYŞE', soyad: 'ÖZ' },
+      data: { komisyoncuId: komisyoncuIds[3].id }
+    })
+    console.log('AYŞE ÖZ -> AHMET TORUN KOM komisyoncusuna bağlandı')
   }
 
   // Ambalaj verileri oluştur
@@ -219,14 +318,10 @@ async function main() {
   ]
 
   for (const ambalajData of ambalajlar) {
-    try {
-      await prisma.ambalaj.create({
-        data: ambalajData,
-      })
-      console.log(`Ambalaj oluşturuldu:`, ambalajData.ad)
-    } catch (error) {
-      console.log(`Ambalaj zaten mevcut:`, ambalajData.ad)
-    }
+    await prisma.ambalaj.create({
+      data: ambalajData,
+    })
+    console.log(`Ambalaj oluşturuldu:`, ambalajData.ad)
   }
 }
 

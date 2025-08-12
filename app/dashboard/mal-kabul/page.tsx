@@ -124,7 +124,7 @@ export default function MalKabulDashboard() {
       const response = await fetch(`/api/mal-kabul?${params.toString()}`)
       if (response.ok) {
         const data = await response.json()
-        setMalKabulRecords(data)
+        setMalKabulRecords(data.records || [])
       } else {
         console.error('Mal kabul listesi alınamadı')
       }

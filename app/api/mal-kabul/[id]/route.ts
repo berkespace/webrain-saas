@@ -118,8 +118,6 @@ export async function PUT(
       girisKg,
       cikmaFireKg,
       netKg,
-      birimFiyat,
-      toplamFiyat,
       status,
       notlar
     } = body
@@ -190,8 +188,7 @@ export async function PUT(
         girisKg: parseFloat(girisKg) || 0,
         cikmaFireKg: parseFloat(cikmaFireKg) || 0,
         netKg: parseFloat(netKg) || 0,
-        birimFiyat: birimFiyat ? parseFloat(birimFiyat) : null,
-        toplamFiyat: toplamFiyat ? parseFloat(toplamFiyat) : null,
+
         status,
         notlar: notlar || null,
         // Note: miktar is set to girisKg, as in original

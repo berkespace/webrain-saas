@@ -34,52 +34,25 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-// Mock kullanıcı verileri
-const mockUsers = [
-  {
-    id: 1,
-    firstName: 'Admin',
-    lastName: 'User',
-    email: 'admin@webrain.com',
-    role: 'ADMIN',
-    createdAt: '2024-01-01',
-    status: 'active'
-  },
-  {
-    id: 2,
-    firstName: 'Ahmet',
-    lastName: 'Mal Kabulcu',
-    email: 'mal@webrain.com',
-    role: 'MAL_KABULCU',
-    createdAt: '2024-01-02',
-    status: 'active'
-  },
-  {
-    id: 3,
-    firstName: 'Mehmet',
-    lastName: 'Satın Almacı',
-    email: 'satin@webrain.com',
-    role: 'SATIN_ALMACI',
-    createdAt: '2024-01-03',
-    status: 'active'
-  },
-  {
-    id: 4,
-    firstName: 'Fatma',
-    lastName: 'Muhasebe',
-    email: 'muhasebe@webrain.com',
-    role: 'MUHASEBE',
-    createdAt: '2024-01-04',
-    status: 'active'
-  }
-]
+interface User {
+  id: string
+  firstName: string
+  lastName: string
+  email: string
+  role: string
+  createdAt: string
+  status: string
+}
 
 export default function KullaniciYonetimi() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [searchTerm, setSearchTerm] = useState('')
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [editingUser, setEditingUser] = useState<any>(null)
+  const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [users, setUsers] = useState<User[]>([])
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -88,11 +61,31 @@ export default function KullaniciYonetimi() {
     role: ''
   })
 
+  // Kullanıcıları getir
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch('/api/users')
+      if (response.ok) {
+        const data = await response.json()
+        setUsers(data)
+        setFilteredUsers(data)
+      } else {
+        console.error('Kullanıcılar yüklenirken hata oluştu')
+      }
+    } catch (error) {
+      console.error('Kullanıcılar getirilemedi:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login')
     } else if (session && (session.user as any)?.role !== 'ADMIN') {
       router.push('/dashboard')
+    } else if (status === 'authenticated') {
+      fetchUsers()
     }
   }, [status, session, router])
 
@@ -107,16 +100,35 @@ export default function KullaniciYonetimi() {
     )
   }
 
+  // Arama filtreleme
+  useEffect(() => {
+    if (searchTerm) {
+      const filtered = users.filter(user =>
+        user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.role.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+      setFilteredUsers(filtered)
+    } else {
+      setFilteredUsers(users)
+    }
+  }, [searchTerm, users])
+
+  if (status === 'loading' || isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Yükleniyor...</p>
+        </div>
+      </div>
+    )
+  }
+
   if (!session || (session.user as any)?.role !== 'ADMIN') {
     return null
   }
-
-  const filteredUsers = mockUsers.filter(user => 
-    user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.role.toLowerCase().includes(searchTerm.toLowerCase())
-  )
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
