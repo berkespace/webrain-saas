@@ -279,57 +279,7 @@ export default function MalKabulTest() {
     }
   }
 
-  // Global keyboard listener
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      // Eğer herhangi bir input aktifse, global listener'ı devre dışı bırak
-      if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA' || document.activeElement?.tagName === 'SELECT') {
-        return
-      }
 
-      // Sadece sayı ve harf tuşlarına tepki ver (Türkçe karakterler dahil)
-      if (e.key.length === 1 && /[a-zA-Z0-9üÜğĞşŞıİöÖçÇ]/.test(e.key)) {
-        setGlobalInput(prev => {
-          const newInput = prev + e.key
-          console.log('🔍 Global Input:', newInput)
-          return newInput
-        })
-        setShowGlobalSuggestions(true)
-        
-        // 5 saniye sonra input'u temizle
-        setTimeout(() => {
-          setGlobalInput('')
-          setShowGlobalSuggestions(false)
-          setGlobalSuggestions([])
-        }, 5000)
-      }
-    }
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Backspace ile son karakteri sil
-      if (e.key === 'Backspace' && !document.activeElement?.tagName) {
-        setGlobalInput(prev => prev.slice(0, -1))
-      }
-      
-      // Ctrl+S ve Ctrl+N kısayolları
-      if (e.ctrlKey && e.key === 's') {
-        e.preventDefault()
-        saveAllRows()
-      }
-      
-      if (e.ctrlKey && e.key === 'n') {
-        e.preventDefault()
-        addRow()
-      }
-    }
-
-    window.addEventListener('keypress', handleKeyPress)
-    window.addEventListener('keydown', handleKeyDown)
-    return () => {
-      window.removeEventListener('keypress', handleKeyPress)
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [rows])
 
   if (status === 'loading') {
     return <div className="flex items-center justify-center h-screen">Yükleniyor...</div>
@@ -738,7 +688,7 @@ export default function MalKabulTest() {
     })
 
     setGlobalSuggestions(suggestions.slice(0, 8))
-  }, [globalInput, komisyoncular, mustahsil, urunler, ozelFirmalar])
+  }, [globalInput, komisyoncular, mustahsil, urunler, ozelFirmalar, setGlobalSuggestions])
 
   const handleGlobalSuggestionClick = (suggestion: any) => {
     if (!selectedRowId) {
@@ -860,6 +810,58 @@ export default function MalKabulTest() {
     setSortColumn(null)
     setSortDirection('asc')
   }
+
+  // Global keyboard listener
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      // Eğer herhangi bir input aktifse, global listener'ı devre dışı bırak
+      if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA' || document.activeElement?.tagName === 'SELECT') {
+        return
+      }
+
+      // Sadece sayı ve harf tuşlarına tepki ver (Türkçe karakterler dahil)
+      if (e.key.length === 1 && /[a-zA-Z0-9üÜğĞşŞıİöÖçÇ]/.test(e.key)) {
+        setGlobalInput(prev => {
+          const newInput = prev + e.key
+          console.log('🔍 Global Input:', newInput)
+          return newInput
+        })
+        setShowGlobalSuggestions(true)
+        
+        // 5 saniye sonra input'u temizle
+        setTimeout(() => {
+          setGlobalInput('')
+          setShowGlobalSuggestions(false)
+          setGlobalSuggestions([])
+        }, 5000)
+      }
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Backspace ile son karakteri sil
+      if (e.key === 'Backspace' && !document.activeElement?.tagName) {
+        setGlobalInput(prev => prev.slice(0, -1))
+      }
+      
+      // Ctrl+S ve Ctrl+N kısayolları
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault()
+        saveAllRows()
+      }
+      
+      if (e.ctrlKey && e.key === 'n') {
+        e.preventDefault()
+        addRow()
+      }
+    }
+
+    window.addEventListener('keypress', handleKeyPress)
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keypress', handleKeyPress)
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [rows, addRow, saveAllRows])
 
   return (
     <div className="p-4">
@@ -1395,7 +1397,7 @@ export default function MalKabulTest() {
           <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">
-                🔍 Global Arama: "{globalInput}"
+                🔍 Global Arama: &quot;{globalInput}&quot;
               </h3>
               <button
                 onClick={() => {

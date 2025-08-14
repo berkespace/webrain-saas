@@ -476,7 +476,7 @@ export default function MalKabulDashboard() {
         <Card>
           <CardHeader>
             <CardTitle>Mal Kabul Kayıtları</CardTitle>
-            <CardDescription>Excel'deki verilerin dijital versiyonu</CardDescription>
+            <CardDescription>Excel&apos;deki verilerin dijital versiyonu</CardDescription>
           </CardHeader>
           <CardContent>
             {loading ? (
