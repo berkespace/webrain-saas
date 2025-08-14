@@ -120,90 +120,7 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.UserScalarFieldEnum = {
-  id: 'id',
-  firstName: 'firstName',
-  lastName: 'lastName',
-  email: 'email',
-  password: 'password',
-  role: 'role',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.KomisyoncuScalarFieldEnum = {
-  id: 'id',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  dukkanAdi: 'dukkanAdi',
-  durum: 'durum',
-  komisyonNo: 'komisyonNo',
-  komisyonKodu: 'komisyonKodu',
-  sehir: 'sehir',
-  vkn: 'vkn',
-  yetkiliAdi: 'yetkiliAdi',
-  yetkiliTelefon: 'yetkiliTelefon'
-};
-
-exports.Prisma.OzelFirmaScalarFieldEnum = {
-  id: 'id',
-  firmaAdi: 'firmaAdi',
-  firmaNo: 'firmaNo',
-  vkn: 'vkn',
-  vergiDairesi: 'vergiDairesi',
-  yetkiliAdi: 'yetkiliAdi',
-  yetkiliTelefon: 'yetkiliTelefon',
-  sehir: 'sehir',
-  adres: 'adres',
-  durum: 'durum',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.UreticiScalarFieldEnum = {
-  id: 'id',
-  ad: 'ad',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  cinsiyet: 'cinsiyet',
-  dogumTarihi: 'dogumTarihi',
-  durum: 'durum',
-  iletisim: 'iletisim',
-  komisyoncuId: 'komisyoncuId',
-  sehir: 'sehir',
-  soyad: 'soyad',
-  tcNo: 'tcNo'
-};
-
-exports.Prisma.MustahsilScalarFieldEnum = {
-  id: 'id',
-  ad: 'ad',
-  soyad: 'soyad',
-  dogumTarihi: 'dogumTarihi',
-  tcKimlikNo: 'tcKimlikNo',
-  mustahsilNo: 'mustahsilNo',
-  iletisim: 'iletisim',
-  bankaAdi: 'bankaAdi',
-  ibanAdresi: 'ibanAdresi',
-  adres: 'adres',
-  cinsiyet: 'cinsiyet',
-  durum: 'durum',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-};
-
-exports.Prisma.UrunScalarFieldEnum = {
-  id: 'id',
-  ad: 'ad',
-  stokKodu: 'stokKodu',
-  kategori: 'kategori',
-  birim: 'birim',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  durum: 'durum'
-};
-
-exports.Prisma.AmbalajScalarFieldEnum = {
+exports.Prisma.AmbalajlarScalarFieldEnum = {
   id: 'id',
   ad: 'ad',
   tipi: 'tipi',
@@ -214,7 +131,35 @@ exports.Prisma.AmbalajScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
-exports.Prisma.MalKabulRecordScalarFieldEnum = {
+exports.Prisma.FaturalarScalarFieldEnum = {
+  id: 'id',
+  faturaNo: 'faturaNo',
+  tarih: 'tarih',
+  toplamTutar: 'toplamTutar',
+  kdvOrani: 'kdvOrani',
+  kdvTutari: 'kdvTutari',
+  genelToplam: 'genelToplam',
+  notlar: 'notlar',
+  satinAlmaciId: 'satinAlmaciId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.KomisyoncularScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  dukkanAdi: 'dukkanAdi',
+  durum: 'durum',
+  komisyonNo: 'komisyonNo',
+  sehir: 'sehir',
+  vkn: 'vkn',
+  yetkiliAdi: 'yetkiliAdi',
+  yetkiliTelefon: 'yetkiliTelefon',
+  komisyonKodu: 'komisyonKodu'
+};
+
+exports.Prisma.Mal_kabul_recordsScalarFieldEnum = {
   id: 'id',
   tarih: 'tarih',
   miktar: 'miktar',
@@ -243,16 +188,71 @@ exports.Prisma.MalKabulRecordScalarFieldEnum = {
   netKg: 'netKg'
 };
 
-exports.Prisma.FaturaScalarFieldEnum = {
+exports.Prisma.MustahsilScalarFieldEnum = {
   id: 'id',
-  faturaNo: 'faturaNo',
-  tarih: 'tarih',
-  toplamTutar: 'toplamTutar',
-  kdvOrani: 'kdvOrani',
-  kdvTutari: 'kdvTutari',
-  genelToplam: 'genelToplam',
-  notlar: 'notlar',
-  satinAlmaciId: 'satinAlmaciId',
+  ad: 'ad',
+  soyad: 'soyad',
+  dogumTarihi: 'dogumTarihi',
+  tcKimlikNo: 'tcKimlikNo',
+  ibanAdresi: 'ibanAdresi',
+  adres: 'adres',
+  cinsiyet: 'cinsiyet',
+  durum: 'durum',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  mustahsilNo: 'mustahsilNo',
+  iletisim: 'iletisim',
+  bankaAdi: 'bankaAdi'
+};
+
+exports.Prisma.Ozel_firmalarScalarFieldEnum = {
+  id: 'id',
+  firmaAdi: 'firmaAdi',
+  vkn: 'vkn',
+  yetkiliAdi: 'yetkiliAdi',
+  yetkiliTelefon: 'yetkiliTelefon',
+  sehir: 'sehir',
+  adres: 'adres',
+  durum: 'durum',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  firmaNo: 'firmaNo',
+  vergiDairesi: 'vergiDairesi'
+};
+
+exports.Prisma.UreticilerScalarFieldEnum = {
+  id: 'id',
+  ad: 'ad',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  cinsiyet: 'cinsiyet',
+  dogumTarihi: 'dogumTarihi',
+  durum: 'durum',
+  iletisim: 'iletisim',
+  komisyoncuId: 'komisyoncuId',
+  sehir: 'sehir',
+  soyad: 'soyad',
+  tcNo: 'tcNo'
+};
+
+exports.Prisma.UrunlerScalarFieldEnum = {
+  id: 'id',
+  ad: 'ad',
+  kategori: 'kategori',
+  birim: 'birim',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  durum: 'durum',
+  stokKodu: 'stokKodu'
+};
+
+exports.Prisma.UsersScalarFieldEnum = {
+  id: 'id',
+  firstName: 'firstName',
+  lastName: 'lastName',
+  email: 'email',
+  password: 'password',
+  role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -271,27 +271,15 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.UserRole = exports.$Enums.UserRole = {
-  ADMIN: 'ADMIN',
-  MAL_KABULCU: 'MAL_KABULCU',
-  MUHASEBE: 'MUHASEBE',
-  SATIN_ALMACI: 'SATIN_ALMACI'
+exports.AmbalajTipi = exports.$Enums.AmbalajTipi = {
+  PALET: 'PALET',
+  PLASTIK_KASA: 'PLASTIK_KASA',
+  KARTON_KASA: 'KARTON_KASA'
 };
 
 exports.Status = exports.$Enums.Status = {
   AKTIF: 'AKTIF',
   PASIF: 'PASIF'
-};
-
-exports.Gender = exports.$Enums.Gender = {
-  ERKEK: 'ERKEK',
-  KADIN: 'KADIN'
-};
-
-exports.AmbalajTipi = exports.$Enums.AmbalajTipi = {
-  PALET: 'PALET',
-  PLASTIK_KASA: 'PLASTIK_KASA',
-  KARTON_KASA: 'KARTON_KASA'
 };
 
 exports.ProductStatus = exports.$Enums.ProductStatus = {
@@ -308,16 +296,28 @@ exports.SaticiTipi = exports.$Enums.SaticiTipi = {
   KOMISYONCU: 'KOMISYONCU'
 };
 
+exports.Gender = exports.$Enums.Gender = {
+  ERKEK: 'ERKEK',
+  KADIN: 'KADIN'
+};
+
+exports.UserRole = exports.$Enums.UserRole = {
+  ADMIN: 'ADMIN',
+  MAL_KABULCU: 'MAL_KABULCU',
+  MUHASEBE: 'MUHASEBE',
+  SATIN_ALMACI: 'SATIN_ALMACI'
+};
+
 exports.Prisma.ModelName = {
-  User: 'User',
-  Komisyoncu: 'Komisyoncu',
-  OzelFirma: 'OzelFirma',
-  Uretici: 'Uretici',
-  Mustahsil: 'Mustahsil',
-  Urun: 'Urun',
-  Ambalaj: 'Ambalaj',
-  MalKabulRecord: 'MalKabulRecord',
-  Fatura: 'Fatura'
+  ambalajlar: 'ambalajlar',
+  faturalar: 'faturalar',
+  komisyoncular: 'komisyoncular',
+  mal_kabul_records: 'mal_kabul_records',
+  mustahsil: 'mustahsil',
+  ozel_firmalar: 'ozel_firmalar',
+  ureticiler: 'ureticiler',
+  urunler: 'urunler',
+  users: 'users'
 };
 
 /**

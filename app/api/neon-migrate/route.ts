@@ -121,24 +121,47 @@ export async function POST(request: NextRequest) {
       "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`
     
-    // Mal kabul records tablosu
-    await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS "malKabulRecords" (
+    // Mal kabul records tablosu - Local schema ile tamamen aynı
+    await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS mal_kabul_records (
       id TEXT PRIMARY KEY,
-      "fisNo" TEXT NOT NULL,
-      tarih TIMESTAMP NOT NULL,
-      "saticiTipi" TEXT NOT NULL,
-      "saticiId" TEXT NOT NULL,
+      tarih TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      miktar REAL NOT NULL,
+      "birimFiyat" REAL,
+      "toplamFiyat" REAL,
+      status TEXT NOT NULL DEFAULT 'FATURA_BEKLIYOR',
+      notlar TEXT,
+      "malKabulcuId" TEXT NOT NULL,
+      "komisyoncuId" TEXT,
+      "ureticiId" TEXT,
       "urunId" TEXT NOT NULL,
-      "ureticiId" TEXT NOT NULL,
-      "ambalajId" TEXT NOT NULL,
-      "brutKg" REAL NOT NULL,
-      "daraKg" REAL NOT NULL,
-      "girisKg" REAL NOT NULL,
-      "cikmaKg" REAL NOT NULL DEFAULT 0,
-      "fireKg" REAL NOT NULL DEFAULT 0,
-      "netKg" REAL NOT NULL DEFAULT 0,
-      "urunDurumu" TEXT NOT NULL DEFAULT 'BEKLEMEDE',
-      "userId" TEXT NOT NULL,
+      "faturaId" TEXT,
+      "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      "fisNo" TEXT UNIQUE NOT NULL,
+      "mustahsilId" TEXT,
+      "ozelFirmaId" TEXT,
+      "saticiTipi" TEXT NOT NULL DEFAULT 'OZEL_FIRMA',
+      "ambalajId" TEXT,
+      "paletSayisi" INTEGER DEFAULT 0,
+      "kasaSayisi" INTEGER DEFAULT 0,
+      "brutKg" REAL DEFAULT 0,
+      "daraKg" REAL DEFAULT 0,
+      "girisKg" REAL DEFAULT 0,
+      "cikmaFireKg" REAL DEFAULT 0,
+      "netKg" REAL DEFAULT 0
+    )`
+    
+    // Faturalar tablosu
+    await prisma.$executeRaw`CREATE TABLE IF NOT EXISTS faturalar (
+      id TEXT PRIMARY KEY,
+      "faturaNo" TEXT UNIQUE NOT NULL,
+      tarih TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      "toplamTutar" REAL NOT NULL,
+      "kdvOrani" REAL DEFAULT 18.0,
+      "kdvTutari" REAL NOT NULL,
+      "genelToplam" REAL NOT NULL,
+      notlar TEXT,
+      "satinAlmaciId" TEXT NOT NULL,
       "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )`
