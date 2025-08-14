@@ -28,8 +28,39 @@ interface SeedResponse {
 
 export default function NeonScriptPage() {
   const [loading, setLoading] = useState(false)
+  const [migrating, setMigrating] = useState(false)
   const [result, setResult] = useState<SeedResponse | null>(null)
+  const [migrationResult, setMigrationResult] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
+
+  const handleMigration = async () => {
+    setMigrating(true)
+    setMigrationResult(null)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/neon-migrate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setMigrationResult(data)
+      } else {
+        setError(data.error || 'Migration hatası')
+        setMigrationResult(data)
+      }
+    } catch (err) {
+      setError('Migration API çağrısı sırasında hata oluştu')
+      console.error('Migration hatası:', err)
+    } finally {
+      setMigrating(false)
+    }
+  }
 
   const handleSeedDatabase = async () => {
     setLoading(true)
@@ -97,14 +128,55 @@ export default function NeonScriptPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Database className="h-5 w-5" />
-              Veritabanı Seed İşlemi
+              Veritabanı Kurulum İşlemleri
             </CardTitle>
             <CardDescription>
-              Bu işlem Neon veritabanını temizleyip tüm gerekli verileri oluşturacak
+              Önce database schema oluşturun, sonra verileri seed edin
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
+              {/* Migration Status */}
+              <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-lg">
+                {migrating ? (
+                  <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
+                ) : migrationResult?.success ? (
+                  <CheckCircle className="h-6 w-6 text-green-500" />
+                ) : (
+                  <Database className="h-6 w-6 text-gray-500" />
+                )}
+                <span className="font-medium text-blue-600">
+                  {migrating 
+                    ? 'Database schema oluşturuluyor...' 
+                    : migrationResult?.success 
+                      ? 'Database schema hazır!' 
+                      : 'Database schema henüz oluşturulmadı'
+                  }
+                </span>
+              </div>
+
+              {/* Migration Button */}
+              <Button
+                onClick={handleMigration}
+                disabled={migrating}
+                variant="outline"
+                size="lg"
+                className="w-full"
+              >
+                {migrating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Schema Oluşturuluyor...
+                  </>
+                ) : (
+                  <>
+                    <Database className="mr-2 h-4 w-4" />
+                    1. Database Schema Oluştur
+                  </>
+                )}
+              </Button>
+
+              {/* Seed Status */}
               <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg">
                 {getStatusIcon()}
                 <span className={`font-medium ${getStatusColor()}`}>
@@ -112,9 +184,10 @@ export default function NeonScriptPage() {
                 </span>
               </div>
 
+              {/* Seed Button */}
               <Button
                 onClick={handleSeedDatabase}
-                disabled={loading}
+                disabled={loading || !migrationResult?.success}
                 size="lg"
                 className="w-full"
               >
@@ -126,7 +199,7 @@ export default function NeonScriptPage() {
                 ) : (
                   <>
                     <Database className="mr-2 h-4 w-4" />
-                    Veritabanını Seed Et
+                    2. Veritabanını Seed Et
                   </>
                 )}
               </Button>
@@ -141,6 +214,15 @@ export default function NeonScriptPage() {
                         <strong>Detay:</strong> {result.details}
                       </div>
                     )}
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {migrationResult?.success && (
+                <Alert className="border-blue-200 bg-blue-50">
+                  <CheckCircle className="h-4 w-4 text-blue-600" />
+                  <AlertDescription className="text-blue-800">
+                    <strong>Schema Hazır!</strong> {migrationResult.message}
                   </AlertDescription>
                 </Alert>
               )}
@@ -260,9 +342,21 @@ export default function NeonScriptPage() {
                   4
                 </div>
                 <div>
+                  <h4 className="font-medium">Database Schema Oluştur</h4>
+                  <p className="text-sm text-gray-600">
+                    "Database Schema Oluştur" butonuna tıklayarak tabloları oluşturun
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-medium">
+                  5
+                </div>
+                <div>
                   <h4 className="font-medium">Veritabanını Seed Et</h4>
                   <p className="text-sm text-gray-600">
-                    Yukarıdaki butona tıklayarak veritabanını otomatik olarak hazırlayın
+                    Schema hazır olduktan sonra "Veritabanını Seed Et" butonuna tıklayın
                   </p>
                 </div>
               </div>
