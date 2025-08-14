@@ -157,6 +157,8 @@ export default function MalKabulTest() {
     }
   }, [status])
 
+
+
   const fetchData = async () => {
     try {
       console.log('🔄 Veri getiriliyor...')
@@ -625,70 +627,7 @@ export default function MalKabulTest() {
     }
   }
 
-  // Global suggestions işleme
-  useEffect(() => {
-    if (!globalInput.trim()) {
-      setGlobalSuggestions([])
-      return
-    }
 
-    const suggestions: any[] = []
-    const searchTerm = globalInput.toLowerCase()
-
-    // Komisyoncu arama
-    komisyoncular.forEach(k => {
-      if (k.dukkanAdi.toLowerCase().includes(searchTerm) || k.komisyonKodu.toLowerCase().includes(searchTerm)) {
-        suggestions.push({
-          type: 'KOMISYONCU',
-          id: k.id,
-          title: k.dukkanAdi,
-          subtitle: k.komisyonKodu,
-          description: k.sehir
-        })
-      }
-    })
-
-    // Ürün arama
-    urunler.forEach(u => {
-      if (u.ad.toLowerCase().includes(searchTerm) || u.stokKodu.toLowerCase().includes(searchTerm)) {
-        suggestions.push({
-          type: 'URUN',
-          id: u.id,
-          title: u.ad,
-          subtitle: u.stokKodu,
-          description: u.kategori
-        })
-      }
-    })
-
-    // Özel firma arama
-    ozelFirmalar.forEach(f => {
-      if (f.firmaAdi.toLowerCase().includes(searchTerm) || f.firmaNo.toLowerCase().includes(searchTerm)) {
-        suggestions.push({
-          type: 'OZEL_FIRMA',
-          id: f.id,
-          title: f.firmaAdi,
-          subtitle: f.firmaNo,
-          description: f.sehir
-        })
-      }
-    })
-
-    // Müstahsil arama
-    mustahsil.forEach(m => {
-      if (m.mustahsilNo.toLowerCase().includes(searchTerm) || m.ad.toLowerCase().includes(searchTerm)) {
-        suggestions.push({
-          type: 'MUSTAHSIL',
-          id: m.id,
-          title: m.ad + ' ' + m.soyad,
-          subtitle: m.mustahsilNo,
-          description: m.sehir
-        })
-      }
-    })
-
-    setGlobalSuggestions(suggestions.slice(0, 8))
-  }, [globalInput, komisyoncular, mustahsil, urunler, ozelFirmalar, setGlobalSuggestions])
 
   const handleGlobalSuggestionClick = (suggestion: any) => {
     if (!selectedRowId) {
@@ -811,6 +750,71 @@ export default function MalKabulTest() {
     setSortDirection('asc')
   }
 
+  // Global suggestions işleme
+  useEffect(() => {
+    if (!globalInput.trim()) {
+      setGlobalSuggestions([])
+      return
+    }
+
+    const suggestions: any[] = []
+    const searchTerm = globalInput.toLowerCase()
+
+    // Komisyoncu arama
+    komisyoncular.forEach(k => {
+      if (k.dukkanAdi.toLowerCase().includes(searchTerm) || k.komisyonKodu.toLowerCase().includes(searchTerm)) {
+        suggestions.push({
+          type: 'KOMISYONCU',
+          id: k.id,
+          title: k.dukkanAdi,
+          subtitle: k.komisyonKodu,
+          description: k.sehir
+        })
+      }
+    })
+
+    // Ürün arama
+    urunler.forEach(u => {
+      if (u.ad.toLowerCase().includes(searchTerm) || u.stokKodu.toLowerCase().includes(searchTerm)) {
+        suggestions.push({
+          type: 'URUN',
+          id: u.id,
+          title: u.ad,
+          subtitle: u.stokKodu,
+          description: u.kategori
+        })
+      }
+    })
+
+    // Özel firma arama
+    ozelFirmalar.forEach(f => {
+      if (f.firmaAdi.toLowerCase().includes(searchTerm) || f.firmaNo.toLowerCase().includes(searchTerm)) {
+        suggestions.push({
+          type: 'OZEL_FIRMA',
+          id: f.id,
+          title: f.firmaAdi,
+          subtitle: f.firmaNo,
+          description: f.sehir
+        })
+      }
+    })
+
+    // Müstahsil arama
+    mustahsil.forEach(m => {
+      if (m.mustahsilNo.toLowerCase().includes(searchTerm) || m.ad.toLowerCase().includes(searchTerm)) {
+        suggestions.push({
+          type: 'MUSTAHSIL',
+          id: m.id,
+          title: m.ad + ' ' + m.soyad,
+          subtitle: m.mustahsilNo,
+          description: m.sehir
+        })
+      }
+    })
+
+    setGlobalSuggestions(suggestions.slice(0, 8))
+  }, [globalInput, komisyoncular, mustahsil, urunler, ozelFirmalar])
+
   // Global keyboard listener
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -862,6 +866,8 @@ export default function MalKabulTest() {
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [rows, addRow, saveAllRows])
+
+
 
   return (
     <div className="p-4">
