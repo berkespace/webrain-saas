@@ -23,8 +23,54 @@ export default function YeniMustahsilPage() {
     dogumTarihi: '',
     cinsiyet: '',
     iletisim: '',
-    adres: ''
+    adres: '',
+    bankaAdi: '',
+    ibanAdresi: ''
   })
+
+  // Kategori seçenekleri
+  const kategoriSecenekleri = [
+    { value: 'Sebze', label: 'Sebze' },
+    { value: 'Meyve', label: 'Meyve' },
+    { value: 'Yeşillik', label: 'Yeşillik' }
+  ]
+
+  // Türkiye Bankaları ve Şubeleri
+  const bankaSecenekleri = [
+    { value: 'ZIRAAT_BANKASI', label: 'Ziraat Bankası' },
+    { value: 'IS_BANKASI', label: 'İş Bankası' },
+    { value: 'GARANTI_BBVA', label: 'Garanti BBVA' },
+    { value: 'AKBANK', label: 'Akbank' },
+    { value: 'YAPI_KREDI', label: 'Yapı Kredi Bankası' },
+    { value: 'VAKIFBANK', label: 'VakıfBank' },
+    { value: 'HALKBANK', label: 'Türkiye Halk Bankası' },
+    { value: 'DENIZBANK', label: 'Denizbank' },
+    { value: 'ING_BANK', label: 'ING Bank' },
+    { value: 'QNB_FINANSBANK', label: 'QNB Finansbank' },
+    { value: 'KUVEYT_TURK', label: 'Kuveyt Türk Katılım Bankası' },
+    { value: 'ALBARAKA_TURK', label: 'Albaraka Türk Katılım Bankası' },
+    { value: 'TURKIYE_FINANS', label: 'Türkiye Finans Katılım Bankası' },
+    { value: 'VAKIF_KATILIM', label: 'Vakıf Katılım Bankası' },
+    { value: 'ZIRAAT_KATILIM', label: 'Ziraat Katılım Bankası' },
+    { value: 'EMLAK_KATILIM', label: 'Emlak Katılım Bankası' },
+    { value: 'TURKISH_BANK', label: 'Turkish Bank' },
+    { value: 'ADABANK', label: 'Adabank' },
+    { value: 'ANADOLUBANK', label: 'Anadolubank' },
+    { value: 'BURGAN_BANK', label: 'Burgan Bank' },
+    { value: 'CITIBANK', label: 'Citibank' },
+    { value: 'DEUTSCHE_BANK', label: 'Deutsche Bank' },
+    { value: 'HSBC', label: 'HSBC Bank' },
+    { value: 'JP_MORGAN', label: 'JP Morgan Chase Bank' },
+    { value: 'MORGAN_STANLEY', label: 'Morgan Stanley Bank' },
+    { value: 'NOMURA', label: 'Nomura Bank' },
+    { value: 'PROCREDIT_BANK', label: 'ProCredit Bank' },
+    { value: 'RABOBANK', label: 'Rabobank' },
+    { value: 'SHINHAN_BANK', label: 'Shinhan Bank' },
+    { value: 'SOCIETE_GENERALE', label: 'Société Générale' },
+    { value: 'STANDARD_CHARTERED', label: 'Standard Chartered Bank' },
+    { value: 'UBS', label: 'UBS Bank' },
+    { value: 'WESTPAC', label: 'Westpac Bank' }
+  ]
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -46,7 +92,7 @@ export default function YeniMustahsilPage() {
           description: `${data.ad} ${data.soyad} (${data.mustahsilNo}) başarıyla eklendi`,
           variant: "success",
         })
-        router.push('/dashboard/mustahsil/liste')
+        router.push('/dashboard/mustahsil')
       } else {
         const errorData = await response.json()
         toast({
@@ -68,7 +114,7 @@ export default function YeniMustahsilPage() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-4">
@@ -179,6 +225,36 @@ export default function YeniMustahsilPage() {
                   onChange={(e) => setFormData({...formData, adres: e.target.value})}
                   placeholder="Adres bilgisi"
                 />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="bankaAdi">Banka Adı</Label>
+                  <Select
+                    value={formData.bankaAdi}
+                    onValueChange={(value) => setFormData({...formData, bankaAdi: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Banka seçin" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {bankaSecenekleri.map((banka) => (
+                        <SelectItem key={banka.value} value={banka.value}>
+                          {banka.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="ibanAdresi">IBAN Adresi</Label>
+                  <Input
+                    id="ibanAdresi"
+                    value={formData.ibanAdresi}
+                    onChange={(e) => setFormData({...formData, ibanAdresi: e.target.value})}
+                    placeholder="TR00 0000 0000 0000 0000 0000 00"
+                  />
+                </div>
               </div>
 
               <div className="pt-4">

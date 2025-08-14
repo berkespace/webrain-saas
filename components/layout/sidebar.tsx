@@ -21,7 +21,8 @@ import {
   LogOut,
   ChevronLeft,
   ChevronRight,
-  Building
+  Building,
+  Apple
 } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
@@ -84,12 +85,7 @@ export function Sidebar() {
               href: '/dashboard/mal-kabul/liste',
               icon: <FileText className="h-4 w-4" />
             },
-            {
-              title: 'Bekleyen Faturalar',
-              href: '/dashboard/mal-kabul/bekleyen',
-              icon: <AlertTriangle className="h-4 w-4" />,
-              badge: 8
-            },
+            
             {
               title: 'Fiş Yazdır',
               href: '/dashboard/mal-kabul/fis',
@@ -99,14 +95,9 @@ export function Sidebar() {
         },
         {
           title: 'Komisyoncular',
-          href: '/dashboard/komisyoncular',
+          href: '/dashboard/komisyoncular/liste',
           icon: <Users className="h-4 w-4" />,
           children: [
-            {
-              title: 'Komisyoncu Listesi',
-              href: '/dashboard/komisyoncular/liste',
-              icon: <Users className="h-4 w-4" />
-            },
             {
               title: 'Yeni Komisyoncu',
               href: '/dashboard/komisyoncular/yeni',
@@ -116,14 +107,9 @@ export function Sidebar() {
         },
         {
           title: 'Üreticiler',
-          href: '/dashboard/ureticiler',
+          href: '/dashboard/ureticiler/liste',
           icon: <Users className="h-4 w-4" />,
           children: [
-            {
-              title: 'Üretici Listesi',
-              href: '/dashboard/ureticiler/liste',
-              icon: <Users className="h-4 w-4" />
-            },
             {
               title: 'Yeni Üretici',
               href: '/dashboard/ureticiler/yeni',
@@ -133,14 +119,9 @@ export function Sidebar() {
         },
         {
           title: 'Müstahsil',
-          href: '/dashboard/mustahsil',
+          href: '/dashboard/mustahsil/',
           icon: <Users className="h-4 w-4" />,
           children: [
-            {
-              title: 'Müstahsil Listesi',
-              href: '/dashboard/mustahsil/liste',
-              icon: <Users className="h-4 w-4" />
-            },
             {
               title: 'Yeni Müstahsil',
               href: '/dashboard/mustahsil/yeni',
@@ -150,14 +131,9 @@ export function Sidebar() {
         },
         {
           title: 'Özel Firmalar',
-          href: '/dashboard/ozel-firmalar',
+          href: '/dashboard/ozel-firmalar/liste',
           icon: <Building className="h-4 w-4" />,
           children: [
-            {
-              title: 'Özel Firma Listesi',
-              href: '/dashboard/ozel-firmalar/liste',
-              icon: <Building className="h-4 w-4" />
-            },
             {
               title: 'Yeni Özel Firma',
               href: '/dashboard/ozel-firmalar/yeni',
@@ -167,14 +143,9 @@ export function Sidebar() {
         },
         {
           title: 'Ambalajlar',
-          href: '/dashboard/ambalajlar',
+          href: '/dashboard/ambalajlar/liste',
           icon: <Package className="h-4 w-4" />,
           children: [
-            {
-              title: 'Ambalaj Listesi',
-              href: '/dashboard/ambalajlar/liste',
-              icon: <Package className="h-4 w-4" />
-            },
             {
               title: 'Yeni Ambalaj',
               href: '/dashboard/ambalajlar/yeni',
@@ -185,13 +156,9 @@ export function Sidebar() {
         {
           title: 'Ürünler',
           href: '/dashboard/urunler',
-          icon: <Package className="h-4 w-4" />,
+          icon: <Apple className="h-4 w-4" />,
           children: [
-            {
-              title: 'Ürün Listesi',
-              href: '/dashboard/urunler/liste',
-              icon: <Package className="h-4 w-4" />
-            },
+           
             {
               title: 'Yeni Ürün',
               href: '/dashboard/urunler/yeni',
@@ -199,35 +166,13 @@ export function Sidebar() {
             }
           ]
         },
-        {
-          title: 'Raporlar',
-          href: '/dashboard/raporlar',
-          icon: <BarChart3 className="h-4 w-4" />,
-          children: [
-            {
-              title: 'Günlük Rapor',
-              href: '/dashboard/raporlar/gunluk',
-              icon: <Calendar className="h-4 w-4" />
-            },
-            {
-              title: 'Aylık Rapor',
-              href: '/dashboard/raporlar/aylik',
-              icon: <BarChart3 className="h-4 w-4" />
-            },
-            {
-              title: 'Komisyoncu Raporu',
-              href: '/dashboard/raporlar/komisyoncu',
-              icon: <Users className="h-4 w-4" />
-            },
-            {
-              title: 'Ürün Raporu',
-              href: '/dashboard/raporlar/urun',
-              icon: <Package className="h-4 w-4" />
-            }
-          ]
-        }
+    
       ]
     }
+
+
+
+
 
     // Admin için tüm menüler
     if (userRole === 'ADMIN') {
@@ -281,14 +226,9 @@ export function Sidebar() {
         },
         {
           title: 'Üreticiler',
-          href: '/dashboard/ureticiler',
+          href: '/dashboard/ureticiler/liste',
           icon: <Users className="h-4 w-4" />,
           children: [
-            {
-              title: 'Üretici Listesi',
-              href: '/dashboard/ureticiler/liste',
-              icon: <Users className="h-4 w-4" />
-            },
             {
               title: 'Yeni Üretici',
               href: '/dashboard/ureticiler/yeni',
@@ -298,14 +238,9 @@ export function Sidebar() {
         },
         {
           title: 'Müstahsil',
-          href: '/dashboard/mustahsil',
+          href: '/dashboard/mustahsil/liste',
           icon: <Users className="h-4 w-4" />,
           children: [
-            {
-              title: 'Müstahsil Listesi',
-              href: '/dashboard/mustahsil/liste',
-              icon: <Users className="h-4 w-4" />
-            },
             {
               title: 'Yeni Müstahsil',
               href: '/dashboard/mustahsil/yeni',

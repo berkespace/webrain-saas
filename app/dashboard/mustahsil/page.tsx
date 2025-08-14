@@ -5,46 +5,48 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/components/ui/use-toast'
-import { Plus, Edit, Trash2, Search, Package } from 'lucide-react'
+import { Plus, Edit, Trash2, Search, User } from 'lucide-react'
 import Link from 'next/link'
 
-interface Urun {
+interface Mustahsil {
   id: string
   ad: string
-  stokKodu: string
-  kategori: string
-  birim: string
+  soyad: string
+  tcKimlikNo: string
+  dogumTarihi: string
+  mustahsilNo: string
+  cinsiyet: string
+  iletisim: string
+  adres: string
+  bankaAdi: string
+  ibanAdresi: string
   durum: 'AKTIF' | 'PASIF'
   createdAt: string
   updatedAt: string
 }
 
-export default function UrunlerPage() {
-  const [urunler, setUrunler] = useState<Urun[]>([])
-  const [filteredUrunler, setFilteredUrunler] = useState<Urun[]>([])
+export default function MustahsilPage() {
+  const [mustahsil, setMustahsil] = useState<Mustahsil[]>([])
+  const [filteredMustahsil, setFilteredMustahsil] = useState<Mustahsil[]>([])
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedKategori, setSelectedKategori] = useState<string>('all')
   const [selectedDurum, setSelectedDurum] = useState<string>('all')
   const [isLoading, setIsLoading] = useState(true)
   const { toast } = useToast()
 
-  // Benzersiz kategorileri al
-  const kategoriler = Array.from(new Set(urunler.map(u => u.kategori).filter(Boolean)))
-  
-  // Ürünleri getir
-  const fetchUrunler = async () => {
+  // Müstahsil listesini getir
+  const fetchMustahsil = async () => {
     try {
-      const response = await fetch('/api/urunler')
+      const response = await fetch('/api/mustahsil')
       if (response.ok) {
         const data = await response.json()
-        setUrunler(data)
-        setFilteredUrunler(data)
+        setMustahsil(data)
+        setFilteredMustahsil(data)
       }
     } catch (error) {
-      console.error('Ürünler getirilemedi:', error)
+      console.error('Müstahsil listesi getirilemedi:', error)
       toast({
         title: "Hata",
-        description: "Ürünler yüklenirken hata oluştu",
+        description: "Müstahsil listesi yüklenirken hata oluştu",
         variant: "destructive"
       })
     } finally {
@@ -53,83 +55,87 @@ export default function UrunlerPage() {
   }
 
   useEffect(() => {
-    fetchUrunler()
+    fetchMustahsil()
   }, [])
 
   // Arama ve filtreleme
   useEffect(() => {
-    let filtered = urunler
+    let filtered = mustahsil
 
     // Arama filtreleme
     if (searchTerm) {
-      filtered = filtered.filter(urun =>
-        urun.ad.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        urun.stokKodu.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (urun.kategori && urun.kategori.toLowerCase().includes(searchTerm.toLowerCase()))
+      filtered = filtered.filter(m =>
+        m.ad.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        m.soyad.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        m.tcKimlikNo.includes(searchTerm) ||
+        m.mustahsilNo.toLowerCase().includes(searchTerm.toLowerCase())
       )
-    }
-
-    // Kategori filtreleme
-    if (selectedKategori !== 'all') {
-      filtered = filtered.filter(urun => urun.kategori === selectedKategori)
     }
 
     // Durum filtreleme
     if (selectedDurum !== 'all') {
-      filtered = filtered.filter(urun => urun.durum === selectedDurum)
+      filtered = filtered.filter(m => m.durum === selectedDurum)
     }
 
-    setFilteredUrunler(filtered)
-  }, [searchTerm, selectedKategori, selectedDurum, urunler])
+    setFilteredMustahsil(filtered)
+  }, [searchTerm, selectedDurum, mustahsil])
 
-  // Ürün sil
+  // Müstahsil sil
   const handleDelete = async (id: string) => {
-    if (!confirm('Bu ürünü silmek istediğinizden emin misiniz?')) return
+    if (!confirm('Bu müstahsil kaydını silmek istediğinizden emin misiniz?')) return
 
     try {
-      const response = await fetch(`/api/urunler/${id}`, {
+      const response = await fetch(`/api/mustahsil/${id}`, {
         method: 'DELETE'
       })
 
       if (response.ok) {
         toast({
           title: "Başarılı",
-          description: "Ürün silindi"
+          description: "Müstahsil kaydı başarıyla silindi"
         })
-        fetchUrunler()
+        fetchMustahsil()
       } else {
-        const error = await response.json()
-        throw new Error(error.error || 'Silme işlemi başarısız')
+        toast({
+          title: "Hata",
+          description: "Müstahsil kaydı silinirken hata oluştu",
+          variant: "destructive"
+        })
       }
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: "Hata",
-        description: error.message || "Ürün silinirken hata oluştu",
+        description: "Müstahsil kaydı silinirken hata oluştu",
         variant: "destructive"
       })
     }
   }
 
   // Durum değiştir
-  const toggleDurum = async (urun: Urun) => {
+  const toggleDurum = async (mustahsil: Mustahsil) => {
+    const newStatus = mustahsil.durum === 'AKTIF' ? 'PASIF' : 'AKTIF'
+    
     try {
-      const response = await fetch(`/api/urunler/${urun.id}`, {
+      const response = await fetch(`/api/mustahsil/${mustahsil.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          ...urun,
-          durum: urun.durum === 'AKTIF' ? 'PASIF' : 'AKTIF'
-        })
+        body: JSON.stringify({ durum: newStatus })
       })
 
       if (response.ok) {
         toast({
           title: "Başarılı",
-          description: "Ürün durumu güncellendi"
+          description: `Müstahsil durumu ${newStatus === 'AKTIF' ? 'aktif' : 'pasif'} yapıldı`
         })
-        fetchUrunler()
+        fetchMustahsil()
+      } else {
+        toast({
+          title: "Hata",
+          description: "Durum güncellenirken hata oluştu",
+          variant: "destructive"
+        })
       }
     } catch (error) {
       toast({
@@ -140,25 +146,13 @@ export default function UrunlerPage() {
     }
   }
 
-  // QR kod ile ürün arama
-  const handleQRSearch = () => {
-    const qrCode = prompt('QR kod verisini girin veya stok kodunu yazın:')
-    if (qrCode) {
-      setSearchTerm(qrCode)
-      // Stok kodu formatında ise direkt arama yap
-      if (qrCode.toUpperCase().startsWith('URN')) {
-        setSearchTerm(qrCode.toUpperCase())
-      }
-    }
-  }
-
   if (isLoading) {
     return (
-      <div className="container mx-auto p-6">
+      <div className="p-6">
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
-            <Package className="h-12 w-12 mx-auto mb-4 animate-pulse text-muted-foreground" />
-            <p>Ürünler yükleniyor...</p>
+            <User className="h-12 w-12 mx-auto mb-4 animate-pulse text-muted-foreground" />
+            <p>Müstahsil listesi yükleniyor...</p>
           </div>
         </div>
       </div>
@@ -166,17 +160,17 @@ export default function UrunlerPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Ürün Listesi</h1>
-          <p className="text-muted-foreground">Sistemdeki tüm ürünleri görüntüleyin</p>
+          <h1 className="text-3xl font-bold">Müstahsil Listesi</h1>
+          <p className="text-muted-foreground">Sistemdeki tüm müstahsil kayıtlarını görüntüleyin</p>
         </div>
-        <Link href="/dashboard/urunler/yeni">
+        <Link href="/dashboard/mustahsil/yeni">
           <Button>
             <Plus className="h-4 w-4 mr-2" />
-            Yeni Ürün
+            Yeni Müstahsil
           </Button>
         </Link>
       </div>
@@ -185,7 +179,7 @@ export default function UrunlerPage() {
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
         <Input
-          placeholder="Ürün adı, stok kodu veya kategori ara..."
+          placeholder="Ad, soyad, TC kimlik no veya müstahsil no ara..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="pl-10"
@@ -194,22 +188,6 @@ export default function UrunlerPage() {
 
       {/* Filtreler */}
       <div className="flex flex-wrap gap-4">
-        <div className="flex items-center gap-2">
-          <label className="text-sm font-medium">Kategori:</label>
-          <select
-            value={selectedKategori}
-            onChange={(e) => setSelectedKategori(e.target.value)}
-            className="px-3 py-1 text-sm border rounded-md bg-background"
-          >
-            <option value="all">Tümü</option>
-            {kategoriler.map((kategori) => (
-              <option key={kategori} value={kategori}>
-                {kategori}
-              </option>
-            ))}
-          </select>
-        </div>
-
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium">Durum:</label>
           <select
@@ -223,13 +201,12 @@ export default function UrunlerPage() {
           </select>
         </div>
 
-        {(selectedKategori !== 'all' || selectedDurum !== 'all' || searchTerm) && (
+        {(selectedDurum !== 'all' || searchTerm) && (
           <Button
             variant="outline"
             size="sm"
             onClick={() => {
               setSearchTerm('')
-              setSelectedKategori('all')
               setSelectedDurum('all')
             }}
           >
@@ -245,16 +222,19 @@ export default function UrunlerPage() {
             <thead className="bg-muted/50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Stok Kodu
+                  Müstahsil No
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Ürün Adı
+                  Ad Soyad
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Kategori
+                  TC Kimlik No
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                  Birim
+                  Doğum Tarihi
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  Cinsiyet
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Durum
@@ -265,25 +245,28 @@ export default function UrunlerPage() {
               </tr>
             </thead>
             <tbody className="bg-background divide-y divide-border">
-              {filteredUrunler.map((urun, index) => (
-                <tr key={urun.id} className={index % 2 === 0 ? 'bg-background' : 'bg-muted/30'}>
+              {filteredMustahsil.map((m, index) => (
+                <tr key={m.id} className={index % 2 === 0 ? 'bg-background' : 'bg-muted/30'}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="font-mono text-sm bg-muted px-2 py-1 rounded">
-                      {urun.stokKodu}
+                      {m.mustahsilNo}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap font-medium">
-                    {urun.ad}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
-                    {urun.kategori || '-'}
+                    {m.ad} {m.soyad}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    {urun.birim}
+                    {m.tcKimlikNo}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    {new Date(m.dogumTarihi).toLocaleDateString('tr-TR')}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    {m.cinsiyet}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <Badge variant={urun.durum === 'AKTIF' ? 'default' : 'secondary'}>
-                      {urun.durum}
+                    <Badge variant={m.durum === 'AKTIF' ? 'default' : 'secondary'}>
+                      {m.durum}
                     </Badge>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
@@ -291,11 +274,11 @@ export default function UrunlerPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => toggleDurum(urun)}
+                        onClick={() => toggleDurum(m)}
                       >
-                        {urun.durum === 'AKTIF' ? 'Pasif Yap' : 'Aktif Yap'}
+                        {m.durum === 'AKTIF' ? 'Pasif Yap' : 'Aktif Yap'}
                       </Button>
-                      <Link href={`/dashboard/urunler/duzenle/${urun.id}`}>
+                      <Link href={`/dashboard/mustahsil/duzenle/${m.id}`}>
                         <Button variant="outline" size="sm">
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -303,7 +286,7 @@ export default function UrunlerPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleDelete(urun.id)}
+                        onClick={() => handleDelete(m.id)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -316,25 +299,25 @@ export default function UrunlerPage() {
         </div>
       </div>
 
-      {filteredUrunler.length === 0 && (
+      {filteredMustahsil.length === 0 && (
         <div className="text-center py-12 text-muted-foreground">
-          {searchTerm ? 'Arama sonucu bulunamadı' : 'Henüz ürün eklenmemiş'}
+          {searchTerm ? 'Arama sonucu bulunamadı' : 'Henüz müstahsil kaydı eklenmemiş'}
         </div>
       )}
 
       {/* İstatistikler */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-muted/50 p-4 rounded-lg">
-          <div className="text-2xl font-bold">{urunler.length}</div>
-          <div className="text-sm text-muted-foreground">Toplam Ürün</div>
+          <div className="text-2xl font-bold">{mustahsil.length}</div>
+          <div className="text-sm text-muted-foreground">Toplam Müstahsil</div>
         </div>
         <div className="bg-muted/50 p-4 rounded-lg">
-          <div className="text-2xl font-bold">{urunler.filter(u => u.durum === 'AKTIF').length}</div>
-          <div className="text-sm text-muted-foreground">Aktif Ürün</div>
+          <div className="text-2xl font-bold">{mustahsil.filter(m => m.durum === 'AKTIF').length}</div>
+          <div className="text-sm text-muted-foreground">Aktif Müstahsil</div>
         </div>
         <div className="bg-muted/50 p-4 rounded-lg">
-          <div className="text-2xl font-bold">{urunler.filter(u => u.durum === 'PASIF').length}</div>
-          <div className="text-sm text-muted-foreground">Pasif Ürün</div>
+          <div className="text-2xl font-bold">{mustahsil.filter(m => m.durum === 'PASIF').length}</div>
+          <div className="text-sm text-muted-foreground">Pasif Müstahsil</div>
         </div>
       </div>
     </div>

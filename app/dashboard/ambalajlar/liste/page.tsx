@@ -16,7 +16,6 @@ import {
   Scale,
   Loader2
 } from 'lucide-react'
-import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import {
   Dialog,
   DialogContent,
@@ -104,14 +103,14 @@ export default function AmbalajListesi() {
 
   if (status === 'loading') {
     return (
-      <DashboardLayout>
+      
         <div className="min-h-screen bg-background flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
             <p className="mt-4 text-muted-foreground">Yükleniyor...</p>
           </div>
         </div>
-      </DashboardLayout>
+      
     )
   }
 
@@ -246,7 +245,7 @@ export default function AmbalajListesi() {
   }
 
   return (
-    <DashboardLayout>
+    
       <div className="p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -535,6 +534,6 @@ export default function AmbalajListesi() {
           </CardContent>
         </Card>
       </div>
-    </DashboardLayout>
+    
   )
 }

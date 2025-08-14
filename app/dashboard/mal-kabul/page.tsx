@@ -23,7 +23,6 @@ import {
   Trash2,
   Loader2
 } from 'lucide-react'
-import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import {
   Dialog,
   DialogContent,
@@ -318,8 +317,7 @@ export default function MalKabulDashboard() {
   })
 
   return (
-    <DashboardLayout>
-      <div className="p-6">
+    <div className="p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
@@ -565,41 +563,40 @@ export default function MalKabulDashboard() {
             )}
           </CardContent>
         </Card>
-      </div>
 
-      {/* View Dialog */}
-      <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Mal Kabul Detayları</DialogTitle>
-            <DialogDescription>
-              {selectedRecord ? (
-                <div className="grid gap-4">
-                  <p><strong>Fatura No:</strong> {selectedRecord.fisNo}</p>
-                  <p><strong>Tarih:</strong> {selectedRecord.tarih}</p>
-                  <p><strong>Satıcı:</strong> {getSaticiAdi(selectedRecord)}</p>
-                  <p><strong>Ürün:</strong> {selectedRecord.urun.ad}</p>
-                  <p><strong>Kasa Sayısı:</strong> {selectedRecord.kasaSayisi.toLocaleString()}</p>
-                  <p><strong>Brüt KG:</strong> {selectedRecord.brutKg.toLocaleString()}</p>
-                  <p><strong>Dara KG:</strong> {selectedRecord.daraKg.toLocaleString()}</p>
-                  <p><strong>Giriş KG:</strong> {selectedRecord.girisKg.toLocaleString()}</p>
-                  <p><strong>Çıkma/Fire KG:</strong> {selectedRecord.cikmaFireKg.toLocaleString()}</p>
-                  <p><strong>Net KG:</strong> {selectedRecord.netKg.toLocaleString()}</p>
-                  <p><strong>Birim Fiyat:</strong> {selectedRecord.birimFiyat ? selectedRecord.birimFiyat.toLocaleString() : '-'}</p>
-                  <p><strong>Toplam Fiyat:</strong> {selectedRecord.toplamFiyat ? selectedRecord.toplamFiyat.toLocaleString() : '-'}</p>
-                  <p><strong>Durum:</strong> <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedRecord.status)}`}>{getStatusLabel(selectedRecord.status)}</span></p>
-                  <p><strong>Notlar:</strong> {selectedRecord.notlar || '-'}</p>
-                  <p><strong>Oluşturan:</strong> {selectedRecord.malKabulcu.firstName} {selectedRecord.malKabulcu.lastName}</p>
-                  <p><strong>Oluşturma Tarihi:</strong> {new Date(selectedRecord.createdAt).toLocaleDateString()}</p>
-                  <p><strong>Güncellenme Tarihi:</strong> {new Date(selectedRecord.updatedAt).toLocaleDateString()}</p>
-                </div>
-              ) : (
-                <p>Seçili kayıt bulunamadı.</p>
-              )}
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-    </DashboardLayout>
-  )
+        {/* View Dialog */}
+        <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Mal Kabul Detayları</DialogTitle>
+              <DialogDescription>
+                {selectedRecord ? (
+                  <div className="grid gap-4">
+                    <p><strong>Fatura No:</strong> {selectedRecord.fisNo}</p>
+                    <p><strong>Tarih:</strong> {selectedRecord.tarih}</p>
+                    <p><strong>Satıcı:</strong> {getSaticiAdi(selectedRecord)}</p>
+                    <p><strong>Ürün:</strong> {selectedRecord.urun.ad}</p>
+                    <p><strong>Kasa Sayısı:</strong> {selectedRecord.kasaSayisi.toLocaleString()}</p>
+                    <p><strong>Brüt KG:</strong> {selectedRecord.brutKg.toLocaleString()}</p>
+                    <p><strong>Dara KG:</strong> {selectedRecord.daraKg.toLocaleString()}</p>
+                    <p><strong>Giriş KG:</strong> {selectedRecord.girisKg.toLocaleString()}</p>
+                    <p><strong>Çıkma/Fire KG:</strong> {selectedRecord.cikmaFireKg.toLocaleString()}</p>
+                    <p><strong>Net KG:</strong> {selectedRecord.netKg.toLocaleString()}</p>
+                    <p><strong>Birim Fiyat:</strong> {selectedRecord.birimFiyat ? selectedRecord.birimFiyat.toLocaleString() : '-'}</p>
+                    <p><strong>Toplam Fiyat:</strong> {selectedRecord.toplamFiyat ? selectedRecord.toplamFiyat.toLocaleString() : '-'}</p>
+                    <p><strong>Durum:</strong> <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedRecord.status)}`}>{getStatusLabel(selectedRecord.status)}</span></p>
+                    <p><strong>Notlar:</strong> {selectedRecord.notlar || '-'}</p>
+                    <p><strong>Oluşturan:</strong> {selectedRecord.malKabulcu.firstName} {selectedRecord.malKabulcu.lastName}</p>
+                    <p><strong>Oluşturma Tarihi:</strong> {new Date(selectedRecord.createdAt).toLocaleDateString()}</p>
+                    <p><strong>Güncellenme Tarihi:</strong> {new Date(selectedRecord.updatedAt).toLocaleDateString()}</p>
+                  </div>
+                ) : (
+                  <p>Seçili kayıt bulunamadı.</p>
+                )}
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      </div>
+    )
 }

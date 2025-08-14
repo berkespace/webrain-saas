@@ -32,8 +32,15 @@ export default function UrunDuzenlePage({ params }: { params: { id: string } }) 
     ad: '',
     kategori: '',
     birim: 'kg',
-    durum: 'AKTIF' as const
+    durum: 'AKTIF' as 'AKTIF' | 'PASIF'
   })
+
+  // Kategori seçenekleri
+  const kategoriSecenekleri = [
+    { value: 'Sebze', label: 'Sebze' },
+    { value: 'Meyve', label: 'Meyve' },
+    { value: 'Yeşillik', label: 'Yeşillik' }
+  ]
 
   // Ürün bilgilerini getir
   useEffect(() => {
@@ -126,84 +133,103 @@ export default function UrunDuzenlePage({ params }: { params: { id: string } }) 
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center gap-4">
+    <div className="container mx-auto p-4 lg:p-6 space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
         <Link href="/dashboard/urunler">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="w-full sm:w-auto">
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Geri
+            <span className="hidden sm:inline">Geri</span>
+            <span className="sm:hidden">←</span>
           </Button>
         </Link>
         <div>
-          <h1 className="text-3xl font-bold">Ürün Düzenle</h1>
-          <p className="text-muted-foreground">Ürün bilgilerini güncelleyin</p>
+          <h1 className="text-2xl lg:text-3xl font-bold">Ürün Düzenle</h1>
+          <p className="text-sm lg:text-base text-muted-foreground">
+            Ürün bilgilerini güncelleyin
+          </p>
         </div>
       </div>
 
-      <Card className="max-w-2xl">
+      <Card className="max-w-2xl mx-auto">
         <CardHeader>
-          <CardTitle>Ürün Bilgileri</CardTitle>
+          <CardTitle className="text-lg lg:text-xl">Ürün Bilgileri</CardTitle>
           <div className="text-sm text-muted-foreground">
             Stok Kodu: <span className="font-mono">{urun.stokKodu}</span>
           </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <Label htmlFor="ad">Ürün Adı *</Label>
-              <Input
-                id="ad"
-                value={formData.ad}
-                onChange={(e) => setFormData({...formData, ad: e.target.value})}
-                placeholder="Örn: Domates, Salatalık, Patlıcan..."
-                required
-              />
-            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Ürün Adı */}
+              <div className="lg:col-span-2">
+                <Label htmlFor="ad">Ürün Adı *</Label>
+                <Input
+                  id="ad"
+                  value={formData.ad}
+                  onChange={(e) => setFormData({...formData, ad: e.target.value})}
+                  placeholder="Örn: Domates, Salatalık, Patlıcan..."
+                  required
+                  className="mt-1"
+                />
+              </div>
 
-            <div>
-              <Label htmlFor="kategori">Kategori</Label>
-              <Input
-                id="kategori"
-                value={formData.kategori}
-                onChange={(e) => setFormData({...formData, kategori: e.target.value})}
-                placeholder="Örn: Sebze, Meyve, Bakliyat..."
-              />
-            </div>
+              {/* Kategori */}
+              <div>
+                <Label htmlFor="kategori">Kategori</Label>
+                <Select
+                  value={formData.kategori}
+                  onValueChange={(value) => setFormData({...formData, kategori: value})}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Kategori seçin" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {kategoriSecenekleri.map((secim) => (
+                      <SelectItem key={secim.value} value={secim.value}>
+                        {secim.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <div>
-              <Label htmlFor="birim">Birim *</Label>
-              <Select
-                value={formData.birim}
-                onValueChange={(value) => setFormData({...formData, birim: value})}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="kg">Kilogram (kg)</SelectItem>
-                  <SelectItem value="adet">Adet</SelectItem>
-                  <SelectItem value="litre">Litre (L)</SelectItem>
-                  <SelectItem value="metre">Metre (m)</SelectItem>
-                  <SelectItem value="ton">Ton</SelectItem>
-                  <SelectItem value="gram">Gram (g)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+              {/* Birim */}
+              <div>
+                <Label htmlFor="birim">Birim *</Label>
+                <Select
+                  value={formData.birim}
+                  onValueChange={(value) => setFormData({...formData, birim: value})}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="kg">Kilogram (kg)</SelectItem>
+                    <SelectItem value="adet">Adet</SelectItem>
+                    <SelectItem value="litre">Litre (L)</SelectItem>
+                    <SelectItem value="metre">Metre (m)</SelectItem>
+                    <SelectItem value="ton">Ton</SelectItem>
+                    <SelectItem value="gram">Gram (g)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <div>
-              <Label htmlFor="durum">Durum</Label>
-              <Select
-                value={formData.durum}
-                onValueChange={(value: 'AKTIF' | 'PASIF') => setFormData({...formData, durum: value})}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="AKTIF">Aktif</SelectItem>
-                  <SelectItem value="PASIF">Pasif</SelectItem>
-                </SelectContent>
-              </Select>
+              {/* Durum */}
+              <div className="lg:col-span-2">
+                <Label htmlFor="durum">Durum</Label>
+                <Select
+                  value={formData.durum}
+                  onValueChange={(value: 'AKTIF' | 'PASIF') => setFormData({...formData, durum: value})}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="AKTIF">Aktif</SelectItem>
+                    <SelectItem value="PASIF">Pasif</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="bg-yellow-50 dark:bg-yellow-950 p-4 rounded-lg">
@@ -213,16 +239,17 @@ export default function UrunDuzenlePage({ params }: { params: { id: string } }) 
               <p className="text-sm text-yellow-800 dark:text-yellow-200">
                 Stok kodu <strong>{urun.stokKodu}</strong> değiştirilemez. 
                 Bu kod global klavye dinleyicisinde ürün seçimi için kullanılmaktadır.
+                URN*** formatındaki kodlar otomatik olarak atanır ve değiştirilemez.
               </p>
             </div>
 
-            <div className="flex gap-3 pt-4">
-              <Button type="submit" disabled={isSaving} className="flex-1">
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
+              <Button type="submit" disabled={isSaving} className="flex-1 order-2 sm:order-1">
                 {isSaving ? 'Güncelleniyor...' : 'Güncelle'}
                 <Save className="h-4 w-4 ml-2" />
               </Button>
-              <Link href="/dashboard/urunler">
-                <Button type="button" variant="outline">
+              <Link href="/dashboard/urunler" className="order-1 sm:order-2">
+                <Button type="button" variant="outline" className="w-full sm:w-auto">
                   İptal
                 </Button>
               </Link>

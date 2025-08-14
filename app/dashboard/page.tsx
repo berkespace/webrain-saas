@@ -31,10 +31,14 @@ import {
   Calculator,
   Shield,
   Database,
-  QrCode
+  QrCode,
+  Store,
+  MapPin,
+  Phone,
+  User
 } from 'lucide-react'
 import Link from 'next/link'
-import { DashboardLayout } from '@/components/layout/dashboard-layout'
+
 import { useToast } from '@/components/ui/use-toast'
 import { QRScanner } from '@/components/ui/qr-scanner'
 
@@ -58,6 +62,37 @@ interface RecentActivity {
   status: 'SUCCESS' | 'PENDING' | 'ERROR'
 }
 
+interface Komisyoncu {
+  id: string
+  dukkanAdi: string
+  komisyonKodu: string
+  komisyonNo: string
+  sehir: string
+  vkn?: string
+  yetkiliAdi?: string
+  yetkiliTelefon?: string
+  durum: string
+}
+
+interface Urun {
+  id: string
+  ad: string
+  stokKodu: string
+  kategori?: string
+  birim: string
+  durum: string
+}
+
+interface Mustahsil {
+  id: string
+  ad: string
+  soyad: string
+  mustahsilNo: string
+  tcKimlikNo: string
+  cinsiyet: string
+  durum: string
+}
+
 export default function DashboardPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
@@ -75,6 +110,12 @@ export default function DashboardPage() {
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([])
   const [loading, setLoading] = useState(true)
   const [showQRScanner, setShowQRScanner] = useState(false)
+  const [aktifKomisyoncular, setAktifKomisyoncular] = useState<Komisyoncu[]>([])
+  const [komisyoncuLoading, setKomisyoncuLoading] = useState(false)
+  const [aktifUrunler, setAktifUrunler] = useState<Urun[]>([])
+  const [urunLoading, setUrunLoading] = useState(false)
+  const [aktifMustahsil, setAktifMustahsil] = useState<Mustahsil[]>([])
+  const [mustahsilLoading, setMustahsilLoading] = useState(false)
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -85,6 +126,9 @@ export default function DashboardPage() {
   useEffect(() => {
     if (status === 'authenticated' && session?.user) {
       fetchDashboardData()
+      fetchAktifKomisyoncular()
+      fetchAktifUrunler()
+      fetchAktifMustahsil()
     }
   }, [status, session])
 
@@ -120,13 +164,70 @@ export default function DashboardPage() {
           weeklyGrowth: lastWeekRecords.length > 0 ? ((todayRecords.length - lastWeekRecords.length) / lastWeekRecords.length) * 100 : 0
         })
 
-        // TODO: Gerçek recent activity verisi API'den gelecek
-        setRecentActivity([])
+        // Gerçek recent activity verisi
+        const recentActivities = records
+          .slice(0, 5)
+          .map((record: any) => ({
+            id: record.id,
+            type: 'MAL_KABUL' as const,
+            title: `Mal Kabul - ${record.fisNo}`,
+            description: `${record.urun?.ad || 'Ürün'} - ${record.netKg}kg`,
+            timestamp: record.createdAt,
+            status: record.status === 'TAMAMLANDI' ? 'SUCCESS' as const : 
+                   record.status === 'FATURA_BEKLIYOR' ? 'PENDING' as const : 'ERROR' as const
+          }))
+        
+        setRecentActivity(recentActivities)
       }
     } catch (error) {
       console.error('Dashboard veri getirme hatası:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchAktifKomisyoncular = async () => {
+    try {
+      setKomisyoncuLoading(true)
+      const response = await fetch('/api/komisyoncular?status=AKTIF')
+      if (response.ok) {
+        const data = await response.json()
+        setAktifKomisyoncular(data)
+      }
+    } catch (error) {
+      console.error('Aktif komisyoncu getirme hatası:', error)
+    } finally {
+      setKomisyoncuLoading(false)
+    }
+  }
+
+  const fetchAktifUrunler = async () => {
+    try {
+      setUrunLoading(true)
+      const response = await fetch('/api/urunler?status=AKTIF')
+      if (response.ok) {
+        const data = await response.json()
+        setAktifUrunler(data)
+      }
+    } catch (error) {
+      console.error('Aktif ürün getirme hatası:', error)
+    } finally {
+      setUrunLoading(false)
+    }
+  }
+
+  const fetchAktifMustahsil = async () => {
+    try {
+      setMustahsilLoading(true)
+      const response = await fetch('/api/mustahsil?status=AKTIF')
+      if (response.ok) {
+        const data = await response.json()
+        setAktifMustahsil(data)
+      }
+    } catch (error) {
+      console.error('Aktif müstahsil getirme hatası:', error)
+    } finally {
+      setMustahsilLoading(false)
     }
   }
 
@@ -191,27 +292,23 @@ export default function DashboardPage() {
 
   if (status === 'loading') {
     return (
-      <DashboardLayout>
-        <div className="min-h-screen bg-background flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
-            <p className="mt-4 text-muted-foreground">Dashboard yükleniyor...</p>
-          </div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Dashboard yükleniyor...</p>
         </div>
-      </DashboardLayout>
+      </div>
     )
   }
 
   if (loading) {
     return (
-      <DashboardLayout>
-        <div className="min-h-screen bg-background flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
-            <p className="mt-4 text-muted-foreground">Veriler yükleniyor...</p>
-          </div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Veriler yükleniyor...</p>
         </div>
-      </DashboardLayout>
+      </div>
     )
   }
 
@@ -398,68 +495,165 @@ export default function DashboardPage() {
             <p className="text-xs text-muted-foreground">Tamamlanan işlemler</p>
           </CardContent>
         </Card>
-          </div>
+      </div>
 
-      {/* Mal Kabulcu Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-              <Link href="/dashboard/mal-kabul/yeni">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Plus className="h-5 w-5" />
-                Yeni Mal Kabul
-              </CardTitle>
-              <CardDescription>
-                Yeni mal kabul kaydı oluştur
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <span className="text-2xl font-bold">+</span>
-                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+
+
+      {/* Hızlı Erişim Listeleri */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {/* Aktif Komisyoncu Listesi */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Store className="h-5 w-5" />
+              Komisyoncular
+            </CardTitle>
+            <CardDescription>
+              Hızlı arama için kodlar
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {komisyoncuLoading ? (
+              <div className="flex items-center justify-center py-4">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
               </div>
-            </CardContent>
-          </Link>
+            ) : aktifKomisyoncular.length > 0 ? (
+              <div className="space-y-2 max-h-64 overflow-y-auto">
+                {aktifKomisyoncular.slice(0, 8).map((komisyoncu) => (
+                  <div key={komisyoncu.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                      <Store className="h-3 w-3 text-primary flex-shrink-0" />
+                      <span className="text-sm truncate">{komisyoncu.dukkanAdi}</span>
+                    </div>
+                    <span className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded font-mono flex-shrink-0">
+                      {komisyoncu.komisyonKodu}
+                    </span>
+                  </div>
+                ))}
+                {aktifKomisyoncular.length > 8 && (
+                  <div className="text-center pt-2">
+                    <Link href="/dashboard/komisyoncular/liste">
+                      <Button variant="ghost" size="sm" className="text-xs">
+                        +{aktifKomisyoncular.length - 8} daha
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-4 text-muted-foreground text-sm">
+                <Store className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <p>Komisyoncu bulunamadı</p>
+              </div>
+            )}
+          </CardContent>
         </Card>
 
-        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-          <Link href="/dashboard/mal-kabul">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Package className="h-5 w-5" />
-                Mal Kabul Listesi
-              </CardTitle>
-              <CardDescription>
-                Tüm kayıtları görüntüle
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <span className="text-2xl font-bold">{stats.totalRecords}</span>
-                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+        {/* Aktif Ürün Listesi */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Package className="h-5 w-5" />
+              Ürünler
+            </CardTitle>
+            <CardDescription>
+              Stok kodları ile hızlı erişim
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {urunLoading ? (
+              <div className="flex items-center justify-center py-4">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
               </div>
-            </CardContent>
-              </Link>
+            ) : aktifUrunler.length > 0 ? (
+              <div className="space-y-2 max-h-64 overflow-y-auto">
+                {aktifUrunler.slice(0, 8).map((urun) => (
+                  <div key={urun.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                      <Package className="h-3 w-3 text-blue-500 flex-shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <span className="text-sm truncate block">{urun.ad}</span>
+                        {urun.kategori && (
+                          <span className="text-xs text-muted-foreground truncate block">{urun.kategori}</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                      <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded font-mono">
+                        {urun.stokKodu}
+                      </span>
+                      <span className="text-xs text-muted-foreground">{urun.birim}</span>
+                    </div>
+                  </div>
+                ))}
+                {aktifUrunler.length > 8 && (
+                  <div className="text-center pt-2">
+                    <Link href="/dashboard/urunler">
+                      <Button variant="ghost" size="sm" className="text-xs">
+                        +{aktifUrunler.length - 8} daha
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-4 text-muted-foreground text-sm">
+                <Package className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <p>Ürün bulunamadı</p>
+              </div>
+            )}
+          </CardContent>
         </Card>
 
-        <Card className="hover:shadow-lg transition-shadow cursor-pointer">
-              <Link href="/dashboard/raporlar">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="h-5 w-5" />
-                Performans Raporu
-              </CardTitle>
-              <CardDescription>
-                Kişisel performans analizi
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between">
-                <span className="text-2xl font-bold">📊</span>
-                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+        {/* Aktif Müstahsil Listesi */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Müstahsiller
+            </CardTitle>
+            <CardDescription>
+              Müstahsil numaraları
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {mustahsilLoading ? (
+              <div className="flex items-center justify-center py-4">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
               </div>
-            </CardContent>
-          </Link>
+            ) : aktifMustahsil.length > 0 ? (
+              <div className="space-y-2 max-h-64 overflow-y-auto">
+                {aktifMustahsil.slice(0, 8).map((mustahsil) => (
+                  <div key={mustahsil.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                      <Users className="h-3 w-3 text-green-500 flex-shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <span className="text-sm truncate block">{mustahsil.ad} {mustahsil.soyad}</span>
+                        <span className="text-xs text-muted-foreground truncate block">{mustahsil.tcKimlikNo}</span>
+                      </div>
+                    </div>
+                    <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded font-mono flex-shrink-0">
+                      {mustahsil.mustahsilNo}
+                    </span>
+                  </div>
+                ))}
+                {aktifMustahsil.length > 8 && (
+                  <div className="text-center pt-2">
+                    <Link href="/dashboard/mustahsil/liste">
+                      <Button variant="ghost" size="sm" className="text-xs">
+                        +{aktifMustahsil.length - 8} daha
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-4 text-muted-foreground text-sm">
+                <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <p>Müstahsil bulunamadı</p>
+              </div>
+            )}
+          </CardContent>
         </Card>
       </div>
     </>
@@ -749,7 +943,7 @@ export default function DashboardPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Package className="h-5 w-5" />
-                Mal Kabul
+                  Mal Kabul
                 </CardTitle>
                 <CardDescription>
                 Mal kabul işlemleri
@@ -808,8 +1002,7 @@ export default function DashboardPage() {
   )
 
   return (
-    <DashboardLayout>
-      <div className="p-6">
+    <div className="p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -848,29 +1041,36 @@ export default function DashboardPage() {
                 Son Aktiviteler
               </CardTitle>
               <CardDescription>
-                Sistemdeki son işlemler
+                Son mal kabul işlemleri
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {recentActivity.map((activity) => (
-                  <div key={activity.id} className="flex items-center gap-4">
-                    <div className={`w-2 h-2 rounded-full ${
-                      activity.status === 'SUCCESS' ? 'bg-green-500' :
-                      activity.status === 'PENDING' ? 'bg-orange-500' : 'bg-red-500'
-                    }`} />
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">{activity.title}</p>
-                      <p className="text-xs text-muted-foreground">{activity.description}</p>
+                {recentActivity.length > 0 ? (
+                  recentActivity.map((activity) => (
+                    <div key={activity.id} className="flex items-center gap-4">
+                      <div className={`w-2 h-2 rounded-full ${
+                        activity.status === 'SUCCESS' ? 'bg-green-500' :
+                        activity.status === 'PENDING' ? 'bg-orange-500' : 'bg-red-500'
+                      }`} />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">{activity.title}</p>
+                        <p className="text-xs text-muted-foreground">{activity.description}</p>
+                      </div>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(activity.timestamp).toLocaleTimeString('tr-TR', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </span>
                     </div>
-                    <span className="text-xs text-muted-foreground">
-                      {new Date(activity.timestamp).toLocaleTimeString('tr-TR', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                      })}
-                    </span>
+                  ))
+                ) : (
+                  <div className="text-center py-4 text-muted-foreground text-sm">
+                    <Activity className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    <p>Henüz aktivite bulunmuyor</p>
                   </div>
-                ))}
+                )}
               </div>
             </CardContent>
           </Card>
@@ -899,18 +1099,25 @@ export default function DashboardPage() {
                   <span className="text-sm">Bekleyen İşlemler</span>
                   <span className="text-sm font-medium text-orange-600">{stats.pendingRecords}</span>
                 </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">Toplam KG</span>
+                  <span className="text-sm font-medium">{stats.totalKg.toLocaleString()} kg</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">Toplam Değer</span>
+                  <span className="text-sm font-medium">₺{stats.totalValue.toLocaleString()}</span>
+                </div>
               </div>
             </CardContent>
           </Card>
         </div>
-      </div>
 
-      {/* QR Scanner Modal */}
-      <QRScanner
-        isOpen={showQRScanner}
-        onClose={() => setShowQRScanner(false)}
-        onScan={handleQRScan}
-      />
-    </DashboardLayout>
-  )
+        {/* QR Scanner Modal */}
+        <QRScanner
+          isOpen={showQRScanner}
+          onClose={() => setShowQRScanner(false)}
+          onScan={handleQRScan}
+        />
+      </div>
+    )
 }

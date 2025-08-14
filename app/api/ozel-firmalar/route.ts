@@ -44,12 +44,12 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { firmaAdi, vkn, yetkiliAdi, yetkiliTelefon, sehir, adres, durum } = body
+    const { firmaAdi, vkn, vergiDairesi, yetkiliAdi, yetkiliTelefon, sehir, adres, durum } = body
 
     // Validasyon
-    if (!firmaAdi || !vkn || !yetkiliAdi) {
+    if (!firmaAdi || !vkn || !vergiDairesi || !yetkiliAdi) {
       return NextResponse.json(
-        { error: "Firma adı, VKN ve yetkili adı alanları zorunludur" },
+        { error: "Firma adı, VKN, vergi dairesi ve yetkili adı alanları zorunludur" },
         { status: 400 }
       )
     }
@@ -85,6 +85,7 @@ export async function POST(request: NextRequest) {
         firmaAdi,
         firmaNo: nextFirmaNo,
         vkn,
+        vergiDairesi,
         yetkiliAdi,
         yetkiliTelefon: yetkiliTelefon || null,
         sehir: sehir || null,

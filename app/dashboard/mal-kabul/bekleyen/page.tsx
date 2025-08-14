@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -134,18 +133,18 @@ export default function BekleyenFaturalarPage() {
 
   if (loading) {
     return (
-      <DashboardLayout>
+      
         <div className="p-6">
           <div className="flex items-center justify-center h-64">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
           </div>
         </div>
-      </DashboardLayout>
+      
     )
   }
 
   return (
-    <DashboardLayout>
+    
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
           <div>
@@ -352,6 +351,6 @@ export default function BekleyenFaturalarPage() {
           </div>
         )}
       </div>
-    </DashboardLayout>
+    
   )
 }

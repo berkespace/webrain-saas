@@ -19,7 +19,6 @@ import {
   User,
   Loader2
 } from 'lucide-react'
-import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import {
   Dialog,
   DialogContent,
@@ -43,6 +42,7 @@ interface OzelFirma {
   id: string
   firmaAdi: string
   vkn?: string
+  vergiDairesi?: string
   yetkiliAdi?: string
   yetkiliTelefon?: string
   sehir: string
@@ -65,6 +65,7 @@ export default function OzelFirmaListesi() {
   const [formData, setFormData] = useState({
     firmaAdi: '',
     vkn: '',
+    vergiDairesi: '',
     yetkiliAdi: '',
     yetkiliTelefon: '',
     sehir: '',
@@ -110,14 +111,14 @@ export default function OzelFirmaListesi() {
 
   if (status === 'loading') {
     return (
-      <DashboardLayout>
+      
         <div className="min-h-screen bg-background flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
             <p className="mt-4 text-muted-foreground">Yükleniyor...</p>
           </div>
         </div>
-      </DashboardLayout>
+      
     )
   }
 
@@ -187,6 +188,7 @@ export default function OzelFirmaListesi() {
     setFormData({
       firmaAdi: firma.firmaAdi,
       vkn: firma.vkn || '',
+      vergiDairesi: firma.vergiDairesi || '',
       yetkiliAdi: firma.yetkiliAdi || '',
       yetkiliTelefon: firma.yetkiliTelefon || '',
       sehir: firma.sehir,
@@ -236,7 +238,7 @@ export default function OzelFirmaListesi() {
   }
 
   return (
-    <DashboardLayout>
+    
       <div className="p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -279,6 +281,15 @@ export default function OzelFirmaListesi() {
                         value={formData.vkn} 
                         onChange={(e) => setFormData({...formData, vkn: e.target.value})} 
                         placeholder="Vergi kimlik numarası"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="vergiDairesi">Vergi Dairesi</Label>
+                      <Input 
+                        id="vergiDairesi" 
+                        value={formData.vergiDairesi} 
+                        onChange={(e) => setFormData({...formData, vergiDairesi: e.target.value})} 
+                        placeholder="Vergi dairesi adı"
                       />
                     </div>
                   </div>
@@ -455,6 +466,7 @@ export default function OzelFirmaListesi() {
                     <tr className="border-b bg-muted/50">
                       <th className="text-left py-3 px-2 font-medium">Firma Adı</th>
                       <th className="text-left py-3 px-2 font-medium">VKN</th>
+                    <th className="text-left py-3 px-2 font-medium">Vergi Dairesi</th>
                       <th className="text-left py-3 px-2 font-medium">Yetkili</th>
                       <th className="text-left py-3 px-2 font-medium">İletişim</th>
                       <th className="text-left py-3 px-2 font-medium">Şehir</th>
@@ -471,6 +483,9 @@ export default function OzelFirmaListesi() {
                         </td>
                         <td className="py-3 px-2 text-sm">
                           {firma.vkn || '-'}
+                        </td>
+                        <td className="py-3 px-2 text-sm">
+                          {firma.vergiDairesi || '-'}
                         </td>
                         <td className="py-3 px-2">
                           {firma.yetkiliAdi || '-'}
@@ -516,6 +531,6 @@ export default function OzelFirmaListesi() {
           </CardContent>
         </Card>
       </div>
-    </DashboardLayout>
+    
   )
 }

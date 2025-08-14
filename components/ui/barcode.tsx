@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface BarcodeProps {
   value: string
@@ -11,6 +11,7 @@ interface BarcodeProps {
 
 export function Barcode({ value, width = 200, height = 60, className = '' }: BarcodeProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [barcodeDataUrl, setBarcodeDataUrl] = useState<string>('')
 
   useEffect(() => {
     const generateBarcode = async () => {
@@ -28,6 +29,10 @@ export function Barcode({ value, width = 200, height = 60, className = '' }: Bar
           fontSize: 12,
           margin: 10
         })
+
+        // Canvas'ı data URL'e çevir (yazdırma için)
+        const dataUrl = canvasRef.current.toDataURL('image/png')
+        setBarcodeDataUrl(dataUrl)
       } catch (error) {
         console.error('Barkod oluşturma hatası:', error)
         // Fallback: Basit barkod çizimi
@@ -73,11 +78,72 @@ export function Barcode({ value, width = 200, height = 60, className = '' }: Bar
   }
 
   return (
-    <canvas
-      ref={canvasRef}
-      className={className}
-      width={width}
-      height={height}
-    />
+    <div className="barcode-container">
+      <style jsx>{`
+        .barcode-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        
+        @media print {
+          .barcode-container {
+            display: block !important;
+            text-align: center;
+            max-width: 80mm !important;
+            width: 100% !important;
+          }
+          
+          .barcode-container canvas {
+            display: none !important;
+          }
+          
+          .barcode-container .print-only {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            max-width: 80mm !important;
+            width: 100% !important;
+            height: auto !important;
+            margin: 0 auto !important;
+          }
+        }
+        
+        @media screen {
+          .barcode-container .print-only {
+            display: none !important;
+          }
+        }
+      `}</style>
+      
+      {/* Canvas - ekran için */}
+      <canvas
+        ref={canvasRef}
+        className={className}
+        width={width}
+        height={height}
+        style={{
+          display: 'block',
+          maxWidth: '100%',
+          height: 'auto'
+        }}
+      />
+      
+      {/* Image - yazdırma için */}
+      {barcodeDataUrl && (
+        <img
+          src={barcodeDataUrl}
+          alt="Barcode"
+          width={width}
+          height={height}
+          style={{
+            display: 'none',
+            maxWidth: '100%',
+            height: 'auto'
+          }}
+          className="print-only"
+        />
+      )}
+    </div>
   )
 }

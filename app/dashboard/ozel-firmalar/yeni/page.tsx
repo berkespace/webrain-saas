@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -17,6 +16,7 @@ import { useToast } from '@/components/ui/use-toast'
 interface OzelFirmaFormData {
   firmaAdi: string
   vkn: string
+  vergiDairesi: string
   yetkiliAdi: string
   yetkiliTelefon: string
   sehir: string
@@ -32,6 +32,7 @@ export default function YeniOzelFirma() {
   const [formData, setFormData] = useState<OzelFirmaFormData>({
     firmaAdi: '',
     vkn: '',
+    vergiDairesi: '',
     yetkiliAdi: '',
     yetkiliTelefon: '',
     sehir: '',
@@ -48,10 +49,10 @@ export default function YeniOzelFirma() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (!formData.firmaAdi || !formData.vkn || !formData.yetkiliAdi) {
+    if (!formData.firmaAdi || !formData.vkn || !formData.vergiDairesi || !formData.yetkiliAdi) {
       toast({
         title: "Hata",
-        description: "Firma adı, VKN ve yetkili adı zorunludur",
+        description: "Firma adı, VKN, vergi dairesi ve yetkili adı zorunludur",
         variant: "destructive",
       })
       return
@@ -111,7 +112,7 @@ export default function YeniOzelFirma() {
   }
 
   return (
-    <DashboardLayout>
+    
       <div className="p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -164,6 +165,17 @@ export default function YeniOzelFirma() {
                 </div>
 
                 <div className="space-y-2">
+                  <Label htmlFor="vergiDairesi">Vergi Dairesi *</Label>
+                  <Input
+                    id="vergiDairesi"
+                    value={formData.vergiDairesi}
+                    onChange={(e) => setFormData({...formData, vergiDairesi: e.target.value})}
+                    placeholder="Vergi dairesi adı"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="yetkiliAdi">Yetkili Adı *</Label>
                   <Input
                     id="yetkiliAdi"
@@ -185,13 +197,95 @@ export default function YeniOzelFirma() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="sehir">Şehir</Label>
-                  <Input
-                    id="sehir"
-                    value={formData.sehir}
-                    onChange={(e) => setFormData({...formData, sehir: e.target.value})}
-                    placeholder="Şehir adı"
-                  />
+                  <Label htmlFor="sehir">Şehir *</Label>
+                  <Select value={formData.sehir} onValueChange={(value) => setFormData({...formData, sehir: value})}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Şehir seçin" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Adana">Adana</SelectItem>
+                      <SelectItem value="Adıyaman">Adıyaman</SelectItem>
+                      <SelectItem value="Afyonkarahisar">Afyonkarahisar</SelectItem>
+                      <SelectItem value="Ağrı">Ağrı</SelectItem>
+                      <SelectItem value="Amasya">Amasya</SelectItem>
+                      <SelectItem value="Ankara">Ankara</SelectItem>
+                      <SelectItem value="Antalya">Antalya</SelectItem>
+                      <SelectItem value="Artvin">Artvin</SelectItem>
+                      <SelectItem value="Aydın">Aydın</SelectItem>
+                      <SelectItem value="Balıkesir">Balıkesir</SelectItem>
+                      <SelectItem value="Bilecik">Bilecik</SelectItem>
+                      <SelectItem value="Bingöl">Bingöl</SelectItem>
+                      <SelectItem value="Bitlis">Bitlis</SelectItem>
+                      <SelectItem value="Bolu">Bolu</SelectItem>
+                      <SelectItem value="Burdur">Burdur</SelectItem>
+                      <SelectItem value="Bursa">Bursa</SelectItem>
+                      <SelectItem value="Çanakkale">Çanakkale</SelectItem>
+                      <SelectItem value="Çankırı">Çankırı</SelectItem>
+                      <SelectItem value="Çorum">Çorum</SelectItem>
+                      <SelectItem value="Denizli">Denizli</SelectItem>
+                      <SelectItem value="Diyarbakır">Diyarbakır</SelectItem>
+                      <SelectItem value="Edirne">Edirne</SelectItem>
+                      <SelectItem value="Elazığ">Elazığ</SelectItem>
+                      <SelectItem value="Erzincan">Erzincan</SelectItem>
+                      <SelectItem value="Erzurum">Erzurum</SelectItem>
+                      <SelectItem value="Eskişehir">Eskişehir</SelectItem>
+                      <SelectItem value="Gaziantep">Gaziantep</SelectItem>
+                      <SelectItem value="Giresun">Giresun</SelectItem>
+                      <SelectItem value="Gümüşhane">Gümüşhane</SelectItem>
+                      <SelectItem value="Hakkari">Hakkari</SelectItem>
+                      <SelectItem value="Hatay">Hatay</SelectItem>
+                      <SelectItem value="Isparta">Isparta</SelectItem>
+                      <SelectItem value="Mersin">Mersin</SelectItem>
+                      <SelectItem value="İstanbul">İstanbul</SelectItem>
+                      <SelectItem value="İzmir">İzmir</SelectItem>
+                      <SelectItem value="Kars">Kars</SelectItem>
+                      <SelectItem value="Kastamonu">Kastamonu</SelectItem>
+                      <SelectItem value="Kayseri">Kayseri</SelectItem>
+                      <SelectItem value="Kırklareli">Kırklareli</SelectItem>
+                      <SelectItem value="Kırşehir">Kırşehir</SelectItem>
+                      <SelectItem value="Kocaeli">Kocaeli</SelectItem>
+                      <SelectItem value="Konya">Konya</SelectItem>
+                      <SelectItem value="Kütahya">Kütahya</SelectItem>
+                      <SelectItem value="Malatya">Malatya</SelectItem>
+                      <SelectItem value="Manisa">Manisa</SelectItem>
+                      <SelectItem value="Kahramanmaraş">Kahramanmaraş</SelectItem>
+                      <SelectItem value="Mardin">Mardin</SelectItem>
+                      <SelectItem value="Muğla">Muğla</SelectItem>
+                      <SelectItem value="Muş">Muş</SelectItem>
+                      <SelectItem value="Nevşehir">Nevşehir</SelectItem>
+                      <SelectItem value="Niğde">Niğde</SelectItem>
+                      <SelectItem value="Ordu">Ordu</SelectItem>
+                      <SelectItem value="Rize">Rize</SelectItem>
+                      <SelectItem value="Sakarya">Sakarya</SelectItem>
+                      <SelectItem value="Samsun">Samsun</SelectItem>
+                      <SelectItem value="Siirt">Siirt</SelectItem>
+                      <SelectItem value="Sinop">Sinop</SelectItem>
+                      <SelectItem value="Sivas">Sivas</SelectItem>
+                      <SelectItem value="Tekirdağ">Tekirdağ</SelectItem>
+                      <SelectItem value="Tokat">Tokat</SelectItem>
+                      <SelectItem value="Trabzon">Trabzon</SelectItem>
+                      <SelectItem value="Tunceli">Tunceli</SelectItem>
+                      <SelectItem value="Şanlıurfa">Şanlıurfa</SelectItem>
+                      <SelectItem value="Uşak">Uşak</SelectItem>
+                      <SelectItem value="Van">Van</SelectItem>
+                      <SelectItem value="Yozgat">Yozgat</SelectItem>
+                      <SelectItem value="Zonguldak">Zonguldak</SelectItem>
+                      <SelectItem value="Aksaray">Aksaray</SelectItem>
+                      <SelectItem value="Bayburt">Bayburt</SelectItem>
+                      <SelectItem value="Karaman">Karaman</SelectItem>
+                      <SelectItem value="Kırıkkale">Kırıkkale</SelectItem>
+                      <SelectItem value="Batman">Batman</SelectItem>
+                      <SelectItem value="Şırnak">Şırnak</SelectItem>
+                      <SelectItem value="Bartın">Bartın</SelectItem>
+                      <SelectItem value="Ardahan">Ardahan</SelectItem>
+                      <SelectItem value="Iğdır">Iğdır</SelectItem>
+                      <SelectItem value="Yalova">Yalova</SelectItem>
+                      <SelectItem value="Karabük">Karabük</SelectItem>
+                      <SelectItem value="Kilis">Kilis</SelectItem>
+                      <SelectItem value="Osmaniye">Osmaniye</SelectItem>
+                      <SelectItem value="Düzce">Düzce</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="space-y-2">
@@ -238,6 +332,6 @@ export default function YeniOzelFirma() {
           </CardContent>
         </Card>
       </div>
-    </DashboardLayout>
+    
   )
 }

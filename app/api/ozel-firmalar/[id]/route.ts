@@ -53,7 +53,7 @@ export async function PUT(
   try {
     const { id } = await params
     const body = await request.json()
-    const { firmaAdi, vkn, yetkiliAdi, yetkiliTelefon, sehir, adres, durum } = body
+    const { firmaAdi, vkn, vergiDairesi, yetkiliAdi, yetkiliTelefon, sehir, adres, durum } = body
 
     // Özel firmanın var olup olmadığını kontrol et
     const existingFirma = await prisma.ozelFirma.findUnique({
@@ -96,6 +96,7 @@ export async function PUT(
       data: {
         firmaAdi,
         vkn: vkn || null,
+        vergiDairesi: vergiDairesi || null,
         yetkiliAdi: yetkiliAdi || null,
         yetkiliTelefon: yetkiliTelefon || null,
         sehir,

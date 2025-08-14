@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -166,7 +165,7 @@ export default function MalKabulListePage() {
           <body>
             <div class="header">WEBRAIN</div>
             <div class="header">Tarım Ürünleri Yönetim Sistemi</div>
-            <div class="header">80mm Termal Yazıcı</div>
+            <div class="header"></div>
             
             <div class="section">
               <div class="header">BİLGİ FİŞİ</div>
@@ -273,18 +272,18 @@ export default function MalKabulListePage() {
 
   if (loading) {
     return (
-      <DashboardLayout>
+      
         <div className="p-6">
           <div className="flex items-center justify-center h-64">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
           </div>
         </div>
-      </DashboardLayout>
+      
     )
   }
 
   return (
-    <DashboardLayout>
+    
       <div className="p-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Mal Kabul Listesi</h1>
@@ -434,6 +433,6 @@ export default function MalKabulListePage() {
           </div>
         )}
       </div>
-    </DashboardLayout>
+    
   )
 }

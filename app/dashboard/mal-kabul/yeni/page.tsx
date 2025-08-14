@@ -21,7 +21,6 @@ import {
 } from 'lucide-react'
 import { QRCode } from '@/components/ui/qr-code'
 import { Barcode } from '@/components/ui/barcode'
-import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import {
   Select,
   SelectContent,
@@ -117,6 +116,35 @@ export default function YeniMalKabul() {
   const [showCariSuggestions, setShowCariSuggestions] = useState(false)
   const [showUrunSuggestions, setShowUrunSuggestions] = useState(false)
 
+  // Template sistemi için state'ler
+  const [templates, setTemplates] = useState<any[]>([])
+  const [showTemplates, setShowTemplates] = useState(false)
+  const [selectedTemplate, setSelectedTemplate] = useState<any>(null)
+
+  // Hızlı kopyalama için state'ler
+  const [lastRecords, setLastRecords] = useState<any[]>([])
+  const [showLastRecords, setShowLastRecords] = useState(false)
+  const [selectedLastRecord, setSelectedLastRecord] = useState<any>(null)
+
+  // Otomatik kaydetme için state'ler
+  const [autoSaveEnabled, setAutoSaveEnabled] = useState(true)
+  const [autoSaveInterval, setAutoSaveInterval] = useState(30000) // 30 saniye
+  const [lastAutoSave, setLastAutoSave] = useState<Date | null>(null)
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+
+  // Batch processing için state'ler
+  const [batchMode, setBatchMode] = useState(false)
+  const [batchItems, setBatchItems] = useState<any[]>([])
+  const [showBatchForm, setShowBatchForm] = useState(false)
+
+  // Form geçmişi için state'ler
+  const [formHistory, setFormHistory] = useState<any[]>([])
+  const [currentFormIndex, setCurrentFormIndex] = useState(-1)
+
+  // Ürün arama için state
+  const [urunSearchTerm, setUrunSearchTerm] = useState('')
+  const [filteredUrunler, setFilteredUrunler] = useState<typeof urunler>([])
+
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login')
@@ -126,6 +154,7 @@ export default function YeniMalKabul() {
       fetchMustahsil()
       fetchAmbalajlar()
       fetchUrunler()
+      loadLastRecords()
     }
   }, [status, router])
 
@@ -133,6 +162,55 @@ export default function YeniMalKabul() {
   const [globalInput, setGlobalInput] = useState('')
   const [showGlobalSuggestions, setShowGlobalSuggestions] = useState(false)
   const [globalSuggestions, setGlobalSuggestions] = useState<any[]>([])
+
+  // Excel-like sayfadan veri aktarımı
+  useEffect(() => {
+    const excelData = localStorage.getItem('excelToMainData')
+    if (excelData) {
+      try {
+        const data = JSON.parse(excelData)
+        console.log('📥 Excel\'den gelen veri:', data)
+        
+        // Form verilerini güncelle
+        setFormData(prev => ({
+          ...prev,
+          saticiTipi: data.saticiTipi,
+          komisyoncuId: data.komisyoncuId || data.mustahsilId || data.ozelFirmaId,
+          ureticiId: data.ureticiId,
+          mustahsilId: data.saticiTipi === 'MUSTAHSIL' ? data.komisyoncuId : '',
+          ozelFirmaId: data.saticiTipi === 'OZEL_FIRMA' ? data.komisyoncuId : '',
+          urunId: data.urunId,
+          kasaSayisi: data.kasaSayisi,
+          brutKg: data.brutKg,
+          daraKg: data.daraKg,
+          girisKg: data.girisKg,
+          cikmaFireKg: data.fireKg,
+          notlar: data.notlar
+        }))
+        
+        // Cari tipini belirle
+        if (data.saticiTipi === 'KOMISYONCU') {
+          setFormData(prev => ({ ...prev, cariTipi: 'KOMISYONCU' }))
+        } else if (data.saticiTipi === 'MUSTAHSIL') {
+          setFormData(prev => ({ ...prev, cariTipi: 'MUSTAHSIL' }))
+        } else if (data.saticiTipi === 'OZEL_FIRMA') {
+          setFormData(prev => ({ ...prev, cariTipi: 'OZEL_FIRMA' }))
+        }
+        
+        // LocalStorage'dan temizle
+        localStorage.removeItem('excelToMainData')
+        
+        toast({
+          title: "Veri Aktarıldı",
+          description: "Excel tarzı sayfadan veri başarıyla aktarıldı!",
+          variant: "default",
+        })
+      } catch (error) {
+        console.error('Excel veri aktarım hatası:', error)
+        localStorage.removeItem('excelToMainData')
+      }
+    }
+  }, [])
 
   // Global keyboard listener
   useEffect(() => {
@@ -145,8 +223,8 @@ export default function YeniMalKabul() {
         return
       }
 
-      // Sadece sayı ve harf tuşlarına tepki ver
-      if (e.key.length === 1 && /[a-zA-Z0-9]/.test(e.key)) {
+      // Sadece sayı ve harf tuşlarına tepki ver (Türkçe karakterler dahil)
+      if (e.key.length === 1 && /[a-zA-Z0-9üÜğĞşŞıİöÖçÇ]/.test(e.key)) {
         console.log('✅ Geçerli tuş:', e.key)
         setGlobalInput(prev => {
           const newInput = prev + e.key
@@ -184,6 +262,62 @@ export default function YeniMalKabul() {
         setShowGlobalSuggestions(false)
         setGlobalSuggestions([])
       }
+
+      // Kısayol tuşları (Ctrl + Key)
+      if (e.ctrlKey) {
+        switch (e.key) {
+          case 's':
+            e.preventDefault()
+            if (formData.cariId && formData.urunId && !loading) {
+              // Form submit'i tetikle
+              const submitEvent = new Event('submit', { bubbles: true })
+              document.querySelector('form')?.dispatchEvent(submitEvent)
+            }
+            break
+          case 'r':
+            e.preventDefault()
+            setShowLastRecords(true)
+            break
+          case 'b':
+            e.preventDefault()
+            setBatchMode(!batchMode)
+            break
+          case 'f':
+            e.preventDefault()
+            resetForm()
+            break
+          case 'a':
+            e.preventDefault()
+            if (batchMode) {
+              addBatchItem()
+            }
+            break
+        }
+      }
+
+      // F tuşları
+      switch (e.key) {
+        case 'F2':
+          e.preventDefault()
+          setShowLastRecords(true)
+          break
+        case 'F3':
+          e.preventDefault()
+          setBatchMode(!batchMode)
+          break
+        case 'F4':
+          e.preventDefault()
+          resetForm()
+          break
+        case 'F5':
+          e.preventDefault()
+          if (formData.cariId && formData.urunId && !loading) {
+            // Form submit'i tetikle
+            const submitEvent = new Event('submit', { bubbles: true })
+            document.querySelector('form')?.dispatchEvent(submitEvent)
+          }
+          break
+      }
     }
 
     window.addEventListener('keypress', handleKeyPress)
@@ -193,7 +327,7 @@ export default function YeniMalKabul() {
       window.removeEventListener('keypress', handleKeyPress)
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [globalSuggestions])
+  }, [globalSuggestions, batchMode, formData.cariId, formData.urunId])
 
   // Global input değiştiğinde önerileri güncelle
   useEffect(() => {
@@ -204,7 +338,7 @@ export default function YeniMalKabul() {
       console.log('🔍 Öneriler aranıyor...')
       
       // Komisyoncu arama (kom0001, kom0002...)
-      if (globalInput.toLowerCase().startsWith('kom')) {
+      if (globalInput.toLowerCase().startsWith('kom') || globalInput.toLowerCase().startsWith('köm')) {
         console.log('🏪 Komisyoncu aranıyor:', globalInput)
         komisyoncular.forEach(kom => {
           console.log('🔍 Kontrol edilen:', kom.komisyonKodu, 'ID:', kom.id)
@@ -224,7 +358,7 @@ export default function YeniMalKabul() {
       }
       
       // Müstahsil arama (MÜS001, MÜS002...)
-      if (globalInput.toLowerCase().startsWith('müs')) {
+      if (globalInput.toLowerCase().startsWith('müs') || globalInput.toLowerCase().startsWith('mus') || globalInput.toLowerCase().startsWith('müş')) {
         mustahsil.forEach(mus => {
           if (mus.mustahsilNo.toLowerCase().includes(globalInput.toLowerCase()) || 
               mus.ad.toLowerCase().includes(globalInput.toLowerCase().substring(3))) {
@@ -358,6 +492,10 @@ export default function YeniMalKabul() {
         urunKodu: item.kod,
         urunId: item.id
       }))
+      
+      // Ürün seçildiğinde önerileri gizle
+      setShowUrunSuggestions(false)
+      setUrunSuggestions([])
       
       toast({
         title: "Ürün Seçildi",
@@ -529,22 +667,8 @@ export default function YeniMalKabul() {
     
     if (value.length >= 2) {
       const suggestions: any[] = urunler.map(urun => {
-        let urunKodu = ''
-        
-        // Ürün adına göre kod oluştur
-        if (urun.ad.toLowerCase().includes('domates')) {
-          urunKodu = `DOM${urun.id.slice(-3)}`
-        } else if (urun.ad.toLowerCase().includes('salatalık') || urun.ad.toLowerCase().includes('salatalik')) {
-          urunKodu = `SAL${urun.id.slice(-3)}`
-        } else if (urun.ad.toLowerCase().includes('patlıcan') || urun.ad.toLowerCase().includes('patlican')) {
-          urunKodu = `PAT${urun.id.slice(-3)}`
-        } else if (urun.ad.toLowerCase().includes('biber')) {
-          urunKodu = `BIB${urun.id.slice(-3)}`
-        } else if (urun.ad.toLowerCase().includes('hıyar') || urun.ad.toLowerCase().includes('hiyar')) {
-          urunKodu = `HIY${urun.id.slice(-3)}`
-        } else {
-          urunKodu = `URN${urun.id.slice(-3)}`
-        }
+        // Ürün stok kodunu kullan, yoksa URN ile başlayan kod oluştur
+        const urunKodu = urun.stokKodu || `URN${urun.id.slice(-3)}`
         
         return {
           id: urun.id,
@@ -620,7 +744,13 @@ export default function YeniMalKabul() {
   }
 
   const handleKomisyoncuChange = async (komisyoncuId: string) => {
-    setFormData({ ...formData, komisyoncuId, ureticiId: '' })
+    setFormData({ 
+      ...formData, 
+      komisyoncuId, 
+      ureticiId: '',
+      cariId: '', // Reset cariId until uretici is selected
+      cariTipi: 'KOMISYONCU' // Set cariTipi for validation
+    })
     if (komisyoncuId) {
       try {
         // Komisyoncuya bağlı üreticileri getir
@@ -642,7 +772,30 @@ export default function YeniMalKabul() {
   }
 
   const handleUreticiChange = (ureticiId: string) => {
-    setFormData({ ...formData, ureticiId })
+    setFormData({ 
+      ...formData, 
+      ureticiId,
+      cariId: ureticiId, // Set cariId to uretici ID (actual seller)
+      cariTipi: 'URETICI' // Set cariTipi for validation
+    })
+  }
+
+  const handleMustahsilChange = (mustahsilId: string) => {
+    setFormData({ 
+      ...formData, 
+      mustahsilId,
+      cariId: mustahsilId, // Set cariId for validation
+      cariTipi: 'MUSTAHSIL' // Set cariTipi for validation
+    })
+  }
+
+  const handleOzelFirmaChange = (ozelFirmaId: string) => {
+    setFormData({ 
+      ...formData, 
+      ozelFirmaId,
+      cariId: ozelFirmaId, // Set cariId for validation
+      cariTipi: 'OZEL_FIRMA' // Set cariTipi for validation
+    })
   }
 
   const handlePaletChange = (paletId: string) => {
@@ -847,6 +1000,17 @@ export default function YeniMalKabul() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
+    // Debug: Log form data for troubleshooting
+    console.log('Form submission - Form data:', {
+      cariId: formData.cariId,
+      cariTipi: formData.cariTipi,
+      saticiTipi: formData.saticiTipi,
+      komisyoncuId: formData.komisyoncuId,
+      ureticiId: formData.ureticiId,
+      mustahsilId: formData.mustahsilId,
+      ozelFirmaId: formData.ozelFirmaId
+    })
+    
     // Yeni validation sistemi
     if (!formData.cariId) {
       toast({
@@ -914,8 +1078,8 @@ export default function YeniMalKabul() {
         },
         body: JSON.stringify({
           saticiTipi: formData.cariTipi,
-          komisyoncuId: formData.cariTipi === 'KOMISYONCU' ? formData.cariId : null,
-          ureticiId: null, // Şimdilik null
+          komisyoncuId: formData.cariTipi === 'KOMISYONCU' ? formData.komisyoncuId : null,
+          ureticiId: formData.cariTipi === 'KOMISYONCU' ? formData.ureticiId : null,
           mustahsilId: formData.cariTipi === 'MUSTAHSIL' ? formData.cariId : null,
           ozelFirmaId: formData.cariTipi === 'OZEL_FIRMA' ? formData.cariId : null,
           urunId: formData.urunId,
@@ -940,12 +1104,13 @@ export default function YeniMalKabul() {
         const receiptData = {
           fisNo: result.malKabulRecord.fisNo,
           tarih: result.malKabulRecord.tarih,
-          saticiTipi: formData.saticiTipi,
+          saticiTipi: result.malKabulRecord.saticiTipi, // Use the actual record saticiTipi
           saticiAdi: getSaticiAdi(result.malKabulRecord),
           urunAdi: urunler.find(u => u.id === formData.urunId)?.ad || '',
           brutKg: parseFloat(formData.brutKg) || 0,
           daraKg: parseFloat(formData.daraKg) || 0,
           girisKg: parseFloat(formData.girisKg) || 0,
+          cikmaFireKg: parseFloat(formData.cikmaFireKg) || 0, // Çıkma/Fire KG eklendi
           ambalajAdi: 'Kasa', // Sabit ambalaj adı
           kasaSayisi: parseInt(formData.kasaSayisi) || 0,
           paletAdi: ambalajlar.find(a => a.id === formData.paletId)?.ad,
@@ -957,11 +1122,28 @@ export default function YeniMalKabul() {
         setReceiptData(receiptData)
         setShowReceipt(true)
         
+        // Son kayıtları güncelle
+        await loadLastRecords()
+        
+        // Form değişikliklerini sıfırla
+        setHasUnsavedChanges(false)
+        
         toast({
           title: "Başarılı",
           description: "Mal kabul kaydı başarıyla oluşturuldu! Bilgi fişi yazdırılıyor...",
           variant: "success",
         })
+
+        // Başarılı kayıt sonrası form otomatik sıfırlama
+        setTimeout(() => {
+          resetForm()
+          setShowReceipt(false)
+          toast({
+            title: "Form Sıfırlandı",
+            description: "Form otomatik olarak sıfırlandı, yeni kayıt girebilirsiniz",
+            variant: "default",
+          })
+        }, 3000)
       } else {
         const error = await response.json()
         toast({
@@ -995,11 +1177,46 @@ export default function YeniMalKabul() {
     return ''
   }
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
     if (!receiptData) return
     
+    try {
+      console.log('Starting print process...')
+      
+      // QR kod ve barkod resimlerini oluştur
+      const qrValue = `${receiptData.fisNo}|${receiptData.tarih}|${receiptData.saticiTipi}|${receiptData.urunAdi}`
+      console.log('QR value:', qrValue)
+      
+      // QR kod oluştur
+      const QRCodeLib = await import('qrcode')
+      const qrDataUrl = await QRCodeLib.toDataURL(qrValue, {
+        width: 80, // 40px'den 80px'e çıkarıldı
+        margin: 1,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      })
+      console.log('QR code generated:', qrDataUrl.substring(0, 50) + '...')
+      
+      // Barkod oluştur
+      const JsBarcode = await import('jsbarcode')
+      const canvas = document.createElement('canvas')
+      JsBarcode.default(canvas, receiptData.fisNo, {
+        format: 'CODE128',
+        width: 2, // 1.5'ten 2'ye çıkarıldı
+        height: 50, // 30'dan 50'ye çıkarıldı
+        displayValue: true,
+        fontSize: 12, // 10'dan 12'ye çıkarıldı
+        margin: 5 // 3'ten 5'e çıkarıldı
+      })
+      const barcodeDataUrl = canvas.toDataURL('image/png')
+      console.log('Barcode generated:', barcodeDataUrl.substring(0, 50) + '...')
+      
+      console.log('Opening print window...')
     const printWindow = window.open('', '_blank')
     if (printWindow) {
+        console.log('Print window opened, writing content...')
       printWindow.document.write(`
         <!DOCTYPE html>
         <html>
@@ -1043,6 +1260,36 @@ export default function YeniMalKabul() {
                 color: #fff; 
                 border-radius: 5px; 
               }
+              
+              /* Print media CSS for QR codes and barcodes */
+              @media print {
+                body { 
+                  width: 80mm !important; 
+                  max-width: 80mm !important; 
+                  margin: 0 !important; 
+                  padding: 8px !important; 
+                  font-size: 12px !important;
+                }
+                @page { 
+                  size: 80mm auto; 
+                  margin: 0; 
+                }
+                .qr-code img, .barcode img { 
+                  display: block !important; 
+                  visibility: visible !important; 
+                  opacity: 1 !important; 
+                  max-width: 80mm !important; 
+                  width: auto !important; 
+                  height: auto !important;
+                }
+                img { 
+                  display: block !important; 
+                  visibility: visible !important; 
+                  opacity: 1 !important; 
+                  page-break-inside: avoid !important; 
+                  break-inside: avoid !important;
+                }
+              }
             </style>
           </head>
           <body>
@@ -1072,7 +1319,7 @@ export default function YeniMalKabul() {
               <div class="section-title">SATICI BİLGİLERİ</div>
               <div class="row">
                 <span>Tip:</span>
-                <span class="value">${receiptData.saticiTipi === 'OZEL_FIRMA' ? 'ÖZEL FİRMA' : receiptData.saticiTipi === 'KOMISYONCU' ? 'KOMİSYONCU' : 'MÜSTAHHİL'}</span>
+                <span class="value">${receiptData.saticiTipi === 'OZEL_FIRMA' ? 'ÖZEL FİRMA' : receiptData.saticiTipi === 'KOMISYONCU' ? 'KOMİSYONCU' : 'MÜSTAHSİL'}</span>
               </div>
               <div class="row">
                 <span>Ad:</span>
@@ -1116,7 +1363,7 @@ export default function YeniMalKabul() {
               </div>
               <div class="row">
                 <span>Çıkma/Fire KG:</span>
-                <span class="value">${(receiptData.brutKg - receiptData.girisKg).toFixed(2)} kg</span>
+                <span class="value">${receiptData.cikmaFireKg ? receiptData.cikmaFireKg.toFixed(2) : '0.00'} kg</span>
               </div>
             </div>
             
@@ -1146,23 +1393,14 @@ export default function YeniMalKabul() {
             <div class="section">
               <div class="section-title">QR KOD VE BARKOD</div>
               <div style="text-align: center; margin: 8px 0;">
-                <div style="font-size: 9px; color: #666; margin-bottom: 6px;">
-                  <strong>QR Kod:</strong> ${receiptData.fisNo}|${receiptData.tarih}|${receiptData.saticiTipi}|${receiptData.urunAdi}
-                </div>
                 <div style="font-size: 8px; color: #888; line-height: 1.2; margin-bottom: 8px;">
                   Ürün işlendiğinde bu QR kod ile düzenleme ekranına gidin
                 </div>
                 <div style="margin-top: 8px; padding: 6px; background: #f0f0f0; border-radius: 3px;">
                   <div style="font-size: 7px; color: #666; margin-bottom: 4px;">QR Kod</div>
-                  <div style="width: 40px; height: 40px; background: #000; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
-                    <div style="color: #fff; font-size: 5px; text-align: center; line-height: 1.2;">
-                      QR<br>KOD
-                    </div>
-                  </div>
+                  <img src="${qrDataUrl}" alt="QR Kod" class="qr-code" style="width: 80px; height: 80px; margin: 0 auto; display: block;" />
                   <div style="font-size: 7px; color: #666; margin-top: 4px;">Barkod</div>
-                  <div style="width: 60px; height: 15px; background: #000; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
-                    <div style="color: #fff; font-size: 5px;">BARKOD</div>
-                  </div>
+                  <img src="${barcodeDataUrl}" alt="Barkod" class="barcode" style="width: 120px; height: 50px; margin: 0 auto; display: block;" />
                 </div>
               </div>
             </div>
@@ -1174,7 +1412,7 @@ export default function YeniMalKabul() {
             <div style="font-size: 9px; color: #888; line-height: 1.3;">
               <div>Fiş Yazdırma Tarihi: ${new Date().toLocaleDateString('tr-TR')}</div>
               <div>Fiş Yazdırma Saati: ${new Date().toLocaleTimeString('tr-TR')}</div>
-              <div style="margin-top: 5px; font-weight: bold;">WEBRAIN TARIM SİSTEMİ</div>
+              <div style="margin-top: 5px; font-weight: bold;">WEBRAIN YAZILIM</div>
             </div>
           </div>
           
@@ -1206,7 +1444,7 @@ export default function YeniMalKabul() {
             <div class="section-title">SATICI BİLGİLERİ</div>
             <div class="row">
               <span>Tip:</span>
-              <span class="value">${receiptData.saticiTipi === 'OZEL_FIRMA' ? 'ÖZEL FİRMA' : receiptData.saticiTipi === 'KOMISYONCU' ? 'KOMİSYONCU' : 'MÜSTAHHİL'}</span>
+              <span class="value">${receiptData.saticiTipi === 'OZEL_FIRMA' ? 'ÖZEL FİRMA' : receiptData.saticiTipi === 'KOMISYONCU' ? 'KOMİSYONCU' : 'MÜSTAHSİL'}</span>
             </div>
             <div class="row">
               <span>Ad:</span>
@@ -1250,7 +1488,7 @@ export default function YeniMalKabul() {
             </div>
             <div class="row">
               <span>Çıkma/Fire KG:</span>
-              <span class="value">${(receiptData.brutKg - receiptData.girisKg).toFixed(2)} kg</span>
+              <span class="value">${receiptData.cikmaFireKg ? receiptData.cikmaFireKg.toFixed(2) : '0.00'} kg</span>
             </div>
           </div>
           
@@ -1280,23 +1518,14 @@ export default function YeniMalKabul() {
           <div class="section">
             <div class="section-title">QR KOD VE BARKOD</div>
             <div style="text-align: center; margin: 8px 0;">
-              <div style="font-size: 9px; color: #666; margin-bottom: 6px;">
-                <strong>QR Kod:</strong> ${receiptData.fisNo}|${receiptData.fisNo}|${receiptData.tarih}|${receiptData.saticiTipi}|${receiptData.urunAdi}
-              </div>
               <div style="font-size: 8px; color: #888; line-height: 1.2; margin-bottom: 8px;">
                 Ürün işlendiğinde bu QR kod ile düzenleme ekranına gidin
               </div>
               <div style="margin-top: 8px; padding: 6px; background: #f0f0f0; border-radius: 3px;">
                 <div style="font-size: 7px; color: #666; margin-bottom: 4px;">QR Kod</div>
-                <div style="width: 40px; height: 40px; background: #000; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
-                  <div style="color: #fff; font-size: 5px; text-align: center; line-height: 1.2;">
-                    QR<br>KOD
-                  </div>
-                </div>
+                <img src="${qrDataUrl}" alt="QR Kod" class="qr-code" style="width: 80px; height: 80px; margin: 0 auto; display: block;" />
                 <div style="font-size: 7px; color: #666; margin-top: 4px;">Barkod</div>
-                <div style="width: 60px; height: 15px; background: #000; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
-                  <div style="color: #fff; font-size: 5px;">BARKOD</div>
-                </div>
+                <img src="${barcodeDataUrl}" alt="Barkod" class="barcode" style="width: 120px; height: 50px; margin: 0 auto; display: block;" />
               </div>
             </div>
           </div>
@@ -1308,33 +1537,325 @@ export default function YeniMalKabul() {
           <div style="font-size: 9px; color: #888; line-height: 1.3;">
             <div>Fiş Yazdırma Tarihi: ${new Date().toLocaleDateString('tr-TR')}</div>
             <div>Fiş Yazdırma Saati: ${new Date().toLocaleTimeString('tr-TR')}</div>
-            <div style="margin-top: 5px; font-weight: bold;">WEBRAIN TARIM SİSTEMİ</div>
+            <div style="margin-top: 5px; font-weight: bold;">WEBRAIN YAZILIM  </div>
           </div>
         </div>
         </body>
       </html>
     `)
+        
       printWindow.document.close()
-      printWindow.focus()
       
-      // Tek seferde yazdır
+        console.log('Content written to print window, starting print...')
+        
+        // Yazdırma işlemini başlat
       setTimeout(() => {
+          console.log('Executing print command...')
         printWindow.print()
-      }, 500)
+          printWindow.close()
+          console.log('Print process completed')
+        }, 100)
+      } else {
+        console.error('Failed to open print window')
+      }
+    } catch (error) {
+      console.error('Fiş yazdırma hatası:', error)
+      toast({
+        title: "Hata",
+        description: "Fiş yazdırılırken hata oluştu",
+        variant: "destructive",
+      })
+    }
+  }
+
+  // Template sistemi fonksiyonları
+  const saveAsTemplate = () => {
+    const template = {
+      id: Date.now().toString(),
+      name: `${formData.saticiTipi} - ${formData.urunId ? urunler.find(u => u.id === formData.urunId)?.ad : 'Ürün'}`,
+      data: { ...formData },
+      createdAt: new Date().toISOString(),
+      usageCount: 0
     }
     
+    const newTemplates = [...templates, template]
+    setTemplates(newTemplates)
+    localStorage.setItem('malKabulTemplates', JSON.stringify(newTemplates))
+    
     toast({
-      title: "Fişler Yazdırılıyor",
-      description: "2 adet fiş tek seferde yazdırılıyor",
+      title: "Template Kaydedildi",
+      description: `${template.name} adıyla template kaydedildi`,
       variant: "success",
     })
   }
 
+  const loadTemplate = (template: any) => {
+    setFormData(template.data)
+    setSelectedTemplate(template)
+    
+    // Template kullanım sayısını artır
+    const updatedTemplates = templates.map(t => 
+      t.id === template.id ? { ...t, usageCount: t.usageCount + 1 } : t
+    )
+    setTemplates(updatedTemplates)
+    localStorage.setItem('malKabulTemplates', JSON.stringify(updatedTemplates))
+    
+    toast({
+      title: "Template Yüklendi",
+      description: `${template.name} template'i uygulandı`,
+      variant: "success",
+    })
+  }
 
+  const deleteTemplate = (templateId: string) => {
+    const newTemplates = templates.filter(t => t.id !== templateId)
+    setTemplates(newTemplates)
+    localStorage.setItem('malKabulTemplates', JSON.stringify(newTemplates))
+    
+    toast({
+      title: "Template Silindi",
+      description: "Template başarıyla silindi",
+      variant: "success",
+    })
+  }
 
+  // Hızlı kopyalama fonksiyonları
+  const copyFromLastRecord = (record: any) => {
+    setFormData({
+      ...formData,
+      saticiTipi: record.saticiTipi,
+      komisyoncuId: record.komisyoncuId || '',
+      ureticiId: record.ureticiId || '',
+      mustahsilId: record.mustahsilId || '',
+      ozelFirmaId: record.ozelFirmaId || '',
+      urunId: record.urunId || '',
+      kasaSayisi: record.kasaSayisi || '',
+      notlar: record.notlar || ''
+    })
+    
+    toast({
+      title: "Veri Kopyalandı",
+      description: "Önceki kayıttan veri kopyalandı",
+      variant: "success",
+    })
+  }
+
+  // Otomatik kaydetme fonksiyonları
+  const autoSave = () => {
+    if (hasUnsavedChanges && formData.cariId && formData.urunId) {
+      const autoSaveData = {
+        ...formData,
+        timestamp: new Date().toISOString()
+      }
+      
+      localStorage.setItem('malKabulAutoSave', JSON.stringify(autoSaveData))
+      setLastAutoSave(new Date())
+      setHasUnsavedChanges(false)
+      
+    }
+  }
+
+  const loadAutoSave = () => {
+    const autoSaveData = localStorage.getItem('malKabulAutoSave')
+    if (autoSaveData) {
+      try {
+        const data = JSON.parse(autoSaveData)
+        setFormData(data)
+        setHasUnsavedChanges(false)
+        
+        toast({
+          title: "Otomatik Kayıt Yüklendi",
+          description: "Son otomatik kayıt yüklendi",
+          variant: "success",
+        })
+      } catch (error) {
+        console.error('Otomatik kayıt yükleme hatası:', error)
+      }
+    }
+  }
+
+  // Batch processing fonksiyonları
+  const addBatchItem = () => {
+    const newItem = {
+      id: Date.now().toString(),
+      urunId: '',
+      urunKodu: '', // Ürün arama için eklendi
+      kasaSayisi: '',
+      brutKg: '',
+      daraKg: '',
+      girisKg: '',
+      notlar: ''
+    }
+    setBatchItems([...batchItems, newItem])
+  }
+
+  const removeBatchItem = (itemId: string) => {
+    setBatchItems(batchItems.filter(item => item.id !== itemId))
+  }
+
+  const saveBatchItems = async () => {
+    setLoading(true)
+    try {
+      for (const item of batchItems) {
+        if (item.urunId && item.kasaSayisi && item.brutKg) {
+          const batchFormData = {
+            ...formData,
+            urunId: item.urunId,
+            kasaSayisi: item.kasaSayisi,
+            brutKg: item.brutKg,
+            daraKg: item.daraKg || '0',
+            girisKg: item.girisKg || (parseFloat(item.brutKg) - parseFloat(item.daraKg || '0')).toString(),
+            notlar: item.notlar
+          }
+          
+          // Her item için ayrı kayıt oluştur
+          await createMalKabulRecord(batchFormData)
+        }
+      }
+      
+      setBatchItems([])
+      setBatchMode(false)
+      
+      toast({
+        title: "Toplu Kayıt Tamamlandı",
+        description: `${batchItems.length} adet kayıt başarıyla oluşturuldu`,
+        variant: "success",
+      })
+    } catch (error) {
+      console.error('Toplu kayıt hatası:', error)
+      toast({
+        title: "Hata",
+        description: "Toplu kayıt sırasında hata oluştu",
+        variant: "destructive",
+      })
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Form sıfırlama fonksiyonu
+  const resetForm = () => {
+    setFormData({
+      cariKodu: '',
+      cariId: '',
+      cariTipi: '',
+      urunKodu: '',
+      urunId: '',
+      paletId: '',
+      ambalajId: '',
+      paletSayisi: '',
+      kasaSayisi: '',
+      brutKg: '',
+      daraKg: '',
+      girisKg: '',
+      cikmaFireKg: '',
+      netKg: '',
+      notlar: '',
+      saticiTipi: '',
+      komisyoncuId: '',
+      ureticiId: '',
+      mustahsilId: '',
+      ozelFirmaId: ''
+    })
+    setHasUnsavedChanges(false)
+    setSelectedTemplate(null)
+    setSelectedLastRecord(null)
+  }
+
+  // Mal kabul kaydı oluşturma fonksiyonu (batch processing için)
+  const createMalKabulRecord = async (data: any) => {
+    try {
+      const response = await fetch('/api/mal-kabul', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          saticiTipi: data.cariTipi, // cariTipi kullan
+          komisyoncuId: data.cariTipi === 'KOMISYONCU' ? data.komisyoncuId : null,
+          ureticiId: data.cariTipi === 'KOMISYONCU' ? data.ureticiId : null,
+          mustahsilId: data.cariTipi === 'MUSTAHSIL' ? data.mustahsilId : null,
+          ozelFirmaId: data.cariTipi === 'OZEL_FIRMA' ? data.ozelFirmaId : null,
+          urunId: data.urunId,
+          kasaSayisi: data.kasaSayisi,
+          brutKg: data.brutKg,
+          daraKg: data.daraKg,
+          girisKg: data.girisKg,
+          notlar: data.notlar
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Mal kabul kaydı oluşturulamadı')
+      }
+
+      return await response.json()
+    } catch (error) {
+      console.error('Mal kabul kaydı oluşturma hatası:', error)
+      throw error
+    }
+  }
+
+  // Template'leri localStorage'dan yükle
+  const loadTemplatesFromStorage = () => {
+    try {
+      const savedTemplates = localStorage.getItem('malKabulTemplates')
+      if (savedTemplates) {
+        setTemplates(JSON.parse(savedTemplates))
+      }
+    } catch (error) {
+      console.error('Template yükleme hatası:', error)
+    }
+  }
+
+  // Son kayıtları getir
+  const loadLastRecords = async () => {
+    try {
+      const response = await fetch('/api/mal-kabul?limit=10')
+      if (response.ok) {
+        const data = await response.json()
+        setLastRecords(data.records || [])
+      }
+    } catch (error) {
+      console.error('Son kayıtları getirme hatası:', error)
+    }
+  }
+
+  // Otomatik kaydetme useEffect'i
+  useEffect(() => {
+    if (!autoSaveEnabled) return
+
+    const interval = setInterval(() => {
+      if (hasUnsavedChanges) {
+        autoSave()
+      }
+    }, autoSaveInterval)
+
+    return () => clearInterval(interval)
+  }, [autoSaveEnabled, autoSaveInterval, hasUnsavedChanges])
+
+  // Form değişikliklerini takip et
+  useEffect(() => {
+    if (formData.cariId || formData.urunId) {
+      setHasUnsavedChanges(true)
+    }
+  }, [formData])
+
+  // Ürün arama filtreleme
+  useEffect(() => {
+    if (urunSearchTerm.trim() === '') {
+      setFilteredUrunler(urunler)
+    } else {
+      const filtered = urunler.filter(urun => 
+        urun.ad.toLowerCase().includes(urunSearchTerm.toLowerCase()) ||
+        urun.stokKodu?.toLowerCase().includes(urunSearchTerm.toLowerCase()) ||
+        urun.kategori?.toLowerCase().includes(urunSearchTerm.toLowerCase())
+      )
+      setFilteredUrunler(filtered)
+    }
+  }, [urunSearchTerm, urunler])
 
   return (
-    <DashboardLayout>
       <div className="p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -1345,12 +1866,60 @@ export default function YeniMalKabul() {
                 Geri
               </Button>
             </Link>
+            <Link href="/dashboard/mal-kabul/test">
+              <Button variant="outline" size="sm">
+                📊 Excel Test
+              </Button>
+            </Link>
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => window.open('/dashboard/mal-kabul/test', '_blank')}
+              title="Excel tarzı sayfada hızlı veri girişi yapın, sonra buraya aktarın"
+            >
+              📥 Excel'den Veri Aktar
+            </Button>
             <div>
               <h1 className="text-3xl font-bold text-foreground">Yeni Mal Kabul</h1>
               <p className="text-muted-foreground">Yeni mal kabul kaydı oluşturun</p>
             </div>
           </div>
+          
+          {/* Hızlı İşlem Butonları */}
+          <div className="flex items-center gap-2">
+            {/* Hızlı Kopyalama */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowLastRecords(true)}
+              disabled={lastRecords.length === 0}
+              title="Ctrl+R - Son kayıtlardan kopyala"
+            >
+              📋 Son Kayıtlar ({lastRecords.length})
+            </Button>
+            
+            {/* Batch Processing */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setBatchMode(!batchMode)}
+              title="Ctrl+B - Toplu mod aç/kapat"
+            >
+              📦 {batchMode ? 'Toplu Mod Kapalı' : 'Toplu Mod Açık'}
+            </Button>
+            
+            {/* Form Sıfırlama */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={resetForm}
+              title="Ctrl+F - Formu sıfırla"
+            >
+              🔄 Form Sıfırla
+            </Button>
+          </div>
         </div>
+
 
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -1398,12 +1967,20 @@ export default function YeniMalKabul() {
                           <SelectTrigger>
                             <SelectValue placeholder={loading ? "Yükleniyor..." : "Komisyoncu seçin"} />
                           </SelectTrigger>
-                          <SelectContent>
-                            {komisyoncular.map((komisyoncu) => (
+                          <SelectContent className="max-h-48">
+                            {komisyoncular.slice(0, 10).map((komisyoncu) => (
                               <SelectItem key={komisyoncu.id} value={komisyoncu.id}>
-                                {komisyoncu.dukkanAdi} - {komisyoncu.sehir}
+                                <div className="flex justify-between items-center">
+                                  <span className="truncate">{komisyoncu.dukkanAdi}</span>
+                                  <span className="text-xs text-muted-foreground ml-2 flex-shrink-0">{komisyoncu.sehir}</span>
+                                </div>
                               </SelectItem>
                             ))}
+                            {komisyoncular.length > 10 && (
+                              <SelectItem value="more" disabled className="text-center text-muted-foreground">
+                                +{komisyoncular.length - 10} komisyoncu daha...
+                              </SelectItem>
+                            )}
                           </SelectContent>
                         </Select>
 
@@ -1420,17 +1997,27 @@ export default function YeniMalKabul() {
                           <SelectTrigger>
                             <SelectValue placeholder={!formData.komisyoncuId ? "Önce komisyoncu seçin" : "Üretici seçin"} />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="max-h-48">
                             {filteredUreticiler.length === 0 ? (
                               <SelectItem value="no-uretici" disabled>
                                 {formData.komisyoncuId ? "Bu komisyoncuya bağlı üretici bulunamadı" : "Üretici seçmek için önce komisyoncu seçin"}
                               </SelectItem>
                             ) : (
-                              filteredUreticiler.map((uretici) => (
+                              <>
+                                {filteredUreticiler.slice(0, 10).map((uretici) => (
                                 <SelectItem key={uretici.id} value={uretici.id}>
-                                  {uretici.ad} {uretici.soyad}
+                                    <div className="flex justify-between items-center">
+                                      <span className="truncate">{uretici.ad} {uretici.soyad}</span>
+                                      <span className="text-xs text-muted-foreground ml-2 flex-shrink-0">{uretici.sehir}</span>
+                                    </div>
                                 </SelectItem>
-                              ))
+                                ))}
+                                {filteredUreticiler.length > 10 && (
+                                  <SelectItem value="more" disabled className="text-center text-muted-foreground">
+                                    +{filteredUreticiler.length - 10} üretici daha...
+                                  </SelectItem>
+                                )}
+                              </>
                             )}
                           </SelectContent>
                         </Select>
@@ -1448,24 +2035,34 @@ export default function YeniMalKabul() {
                       <Label htmlFor="ozelFirma">Özel Firma *</Label>
                       <Select
                         value={formData.ozelFirmaId}
-                        onValueChange={(value) => setFormData({...formData, ozelFirmaId: value})}
+                        onValueChange={handleOzelFirmaChange}
                         required
                         disabled={loading}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder={loading ? "Yükleniyor..." : "Özel firma seçin"} />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="max-h-48">
                           {ozelFirmalar.length === 0 ? (
                             <SelectItem value="no-ozel-firma" disabled>
                               Özel firma bulunamadı
                             </SelectItem>
                           ) : (
-                            ozelFirmalar.map((firma) => (
+                            <>
+                              {ozelFirmalar.slice(0, 10).map((firma) => (
                               <SelectItem key={firma.id} value={firma.id}>
-                                {firma.firmaAdi} - {firma.sehir}
+                                  <div className="flex justify-between items-center">
+                                    <span className="truncate">{firma.firmaAdi}</span>
+                                    <span className="text-xs text-muted-foreground ml-2 flex-shrink-0">{firma.sehir}</span>
+                                  </div>
                               </SelectItem>
-                            ))
+                              ))}
+                              {ozelFirmalar.length > 10 && (
+                                <SelectItem value="more" disabled className="text-center text-muted-foreground">
+                                  +{ozelFirmalar.length - 10} firma daha...
+                                </SelectItem>
+                              )}
+                            </>
                           )}
                         </SelectContent>
                       </Select>
@@ -1482,22 +2079,32 @@ export default function YeniMalKabul() {
                       <Label htmlFor="mustahsil">Müstahsil</Label>
                       <Select
                         value={formData.mustahsilId}
-                        onValueChange={(value) => setFormData({...formData, mustahsilId: value})}
+                        onValueChange={handleMustahsilChange}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Müstahsil seçin" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="max-h-48">
                                                   {mustahsil.length === 0 ? (
                           <SelectItem value="no-mustahsil" disabled>
                             Müstahsil bulunamadı
                             </SelectItem>
                         ) : (
-                          mustahsil.map((mustahsil) => (
+                            <>
+                              {mustahsil.slice(0, 10).map((mustahsil) => (
                             <SelectItem key={mustahsil.id} value={mustahsil.id}>
-                              {mustahsil.ad} {mustahsil.soyad} - {mustahsil.tcKimlikNo}
+                                  <div className="flex justify-between items-center">
+                                    <span className="truncate">{mustahsil.ad} {mustahsil.soyad}</span>
+                                    <span className="text-xs text-muted-foreground ml-2 flex-shrink-0">{mustahsil.tcKimlikNo}</span>
+                                  </div>
                             </SelectItem>
-                          ))
+                              ))}
+                              {mustahsil.length > 10 && (
+                                <SelectItem value="more" disabled className="text-center text-muted-foreground">
+                                  +{mustahsil.length - 10} müstahsil daha...
+                                </SelectItem>
+                              )}
+                            </>
                         )}
                         </SelectContent>
                       </Select>
@@ -1521,7 +2128,7 @@ export default function YeniMalKabul() {
                     <div className="relative">
                       <Input
                         id="urunKodu"
-                        placeholder="U001, U002..."
+                        placeholder="URN001, URN002... veya ürün adı yazın"
                         value={formData.urunKodu}
                         onChange={(e) => handleUrunKoduChange(e.target.value)}
                         className="pr-10"
@@ -1542,10 +2149,104 @@ export default function YeniMalKabul() {
                       )}
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      DOM001: Domates, SAL001: Salatalık, PAT001: Patlıcan vb.
+                      URN001, URN002... veya ürün adı yazarak arama yapabilirsiniz
                     </div>
                   </div>
 
+                  {/* Ürün Dropdown Seçimi */}
+                  <div className="space-y-2">
+                    <Label htmlFor="urunId">Ürün Seçimi *</Label>
+                    <div className="relative">
+                      <Input
+                        placeholder="Ürün ara veya seç..."
+                        value={urunSearchTerm}
+                        onChange={(e) => setUrunSearchTerm(e.target.value)}
+                        onFocus={() => setShowUrunSuggestions(true)}
+                        className="pr-10"
+                      />
+                      <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setShowUrunSuggestions(!showUrunSuggestions)}
+                          className="h-6 w-6 p-0"
+                        >
+                          ▼
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    {/* Arama Sonuçları */}
+                    {showUrunSuggestions && (
+                      <div className="absolute z-50 w-full mt-1 bg-background border border-border rounded-md shadow-lg max-h-48 overflow-auto">
+                        <div className="p-2 border-b border-border bg-muted/50">
+                          <div className="text-xs font-medium text-muted-foreground">
+                            {filteredUrunler.length} ürün bulundu
+                          </div>
+                        </div>
+                        
+                        {/* Kategori bazlı gruplandırma */}
+                        {Object.entries(
+                          filteredUrunler.reduce((acc, urun) => {
+                            const kategori = urun.kategori || 'Diğer'
+                            if (!acc[kategori]) acc[kategori] = []
+                            acc[kategori].push(urun)
+                            return acc
+                          }, {} as Record<string, typeof filteredUrunler>)
+                        ).map(([kategori, urunlerInKategori]) => (
+                          <div key={kategori}>
+                            <div className="px-2 py-1 text-xs font-semibold text-muted-foreground bg-muted">
+                              {kategori} ({urunlerInKategori.length})
+                            </div>
+                            {urunlerInKategori.slice(0, 5).map((urun) => (
+                              <div
+                                key={urun.id}
+                                className="px-2 py-1.5 hover:bg-muted cursor-pointer border-b border-border last:border-b-0"
+                                onClick={() => {
+                                  setFormData({
+                                    ...formData,
+                                    urunId: urun.id,
+                                    urunKodu: urun.stokKodu || `URN${urun.id.slice(-3)}`
+                                  })
+                                  setUrunSearchTerm(urun.ad)
+                                  setShowUrunSuggestions(false)
+                                }}
+                              >
+                                <div className="flex justify-between items-center">
+                                  <div className="min-w-0 flex-1">
+                                    <div className="font-medium text-sm truncate">{urun.ad}</div>
+                                    <div className="text-xs text-muted-foreground truncate">
+                                      {urun.stokKodu || `URN${urun.id.slice(-3)}`}
+                                    </div>
+                                  </div>
+                                  <div className="text-xs text-muted-foreground ml-2 flex-shrink-0">
+                                    {urun.birim}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                            {urunlerInKategori.length > 5 && (
+                              <div className="px-2 py-1 text-xs text-muted-foreground bg-muted/30 text-center">
+                                +{urunlerInKategori.length - 5} ürün daha...
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                        
+                        {filteredUrunler.length === 0 && (
+                          <div className="p-2 text-center text-muted-foreground text-sm">
+                            Ürün bulunamadı
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    <div className="text-xs text-muted-foreground">
+                      Ürün adı, kodu veya kategori ile arama yapabilirsiniz
+                    </div>
+                  </div>
+
+                  {/* Seçilen Ürün Bilgisi */}
                   {formData.urunId && (
                     <div className="p-3 bg-muted/50 rounded-lg border border-border">
                       <div className="text-sm font-medium">Seçilen Ürün:</div>
@@ -1559,27 +2260,6 @@ export default function YeniMalKabul() {
                       )}
                     </div>
                   )}
-
-                  <div className="space-y-2">
-                    <Label htmlFor="palet">Palet (Pasif)</Label>
-                    <Select
-                      value={formData.paletId}
-                      onValueChange={handlePaletChange}
-                      disabled={true}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Şimdilik pasif" />
-                      </SelectTrigger>
-                      <SelectContent>
-                          <SelectItem value="no-palet" disabled>
-                          Palet seçimi şimdilik pasif
-                          </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <div className="text-xs text-muted-foreground">
-                      Palet ve kasa seçimi şimdilik pasif, dara KG manuel girilecek
-                        </div>
-                  </div>
 
                         <div className="space-y-2">
                           <Label htmlFor="kasaSayisi">Kasa Sayısı *</Label>
@@ -1738,7 +2418,18 @@ export default function YeniMalKabul() {
 
           {/* Action Buttons */}
           <div className="flex justify-end gap-4 mt-6">
-            <Button type="submit" disabled={loading}>
+            {/* Form Sıfırlama */}
+            <Button
+              type="button"
+              variant="outline"
+              onClick={resetForm}
+              title="Ctrl+F - Formu sıfırla"
+            >
+              🔄 Form Sıfırla
+            </Button>
+            
+            {/* Ana Kaydet Butonu */}
+            <Button type="submit" disabled={loading} title="Ctrl+S - Hızlı kaydet">
               {loading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -1753,7 +2444,6 @@ export default function YeniMalKabul() {
             </Button>
           </div>
         </form>
-      </div>
 
       {/* Fiş Yazdırma Modal */}
       {showReceipt && receiptData && (
@@ -1875,25 +2565,33 @@ export default function YeniMalKabul() {
       
       {/* Global Suggestions */}
       {showGlobalSuggestions && globalSuggestions.length > 0 && (
-        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-background border border-border rounded-lg shadow-lg p-4 max-w-md w-full">
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-background border border-border rounded-lg shadow-lg p-3 max-w-md w-full">
           <div className="text-sm font-medium mb-2">
             🔍 Hızlı Seçim: <span className="text-primary font-bold">{globalInput}</span>
           </div>
-          <div className="space-y-2 max-h-60 overflow-y-auto">
-            {globalSuggestions.map((item, index) => (
+          <div className="space-y-1 max-h-40 overflow-y-auto">
+            {globalSuggestions.slice(0, 8).map((item, index) => (
               <button
                 key={index}
                 onClick={() => handleGlobalSelect(item)}
                 className="w-full text-left p-2 hover:bg-accent rounded-md transition-colors border border-transparent hover:border-border"
               >
-                <div className="font-medium text-primary">{item.kod}</div>
-                <div className="text-sm text-muted-foreground">{item.ad}</div>
+                <div className="font-medium text-primary text-sm">{item.kod}</div>
+                <div className="text-xs text-muted-foreground truncate">{item.ad}</div>
                 <div className="text-xs text-muted-foreground capitalize">{item.tip?.toLowerCase().replace('_', ' ')}</div>
               </button>
             ))}
+            {globalSuggestions.length > 8 && (
+              <div className="text-xs text-muted-foreground text-center py-1 border-t border-border">
+                +{globalSuggestions.length - 8} sonuç daha...
+              </div>
+            )}
           </div>
           <div className="text-xs text-muted-foreground mt-2 text-center">
-            Enter: Enter: Seç | Escape: İptal | Backspace: Sil
+            Enter: Seç | Escape: İptal | Backspace: Sil
+          </div>
+          <div className="text-xs text-muted-foreground mt-1 text-center border-t border-border pt-2">
+            💡 Kısayollar: Ctrl+S (Kaydet), Ctrl+R (Son Kayıtlar), Ctrl+B (Toplu Mod)
           </div>
         </div>
       )}
@@ -1904,6 +2602,319 @@ export default function YeniMalKabul() {
           Global Input: {globalInput}
         </div>
       )}
-    </DashboardLayout>
+    
+      {/* Template Sistemi Modal */}
+      {showTemplates && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background border border-border rounded-lg p-4 max-w-2xl w-full max-h-[60vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="text-lg font-semibold">📋 Template Sistemi</h3>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowTemplates(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="space-y-4">
+              {/* Mevcut Template'ler */}
+              <div>
+                <h4 className="font-medium mb-2">Mevcut Template'ler</h4>
+                {templates.length === 0 ? (
+                  <p className="text-muted-foreground text-sm">Henüz template kaydedilmemiş</p>
+                ) : (
+                  <div className="space-y-2">
+                    {templates.map((template) => (
+                      <div key={template.id} className="flex items-center justify-between p-3 border border-border rounded-lg">
+                        <div className="flex-1">
+                          <div className="font-medium">{template.name}</div>
+                          <div className="text-sm text-muted-foreground">
+                            Oluşturulma: {new Date(template.createdAt).toLocaleDateString('tr-TR')} | 
+                            Kullanım: {template.usageCount} kez
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              loadTemplate(template)
+                              setShowTemplates(false)
+                            }}
+                          >
+                            Yükle
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => deleteTemplate(template.id)}
+                          >
+                            Sil
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {/* Yeni Template Kaydetme */}
+              <div className="border-t border-border pt-4">
+                <h4 className="font-medium mb-2">Mevcut Formu Template Olarak Kaydet</h4>
+                <div className="flex items-center gap-2">
+                  <Input
+                    placeholder="Template adı (otomatik oluşturulacak)"
+                    value={`${formData.saticiTipi || 'Genel'} - ${formData.urunId ? urunler.find(u => u.id === formData.urunId)?.ad || 'Ürün' : 'Ürün'}`}
+                    disabled
+                  />
+                  <Button
+                    onClick={() => {
+                      saveAsTemplate()
+                      setShowTemplates(false)
+                    }}
+                    disabled={!formData.cariId || !formData.urunId}
+                  >
+                    Template Kaydet
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Son Kayıtlar Modal */}
+      {showLastRecords && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background border border-border rounded-lg p-4 max-w-4xl w-full max-h-[60vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="text-lg font-semibold">📋 Son Kayıtlar</h3>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowLastRecords(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="space-y-2">
+              {lastRecords.length === 0 ? (
+                <p className="text-muted-foreground text-sm">Henüz kayıt bulunamadı</p>
+              ) : (
+                lastRecords.map((record) => (
+                  <div key={record.id} className="flex items-center justify-between p-3 border border-border rounded-lg">
+                    <div className="flex-1">
+                      <div className="font-medium">
+                        {record.fisNo} - {record.saticiTipi}
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        {record.tarih} | {record.urun?.ad || 'Ürün'} | {record.kasaSayisi} kasa
+                      </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        copyFromLastRecord(record)
+                        setShowLastRecords(false)
+                      }}
+                    >
+                      Kopyala
+                    </Button>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Batch Processing Modal */}
+      {batchMode && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background border border-border rounded-lg p-4 max-w-5xl w-full max-h-[70vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="text-lg font-semibold">📦 Toplu Ürün Kaydı</h3>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setBatchMode(false)}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            
+            <div className="space-y-4">
+              {/* Cari Bilgisi */}
+              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="text-sm font-medium text-blue-800 mb-1">📋 Toplu Kayıt Cari Bilgisi</div>
+                <div className="text-xs text-blue-700">
+                  <div><strong>Tip:</strong> {formData.cariTipi === 'KOMISYONCU' ? 'KOMİSYONCU' : formData.cariTipi === 'MUSTAHSIL' ? 'MÜSTAHSİL' : 'ÖZEL FİRMA'}</div>
+                  <div><strong>Ad:</strong> {
+                    formData.cariTipi === 'KOMISYONCU' ? 
+                      komisyoncular.find(k => k.id === formData.komisyoncuId)?.dukkanAdi || 'Seçilmedi' :
+                    formData.cariTipi === 'MUSTAHSIL' ? 
+                      mustahsil.find(m => m.id === formData.mustahsilId)?.ad + ' ' + mustahsil.find(m => m.id === formData.mustahsilId)?.soyad || 'Seçilmedi' :
+                    formData.cariTipi === 'OZEL_FIRMA' ? 
+                      ozelFirmalar.find(f => f.id === formData.ozelFirmaId)?.firmaAdi || 'Seçilmedi' : 'Seçilmedi'
+                  }</div>
+                </div>
+              </div>
+
+              {/* Cari Seçimi Uyarısı */}
+              {!formData.cariId && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="text-sm font-medium text-red-800 mb-1">⚠️ Cari Seçimi Gerekli</div>
+                  <div className="text-xs text-red-700">
+                    Toplu kayıt yapabilmek için önce ana formda cari seçimi yapmalısınız.
+                  </div>
+                </div>
+              )}
+
+              {/* Batch Items */}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <h4 className="font-medium">Ürün Listesi</h4>
+                  <Button size="sm" onClick={addBatchItem}>
+                    + Ürün Ekle
+                  </Button>
+                </div>
+                
+                {batchItems.length === 0 ? (
+                  <p className="text-muted-foreground text-sm">Henüz ürün eklenmemiş</p>
+                ) : (
+                  <div className="space-y-3">
+                    {batchItems.map((item, index) => (
+                      <div key={item.id} className="grid grid-cols-6 gap-2 p-3 border border-border rounded-lg">
+                        <div>
+                          <Label className="text-xs">Ürün</Label>
+                          <div className="relative">
+                            <Input
+                              placeholder="Ürün ara..."
+                              value={item.urunKodu || ''}
+                              onChange={(e) => {
+                                const searchTerm = e.target.value
+                                const updatedItems = [...batchItems]
+                                updatedItems[index].urunKodu = searchTerm
+                                
+                                // Ürün arama
+                                if (searchTerm.trim()) {
+                                  const foundUrun = urunler.find(urun => 
+                                    urun.ad.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                    urun.stokKodu?.toLowerCase().includes(searchTerm.toLowerCase())
+                                  )
+                                  if (foundUrun) {
+                                    updatedItems[index].urunId = foundUrun.id
+                                    updatedItems[index].urunKodu = foundUrun.ad
+                                  }
+                                } else {
+                                  updatedItems[index].urunId = ''
+                                  updatedItems[index].urunKodu = ''
+                                }
+                                
+                                setBatchItems(updatedItems)
+                              }}
+                              className="h-8 text-xs"
+                            />
+                            {item.urunId && (
+                              <div className="absolute -bottom-6 left-0 text-xs text-green-600 bg-green-50 px-1 rounded">
+                                ✓ {urunler.find(u => u.id === item.urunId)?.ad}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div>
+                          <Label className="text-xs">Kasa</Label>
+                          <Input
+                            type="number"
+                            value={item.kasaSayisi}
+                            onChange={(e) => {
+                              const updatedItems = [...batchItems]
+                              updatedItems[index].kasaSayisi = e.target.value
+                              setBatchItems(updatedItems)
+                            }}
+                            className="h-8"
+                            placeholder="0"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs">Brüt KG</Label>
+                          <Input
+                            type="number"
+                            value={item.brutKg}
+                            onChange={(e) => {
+                              const updatedItems = [...batchItems]
+                              updatedItems[index].brutKg = e.target.value
+                              setBatchItems(updatedItems)
+                            }}
+                            className="h-8"
+                            placeholder="0"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs">Dara KG</Label>
+                          <Input
+                            type="number"
+                            value={item.daraKg}
+                            onChange={(e) => {
+                              const updatedItems = [...batchItems]
+                              updatedItems[index].daraKg = e.target.value
+                              setBatchItems(updatedItems)
+                            }}
+                            className="h-8"
+                            placeholder="0"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-xs">Not</Label>
+                          <Input
+                            value={item.notlar}
+                            onChange={(e) => {
+                              const updatedItems = [...batchItems]
+                              updatedItems[index].notlar = e.target.value
+                              setBatchItems(updatedItems)
+                            }}
+                            className="h-8"
+                            placeholder="Not"
+                          />
+                        </div>
+                        <div className="flex items-end">
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => removeBatchItem(item.id)}
+                            className="h-8"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              {/* Batch Actions */}
+              <div className="flex justify-end gap-2 pt-4 border-t border-border">
+                <Button
+                  variant="outline"
+                  onClick={() => setBatchMode(false)}
+                >
+                  İptal
+                </Button>
+                <Button
+                  onClick={saveBatchItems}
+                  disabled={batchItems.length === 0 || loading || !formData.cariId}
+                >
+                  {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  Toplu Kaydet ({batchItems.length} ürün)
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }

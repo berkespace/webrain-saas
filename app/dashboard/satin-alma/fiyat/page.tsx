@@ -16,7 +16,6 @@ import {
   User,
   Save
 } from 'lucide-react'
-import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { useToast } from '@/components/ui/use-toast'
 
 interface BekleyenUrun {
@@ -153,7 +152,7 @@ export default function FiyatGirisi() {
   const uniqueUreticiler = [...new Set(bekleyenUrunler.map(item => item.uretici))]
 
   return (
-    <DashboardLayout>
+    
       <div className="p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -347,6 +346,6 @@ export default function FiyatGirisi() {
           </CardContent>
         </Card>
       </div>
-    </DashboardLayout>
+    
   )
 }

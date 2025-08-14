@@ -17,7 +17,7 @@ import {
   MapPin,
   AlertTriangle
 } from 'lucide-react'
-import { DashboardLayout } from '@/components/layout/dashboard-layout'
+
 import Link from 'next/link'
 import { useToast } from '@/components/ui/use-toast'
 
@@ -156,7 +156,7 @@ export default function KomisyoncuListesi() {
   }
 
   return (
-    <DashboardLayout>
+    
       <div className="p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -327,6 +327,6 @@ export default function KomisyoncuListesi() {
           </CardContent>
         </Card>
       </div>
-    </DashboardLayout>
+    
   )
 }

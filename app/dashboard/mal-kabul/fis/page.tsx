@@ -1,563 +1,887 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { DashboardLayout } from '@/components/layout/dashboard-layout'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Label } from '@/components/ui/label'
 import { 
+  ArrowLeft, 
   Search, 
-  Filter, 
-  Eye, 
-  Printer,
-  FileText,
-  Package,
-  Calendar,
-  Scale,
-  User,
+  Printer, 
+  FileText, 
+  CheckCircle, 
+  AlertTriangle,
+  Eye,
   Download,
-  CheckCircle,
-  XCircle,
-  Clock
+  Filter,
+  Calendar
 } from 'lucide-react'
-import { toast } from '@/components/ui/use-toast'
-import { QRCode } from '@/components/ui/qr-code'
-import { Barcode } from '@/components/ui/barcode'
+import { useToast } from '@/components/ui/use-toast'
+import Link from 'next/link'
 
 interface MalKabulRecord {
   id: string
   fisNo: string
   tarih: string
-  saticiTipi: string
-  urun: { ad: string }
-  brutKg: number
-  girisKg: number
-  status: string
-  malKabulcu: { firstName: string; lastName: string }
-  komisyoncu?: { dukkanAdi: string }
-  uretici?: { ad: string; soyad: string }
-  ozelFirma?: { firmaAdi: string }
-  ambalaj?: { ad: string }
-  palet?: { ad: string }
+  saticiTipi: 'OZEL_FIRMA' | 'KOMISYONCU' | 'MUSTAHSIL'
+  komisyoncuId?: string
+  ureticiId?: string
+  ozelFirmaId?: string
+  mustahsilId?: string
+  urunId: string
   kasaSayisi: number
-  paletSayisi: number
+  brutKg: number
+  daraKg: number
+  girisKg: number
+  cikmaFireKg?: number
+  netKg?: number
+  status: 'FATURA_BEKLIYOR' | 'FATURALANDI' | 'NETLENDI' | 'TAMAMLANDI' | 'IPTAL'
   notlar?: string
-  fisYazdirildi?: boolean
-  fisYazdirmaTarihi?: string
+  komisyoncu?: {
+    id: string
+    dukkanAdi: string
+    sehir: string
+  }
+  uretici?: {
+    id: string
+    ad: string
+    soyad: string
+    sehir: string
+  }
+  ozelFirma?: {
+    id: string
+    firmaAdi: string
+    sehir: string
+  }
+  mustahsil?: {
+    id: string
+    ad: string
+    soyad: string
+  }
+  urun: {
+    id: string
+    ad: string
+    kategori: string
+  }
+  ambalaj?: {
+    id: string
+    ad: string
+    tipi: string
+    daraKg: number
+  }
+  palet?: {
+    id: string
+    ad: string
+    tipi: string
+  }
+  paletSayisi?: number
+  malKabulcu: {
+    id: string
+    firstName: string
+    lastName: string
+  }
+  createdAt: string
+  updatedAt: string
 }
 
-export default function FisYazdirPage() {
+export default function MalKabulFisArsivi() {
   const { data: session, status } = useSession()
   const router = useRouter()
-  const [records, setRecords] = useState<MalKabulRecord[]>([])
+  const { toast } = useToast()
+
   const [loading, setLoading] = useState(true)
+  const [malKabulRecords, setMalKabulRecords] = useState<MalKabulRecord[]>([])
+  const [filteredRecords, setFilteredRecords] = useState<MalKabulRecord[]>([])
   const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState('')
-  const [fisFilter, setFisFilter] = useState('')
-  const [selectedTab, setSelectedTab] = useState('tum')
+  const [filterStatus, setFilterStatus] = useState('all')
+  const [filterSaticiTipi, setFilterSaticiTipi] = useState('all')
+  const [startDate, setStartDate] = useState('')
+  const [endDate, setEndDate] = useState('')
+
+
+  const userRole = (session?.user as any)?.role
+
+  // Rol bazlı erişim kontrolü
+  const canAccess = userRole === 'MAL_KABULCU' || userRole === 'SATIN_ALMACI' || userRole === 'MUHASEBE' || userRole === 'ADMIN'
 
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login')
-    } else if (status === 'authenticated') {
-      fetchRecords()
+    } else if (status === 'authenticated' && !canAccess) {
+      toast({
+        title: "Erişim Reddedildi",
+        description: "Bu sayfaya erişim yetkiniz bulunmamaktadır",
+        variant: "destructive",
+      })
+      router.push('/dashboard')
     }
-  }, [status, router])
+  }, [status, router, canAccess, toast])
 
-  const fetchRecords = async () => {
+  useEffect(() => {
+    if (status === 'authenticated' && canAccess) {
+      fetchMalKabulRecords()
+    }
+  }, [status, canAccess])
+
+  const fetchMalKabulRecords = async () => {
     try {
+      setLoading(true)
+      console.log('🔍 Mal kabul kayıtları getiriliyor...')
       const response = await fetch('/api/mal-kabul?limit=1000')
+      console.log('📡 API Response:', response.status, response.ok)
+      
       if (response.ok) {
         const data = await response.json()
-        console.log('Fiş Yazdır API Response:', data)
-        console.log('Fiş Yazdır Records:', data.records)
-        setRecords(data.records || [])
+        console.log('📊 API Data:', data)
+        console.log('📊 Records:', data.records)
+        console.log('📊 Records Type:', typeof data.records)
+        console.log('📊 Records Is Array:', Array.isArray(data.records))
+        console.log('📊 Records Length:', data.records?.length)
+        
+        setMalKabulRecords(data.records || [])
+        setFilteredRecords(data.records || [])
+        
+        console.log('✅ State güncellendi')
+        console.log('📊 malKabulRecords:', data.records)
+        console.log('📊 filteredRecords:', data.records)
+      } else {
+        console.error('❌ Mal kabul kayıtları alınamadı')
+        const errorText = await response.text()
+        console.error('❌ Error Response:', errorText)
+        toast({
+          title: "Hata",
+          description: "Mal kabul kayıtları yüklenirken hata oluştu",
+          variant: "destructive",
+        })
       }
     } catch (error) {
-      console.error('Kayıtlar yüklenirken hata:', error)
+      console.error('❌ Mal kabul kayıtları hatası:', error)
       toast({
         title: "Hata",
-        description: "Kayıtlar yüklenirken hata oluştu",
+        description: "Mal kabul kayıtları yüklenirken hata oluştu",
         variant: "destructive",
       })
     } finally {
       setLoading(false)
+      console.log('🏁 Loading tamamlandı')
     }
   }
 
-  const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      'FATURA_BEKLIYOR': { label: 'Fatura Bekliyor', variant: 'secondary' as const },
-      'FATURALANDI': { label: 'Faturalandı', variant: 'default' as const },
-      'NETLENDI': { label: 'Netlendi', variant: 'success' as const },
-      'TAMAMLANDI': { label: 'Tamamlandı', variant: 'success' as const },
-      'IPTAL': { label: 'İptal', variant: 'destructive' as const }
-    }
+  // Arama ve filtreleme
+  useEffect(() => {
+    console.log('🔄 Filtreleme useEffect çalıştı')
+    console.log('📊 malKabulRecords:', malKabulRecords)
+    console.log('📊 searchTerm:', searchTerm)
+    console.log('📊 filterStatus:', filterStatus)
+    console.log('📊 filterSaticiTipi:', filterSaticiTipi)
+    console.log('📊 startDate:', startDate)
+    console.log('📊 endDate:', endDate)
     
-    const config = statusConfig[status as keyof typeof statusConfig] || { label: status, variant: 'secondary' as const }
-    return <Badge variant={config.variant}>{config.label}</Badge>
-  }
+    if (!malKabulRecords || !Array.isArray(malKabulRecords)) {
+      console.log('❌ malKabulRecords geçersiz, filteredRecords temizleniyor')
+      setFilteredRecords([])
+      return
+    }
+
+    let filtered = malKabulRecords
+    console.log('🔍 Başlangıç kayıt sayısı:', filtered.length)
+
+    // Arama
+    if (searchTerm) {
+      filtered = filtered.filter(record =>
+        record.fisNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        getSaticiAdi(record).toLowerCase().includes(searchTerm.toLowerCase()) ||
+        record.urun.ad.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        record.notlar?.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+      console.log('🔍 Arama sonrası kayıt sayısı:', filtered.length)
+    }
+
+    // Durum filtresi
+    if (filterStatus !== 'all') {
+      filtered = filtered.filter(record => record.status === filterStatus)
+      console.log('🔍 Durum filtresi sonrası kayıt sayısı:', filtered.length)
+    }
+
+    // Satıcı tipi filtresi
+    if (filterSaticiTipi !== 'all') {
+      filtered = filtered.filter(record => record.saticiTipi === filterSaticiTipi)
+      console.log('🔍 Satıcı tipi filtresi sonrası kayıt sayısı:', filtered.length)
+    }
+
+    // Tarih filtresi
+    if (startDate && endDate) {
+      filtered = filtered.filter(record => {
+        const recordDate = new Date(record.tarih)
+        const start = new Date(startDate)
+        const end = new Date(endDate)
+        return recordDate >= start && recordDate <= end
+      })
+      console.log('🔍 Tarih filtresi sonrası kayıt sayısı:', filtered.length)
+    }
+
+    console.log('✅ Final filtered kayıt sayısı:', filtered.length)
+    setFilteredRecords(filtered)
+  }, [malKabulRecords, searchTerm, filterStatus, filterSaticiTipi, startDate, endDate])
 
   const getSaticiAdi = (record: MalKabulRecord) => {
-    if (record.komisyoncu) return record.komisyoncu.dukkanAdi
-    if (record.uretici) return `${record.uretici.ad} ${record.uretici.soyad}`
-    if (record.ozelFirma) return record.ozelFirma.firmaAdi
-    return 'Bilinmiyor'
-  }
-
-  const handleView = (id: string) => {
-    router.push(`/dashboard/mal-kabul/duzenle/${id}`)
-  }
-
-  const handlePrint = (record: MalKabulRecord, type: 'BILGI_FISI' | 'SON_FIS' = 'BILGI_FISI') => {
-    const receiptData = {
-      fisNo: record.fisNo,
-      tarih: record.tarih,
-      saticiTipi: record.saticiTipi,
-      saticiAdi: getSaticiAdi(record),
-      urunAdi: record.urun.ad,
-      brutKg: record.brutKg,
-      daraKg: 0,
-      girisKg: record.girisKg,
-      ambalajAdi: record.ambalaj?.ad,
-      kasaSayisi: record.kasaSayisi,
-      paletAdi: record.palet?.ad,
-      paletSayisi: record.paletSayisi,
-      notlar: record.notlar,
-      malKabulcuAdi: `${record.malKabulcu.firstName} ${record.malKabulcu.lastName}`
+    if (record.saticiTipi === 'OZEL_FIRMA') {
+      return record.ozelFirma?.firmaAdi || 'Bilinmeyen Firma'
+    } else if (record.saticiTipi === 'KOMISYONCU') {
+      const komisyoncu = record.komisyoncu?.dukkanAdi || 'Bilinmeyen Komisyoncu'
+      // Eğer üretici bilgisi varsa göster, yoksa sadece komisyoncu adını göster
+      if (record.uretici) {
+        return `${komisyoncu} - ${record.uretici.ad} ${record.uretici.soyad}`
+      } else {
+        return komisyoncu
+      }
+    } else if (record.saticiTipi === 'MUSTAHSIL') {
+      return record.mustahsil ? `${record.mustahsil.ad} ${record.mustahsil.soyad}` : 'Bilinmeyen Müstahsil'
     }
-    
-    // Fiş yazdırma modal'ını aç
-    localStorage.setItem('printReceipt', JSON.stringify({
-      ...receiptData,
-      type
-    }))
-    
-    // Yazdırma penceresini aç
-    const printWindow = window.open('', '_blank')
-    if (printWindow) {
-      const title = type === 'BILGI_FISI' ? 'Bilgi Fişi' : 'Son Fiş'
-      printWindow.document.write(`
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <title>${title} Yazdır - ${record.fisNo}</title>
-            <style>
-              body { 
-                font-family: monospace; 
-                font-size: 12px; 
-                width: 80mm; 
-                margin: 0; 
-                padding: 10px;
-              }
-              .header { text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 10px; }
-              .section { margin-bottom: 10px; border-bottom: 1px solid #000; padding-bottom: 5px; }
-              .row { display: flex; justify-content: space-between; margin-bottom: 5px; }
-              .label { font-weight: bold; }
-              .value { text-align: right; }
-              .qr-placeholder { 
-                text-align: center; 
-                margin: 10px 0; 
-                padding: 20px; 
-                border: 2px dashed #ccc;
-                color: #666;
-              }
-              .final-status { 
-                background: #4ade80; 
-                color: white; 
-                padding: 5px; 
-                text-align: center; 
-                font-weight: bold;
-                margin: 10px 0;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="header">WEBRAIN</div>
-            <div class="header">Tarım Ürünleri Yönetim Sistemi</div>
-            <div class="header">80mm Termal Yazıcı</div>
-            
-            <div class="section">
-              <div class="header">${title.toUpperCase()}</div>
-              ${type === 'SON_FIS' ? '<div class="final-status">ÜRÜN SON EVRAKI</div>' : ''}
-              <div class="row">
-                <span class="label">Fiş No:</span>
-                <span class="value">${receiptData.fisNo}</span>
+    return 'Bilinmeyen'
+  }
+
+  const getUreticiAdi = (record: MalKabulRecord) => {
+    if (record.uretici) {
+      return `${record.uretici.ad} ${record.uretici.soyad}`
+    }
+    return null
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'FATURA_BEKLIYOR':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200'
+      case 'FATURALANDI':
+        return 'bg-blue-100 text-blue-800 border-blue-200'
+      case 'NETLENDI':
+        return 'bg-green-100 text-green-800 border-green-200'
+      case 'TAMAMLANDI':
+        return 'bg-green-100 text-green-800 border-green-200'
+      case 'IPTAL':
+        return 'bg-red-100 text-red-800 border-red-200'
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200'
+    }
+  }
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'FATURA_BEKLIYOR':
+        return 'Fatura Bekliyor'
+      case 'FATURALANDI':
+        return 'Faturalandı'
+      case 'NETLENDI':
+        return 'Netlendi'
+      case 'TAMAMLANDI':
+        return 'Tamamlandı'
+      case 'IPTAL':
+        return 'İptal'
+      default:
+        return status
+    }
+  }
+
+  const handlePrintReceipt = async (record: MalKabulRecord, type: 'BILGI_FISI' | 'SON_FIS') => {
+    try {
+      // Fiş verilerini hazırla
+      const receiptData = {
+        fisNo: record.fisNo,
+        tarih: record.tarih,
+        saticiTipi: record.saticiTipi,
+        saticiAdi: getSaticiAdi(record),
+        urunAdi: record.urun.ad,
+        brutKg: record.brutKg,
+        daraKg: record.daraKg,
+        girisKg: record.girisKg,
+        cikmaFireKg: record.cikmaFireKg || 0,
+        netKg: record.netKg || 0,
+        ambalajAdi: record.ambalaj?.ad,
+        kasaSayisi: record.kasaSayisi,
+        paletAdi: record.palet?.ad,
+        paletSayisi: record.paletSayisi,
+        notlar: record.notlar,
+        ureticiAdi: getUreticiAdi(record),
+        malKabulcuAdi: record.malKabulcu.firstName + ' ' + record.malKabulcu.lastName
+      }
+      
+      // QR kod ve barkod resimlerini oluştur
+      const qrValue = `${receiptData.fisNo}|${receiptData.tarih}|${receiptData.saticiTipi}|${receiptData.urunAdi}`
+      
+      // QR kod oluştur
+      const QRCodeLib = await import('qrcode')
+      const qrDataUrl = await QRCodeLib.toDataURL(qrValue, {
+        width: 40,
+        margin: 1,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      })
+      
+      // Barkod oluştur
+      const JsBarcode = await import('jsbarcode')
+      const canvas = document.createElement('canvas')
+      JsBarcode.default(canvas, receiptData.fisNo, {
+        format: 'CODE128',
+        width: 1.5,
+        height: 30,
+        displayValue: true,
+        fontSize: 10,
+        margin: 3
+      })
+      const barcodeDataUrl = canvas.toDataURL('image/png')
+      
+      // Yazdırma penceresini aç
+      const printWindow = window.open('', '_blank')
+      if (printWindow) {
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>${type === 'BILGI_FISI' ? 'Bilgi Fişi' : 'Son Fiş'} Yazdır</title>
+              <style>
+                body { 
+                  font-family: 'Courier New', monospace; 
+                  font-size: 10px; 
+                  width: 80mm; 
+                  max-width: 80mm;
+                  margin: 0; 
+                  padding: 5px;
+                  box-sizing: border-box;
+                }
+                .header { 
+                  text-align: center; 
+                  font-weight: bold; 
+                  font-size: 14px; 
+                  margin-bottom: 8px; 
+                  border-bottom: 1px solid #000;
+                  padding-bottom: 5px;
+                }
+                .subtitle {
+                  text-align: center;
+                  font-size: 10px;
+                  margin-bottom: 8px;
+                  color: #666;
+                }
+                .section { 
+                  margin-bottom: 8px; 
+                  border-bottom: 1px solid #000; 
+                  padding-bottom: 5px; 
+                }
+                .section-title {
+                  font-weight: bold;
+                  font-size: 10px;
+                  margin-bottom: 3px;
+                }
+                .row { 
+                  display: flex; 
+                  justify-content: space-between; 
+                  margin-bottom: 3px; 
+                  font-size: 9px;
+                }
+                .label { font-weight: bold; }
+                .value { text-align: right; }
+                .qr-code, .barcode { 
+                  text-align: center; 
+                  margin: 6px 0; 
+                }
+                .qr-code img, .barcode img {
+                  max-width: 60px;
+                  height: auto;
+                  display: block;
+                  margin: 0 auto;
+                }
+                .qr-code img {
+                  max-width: 40px;
+                  width: 40px;
+                }
+                .final-status { 
+                  background: #4ade80; 
+                  color: white; 
+                  padding: 5px; 
+                  text-align: center; 
+                  font-weight: bold;
+                  margin: 8px 0;
+                  font-size: 10px;
+                }
+                .footer {
+                  text-align: center;
+                  margin-top: 10px;
+                  font-size: 8px;
+                  color: #666;
+                  border-top: 1px solid #000;
+                  padding-top: 5px;
+                }
+                @media print {
+                  body { 
+                    width: 80mm !important;
+                    max-width: 80mm !important;
+                    margin: 0 !important;
+                    padding: 5px !important;
+                  }
+                  @page {
+                    size: 80mm auto;
+                    margin: 0;
+                  }
+                  .qr-code img, .barcode img {
+                    max-width: 60px !important;
+                    width: 60px !important;
+                    height: auto !important;
+                  }
+                  .qr-code img {
+                    max-width: 40px !important;
+                    width: 40px !important;
+                  }
+                }
+              </style>
+            </head>
+            <body>
+              <div class="header">WEBRAIN</div>
+              <div class="subtitle">Tarım Ürünleri Yönetim Sistemi</div>
+              <div class="subtitle"></div>
+              
+              <div class="section">
+                <div class="section-title">${type === 'BILGI_FISI' ? 'BİLGİ FİŞİ' : 'SON FİŞ'}</div>
+                <div class="subtitle">${type === 'BILGI_FISI' ? 'Üretici için kopya' : 'Ürün son evrakı'}</div>
               </div>
-              <div class="row">
-                <span class="label">Tarih:</span>
-                <span class="value">${new Date(receiptData.tarih).toLocaleDateString('tr-TR')}</span>
+              
+              <div class="section">
+                <div class="row">
+                  <span class="label">Fiş No:</span>
+                  <span class="value">${receiptData.fisNo}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Tarih:</span>
+                  <span class="value">${new Date(receiptData.tarih).toLocaleDateString('tr-TR')}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Saat:</span>
+                  <span class="value">${new Date(receiptData.tarih).toLocaleTimeString('tr-TR')}</span>
+                </div>
               </div>
-              <div class="row">
-                <span class="label">Saat:</span>
-                <span class="value">${new Date(receiptData.tarih).toLocaleTimeString('tr-TR')}</span>
+              
+              <div class="section">
+                <div class="section-title">SATICI BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Tip:</span>
+                  <span class="value">${receiptData.saticiTipi}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Ad:</span>
+                  <span class="value">${receiptData.saticiAdi}</span>
+                </div>
+                ${receiptData.ureticiAdi ? `
+                <div class="row">
+                  <span class="label">Üretici:</span>
+                  <span class="value">${receiptData.ureticiAdi}</span>
+                </div>
+                ` : ''}
               </div>
-            </div>
-            
-            <div class="section">
-              <div class="label">SATICI BİLGİLERİ</div>
-              <div>Tip: ${receiptData.saticiTipi}</div>
-              <div class="label">${receiptData.saticiAdi}</div>
-            </div>
-            
-            <div class="section">
-              <div class="label">ÜRÜN BİLGİLERİ</div>
-              <div class="label">${receiptData.urunAdi}</div>
-              ${receiptData.ambalajAdi ? `<div>Ambalaj: ${receiptData.ambalajAdi} x ${receiptData.kasaSayisi}</div>` : ''}
-              ${receiptData.paletAdi && receiptData.paletSayisi ? `<div>Palet: ${receiptData.paletAdi} x ${receiptData.paletSayisi}</div>` : ''}
-            </div>
-            
-            <div class="section">
-              <div class="label">AĞIRLIK BİLGİLERİ</div>
-              <div class="row">
-                <span>Brüt KG:</span>
-                <span class="value">${receiptData.brutKg.toFixed(2)} kg</span>
+              
+              <div class="section">
+                <div class="section-title">ÜRÜN BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Ürün:</span>
+                  <span class="value">${receiptData.urunAdi}</span>
+                </div>
+                ${receiptData.ambalajAdi ? `
+                <div class="row">
+                  <span class="label">Ambalaj:</span>
+                  <span class="value">${receiptData.ambalajAdi} x ${receiptData.kasaSayisi}</span>
+                </div>
+                ` : ''}
+                ${receiptData.paletAdi ? `
+                <div class="row">
+                  <span class="label">Palet:</span>
+                  <span class="value">${receiptData.paletAdi} x ${receiptData.paletSayisi}</span>
+                </div>
+                ` : ''}
               </div>
-              <div class="row">
-                <span>Giriş KG:</span>
-                <span class="value">${receiptData.girisKg.toFixed(2)} kg</span>
+              
+              <div class="section">
+                <div class="section-title">AĞIRLIK BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Brüt KG:</span>
+                  <span class="value">${receiptData.brutKg.toFixed(2)} kg</span>
+                </div>
+                <div class="row">
+                  <span class="label">Dara KG:</span>
+                  <span class="value">${receiptData.daraKg.toFixed(2)} kg</span>
+                </div>
+                <div class="row">
+                  <span class="label">Giriş KG:</span>
+                  <span class="value">${receiptData.girisKg.toFixed(2)} kg</span>
+                </div>
+                ${type === 'SON_FIS' ? `
+                <div class="row">
+                  <span class="label">Çıkma/Fire KG:</span>
+                  <span class="value">${receiptData.cikmaFireKg.toFixed(2)} kg</span>
+                </div>
+                <div class="row">
+                  <span class="label">Net KG:</span>
+                  <span class="value">${receiptData.netKg.toFixed(2)} kg</span>
+                </div>
+                ` : ''}
               </div>
-            </div>
-            
-            ${receiptData.notlar ? `
-            <div class="section">
-              <div class="label">NOTLAR</div>
-              <div>${receiptData.notlar}</div>
-            </div>
-            ` : ''}
-            
-            <div class="section">
-              <div>Mal Kabulcu:</div>
-              <div class="label">${receiptData.malKabulcuAdi}</div>
-            </div>
-            
-            <div class="section">
-              <div class="label">QR KOD VE BARKOD</div>
-              <div class="qr-placeholder">
-                QR Kod Buraya Gelecek<br>
-                ${receiptData.fisNo}|${receiptData.tarih}|${receiptData.saticiTipi}|${receiptData.urunAdi}
+              
+              ${receiptData.notlar ? `
+              <div class="section">
+                <div class="section-title">NOTLAR</div>
+                <div class="row">
+                  <span class="label">Not:</span>
+                  <span class="value">${receiptData.notlar}</span>
+                </div>
               </div>
-              <div style="text-align: center; font-size: 10px; color: #666;">
-                ${type === 'BILGI_FISI' ? 'Ürün işlendiğinde bu QR kod ile düzenleme ekranına gidin' : 'Bu fiş ürünün son evrakıdır'}
+              ` : ''}
+              
+              <div class="section">
+                <div class="row">
+                  <span class="label">Mal Kabulcu:</span>
+                  <span class="value">${receiptData.malKabulcuAdi}</span>
+                </div>
               </div>
-            </div>
-            
-            <div style="text-align: center; margin-top: 20px;">
-              <div style="font-size: 10px; color: #666;">
-                ${type === 'BILGI_FISI' ? 'Bu fişi saklayın, ürün işlendiğinde gerekli olacak' : 'Ürün işlemi tamamlandı'}
+              
+              <div class="section">
+                <div class="section-title">BARKOD</div>
+                <div class="barcode">
+                  <img src="${barcodeDataUrl}" alt="Barkod" />
+                </div>
               </div>
-              <div style="font-size: 10px; margin-top: 5px;">
+              
+              <div class="section">
+                <div class="section-title">QR KOD</div>
+                <div class="qr-code">
+                  <img src="${qrDataUrl}" alt="QR Kod" />
+                </div>
+              </div>
+              
+              ${type === 'SON_FIS' ? `
+              <div class="final-status">ÜRÜN NETLENDİ</div>
+              ` : ''}
+              
+              <div class="footer">
+                ${type === 'BILGI_FISI' 
+                  ? 'Bu fişi saklayın, ürün işlendiğinde gerekli olacak'
+                  : 'Ürün işlemi tamamlandı'
+                }
+                <br>
                 ${new Date().toLocaleDateString('tr-TR')} - ${new Date().toLocaleTimeString('tr-TR')}
               </div>
-            </div>
-          </body>
-        </html>
-      `)
-      printWindow.document.close()
-      printWindow.focus()
-      
-      setTimeout(() => {
-        printWindow.print()
-      }, 500)
+            </body>
+          </html>
+        `)
+        
+        printWindow.document.close()
+        
+        // Yazdırma işlemini başlat
+        setTimeout(() => {
+          printWindow.print()
+          printWindow.close()
+        }, 100)
+      }
+    } catch (error) {
+      console.error('Fiş yazdırma hatası:', error)
+      toast({
+        title: "Hata",
+        description: "Fiş yazdırılırken hata oluştu",
+        variant: "destructive",
+      })
     }
-    
+  }
+
+  const handleDownloadReceipt = (record: MalKabulRecord, type: 'BILGI_FISI' | 'SON_FIS') => {
+    // PDF indirme işlemi (gelecekte implement edilebilir)
     toast({
-      title: `${title} Yazdırılıyor`,
-      description: `${title} yazdırma penceresi açıldı`,
-      variant: "success",
+      title: "Bilgi",
+      description: "PDF indirme özelliği yakında eklenecek",
+      variant: "default",
     })
   }
 
-  const getFilteredRecords = () => {
-    let filtered = records.filter(record => {
-      const matchesSearch = record.fisNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           record.urun.ad.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           getSaticiAdi(record).toLowerCase().includes(searchTerm.toLowerCase())
-      
-      const matchesStatus = !statusFilter || record.status === statusFilter
-      const matchesFis = !fisFilter || 
-                        (fisFilter === 'yazdirildi' && record.fisYazdirildi) ||
-                        (fisFilter === 'yazdirilmadi' && !record.fisYazdirildi)
-      
-      return matchesSearch && matchesStatus && matchesFis
-    })
-
-    // Tab bazlı filtreleme
-    if (selectedTab === 'yazdirilmamis') {
-      filtered = filtered.filter(record => !record.fisYazdirildi)
-    } else if (selectedTab === 'yazdirilmis') {
-      filtered = filtered.filter(record => record.fisYazdirildi)
-    }
-
-    return filtered
-  }
-
-  const filteredRecords = getFilteredRecords()
-
-  if (loading) {
+  if (status === 'loading' || loading) {
     return (
-      <DashboardLayout>
-        <div className="p-6">
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-          </div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Yükleniyor...</p>
         </div>
-      </DashboardLayout>
+      </div>
     )
   }
 
+  if (!session) {
+    return null
+  }
+
+  if (!canAccess) {
+    return null
+  }
+
   return (
-    <DashboardLayout>
-      <div className="p-6">
-        <div className="flex justify-between items-center mb-6">
+    <div className="p-6">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-8">
+        <div className="flex items-center gap-4">
+          <Link href="/dashboard/mal-kabul">
+            <Button variant="outline" size="sm">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Geri Dön
+            </Button>
+          </Link>
           <div>
-            <h1 className="text-3xl font-bold">Fiş Yazdır</h1>
-            <p className="text-gray-600 mt-2">Mal kabul kayıtları için fiş yazdırma işlemleri</p>
-          </div>
-          <div className="flex gap-3">
-            <Button variant="outline" onClick={() => router.push('/dashboard/mal-kabul/liste')}>
-              <FileText className="mr-2 h-4 w-4" />
-              Tüm Kayıtlar
-            </Button>
-            <Button onClick={() => router.push('/dashboard/mal-kabul/yeni')}>
-              <Package className="mr-2 h-4 w-4" />
-              Yeni Mal Kabul
-            </Button>
+            <h1 className="text-3xl font-bold text-foreground">Mal Kabul Fiş Arşivi</h1>
+            <p className="text-muted-foreground">
+              Tüm mal kabul fişlerini görüntüleyin ve tekrar yazdırın
+            </p>
           </div>
         </div>
+      </div>
 
-        {/* Özet Kartları */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Toplam Kayıt</p>
-                  <p className="text-2xl font-bold">{records.length}</p>
-                </div>
-                <FileText className="h-8 w-8 text-blue-500" />
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Fiş Yazdırıldı</p>
-                  <p className="text-2xl font-bold text-green-600">
-                    {records.filter(r => r.fisYazdirildi).length}
-                  </p>
-                </div>
-                <CheckCircle className="h-8 w-8 text-green-500" />
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Fiş Yazdırılmadı</p>
-                  <p className="text-2xl font-bold text-orange-600">
-                    {records.filter(r => !r.fisYazdirildi).length}
-                  </p>
-                </div>
-                <XCircle className="h-8 w-8 text-orange-500" />
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Bugün Yazdırılan</p>
-                  <p className="text-2xl font-bold text-purple-600">
-                    {records.filter(r => {
-                      if (!r.fisYazdirmaTarihi) return false
-                      const today = new Date().toDateString()
-                      const printDate = new Date(r.fisYazdirmaTarihi).toDateString()
-                      return today === printDate
-                    }).length}
-                  </p>
-                </div>
-                <Printer className="h-8 w-8 text-purple-500" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Tabs */}
-        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="mb-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="tum">Tüm Kayıtlar</TabsTrigger>
-            <TabsTrigger value="yazdirilmamis">Fiş Yazdırılmamış</TabsTrigger>
-            <TabsTrigger value="yazdirilmis">Fiş Yazdırılmış</TabsTrigger>
-          </TabsList>
-        </Tabs>
-
-        {/* Filtreler */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Filter className="h-5 w-5" />
-              Filtreler
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* İstatistikler */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
               <div>
-                <label className="block text-sm font-medium mb-2">Arama</label>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input
-                    placeholder="Fiş no, ürün, satıcı..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
+                <p className="text-sm text-muted-foreground">Toplam Fiş</p>
+                <p className="text-2xl font-bold">{Array.isArray(malKabulRecords) ? malKabulRecords.length : 0}</p>
               </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-2">Durum</label>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Tüm durumlar" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">Tüm durumlar</SelectItem>
-                    <SelectItem value="FATURA_BEKLIYOR">Fatura Bekliyor</SelectItem>
-                    <SelectItem value="FATURALANDI">Faturalandı</SelectItem>
-                    <SelectItem value="NETLENDI">Netlendi</SelectItem>
-                    <SelectItem value="TAMAMLANDI">Tamamlandı</SelectItem>
-                    <SelectItem value="IPTAL">İptal</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-2">Fiş Durumu</label>
-                <Select value={fisFilter} onValueChange={setFisFilter}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Tüm fişler" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">Tüm fişler</SelectItem>
-                    <SelectItem value="yazdirildi">Yazdırıldı</SelectItem>
-                    <SelectItem value="yazdirilmadi">Yazdırılmadı</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="flex items-end">
-                <Button 
-                  variant="outline" 
-                  onClick={() => {
-                    setSearchTerm('')
-                    setStatusFilter('')
-                    setFisFilter('')
-                  }}
-                >
-                  Filtreleri Temizle
-                </Button>
-              </div>
+              <FileText className="h-8 w-8 text-blue-500" />
             </div>
           </CardContent>
         </Card>
 
-        {/* Kayıtlar */}
-        <div className="grid gap-4">
-          {filteredRecords.map((record) => (
-            <Card key={record.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-lg font-semibold">{record.fisNo}</h3>
-                      {getStatusBadge(record.status)}
-                      {record.fisYazdirildi ? (
-                        <Badge variant="outline" className="text-green-600 border-green-600">
-                          <CheckCircle className="mr-1 h-3 w-3" />
-                          Fiş Yazdırıldı
-                          {record.fisYazdirmaTarihi && (
-                            <span className="ml-1 text-xs">
-                              ({new Date(record.fisYazdirmaTarihi).toLocaleDateString('tr-TR')})
-                            </span>
-                          )}
-                        </Badge>
-                      ) : (
-                        <Badge variant="outline" className="text-orange-600 border-orange-600">
-                          <XCircle className="mr-1 h-3 w-3" />
-                          Fiş Yazdırılmadı
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {new Date(record.tarih).toLocaleDateString('tr-TR')} - {new Date(record.tarih).toLocaleTimeString('tr-TR')}
-                    </div>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={() => handleView(record.id)}>
-                      <Eye className="mr-1 h-4 w-4" />
-                      Görüntüle
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => handlePrint(record, 'BILGI_FISI')}>
-                      <Printer className="mr-1 h-4 w-4" />
-                      Bilgi Fişi
-                    </Button>
-                    {record.status === 'NETLENDI' && (
-                      <Button variant="outline" size="sm" onClick={() => handlePrint(record, 'SON_FIS')}>
-                        <Download className="mr-1 h-4 w-4" />
-                        Son Fiş
-                      </Button>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="flex items-center gap-2">
-                    <Package className="h-4 w-4 text-gray-500" />
-                    <span className="font-medium">{record.urun.ad}</span>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <User className="h-4 w-4 text-gray-500" />
-                    <span>{getSaticiAdi(record)}</span>
-                  </div>
-                  
-                  <div className="flex items-center gap-2">
-                    <Scale className="h-4 w-4 text-gray-500" />
-                    <span>{record.girisKg.toFixed(2)} kg</span>
-                  </div>
-                </div>
-                
-                {record.notlar && (
-                  <div className="mt-3 p-3 bg-gray-50 rounded-lg">
-                    <div className="text-sm font-medium text-gray-700 mb-1">Notlar:</div>
-                    <div className="text-sm text-gray-600">{record.notlar}</div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-        
-        {filteredRecords.length === 0 && (
-          <div className="text-center py-12">
-            <FileText className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Kayıt bulunamadı</h3>
-            <p className="text-gray-500">Arama kriterlerinize uygun kayıt bulunamadı.</p>
-          </div>
-        )}
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Bekleyen</p>
+                <p className="text-2xl font-bold text-yellow-500">
+                  {Array.isArray(malKabulRecords) ? malKabulRecords.filter(r => r.status === 'FATURA_BEKLIYOR').length : 0}
+                </p>
+              </div>
+              <AlertTriangle className="h-8 w-8 text-yellow-500" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Netlenen</p>
+                <p className="text-2xl font-bold text-green-500">
+                  {Array.isArray(malKabulRecords) ? malKabulRecords.filter(r => r.status === 'NETLENDI').length : 0}
+                </p>
+              </div>
+              <CheckCircle className="h-8 w-8 text-green-500" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Tamamlanan</p>
+                <p className="text-2xl font-bold text-green-500">
+                  {Array.isArray(malKabulRecords) ? malKabulRecords.filter(r => r.status === 'TAMAMLANDI').length : 0}
+                </p>
+              </div>
+              <CheckCircle className="h-8 w-8 text-green-500" />
+            </div>
+          </CardContent>
+        </Card>
       </div>
-    </DashboardLayout>
+
+      {/* Filtreler */}
+      <Card className="mb-6">
+        <CardContent className="p-4">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Fiş no, satıcı, ürün ara..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            
+            <div>
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              >
+                <option value="all">Tüm Durumlar</option>
+                <option value="FATURA_BEKLIYOR">Fatura Bekliyor</option>
+                <option value="FATURALANDI">Faturalandı</option>
+                <option value="NETLENDI">Netlendi</option>
+                <option value="TAMAMLANDI">Tamamlandı</option>
+                <option value="IPTAL">İptal</option>
+              </select>
+            </div>
+
+            <div>
+              <select
+                value={filterSaticiTipi}
+                onChange={(e) => setFilterSaticiTipi(e.target.value)}
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              >
+                <option value="all">Tüm Satıcılar</option>
+                <option value="OZEL_FIRMA">Özel Firma</option>
+                <option value="KOMISYONCU">Komisyoncu</option>
+                <option value="MUSTAHSIL">Müstahsil</option>
+              </select>
+            </div>
+
+            <div>
+              <Input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                placeholder="Başlangıç"
+                className="text-sm"
+              />
+            </div>
+
+            <div>
+              <Input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                placeholder="Bitiş"
+                className="text-sm"
+              />
+            </div>
+
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSearchTerm('')
+                setFilterStatus('all')
+                setFilterSaticiTipi('all')
+                setStartDate('')
+                setEndDate('')
+              }}
+              className="flex items-center gap-2"
+            >
+              <Filter className="h-4 w-4" />
+              Temizle
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Fiş Listesi */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            Fiş Listesi ({Array.isArray(filteredRecords) ? filteredRecords.length : 0} kayıt)
+          </CardTitle>
+          <CardDescription>
+            Tüm mal kabul fişlerini görüntüleyin ve işlem yapın
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {!Array.isArray(filteredRecords) || filteredRecords.length === 0 ? (
+            <div className="text-center py-8">
+              <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <p className="text-muted-foreground">Henüz fiş bulunamadı</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-border">
+                    <th className="text-left py-3 px-2 font-medium">Fiş No</th>
+                    <th className="text-left py-3 px-2 font-medium">Tarih</th>
+                    <th className="text-left py-3 px-2 font-medium">Satıcı</th>
+                    <th className="text-left py-3 px-2 font-medium">Ürün</th>
+                    <th className="text-left py-3 px-2 font-medium">Brüt KG</th>
+                    <th className="text-left py-3 px-2 font-medium">Net KG</th>
+                    <th className="text-left py-3 px-2 font-medium">Durum</th>
+                    <th className="text-left py-3 px-2 font-medium">İşlemler</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.isArray(filteredRecords) && filteredRecords.map((record) => (
+                    <tr key={record.id} className="border-b border-border hover:bg-muted/50">
+                      <td className="py-3 px-2 font-mono font-medium">
+                        {record.fisNo}
+                      </td>
+                      <td className="py-3 px-2">
+                        {new Date(record.tarih).toLocaleDateString('tr-TR')}
+                      </td>
+                      <td className="py-3 px-2">
+                        <div className="max-w-xs truncate" title={getSaticiAdi(record)}>
+                          {getSaticiAdi(record)}
+                        </div>
+                      </td>
+                      <td className="py-3 px-2">
+                        <div className="max-w-xs truncate" title={record.urun.ad}>
+                          {record.urun.ad}
+                        </div>
+                      </td>
+                      <td className="py-3 px-2">
+                        {record.brutKg.toFixed(2)} kg
+                      </td>
+                      <td className="py-3 px-2">
+                        {record.netKg ? `${record.netKg.toFixed(2)} kg` : '-'}
+                      </td>
+                      <td className="py-3 px-2">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor(record.status)}`}>
+                          {getStatusText(record.status)}
+                        </span>
+                      </td>
+                      <td className="py-3 px-2">
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handlePrintReceipt(record, 'BILGI_FISI')}
+                            title="Bilgi Fişi Yazdır"
+                          >
+                            <Printer className="h-4 w-4" />
+                          </Button>
+                          
+                          {record.status === 'NETLENDI' && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handlePrintReceipt(record, 'SON_FIS')}
+                              title="Son Fiş Yazdır"
+                            >
+                              <CheckCircle className="h-4 w-4" />
+                            </Button>
+                          )}
+                          
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDownloadReceipt(record, 'BILGI_FISI')}
+                            title="PDF İndir"
+                          >
+                            <Download className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+
+    </div>
   )
 }

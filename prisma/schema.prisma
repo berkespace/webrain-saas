@@ -45,6 +45,7 @@ model OzelFirma {
   firmaAdi        String
   firmaNo         String           @unique
   vkn             String?
+  vergiDairesi    String?
   yetkiliAdi      String?
   yetkiliTelefon  String?
   sehir           String
@@ -83,6 +84,8 @@ model Mustahsil {
   dogumTarihi     DateTime
   tcKimlikNo      String           @unique
   mustahsilNo     String           @unique
+  iletisim        String?
+  bankaAdi        String?
   ibanAdresi      String?
   adres           String?
   cinsiyet        Gender

@@ -142,12 +142,6 @@ export async function PUT(
       )
     }
 
-    if (!paletId && !ambalajId) {
-      return NextResponse.json(
-        { error: "Palet veya Ambalaj seçimi zorunludur" },
-        { status: 400 }
-      )
-    }
 
     if (paletId && (!paletSayisi || paletSayisi === '')) {
       return NextResponse.json(

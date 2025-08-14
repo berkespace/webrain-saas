@@ -16,7 +16,6 @@ import {
   Eye,
   Shield
 } from 'lucide-react'
-import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import {
   Dialog,
   DialogContent,
@@ -178,7 +177,7 @@ export default function KullaniciYonetimi() {
   }
 
   return (
-    <DashboardLayout>
+    
       <div className="p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -354,6 +353,6 @@ export default function KullaniciYonetimi() {
           </CardContent>
         </Card>
       </div>
-    </DashboardLayout>
+    
   )
 }

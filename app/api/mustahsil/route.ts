@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma"
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { ad, soyad, tcKimlikNo, dogumTarihi, cinsiyet, iletisim, adres } = body
+    const { ad, soyad, tcKimlikNo, dogumTarihi, cinsiyet, iletisim, bankaAdi, ibanAdresi, adres } = body
 
     // Zorunlu alanları kontrol et
     if (!ad || !soyad || !tcKimlikNo || !dogumTarihi || !cinsiyet) {
@@ -52,6 +52,8 @@ export async function POST(request: NextRequest) {
         dogumTarihi: new Date(dogumTarihi),
         cinsiyet,
         iletisim,
+        bankaAdi,
+        ibanAdresi,
         adres,
         durum: 'AKTIF'
       }

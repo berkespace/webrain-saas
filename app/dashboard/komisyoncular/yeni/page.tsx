@@ -18,7 +18,6 @@ import {
   Users,
   Loader2
 } from 'lucide-react'
-import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import { useToast } from '@/components/ui/use-toast'
 import {
   Select,
@@ -124,7 +123,7 @@ export default function YeniKomisyoncu() {
   }
 
   return (
-    <DashboardLayout>
+    
       <div className="p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -364,6 +363,6 @@ export default function YeniKomisyoncu() {
           </div>
         </form>
       </div>
-    </DashboardLayout>
+    
   )
 }

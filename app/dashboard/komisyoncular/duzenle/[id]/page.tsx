@@ -13,7 +13,6 @@ import {
   Building2,
   Loader2
 } from 'lucide-react'
-import { DashboardLayout } from '@/components/layout/dashboard-layout'
 import {
   Select,
   SelectContent,
@@ -140,14 +139,14 @@ export default function KomisyoncuDuzenle({ params }: { params: { id: string } }
 
   if (status === 'loading' || loading) {
     return (
-      <DashboardLayout>
+      
         <div className="min-h-screen bg-background flex items-center justify-center">
           <div className="text-center">
             <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
             <p className="mt-4 text-muted-foreground">Yükleniyor...</p>
           </div>
         </div>
-      </DashboardLayout>
+      
     )
   }
 
@@ -157,7 +156,7 @@ export default function KomisyoncuDuzenle({ params }: { params: { id: string } }
 
   if (!komisyoncu) {
     return (
-      <DashboardLayout>
+      
         <div className="p-6">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-foreground">Komisyoncu Bulunamadı</h1>
@@ -170,12 +169,12 @@ export default function KomisyoncuDuzenle({ params }: { params: { id: string } }
             </Link>
           </div>
         </div>
-      </DashboardLayout>
+      
     )
   }
 
   return (
-    <DashboardLayout>
+    
       <div className="p-6">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
@@ -321,6 +320,6 @@ export default function KomisyoncuDuzenle({ params }: { params: { id: string } }
           </div>
         </form>
       </div>
-    </DashboardLayout>
+    
   )
 }
