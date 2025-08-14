@@ -28,6 +28,8 @@ import {
 } from "@/components/ui/select"
 import { useToast } from '@/components/ui/use-toast'
 import Link from 'next/link'
+import { QRCode } from '@/components/ui/qr-code'
+import { Barcode } from '@/components/ui/barcode'
 
 interface MalKabulRow {
   id: string
@@ -585,6 +587,16 @@ export default function MalKabulTest() {
       return mustahsilData ? `${mustahsilData.ad} ${mustahsilData.soyad}` : ''
     }
     return ''
+  }
+
+  // QR kod ve barkod oluşturma
+  const generateQRCode = (data: any) => {
+    const qrValue = `${data.fisNo}|${data.tarih}|${data.saticiTipi}|${data.urunAdi}|${data.netKg}`
+    return qrValue
+  }
+
+  const generateBarcode = (data: any) => {
+    return data.fisNo || '0000000000'
   }
 
   const getStatusIcon = (status: string) => {
@@ -1428,7 +1440,7 @@ export default function MalKabulTest() {
       {/* Fiş Yazdırma Modal */}
       {showReceipt && receiptData && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-96 overflow-y-auto">
+          <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">
                 🧾 Fiş Yazdırma: {receiptData.fisNo}
@@ -1441,51 +1453,147 @@ export default function MalKabulTest() {
               </button>
             </div>
             
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <strong>Fiş No:</strong> {receiptData.fisNo}
+            {/* Fiş Önizleme */}
+            <div className="bg-white border-2 border-gray-300 p-6 rounded-lg mb-4 receipt-print">
+              <style jsx>{`
+                @media print {
+                  .receipt-print {
+                    border: none !important;
+                    padding: 10px !important;
+                    margin: 0 !important;
+                    max-width: 80mm !important;
+                    width: 100% !important;
+                  }
+                  
+                  .receipt-print h2 {
+                    font-size: 16px !important;
+                    margin-bottom: 8px !important;
+                  }
+                  
+                  .receipt-print .text-sm {
+                    font-size: 10px !important;
+                  }
+                  
+                  .receipt-print .grid {
+                    gap: 2px !important;
+                  }
+                  
+                  .receipt-print .w-32 {
+                    width: 60px !important;
+                    height: 60px !important;
+                  }
+                  
+                  .receipt-print .w-40 {
+                    width: 80px !important;
+                    height: 40px !important;
+                  }
+                }
+              `}</style>
+              <div className="text-center mb-4">
+                <h2 className="text-xl font-bold">MAL KABUL FİŞİ</h2>
+                <div className="text-sm text-gray-600">WebRain SaaS</div>
+              </div>
+              
+              {/* QR Kod ve Barkod */}
+              <div className="flex justify-between items-start mb-4">
+                <div className="flex-1">
+                  <div className="grid grid-cols-1 gap-1 text-sm">
+                    <div className="flex justify-between">
+                      <span className="font-medium">Fiş No:</span>
+                      <span className="ml-2">{receiptData.fisNo}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Tarih:</span>
+                      <span className="ml-2">{receiptData.tarih}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Satıcı:</span>
+                      <span className="ml-2">{receiptData.saticiAdi}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium">Ürün:</span>
+                      <span className="ml-2">{receiptData.urunAdi}</span>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <strong>Tarih:</strong> {receiptData.tarih}
-                </div>
-                <div>
-                  <strong>Satıcı:</strong> {receiptData.saticiAdi}
-                </div>
-                <div>
-                  <strong>Ürün:</strong> {receiptData.urunAdi}
-                </div>
-                <div>
-                  <strong>Brüt KG:</strong> {receiptData.brutKg}
-                </div>
-                <div>
-                  <strong>Giriş KG:</strong> {receiptData.girisKg}
-                </div>
-                <div>
-                  <strong>Çıkma KG:</strong> {receiptData.cikmaFireKg}
-                </div>
-                <div>
-                  <strong>Net KG:</strong> {receiptData.netKg}
+                
+                <div className="flex flex-col items-center gap-2">
+                  {/* QR Kod */}
+                  <div className="text-center">
+                    <div className="w-32 h-32 bg-white border border-gray-300 rounded flex items-center justify-center">
+                      <QRCode 
+                        value={generateQRCode(receiptData)}
+                        size={120}
+                      />
+                    </div>
+                    <div className="text-xs text-gray-600 mt-1">QR Kod</div>
+                  </div>
+                  
+                  {/* Barkod */}
+                  <div className="text-center">
+                    <div className="w-40 h-20 bg-white border border-gray-300 rounded flex items-center justify-center">
+                      <Barcode 
+                        value={generateBarcode(receiptData)}
+                        width={200}
+                        height={60}
+                      />
+                    </div>
+                    <div className="text-xs text-gray-600 mt-1">Barkod</div>
+                  </div>
                 </div>
               </div>
               
-              <div className="flex gap-2">
-                <Button 
-                  onClick={() => {
-                    // QR kod ve barkod ile fiş yazdır
-                    window.print()
-                  }}
-                  className="flex-1"
-                >
-                  🖨️ Fiş Yazdır
-                </Button>
-                <Button 
-                  onClick={() => setShowReceipt(false)}
-                  variant="outline"
-                >
-                  Kapat
-                </Button>
+              {/* KG Bilgileri */}
+              <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+                <div className="flex justify-between">
+                  <span className="font-medium">Brüt KG:</span>
+                  <span className="ml-2">{receiptData.brutKg} kg</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium">Dara KG:</span>
+                  <span className="ml-2">{receiptData.daraKg} kg</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium">Giriş KG:</span>
+                  <span className="ml-2">{receiptData.girisKg} kg</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium">Çıkma KG:</span>
+                  <span className="ml-2">{receiptData.cikmaFireKg} kg</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium">Net KG:</span>
+                  <span className="ml-2 font-bold">{receiptData.netKg} kg</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium">Kasa Sayısı:</span>
+                  <span className="ml-2">{receiptData.kasaSayisi} adet</span>
+                </div>
               </div>
+              
+              {/* Alt Bilgiler */}
+              <div className="text-center text-xs text-gray-600">
+                <div>Mal Kabulcu: {receiptData.malKabulcuAdi}</div>
+                <div className="mt-2">Bu fiş bilgisayar tarafından otomatik oluşturulmuştur.</div>
+              </div>
+            </div>
+            
+            <div className="flex gap-2">
+              <Button 
+                onClick={() => {
+                  // QR kod ve barkod ile fiş yazdır
+                  window.print()
+                }}
+                className="flex-1"
+              >
+                🖨️ Fiş Yazdır
+              </Button>
+              <Button 
+                onClick={() => setShowReceipt(false)}
+                variant="outline"
+              >
+                Kapat
+              </Button>
             </div>
           </div>
         </div>
