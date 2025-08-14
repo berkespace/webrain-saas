@@ -37,7 +37,8 @@ interface Komisyoncu {
   updatedAt: string
 }
 
-export default function KomisyoncuDuzenle({ params }: { params: { id: string } }) {
+export default async function KomisyoncuDuzenle({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const { data: session, status } = useSession()
   const router = useRouter()
   const { toast } = useToast()
@@ -57,7 +58,7 @@ export default function KomisyoncuDuzenle({ params }: { params: { id: string } }
   // Komisyoncu verilerini getir
   const fetchKomisyoncu = async () => {
     try {
-      const response = await fetch(`/api/komisyoncular/${params.id}`)
+      const response = await fetch(`/api/komisyoncular/${id}`)
       if (response.ok) {
         const data = await response.json()
         setKomisyoncu(data)
@@ -96,7 +97,7 @@ export default function KomisyoncuDuzenle({ params }: { params: { id: string } }
     } else if (status === 'authenticated') {
       fetchKomisyoncu()
     }
-  }, [status, router, params.id])
+  }, [status, router, id])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

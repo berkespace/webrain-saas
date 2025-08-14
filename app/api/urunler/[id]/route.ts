@@ -4,8 +4,9 @@ import { prisma } from "@/lib/prisma"
 // GET - Tekil ürün getir
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const { params } = await context.params
   try {
     const urun = await prisma.urun.findUnique({
       where: { id: params.id }
@@ -31,8 +32,9 @@ export async function GET(
 // PUT - Ürün güncelle
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const { params } = await context.params
   try {
     const body = await request.json()
     const { ad, kategori, birim, durum } = body
@@ -68,8 +70,9 @@ export async function PUT(
 // DELETE - Ürün sil
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const { params } = await context.params
   try {
     // Ürünün mal kabul kayıtlarında kullanılıp kullanılmadığını kontrol et
     const malKabulCount = await prisma.malKabulRecord.count({
