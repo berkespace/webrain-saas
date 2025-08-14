@@ -159,6 +159,8 @@ export default function MalKabulTest() {
 
 
 
+
+
   const fetchData = async () => {
     try {
       console.log('🔄 Veri getiriliyor...')
@@ -331,19 +333,12 @@ export default function MalKabulTest() {
           const updatedRow = { ...row, [field]: value }
           console.log('✅ Satır güncellendi:', { rowId, field, oldValue: row[field], newValue: value })
           
-          // Otomatik hesaplama
+          // Otomatik hesaplama - Sadece Giriş KG
           if (field === 'brutKg' || field === 'daraKg') {
             const brutKg = parseFloat(updatedRow.brutKg) || 0
             const daraKg = parseFloat(updatedRow.daraKg) || 0
             updatedRow.girisKg = (brutKg - daraKg).toFixed(2)
             console.log('🧮 Giriş KG hesaplandı:', updatedRow.girisKg)
-          }
-          
-          // Fire KG hesaplama (varsayılan %2)
-          if (field === 'girisKg') {
-            const girisKg = parseFloat(updatedRow.girisKg) || 0
-            updatedRow.fireKg = (girisKg * 0.02).toFixed(2)
-            console.log('🔥 Fire KG hesaplandı:', updatedRow.fireKg)
           }
           
           // Çıkma KG girildiğinde ürün durumunu kontrol et
@@ -355,15 +350,15 @@ export default function MalKabulTest() {
             }
           }
           
-          // Net KG hesaplama: Çıkma KG + Fire KG - Giriş KG
+          // Net KG hesaplama: Giriş KG - Çıkma KG - Fire KG (Doğru formül)
           if (field === 'cikmaKg' || field === 'fireKg' || field === 'girisKg') {
             const cikmaKg = parseFloat(updatedRow.cikmaKg) || 0
             const fireKg = parseFloat(updatedRow.fireKg) || 0
             const girisKg = parseFloat(updatedRow.girisKg) || 0
             
-            const netKg = cikmaKg + fireKg - girisKg
+            const netKg = girisKg - cikmaKg - fireKg
             updatedRow.netKg = netKg.toFixed(2)
-            console.log('🧮 Net KG hesaplandı:', updatedRow.netKg, '(Çıkma:', cikmaKg, '+ Fire:', fireKg, '- Giriş:', girisKg, ')')
+            console.log('🧮 Net KG hesaplandı:', updatedRow.netKg, '(Giriş:', girisKg, '- Çıkma:', cikmaKg, '- Fire:', fireKg, ')')
           }
           
           return updatedRow
@@ -866,6 +861,8 @@ export default function MalKabulTest() {
       window.removeEventListener('keydown', handleKeyDown)
     }
   }, [rows, addRow, saveAllRows])
+
+
 
 
 
@@ -1387,8 +1384,8 @@ export default function MalKabulTest() {
             <div className="text-xs text-gray-600 space-y-1">
               <div>• <strong>Tab</strong> - Sütunlar arası geçiş • <strong>Ctrl+S</strong> - Kaydet • <strong>Ctrl+N</strong> - Yeni satır</div>
               <div>• <strong>Dropdown seçimleri</strong> - Satıcı tipi, ürün ve diğer alanlar dropdown'dan seçilir</div>
-              <div>• <strong>Otomatik hesaplama</strong> - Giriş KG = Brüt KG - Dara KG • <strong>Fire KG</strong> - Varsayılan %2</div>
-              <div>• <strong>Net KG hesaplama</strong> - Net KG = Çıkma KG + Fire KG - Giriş KG (Fatura için)</div>
+              <div>• <strong>Otomatik hesaplama</strong> - Giriş KG = Brüt KG - Dara KG • <strong>Fire KG</strong> - Manuel giriş</div>
+              <div>• <strong>Net KG hesaplama</strong> - Net KG = Giriş KG - Çıkma KG - Fire KG (Fatura için)</div>
               <div>• <strong>Netlendi kontrolü</strong> - Sadece Çıkma KG girildikten sonra seçilebilir</div>
               <div>• <strong>Filtreleme & Sıralama</strong> - Sütun başlıklarına tıklayarak sıralayın, filtreleri kullanın</div>
               <div>• <strong>Veritabanı entegrasyonu</strong> - Kayıtlar direkt veritabanına kaydedilir ve fiş yazdırılır</div>
