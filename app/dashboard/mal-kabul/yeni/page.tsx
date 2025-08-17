@@ -1134,7 +1134,7 @@ export default function YeniMalKabul() {
           variant: "success",
         })
 
-        // Başarılı kayıt sonrası form otomatik sıfırlama
+        // Başarılı kayıt sonrası form otomatik sıfırlama - süre artırıldı
         setTimeout(() => {
           resetForm()
           setShowReceipt(false)
@@ -1143,7 +1143,7 @@ export default function YeniMalKabul() {
             description: "Form otomatik olarak sıfırlandı, yeni kayıt girebilirsiniz",
             variant: "default",
           })
-        }, 3000)
+        }, 30000) // 15 saniyeden 30 saniyeye çıkarıldı
       } else {
         const error = await response.json()
         toast({
@@ -1554,6 +1554,13 @@ export default function YeniMalKabul() {
         printWindow.print()
           printWindow.close()
           console.log('Print process completed')
+          
+          // Fiş yazdırma tamamlandıktan sonra kullanıcıya form sıfırlama seçeneği ver
+          toast({
+            title: "Fiş Yazdırıldı",
+            description: "Fiş yazdırma işlemi tamamlandı. Form sıfırlamak için 'Formu Sıfırla' butonuna tıklayın.",
+            variant: "success",
+          })
         }, 100)
       } else {
         console.error('Failed to open print window')

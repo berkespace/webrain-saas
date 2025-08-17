@@ -34,17 +34,9 @@ export async function GET(request: NextRequest) {
       where.komisyoncuId = komisyoncuId
     }
 
-    const ureticiler = await prisma.uretici.findMany({
+    const ureticiler = await prisma.ureticiler.findMany({
       where,
-      include: {
-        komisyoncu: {
-          select: {
-            id: true,
-            dukkanAdi: true,
-            sehir: true
-          }
-        }
-      },
+
       orderBy: {
         createdAt: 'desc'
       }
@@ -76,9 +68,9 @@ export async function POST(request: NextRequest) {
 
     // T.C. No kontrolü (eğer girilmişse)
     if (tcNo) {
-      const existingUretici = await prisma.uretici.findFirst({
-        where: { tcNo }
-      })
+          const existingUretici = await prisma.ureticiler.findFirst({
+      where: { tcNo }
+    })
       if (existingUretici) {
         return NextResponse.json(
           { error: "Bu T.C. kimlik numarası zaten kayıtlı" },
@@ -87,18 +79,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Komisyoncu kontrolü (eğer seçilmişse)
-    if (komisyoncuId) {
-      const komisyoncu = await prisma.komisyoncu.findUnique({
-        where: { id: komisyoncuId }
-      })
-      if (!komisyoncu) {
-        return NextResponse.json(
-          { error: "Seçilen komisyoncu bulunamadı" },
-          { status: 400 }
-        )
-      }
-    }
+
 
     const uretici = await prisma.uretici.create({
       data: {

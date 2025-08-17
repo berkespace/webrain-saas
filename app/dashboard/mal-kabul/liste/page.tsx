@@ -28,11 +28,11 @@ interface MalKabulRecord {
   fisNo: string
   tarih: string
   saticiTipi: string
-  urun: { ad: string }
+  urunler: { ad: string }
   brutKg: number
   girisKg: number
   status: string
-  malKabulcu: { firstName: string; lastName: string }
+  users: { firstName: string; lastName: string }
   komisyoncu?: { dukkanAdi: string }
   uretici?: { ad: string; soyad: string }
   ozelFirma?: { firmaAdi: string }
@@ -114,7 +114,7 @@ export default function MalKabulListePage() {
       tarih: record.tarih,
       saticiTipi: record.saticiTipi,
       saticiAdi: getSaticiAdi(record),
-      urunAdi: record.urun.ad,
+              urunAdi: record.urunler.ad,
       brutKg: record.brutKg,
       daraKg: 0, // Bu bilgi kayıtta yok
       girisKg: record.girisKg,
@@ -123,7 +123,7 @@ export default function MalKabulListePage() {
       paletAdi: record.palet?.ad,
       paletSayisi: record.paletSayisi,
       notlar: record.notlar,
-      malKabulcuAdi: `${record.malKabulcu.firstName} ${record.malKabulcu.lastName}`
+      malKabulcuAdi: `${record.users.firstName} ${record.users.lastName}`
     }
     
     // Fiş yazdırma modal'ını aç
@@ -259,7 +259,7 @@ export default function MalKabulListePage() {
 
   const filteredRecords = records.filter(record => {
     const matchesSearch = record.fisNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         record.urun.ad.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         record.urunler.ad.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          getSaticiAdi(record).toLowerCase().includes(searchTerm.toLowerCase())
     
     const matchesStatus = statusFilter === 'all' || record.status === statusFilter
@@ -400,7 +400,7 @@ export default function MalKabulListePage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="flex items-center gap-2">
                     <Package className="h-4 w-4 text-gray-500" />
-                    <span className="font-medium">{record.urun.ad}</span>
+                    <span className="font-medium">{record.urunler.ad}</span>
                   </div>
                   
                   <div className="flex items-center gap-2">

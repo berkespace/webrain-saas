@@ -19,11 +19,12 @@ export async function GET(request: NextRequest) {
       ]
     }
 
-    if (status && status !== 'all') {
-      where.durum = status
-    }
+    // Status filtresi geçici olarak devre dışı
+    // if (status && status !== 'all') {
+    //   where.durum = status
+    // }
 
-    const ozelFirmalar = await prisma.ozelFirma.findMany({
+    const ozelFirmalar = await prisma.ozel_firmalar.findMany({
       where,
       orderBy: {
         createdAt: 'desc'
@@ -55,7 +56,7 @@ export async function POST(request: NextRequest) {
     }
 
     // VKN kontrolü (VKN zorunlu olduğu için her zaman kontrol et)
-    const existingFirma = await prisma.ozelFirma.findFirst({
+    const existingFirma = await prisma.ozel_firmalar.findFirst({
       where: { vkn }
     })
     if (existingFirma) {
@@ -66,7 +67,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Son özel firmayı bul ve firma numarasını üret
-    const lastFirma = await prisma.ozelFirma.findFirst({
+    const lastFirma = await prisma.ozel_firmalar.findFirst({
       orderBy: { firmaNo: 'desc' }
     })
 
@@ -80,7 +81,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const ozelFirma = await prisma.ozelFirma.create({
+    const ozelFirma = await prisma.ozel_firmalar.create({
       data: {
         firmaAdi,
         firmaNo: nextFirmaNo,

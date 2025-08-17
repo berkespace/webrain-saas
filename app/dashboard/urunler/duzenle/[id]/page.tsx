@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { use } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -22,7 +23,7 @@ interface Urun {
   updatedAt: string
 }
 
-export default function UrunDuzenlePage({ params }: { params: { id: string } }) {
+export default function UrunDuzenlePage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
   const { toast } = useToast()
   const [urun, setUrun] = useState<Urun | null>(null)
@@ -34,6 +35,9 @@ export default function UrunDuzenlePage({ params }: { params: { id: string } }) 
     birim: 'kg',
     durum: 'AKTIF' as 'AKTIF' | 'PASIF'
   })
+  
+  // Next.js 15'te params'ı unwrap et
+  const resolvedParams = use(params)
 
   // Kategori seçenekleri
   const kategoriSecenekleri = [
@@ -46,7 +50,7 @@ export default function UrunDuzenlePage({ params }: { params: { id: string } }) 
   useEffect(() => {
     const fetchUrun = async () => {
       try {
-        const response = await fetch(`/api/urunler/${params.id}`)
+        const response = await fetch(`/api/urunler/${resolvedParams.id}`)
         if (response.ok) {
           const urunData = await response.json()
           setUrun(urunData)
@@ -77,14 +81,14 @@ export default function UrunDuzenlePage({ params }: { params: { id: string } }) 
     }
 
     fetchUrun()
-  }, [params.id, router, toast])
+  }, [resolvedParams.id, router, toast])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSaving(true)
 
     try {
-      const response = await fetch(`/api/urunler/${params.id}`, {
+      const response = await fetch(`/api/urunler/${resolvedParams.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'

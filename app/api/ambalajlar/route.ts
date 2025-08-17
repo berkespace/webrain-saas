@@ -19,15 +19,16 @@ export async function GET(request: NextRequest) {
       ]
     }
 
-    if (status && status !== 'all') {
-      where.durum = status
-    }
+    // Status filtresi geçici olarak devre dışı
+    // if (status && status !== 'all') {
+    //   where.durum = status
+    // }
 
     if (tipi && tipi !== 'all') {
       where.tipi = tipi
     }
 
-    const ambalajlar = await prisma.ambalaj.findMany({
+    const ambalajlar = await prisma.ambalajlar.findMany({
       where,
       orderBy: {
         createdAt: 'desc'
@@ -65,7 +66,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const ambalaj = await prisma.ambalaj.create({
+    const ambalaj = await prisma.ambalajlar.create({
       data: {
         ad,
         tipi,

@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
       where.durum = status
     }
 
-    const komisyoncular = await prisma.komisyoncu.findMany({
+    const komisyoncular = await prisma.komisyoncular.findMany({
       where,
       orderBy: {
         createdAt: 'desc'
@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     // Komisyon numarası kontrolü
     if (komisyonNo) {
       // Aynı komisyon no ile kayıt var mı kontrol et
-      const existingKomisyoncu = await prisma.komisyoncu.findFirst({
+      const existingKomisyoncu = await prisma.komisyoncular.findFirst({
         where: { komisyonNo }
       })
 
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Otomatik komisyon kodu üret
-    const lastKomisyoncu = await prisma.komisyoncu.findFirst({
+    const lastKomisyoncu = await prisma.komisyoncular.findFirst({
       orderBy: { komisyonKodu: 'desc' }
     })
 
@@ -85,8 +85,9 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const komisyoncu = await prisma.komisyoncu.create({
+    const komisyoncu = await prisma.komisyoncular.create({
       data: {
+        id: `komisyoncu-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         dukkanAdi,
         sehir,
         komisyonNo,
@@ -94,7 +95,8 @@ export async function POST(request: NextRequest) {
         vkn: vkn || null,
         yetkiliAdi: yetkiliAdi || null,
         yetkiliTelefon: yetkiliTelefon || null,
-        durum: 'AKTIF'
+        durum: 'AKTIF',
+        updatedAt: new Date()
       }
     })
 

@@ -9,160 +9,199 @@ datasource db {
 }
 
 model ambalajlar {
-  id                String              @id
-  ad                String
-  tipi              AmbalajTipi
-  daraKg            Float
-  aciklama          String?
-  durum             Status              @default(AKTIF)
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime
+  id        String    @id
+  ad        String
+  tipi      String
+  daraKg    Float     @db.Real
+  aciklama  String?
+  durum     String    @default("AKTIF")
+  createdAt DateTime? @default(now()) @db.Timestamp(6)
+  updatedAt DateTime? @default(now()) @db.Timestamp(6)
+
+  // Relations
   mal_kabul_records mal_kabul_records[]
 }
 
 model faturalar {
-  id                String              @id
-  faturaNo          String              @unique
-  tarih             DateTime            @default(now())
-  toplamTutar       Float
-  kdvOrani          Float               @default(18.0)
-  kdvTutari         Float
-  genelToplam       Float
-  notlar            String?
-  satinAlmaciId     String
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime
-  users             users               @relation(fields: [satinAlmaciId], references: [id])
+  id            String    @id
+  faturaNo      String    @unique
+  tarih         DateTime? @default(now()) @db.Timestamp(6)
+  toplamTutar   Float     @db.Real
+  kdvOrani      Float?    @default(18.0) @db.Real
+  kdvTutari     Float     @db.Real
+  genelToplam   Float     @db.Real
+  notlar        String?
+  satinAlmaciId String
+  createdAt     DateTime? @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime? @default(now()) @db.Timestamp(6)
+
+  // Relations
   mal_kabul_records mal_kabul_records[]
+  users             users               @relation(fields: [satinAlmaciId], references: [id])
 }
 
 model komisyoncular {
-  id                String              @id
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime
-  dukkanAdi         String
-  durum             Status              @default(AKTIF)
-  komisyonNo        String              @unique
-  sehir             String
-  vkn               String?
-  yetkiliAdi        String?
-  yetkiliTelefon    String?
-  komisyonKodu      String              @unique
+  id             String    @id
+  createdAt      DateTime? @default(now()) @db.Timestamp(6)
+  updatedAt      DateTime? @default(now()) @db.Timestamp(6)
+  dukkanAdi      String
+  durum          String    @default("AKTIF")
+  komisyonNo     String    @unique
+  komisyonKodu   String    @unique
+  sehir          String
+  vkn            String?
+  yetkiliAdi     String?
+  yetkiliTelefon String?
+
+  // Relations
   mal_kabul_records mal_kabul_records[]
   ureticiler        ureticiler[]
 }
 
 model mal_kabul_records {
-  id            String         @id
-  tarih         DateTime       @default(now())
-  miktar        Float
-  birimFiyat    Float?
-  toplamFiyat   Float?
-  status        ProductStatus  @default(FATURA_BEKLIYOR)
-  notlar        String?
-  malKabulcuId  String
-  komisyoncuId  String?
-  ureticiId     String?
-  urunId        String
-  faturaId      String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime
-  fisNo         String         @unique
-  mustahsilId   String?
-  ozelFirmaId   String?
-  saticiTipi    SaticiTipi     @default(OZEL_FIRMA)
-  ambalajId     String?
-  paletSayisi   Int            @default(0)
-  kasaSayisi    Int            @default(0)
-  brutKg        Float          @default(0)
-  daraKg        Float          @default(0)
-  girisKg       Float          @default(0)
-  cikmaFireKg   Float          @default(0)
-  netKg         Float          @default(0)
-  ambalajlar    ambalajlar?    @relation(fields: [ambalajId], references: [id])
-  faturalar     faturalar?     @relation(fields: [faturaId], references: [id])
-  komisyoncular komisyoncular? @relation(fields: [komisyoncuId], references: [id])
+  id           String    @id
+  tarih        DateTime? @default(now()) @db.Timestamp(6)
+  miktar       Float     @db.Real
+  birimFiyat   Float?    @db.Real
+  toplamFiyat  Float?    @db.Real
+  status       String    @default("FATURA_BEKLIYOR")
+  notlar       String?
+  malKabulcuId String
+  komisyoncuId String?
+  ureticiId    String?
+  urunId       String
+  faturaId     String?
+  createdAt    DateTime? @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime? @default(now()) @db.Timestamp(6)
+  fisNo        String    @unique
+  mustahsilId  String?
+  ozelFirmaId  String?
+  saticiTipi   String    @default("OZEL_FIRMA")
+  ambalajId    String?
+  paletSayisi  Int?      @default(0)
+  kasaSayisi   Int?      @default(0)
+  brutKg       Float?    @default(0) @db.Real
+  daraKg       Float?    @default(0) @db.Real
+  girisKg      Float?    @default(0) @db.Real
+  cikmaFireKg  Float?    @default(0) @db.Real
+  netKg        Float?    @default(0) @db.Real
+
+  // Relations
   users         users          @relation(fields: [malKabulcuId], references: [id])
-  mustahsil     mustahsil?     @relation(fields: [mustahsilId], references: [id])
-  ozel_firmalar ozel_firmalar? @relation(fields: [ozelFirmaId], references: [id])
+  komisyoncular komisyoncular? @relation(fields: [komisyoncuId], references: [id])
   ureticiler    ureticiler?    @relation(fields: [ureticiId], references: [id])
   urunler       urunler        @relation(fields: [urunId], references: [id])
+  faturalar     faturalar?     @relation(fields: [faturaId], references: [id])
+  mustahsil     mustahsil?     @relation(fields: [mustahsilId], references: [id])
+  ozel_firmalar ozel_firmalar? @relation(fields: [ozelFirmaId], references: [id])
+  ambalajlar    ambalajlar?    @relation(fields: [ambalajId], references: [id])
 }
 
 model mustahsil {
-  id                String              @id
-  ad                String
-  soyad             String
-  dogumTarihi       DateTime
-  tcKimlikNo        String              @unique
-  ibanAdresi        String?
-  adres             String?
-  cinsiyet          Gender
-  durum             Status              @default(AKTIF)
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime
-  mustahsilNo       String              @unique
-  iletisim          String?
-  bankaAdi          String?
+  id          String    @id
+  ad          String
+  soyad       String
+  dogumTarihi DateTime  @db.Timestamp(6)
+  tcKimlikNo  String    @unique
+  mustahsilNo String    @unique
+  iletisim    String?
+  bankaAdi    String?
+  ibanAdresi  String?
+  adres       String?
+  cinsiyet    String
+  durum       String    @default("AKTIF")
+  createdAt   DateTime? @default(now()) @db.Timestamp(6)
+  updatedAt   DateTime? @default(now()) @db.Timestamp(6)
+
+  // Relations
   mal_kabul_records mal_kabul_records[]
 }
 
 model ozel_firmalar {
-  id                String              @id
-  firmaAdi          String
-  vkn               String?
-  yetkiliAdi        String?
-  yetkiliTelefon    String?
-  sehir             String
-  adres             String?
-  durum             Status              @default(AKTIF)
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime
-  firmaNo           String              @unique
-  vergiDairesi      String?
+  id             String    @id
+  firmaAdi       String
+  firmaNo        String    @unique
+  vkn            String?
+  vergiDairesi   String?
+  yetkiliAdi     String?
+  yetkiliTelefon String?
+  sehir          String
+  adres          String?
+  durum          String    @default("AKTIF")
+  createdAt      DateTime? @default(now()) @db.Timestamp(6)
+  updatedAt      DateTime? @default(now()) @db.Timestamp(6)
+
+  // Relations
   mal_kabul_records mal_kabul_records[]
 }
 
 model ureticiler {
-  id                String              @id
-  ad                String
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime
-  cinsiyet          Gender
-  dogumTarihi       DateTime?
-  durum             Status              @default(AKTIF)
-  iletisim          String?
-  komisyoncuId      String?
-  sehir             String
-  soyad             String
-  tcNo              String?
+  id           String    @id
+  ad           String
+  createdAt    DateTime? @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime? @default(now()) @db.Timestamp(6)
+  cinsiyet     String
+  dogumTarihi  DateTime? @db.Timestamp(6)
+  iletisim     String?
+  komisyoncuId String?
+  sehir        String
+  soyad        String
+  tcNo         String?
+  durum        String    @default("AKTIF")
+
+  // Relations
   mal_kabul_records mal_kabul_records[]
   komisyoncular     komisyoncular?      @relation(fields: [komisyoncuId], references: [id])
 }
 
 model urunler {
-  id                String              @id
-  ad                String
-  kategori          String?
-  birim             String
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime
-  durum             Status              @default(AKTIF)
-  stokKodu          String              @unique
+  id        String    @id
+  ad        String
+  stokKodu  String    @unique
+  kategori  String?
+  birim     String
+  durum     String    @default("AKTIF")
+  createdAt DateTime? @default(now()) @db.Timestamp(6)
+  updatedAt DateTime? @default(now()) @db.Timestamp(6)
+
+  // Relations
   mal_kabul_records mal_kabul_records[]
 }
 
 model users {
-  id                String              @id
-  firstName         String
-  lastName          String
-  email             String              @unique
-  password          String
-  role              UserRole            @default(MAL_KABULCU)
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime
-  faturalar         faturalar[]
+  id        String    @id
+  firstName String
+  lastName  String
+  email     String    @unique
+  password  String
+  role      String    @default("MAL_KABULCU")
+  createdAt DateTime? @default(now()) @db.Timestamp(6)
+  updatedAt DateTime? @default(now()) @db.Timestamp(6)
+
+  // Relations
   mal_kabul_records mal_kabul_records[]
+  faturalar         faturalar[]
+}
+
+model malKabulRecords {
+  id         String    @id
+  fisNo      String
+  tarih      DateTime  @db.Timestamp(6)
+  saticiTipi String
+  saticiId   String
+  urunId     String
+  ureticiId  String
+  ambalajId  String
+  brutKg     Float     @db.Real
+  daraKg     Float     @db.Real
+  girisKg    Float     @db.Real
+  cikmaKg    Float     @default(0) @db.Real
+  fireKg     Float     @default(0) @db.Real
+  netKg      Float     @default(0) @db.Real
+  urunDurumu String    @default("BEKLEMEDE")
+  userId     String
+  createdAt  DateTime? @default(now()) @db.Timestamp(6)
+  updatedAt  DateTime? @default(now()) @db.Timestamp(6)
 }
 
 enum AmbalajTipi {

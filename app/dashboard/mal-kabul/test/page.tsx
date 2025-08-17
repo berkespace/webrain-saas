@@ -141,6 +141,7 @@ export default function MalKabulTest() {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const [showFilters, setShowFilters] = useState(false)
   const [columnFilters, setColumnFilters] = useState<Record<string, string>>({})
+  const [filterType, setFilterType] = useState<'contains' | 'exact' | 'starts' | 'ends'>('contains')
   
   // Fiş yazdırma
   const [receiptData, setReceiptData] = useState<any>(null)
@@ -154,6 +155,7 @@ export default function MalKabulTest() {
   useEffect(() => {
     if (status === 'authenticated') {
       fetchData()
+      loadExistingRecords() // Mevcut kayıtları da yükle
     }
   }, [status])
 
@@ -163,120 +165,101 @@ export default function MalKabulTest() {
 
   const fetchData = async () => {
     try {
-      console.log('🔄 Veri getiriliyor...')
+
       
-      // Test verisi ekle (API'ler çalışmıyorsa)
-      const testData = {
-        ozelFirmalar: [
-          { id: '1', firmaAdi: 'Test Firma 1', sehir: 'İstanbul', firmaNo: 'TF001' },
-          { id: '2', firmaAdi: 'Test Firma 2', sehir: 'Ankara', firmaNo: 'TF002' }
-        ],
-        komisyoncular: [
-          { id: '1', dukkanAdi: 'Test Komisyoncu 1', sehir: 'İzmir', komisyonKodu: 'TK001' },
-          { id: '2', dukkanAdi: 'Test Komisyoncu 2', sehir: 'Bursa', komisyonKodu: 'TK002' }
-        ],
-        mustahsil: [
-          { id: '1', ad: 'Test', soyad: 'Müstahsil 1', mustahsilNo: 'M001', sehir: 'İzmir' },
-          { id: '2', ad: 'Test', soyad: 'Müstahsil 2', mustahsilNo: 'M002', sehir: 'Bursa' }
-        ],
-        ureticiler: [
-          { id: '1', ad: 'Test', soyad: 'Üretici 1', komisyoncuId: '1', sehir: 'İzmir' },
-          { id: '2', ad: 'Test', soyad: 'Üretici 2', komisyoncuId: '1', sehir: 'İzmir' }
-        ],
-        urunler: [
-          { id: '1', ad: 'Test Ürün 1', kategori: 'Sebze', stokKodu: 'TU001' },
-          { id: '2', ad: 'Test Ürün 2', kategori: 'Meyve', stokKodu: 'TU002' }
-        ]
+      // Gerçek API'lerden veri çek
+      const [ozelFirmalarRes, komisyoncularRes, mustahsilRes, ureticilerRes, urunlerRes] = await Promise.all([
+        fetch('/api/ozel-firmalar?status=AKTIF'),
+        fetch('/api/komisyoncular?status=AKTIF'),
+        fetch('/api/mustahsil?status=AKTIF'),
+        fetch('/api/ureticiler?status=AKTIF'),
+        fetch('/api/urunler?status=AKTIF')
+      ])
+      
+      if (ozelFirmalarRes.ok) {
+        const data = await ozelFirmalarRes.json()
+        // API array döndürüyor, records field'ı yok
+        setOzelFirmalar(Array.isArray(data) ? data : [])
+
       }
       
-      // Test verilerini set et
-      setOzelFirmalar(testData.ozelFirmalar)
-      setKomisyoncular(testData.komisyoncular)
-      setMustahsil(testData.mustahsil)
-      setUreticiler(testData.ureticiler)
-      setUrunler(testData.urunler)
-      
-      console.log('✅ Test verileri yüklendi:', {
-        ozelFirmalar: testData.ozelFirmalar.length,
-        komisyoncular: testData.komisyoncular.length,
-        mustahsil: testData.mustahsil.length,
-        ureticiler: testData.ureticiler.length,
-        urunler: testData.urunler.length
-      })
-      
-      // Gerçek API çağrıları (opsiyonel)
-      try {
-        const [ozelFirmalarRes, komisyoncularRes, mustahsilRes, ureticilerRes, urunlerRes] = await Promise.all([
-          fetch('/api/ozel-firmalar'),
-          fetch('/api/komisyoncular'),
-          fetch('/api/mustahsil'),
-          fetch('/api/ureticiler'),
-          fetch('/api/urunler')
-        ])
+      if (komisyoncularRes.ok) {
+        const data = await komisyoncularRes.json()
+        // API array döndürüyor, records field'ı yok
+        setKomisyoncular(Array.isArray(data) ? data : [])
 
-        console.log('📊 API yanıtları:', {
-          ozelFirmalar: ozelFirmalarRes.status,
-          komisyoncular: komisyoncularRes.status,
-          mustahsil: mustahsilRes.status,
-          ureticiler: ureticilerRes.status,
-          urunler: urunlerRes.status
-        })
-
-        if (ozelFirmalarRes.ok) {
-          const ozelFirmalarData = await ozelFirmalarRes.json()
-          if (ozelFirmalarData.length > 0) {
-            setOzelFirmalar(ozelFirmalarData)
-            console.log('🏢 Gerçek özel firmalar yüklendi:', ozelFirmalarData.length)
-          }
-        }
-        
-        if (komisyoncularRes.ok) {
-          const komisyoncularData = await komisyoncularRes.json()
-          if (komisyoncularData.length > 0) {
-            setKomisyoncular(komisyoncularData)
-            console.log('🏪 Gerçek komisyoncular yüklendi:', komisyoncularData.length)
-          }
-        }
-        
-        if (mustahsilRes.ok) {
-          const mustahsilData = await mustahsilRes.json()
-          if (mustahsilData.length > 0) {
-            setMustahsil(mustahsilData)
-            console.log('👨‍🌾 Gerçek müstahsil yüklendi:', mustahsilData.length)
-          }
-        }
-        
-        if (ureticilerRes.ok) {
-          const ureticilerData = await ureticilerRes.json()
-          if (ureticilerData.length > 0) {
-            setUreticiler(ureticilerData)
-            console.log('👨‍🌾 Gerçek üreticiler yüklendi:', ureticilerData.length)
-          }
-        }
-        
-        if (urunlerRes.ok) {
-          const urunlerData = await urunlerRes.json()
-          if (urunlerData.length > 0) {
-            setUrunler(urunlerData)
-            console.log('📦 Gerçek ürünler yüklendi:', urunlerData.length)
-          }
-        }
-      } catch (apiError) {
-        console.log('⚠️ API çağrıları başarısız, test verileri kullanılıyor')
       }
+      
+      if (mustahsilRes.ok) {
+        const data = await mustahsilRes.json()
+        // API array döndürüyor, records field'ı yok
+        setMustahsil(Array.isArray(data) ? data : [])
+
+      }
+      
+      if (ureticilerRes.ok) {
+        const data = await ureticilerRes.json()
+        // API array döndürüyor, records field'ı yok
+        setUreticiler(Array.isArray(data) ? data : [])
+
+      }
+      
+      if (urunlerRes.ok) {
+        const data = await urunlerRes.json()
+        // API array döndürüyor, records field'ı yok
+        setUrunler(Array.isArray(data) ? data : [])
+
+      }
+      
+
     } catch (error) {
       console.error('❌ Veri getirme hatası:', error)
     }
   }
 
-  // Mevcut kayıtları yükle
+  // Mevcut kayıtları yükle ve tabloya ekle
   const loadExistingRecords = async () => {
     try {
-      const response = await fetch('/api/mal-kabul')
+      const response = await fetch('/api/mal-kabul?limit=1000')
       if (response.ok) {
         const data = await response.json()
-        setExistingRecords(data)
-        console.log('✅ Mevcut kayıtlar yüklendi:', data.length)
+        const existingRows = data.records || []
+        
+        const convertedRows = existingRows.map((record: any, index: number) => {
+          return {
+            id: `existing-${record.id}`,
+            fisNo: record.fisNo,
+            tarih: record.tarih,
+            saticiTipi: record.saticiTipi, // API'den gelen değeri kullan
+            komisyoncuId: record.komisyoncuId || '',
+            ureticiId: record.ureticiId || '',
+            mustahsilId: record.mustahsilId || '',
+            ozelFirmaId: record.ozelFirmaId || '',
+            urunId: record.urunId,
+            kasaSayisi: record.kasaSayisi?.toString() || '',
+            brutKg: record.brutKg?.toString() || '',
+            daraKg: record.daraKg?.toString() || '',
+            girisKg: record.girisKg?.toString() || '',
+            fireKg: record.cikmaFireKg?.toString() || '',
+            cikmaKg: '0', // Mevcut kayıtlarda bu alan yok
+            netKg: record.netKg?.toString() || '',
+            notlar: record.notlar || '',
+            urunDurumu: record.status === 'TAMAMLANDI' ? 'NETLENDI' : 'BEKLEMEDE', // Default Beklemede
+            fisYazdirildi: true, // Mevcut kayıtlar zaten yazdırılmış
+            status: 'SAVED' as const,
+            createdAt: record.createdAt,
+            updatedAt: record.updatedAt
+          }
+        })
+        
+        // Mevcut kayıtları tabloya ekle
+        setRows(prevRows => {
+          // Sadece yeni satırları tut, mevcut kayıtları ekle
+          const newRows = prevRows.filter(row => !row.id.startsWith('existing-'))
+          return [...convertedRows, ...newRows]
+        })
+        
+        setExistingRecords(existingRows)
       }
     } catch (error) {
       console.error('❌ Mevcut kayıtlar yüklenemedi:', error)
@@ -311,7 +294,7 @@ export default function MalKabulTest() {
       cikmaKg: '',
       netKg: '',
       notlar: '',
-      urunDurumu: 'BEKLEMEDE',
+      urunDurumu: 'BEKLEMEDE', // Default olarak Beklemede
       fisYazdirildi: false,
       status: 'NEW'
     }
@@ -325,32 +308,19 @@ export default function MalKabulTest() {
   }
 
   const updateCell = (rowId: string, field: keyof MalKabulRow, value: any) => {
-    console.log('🔄 updateCell çağrıldı:', { rowId, field, value, currentRows: rows.length })
-    
     setRows(prevRows => {
       const newRows = prevRows.map(row => {
         if (row.id === rowId) {
           const updatedRow = { ...row, [field]: value }
-          console.log('✅ Satır güncellendi:', { rowId, field, oldValue: row[field], newValue: value })
           
-          // Otomatik hesaplama - Sadece Giriş KG
+          // Otomatik hesaplama - Giriş KG
           if (field === 'brutKg' || field === 'daraKg') {
             const brutKg = parseFloat(updatedRow.brutKg) || 0
             const daraKg = parseFloat(updatedRow.daraKg) || 0
             updatedRow.girisKg = (brutKg - daraKg).toFixed(2)
-            console.log('🧮 Giriş KG hesaplandı:', updatedRow.girisKg)
           }
           
-          // Çıkma KG girildiğinde ürün durumunu kontrol et
-          if (field === 'cikmaKg') {
-            const cikmaKg = parseFloat(updatedRow.cikmaKg) || 0
-            if (cikmaKg > 0 && updatedRow.urunDurumu === 'BEKLEMEDE') {
-              // Çıkma KG girildi, Netlendi seçilebilir hale geldi
-              console.log('✅ Çıkma KG girildi, Netlendi seçilebilir')
-            }
-          }
-          
-          // Net KG hesaplama: Giriş KG - Çıkma KG - Fire KG (Doğru formül)
+          // Net KG hesaplama: Giriş KG - Çıkma KG - Fire KG (Otomatik)
           if (field === 'cikmaKg' || field === 'fireKg' || field === 'girisKg') {
             const cikmaKg = parseFloat(updatedRow.cikmaKg) || 0
             const fireKg = parseFloat(updatedRow.fireKg) || 0
@@ -358,7 +328,20 @@ export default function MalKabulTest() {
             
             const netKg = girisKg - cikmaKg - fireKg
             updatedRow.netKg = netKg.toFixed(2)
-            console.log('🧮 Net KG hesaplandı:', updatedRow.netKg, '(Giriş:', girisKg, '- Çıkma:', cikmaKg, '- Fire:', fireKg, ')')
+            
+            // Çıkma KG girildiğinde otomatik olarak Netlendi durumuna çek
+            if (field === 'cikmaKg' && cikmaKg > 0 && updatedRow.urunDurumu === 'BEKLEMEDE') {
+              updatedRow.urunDurumu = 'NETLENDI'
+              
+              // Son durum fişi yazdırma önerisi
+              setTimeout(() => {
+                toast({
+                  title: "Son Durum Fişi",
+                  description: "Net KG hesaplandı. Son durum fişi yazdırmak için Fiş Yazdır butonuna tıklayın.",
+                  variant: "default",
+                })
+              }, 1000)
+            }
           }
           
           return updatedRow
@@ -366,20 +349,17 @@ export default function MalKabulTest() {
         return row
       })
       
-      console.log('📊 Yeni rows state:', newRows)
       return newRows
     })
   }
 
   const handleSaticiTipiChange = (rowId: string, value: string) => {
-    console.log('🔄 Satıcı tipi değişti:', { rowId, value })
     updateCell(rowId, 'saticiTipi', value)
     // Diğer alanları sıfırla
     updateCell(rowId, 'komisyoncuId', '')
     updateCell(rowId, 'ureticiId', '')
     updateCell(rowId, 'mustahsilId', '')
     updateCell(rowId, 'ozelFirmaId', '')
-    console.log('✅ Satıcı tipi güncellendi ve diğer alanlar sıfırlandı')
   }
 
   const handleKomisyoncuChange = (rowId: string, value: string) => {
@@ -431,31 +411,65 @@ export default function MalKabulTest() {
         updateCell(row.id, 'status', 'LOADING')
         
         try {
-          // Veritabanına kaydet
-          const response = await fetch('/api/mal-kabul', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              saticiTipi: row.saticiTipi,
-              komisyoncuId: row.saticiTipi === 'KOMISYONCU' ? row.komisyoncuId : null,
-              ureticiId: row.saticiTipi === 'KOMISYONCU' ? row.ureticiId : null,
-              mustahsilId: row.saticiTipi === 'MUSTAHSIL' ? row.mustahsilId : null,
-              ozelFirmaId: row.saticiTipi === 'OZEL_FIRMA' ? row.ozelFirmaId : null,
-              urunId: row.urunId,
-              paletId: null,
-              ambalajId: null,
-              paletSayisi: '0',
-              kasaSayisi: row.kasaSayisi,
-              brutKg: row.brutKg,
-              daraKg: row.daraKg,
-              girisKg: row.girisKg,
-              cikmaFireKg: row.fireKg,
-              netKg: row.netKg,
-              notlar: row.notlar
-            }),
-          })
+          // Mevcut kayıt mı yoksa yeni kayıt mı kontrol et
+          const isExistingRecord = row.id.startsWith('existing-')
+          const actualId = isExistingRecord ? row.id.replace('existing-', '') : null
+          
+          let response
+          if (isExistingRecord) {
+            // Mevcut kaydı güncelle
+            response = await fetch(`/api/mal-kabul/${actualId}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                saticiTipi: row.saticiTipi,
+                komisyoncuId: row.saticiTipi === 'KOMISYONCU' ? row.komisyoncuId : null,
+                ureticiId: row.saticiTipi === 'KOMISYONCU' ? row.ureticiId : null,
+                mustahsilId: row.saticiTipi === 'MUSTAHSIL' ? row.mustahsilId : null,
+                ozelFirmaId: row.saticiTipi === 'OZEL_FIRMA' ? row.ozelFirmaId : null,
+                urunId: row.urunId,
+                paletId: null,
+                ambalajId: null,
+                paletSayisi: 0,
+                kasaSayisi: parseInt(row.kasaSayisi) || 0,
+                brutKg: parseFloat(row.brutKg) || 0,
+                daraKg: parseFloat(row.daraKg) || 0,
+                girisKg: parseFloat(row.girisKg) || 0,
+                cikmaFireKg: parseFloat(row.fireKg) || 0,
+                netKg: parseFloat(row.netKg) || 0,
+                notlar: row.notlar,
+                status: row.urunDurumu === 'NETLENDI' ? 'TAMAMLANDI' : 'FATURA_BEKLIYOR'
+              }),
+            })
+          } else {
+            // Yeni kayıt oluştur
+            response = await fetch('/api/mal-kabul', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                saticiTipi: row.saticiTipi,
+                komisyoncuId: row.saticiTipi === 'KOMISYONCU' ? row.komisyoncuId : null,
+                ureticiId: row.saticiTipi === 'KOMISYONCU' ? row.ureticiId : null,
+                mustahsilId: row.saticiTipi === 'MUSTAHSIL' ? row.mustahsilId : null,
+                ozelFirmaId: row.saticiTipi === 'OZEL_FIRMA' ? row.ozelFirmaId : null,
+                urunId: row.urunId,
+                paletId: null,
+                ambalajId: null,
+                paletSayisi: '0',
+                kasaSayisi: row.kasaSayisi,
+                brutKg: row.brutKg,
+                daraKg: row.daraKg,
+                girisKg: row.girisKg,
+                cikmaFireKg: row.fireKg,
+                netKg: row.netKg,
+                notlar: row.notlar
+              }),
+            })
+          }
 
           if (response.ok) {
             const result = await response.json()
@@ -491,6 +505,24 @@ export default function MalKabulTest() {
             toast({
               title: "Başarılı",
               description: `Satır ${row.id} başarıyla kaydedildi ve fiş yazdırılıyor`,
+              variant: "default",
+            })
+            
+            // Başarılı kayıt sonrası satır durumunu güncelle (Excel mantığı - sıfırlama yok)
+            updateCell(row.id, 'status', 'SAVED')
+            
+            if (!isExistingRecord) {
+              // Yeni kayıt için fiş bilgilerini güncelle
+              updateCell(row.id, 'fisNo', result.malKabulRecord.fisNo)
+              updateCell(row.id, 'tarih', result.malKabulRecord.tarih)
+              updateCell(row.id, 'fisYazdirildi', true)
+            }
+            
+            toast({
+              title: "Başarılı",
+              description: isExistingRecord 
+                ? `Satır ${row.id} başarıyla güncellendi` 
+                : `Satır ${row.id} başarıyla kaydedildi ve veritabanında saklandı`,
               variant: "default",
             })
           } else {
@@ -536,6 +568,337 @@ export default function MalKabulTest() {
     return ''
   }
 
+  // Fiş numarası oluşturma
+  const generateFisNo = () => {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const day = String(now.getDate()).padStart(2, '0')
+    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0')
+    return `${year}${month}${day}${random}`
+  }
+
+  // Fiş yazdırma fonksiyonu
+  const printReceipt = async (row: MalKabulRow, fişTipi: 'ILK_KAYIT' | 'SON_DURUM') => {
+    try {
+      // Fiş verilerini hazırla
+      const receiptData = {
+        fisNo: row.fisNo || generateFisNo(),
+        tarih: row.tarih || new Date().toISOString(),
+        saticiTipi: row.saticiTipi,
+        saticiAdi: getSaticiAdi(row),
+        urunAdi: urunler.find(u => u.id === row.urunId)?.ad || '',
+        brutKg: parseFloat(row.brutKg) || 0,
+        daraKg: parseFloat(row.daraKg) || 0,
+        girisKg: parseFloat(row.girisKg) || 0,
+        cikmaFireKg: parseFloat(row.fireKg) || 0,
+        netKg: parseFloat(row.netKg) || 0,
+        ambalajAdi: 'Kasa',
+        kasaSayisi: parseInt(row.kasaSayisi) || 0,
+        paletAdi: null,
+        paletSayisi: 0,
+        notlar: row.notlar,
+        malKabulcuAdi: session?.user?.name || ''
+      }
+      
+      // QR kod ve barkod resimlerini oluştur
+      const qrValue = `${receiptData.fisNo}|${receiptData.tarih}|${receiptData.saticiTipi}|${receiptData.urunAdi}`
+      
+      // QR kod oluştur
+      const QRCodeLib = await import('qrcode')
+      const qrDataUrl = await QRCodeLib.toDataURL(qrValue, {
+        width: 80,
+        margin: 1,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      })
+      
+      // Barkod oluştur
+      const JsBarcode = await import('jsbarcode')
+      const canvas = document.createElement('canvas')
+      JsBarcode.default(canvas, receiptData.fisNo, {
+        format: 'CODE128',
+        width: 2,
+        height: 50,
+        displayValue: true,
+        fontSize: 12,
+        margin: 5
+      })
+      const barcodeDataUrl = canvas.toDataURL('image/png')
+      
+      // Yazdırma penceresini aç
+      const printWindow = window.open('', '_blank')
+      if (printWindow) {
+        const fişBaşlığı = fişTipi === 'ILK_KAYIT' ? 'BİLGİ FİŞİ' : 'SON DURUM FİŞİ'
+        
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>${fişBaşlığı} - ${receiptData.fisNo}</title>
+              <style>
+                body { 
+                  font-family: monospace; 
+                  font-size: 12px; 
+                  width: 80mm; 
+                  max-width: 80mm; 
+                  margin: 0; 
+                  padding: 8px;
+                  box-sizing: border-box;
+                  overflow-x: hidden;
+                }
+                .header { text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 10px; }
+                .section { margin-bottom: 12px; border-bottom: 1px solid #000; padding-bottom: 8px; }
+                .section-title { font-weight: bold; font-size: 12px; margin-bottom: 8px; text-align: center; background: #f0f0f0; padding: 3px; border-radius: 3px; }
+                .row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; }
+                .label { font-weight: bold; }
+                .value { text-align: right; font-weight: 500; }
+                .copy-info {
+                  text-align: center;
+                  font-size: 10px;
+                  color: #666;
+                  margin-top: 10px;
+                  padding: 5px;
+                  background: #f0f0f0;
+                  border-radius: 3px;
+                  font-weight: bold;
+                }
+                .page-break { page-break-after: always; }
+                .copy-label { 
+                  text-align: center; 
+                  font-size: 14px; 
+                  font-weight: bold; 
+                  margin: 15px 0; 
+                  padding: 8px; 
+                  background: #000; 
+                  color: #fff; 
+                  border-radius: 5px; 
+                }
+                
+                @media print {
+                  body { 
+                    width: 80mm !important; 
+                    max-width: 80mm !important; 
+                    margin: 0 !important; 
+                    padding: 8px !important; 
+                    font-size: 12px !important;
+                  }
+                  @page { 
+                    size: 80mm auto; 
+                    margin: 0; 
+                  }
+                  .qr-code img, .barcode img { 
+                    display: block !important; 
+                  }
+                }
+              </style>
+            </head>
+            <body>
+              <div class="header">${fişBaşlığı}</div>
+              
+              <div class="section">
+                <div class="section-title">FİŞ BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Fiş No:</span>
+                  <span class="value">${receiptData.fisNo}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Tarih:</span>
+                  <span class="value">${new Date(receiptData.tarih).toLocaleDateString('tr-TR')}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Mal Kabulcu:</span>
+                  <span class="value">${receiptData.malKabulcuAdi}</span>
+                </div>
+              </div>
+              
+              <div class="section">
+                <div class="section-title">SATICI BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Satıcı Tipi:</span>
+                  <span class="value">${receiptData.saticiTipi}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Satıcı Adı:</span>
+                  <span class="value">${receiptData.saticiAdi}</span>
+                </div>
+              </div>
+              
+              <div class="section">
+                <div class="label">ÜRÜN BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Ürün:</span>
+                  <span class="value">${receiptData.urunAdi}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Kasa Sayısı:</span>
+                  <span class="value">${receiptData.kasaSayisi}</span>
+                </div>
+              </div>
+              
+              <div class="section">
+                <div class="section-title">KİLOGRAM BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Brüt KG:</span>
+                  <span class="value">${receiptData.brutKg.toFixed(2)}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Dara KG:</span>
+                  <span class="value">${receiptData.daraKg.toFixed(2)}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Giriş KG:</span>
+                  <span class="value">${receiptData.girisKg.toFixed(2)}</span>
+                </div>
+                ${fişTipi === 'SON_DURUM' ? `
+                <div class="row">
+                  <span class="label">Çıkma Fire KG:</span>
+                  <span class="value">${receiptData.cikmaFireKg.toFixed(2)}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Net KG:</span>
+                  <span class="value">${receiptData.netKg.toFixed(2)}</span>
+                </div>
+                ` : ''}
+              </div>
+              
+              ${receiptData.notlar ? `
+              <div class="section">
+                <div class="section-title">NOTLAR</div>
+                <div class="row">
+                  <span class="value">${receiptData.notlar}</span>
+                </div>
+              </div>
+              ` : ''}
+              
+              <div class="copy-info">
+                Bu fiş ${fişTipi === 'ILK_KAYIT' ? 'ilk kayıt' : 'son durum'} için yazdırılmıştır
+              </div>
+              
+              <div class="copy-label">ORİJİNAL</div>
+              
+              <div class="page-break"></div>
+              
+              <div class="header">${fişBaşlığı}</div>
+              
+              <div class="section">
+                <div class="section-title">FİŞ BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Fiş No:</span>
+                  <span class="value">${receiptData.fisNo}</span>
+                </div>
+                <div class row>
+                  <span class="label">Tarih:</span>
+                  <span class="value">${new Date(receiptData.tarih).toLocaleDateString('tr-TR')}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Mal Kabulcu:</span>
+                  <span class="value">${receiptData.malKabulcuAdi}</span>
+                </div>
+              </div>
+              
+              <div class="section">
+                <div class="section-title">SATICI BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Satıcı Tipi:</span>
+                  <span class="value">${receiptData.saticiTipi}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Satıcı Adı:</span>
+                  <span class="value">${receiptData.saticiAdi}</span>
+                </div>
+              </div>
+              
+              <div class="section">
+                <div class="section-title">ÜRÜN BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Ürün:</span>
+                  <span class="value">${receiptData.urunAdi}</span>
+                </div>
+                <div class="row class="row">
+                  <span class="label">Kasa Sayısı:</span>
+                  <span class="value">${receiptData.kasaSayisi}</span>
+                </div>
+              </div>
+              
+              <div class="section">
+                <div class="section-title">KİLOGRAM BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Brüt KG:</span>
+                  <span class="value">${receiptData.brutKg.toFixed(2)}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Dara KG:</span>
+                  <span class="value">${receiptData.daraKg.toFixed(2)}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Giriş KG:</span>
+                  <span class="value">${receiptData.girisKg.toFixed(2)}</span>
+                </div>
+                ${fişTipi === 'SON_DURUM' ? `
+                <div class="row">
+                  <span class="label">Çıkma Fire KG:</span>
+                  <span class="value">${receiptData.cikmaFireKg.toFixed(2)}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Net KG:</span>
+                  <span class="value">${receiptData.netKg.toFixed(2)}</span>
+                  </div>
+                ` : ''}
+              </div>
+              
+              ${receiptData.notlar ? `
+              <div class="section">
+                <div class="section-title">NOTLAR</div>
+                <div class="row">
+                  <span class="value">${receiptData.notlar}</span>
+                </div>
+              </div>
+              ` : ''}
+              
+              <div class="copy-info">
+                Bu fiş ${fişTipi === 'ILK_KAYIT' ? 'ilk kayıt' : 'son durum'} için yazdırılmıştır
+              </div>
+              
+              <div class="copy-label">KOPYA</div>
+              
+              <div class="qr-code">
+                <img src="${qrDataUrl}" alt="QR Code" style="width: 80px; height: 80px; display: block; margin: 10px auto;" />
+              </div>
+              
+              <div class="barcode">
+                <img src="${barcodeDataUrl}" alt="Barcode" style="width: 100%; height: 50px; display: block; margin: 10px auto;" />
+              </div>
+            </body>
+          </html>
+        `)
+        
+        printWindow.document.close()
+        
+        // Yazdırma işlemini başlat
+        setTimeout(() => {
+          printWindow.print()
+          printWindow.close()
+          
+          toast({
+            title: "Fiş Yazdırıldı",
+            description: `${fişBaşlığı} başarıyla yazdırıldı`,
+            variant: "success",
+          })
+        }, 500)
+      }
+    } catch (error) {
+      console.error('Fiş yazdırma hatası:', error)
+      toast({
+        title: "Hata",
+        description: "Fiş yazdırılırken hata oluştu",
+        variant: "destructive",
+      })
+    }
+  }
+
   // QR kod ve barkod oluşturma
   const generateQRCode = (data: any) => {
     const qrValue = `${data.fisNo}|${data.tarih}|${data.saticiTipi}|${data.urunAdi}|${data.netKg}`
@@ -566,9 +929,9 @@ export default function MalKabulTest() {
 
   const getUrunDurumuColor = (durum: string) => {
     switch (durum) {
-      case 'BEKLEMEDE': return 'bg-yellow-50 text-yellow-700 border-yellow-200'
-      case 'NETLENDI': return 'bg-green-50 text-green-700 border-green-200'
-      case 'IPTAL': return 'bg-red-50 text-red-700 border-red-200'
+      case 'BEKLEMEDE': return 'bg-yellow-600 text-white border-yellow-600' // Koyu sarı
+      case 'NETLENDI': return 'bg-green-600 text-white border-green-600' // Yeşil
+      case 'IPTAL': return 'bg-red-600 text-white border-red-600' // Kırmızı
       default: return 'bg-gray-50 text-gray-700 border-gray-200'
     }
   }
@@ -583,41 +946,34 @@ export default function MalKabulTest() {
   }
 
   const getColumnOptions = (saticiTipi: string) => {
-    console.log('🔍 getColumnOptions çağrıldı:', { 
-      saticiTipi, 
-      komisyoncular: komisyoncular.length, 
-      mustahsil: mustahsil.length, 
-      ozelFirmalar: ozelFirmalar.length 
-    })
-    
     switch (saticiTipi) {
       case 'KOMISYONCU':
-        console.log('🏪 Komisyoncu seçenekleri:', komisyoncular)
         return komisyoncular.map(k => (
-          <SelectItem key={k.id} value={k.id}>
-            {k.dukkanAdi} - {k.sehir}
+          <SelectItem key={k.id} value={k.id} className="text-green-700 bg-green-50 hover:bg-green-100">
+            🏪 {k.dukkanAdi} - {k.sehir}
           </SelectItem>
         ))
       case 'MUSTAHSIL':
-        console.log('👨‍🌾 Müstahsil seçenekleri:', mustahsil)
-        console.log('👨‍🌾 Müstahsil verisi:', mustahsil)
-        if (mustahsil.length === 0) {
-          console.log('⚠️ Müstahsil verisi boş!')
-        }
         return mustahsil.map(m => (
-          <SelectItem key={m.id} value={m.id}>
-            {m.ad} {m.soyad} - {m.mustahsilNo}
+          <SelectItem key={m.id} value={m.id} className="text-red-700 bg-red-50 hover:bg-red-100">
+            👨‍🌾 {m.ad} {m.soyad} - {m.mustahsilNo}
           </SelectItem>
         ))
       case 'OZEL_FIRMA':
-        console.log('🏢 Özel firma seçenekleri:', ozelFirmalar)
         return ozelFirmalar.map(f => (
-          <SelectItem key={f.id} value={f.id}>
-            {f.firmaAdi} - {f.sehir}
+          <SelectItem key={f.id} value={f.id} className="text-blue-700 bg-blue-50 hover:bg-blue-100">
+            🏢 {f.firmaAdi} - {f.sehir}
+          </SelectItem>
+        ))
+      case '':
+      case undefined:
+      case null:
+        return ozelFirmalar.map(f => (
+          <SelectItem key={f.id} value={f.id} className="text-blue-700 bg-blue-50 hover:bg-blue-100">
+            🏢 {f.firmaAdi} - {f.sehir}
           </SelectItem>
         ))
       default:
-        console.log('❓ Bilinmeyen satıcı tipi:', saticiTipi)
         return []
     }
   }
@@ -729,9 +1085,52 @@ export default function MalKabulTest() {
     // Sütun filtreleri
     Object.entries(columnFilters).forEach(([column, filterValue]) => {
       if (filterValue) {
-        filtered = filtered.filter(row => 
-          String(row[column as keyof MalKabulRow]).toLowerCase().includes(filterValue.toLowerCase())
-        )
+        switch (column) {
+          case 'startDate':
+            filtered = filtered.filter(row => {
+              if (!row.tarih) return false
+              const rowDate = new Date(row.tarih)
+              const filterDate = new Date(filterValue)
+              return rowDate >= filterDate
+            })
+            break
+          case 'endDate':
+            filtered = filtered.filter(row => {
+              if (!row.tarih) return false
+              const rowDate = new Date(row.tarih)
+              const filterDate = new Date(filterValue)
+              return rowDate <= filterDate
+            })
+            break
+          case 'saticiTipi':
+          case 'urunDurumu':
+          case 'status':
+            // "all" değeri için filtreleme yapma
+            if (filterValue === 'all') break
+            // Exact match için
+            filtered = filtered.filter(row => row[column as keyof MalKabulRow] === filterValue)
+            break
+          default:
+            // "all" değeri için filtreleme yapma
+            if (filterValue === 'all') break
+            // Diğer alanlar için filterType'a göre arama
+            filtered = filtered.filter(row => {
+              const rowValue = String(row[column as keyof MalKabulRow]).toLowerCase()
+              const searchValue = filterValue.toLowerCase()
+              
+              switch (filterType) {
+                case 'exact':
+                  return rowValue === searchValue
+                case 'starts':
+                  return rowValue.startsWith(searchValue)
+                case 'ends':
+                  return rowValue.endsWith(searchValue)
+                case 'contains':
+                default:
+                  return rowValue.includes(searchValue)
+              }
+            })
+        }
       }
     })
     
@@ -743,6 +1142,7 @@ export default function MalKabulTest() {
     setColumnFilters({})
     setSortColumn(null)
     setSortDirection('asc')
+    setFilterType('contains')
   }
 
   // Global suggestions işleme
@@ -905,9 +1305,9 @@ export default function MalKabulTest() {
             onClick={loadExistingRecords}
             variant="outline"
             size="sm"
-            title="Mevcut kayıtları yükle"
+            title="Mevcut kayıtları yeniden yükle"
           >
-            📊 Mevcut Kayıtlar
+            🔄 Kayıtları Yenile
           </Button>
           <Button 
             onClick={() => {
@@ -965,20 +1365,35 @@ export default function MalKabulTest() {
             Dropdown seçimleri, otomatik hesaplama, durum takibi, Excel tarzı filtreleme
           </CardDescription>
           
-          {/* Debug Panel */}
-          <div className="text-xs text-gray-600 space-y-1">
-            <div>📊 Veri Durumu:</div>
-            <div>• Özel Firmalar: {ozelFirmalar.length} | Komisyoncular: {komisyoncular.length}</div>
-            <div>• Müstahsil: {mustahsil.length} | Üreticiler: {ureticiler.length}</div>
-            <div>• Ürünler: {urunler.length} | Seçili Satır: {selectedRowId || 'Yok'}</div>
-            <div>• Global Input: {globalInput || 'Boş'}</div>
-            <div>💡 Dropdown seçimleri aktif - Excel tarzı tek satır girişi!</div>
-          </div>
+
         </CardHeader>
         
-        {/* Filtreleme Paneli */}
+                  {/* Filtreleme Paneli */}
         {showFilters && (
           <div className="px-6 py-3 bg-gray-50 border-b border-gray-200">
+            {/* Filtre İstatistikleri */}
+            <div className="flex items-center justify-between mb-3 text-xs text-gray-600">
+              <div>
+                Toplam: <span className="font-medium">{rows.length}</span> satır | 
+                Filtrelenmiş: <span className="font-medium">{getFilteredRows().length}</span> satır
+              </div>
+              {Object.values(columnFilters).some(v => v && v !== 'all') && (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs">Aktif Filtreler:</span>
+                  {Object.entries(columnFilters).map(([key, value]) => value && value !== 'all' && (
+                    <span key={key} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                      {key === 'saticiTipi' ? 'Satıcı Tipi' : 
+                       key === 'urunId' ? 'Ürün' : 
+                       key === 'urunDurumu' ? 'Durum' : 
+                       key === 'status' ? 'Kayıt Durumu' : 
+                       key === 'startDate' ? 'Başlangıç Tarihi' : 
+                       key === 'endDate' ? 'Bitiş Tarihi' : 
+                       key === 'fisNo' ? 'Fiş No' : key}: {value}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
             <div className="flex items-center gap-4 mb-3">
               <div className="flex items-center gap-2">
                 <Label className="text-sm font-medium">Genel Filtre:</Label>
@@ -989,38 +1404,136 @@ export default function MalKabulTest() {
                   className="w-64 h-8 text-sm"
                 />
               </div>
-              <Button onClick={clearFilters} variant="outline" size="sm">
-                Filtreleri Temizle
-              </Button>
+              
+              {/* Hızlı Filtreler */}
+              <div className="flex items-center gap-2">
+                <Button 
+                  onClick={() => setColumnFilters(prev => ({ ...prev, urunDurumu: 'BEKLEMEDE' }))} 
+                  variant="outline" 
+                  size="sm"
+                  className="text-yellow-700 border-yellow-300 hover:bg-yellow-50"
+                >
+                  🟡 Beklemede
+                </Button>
+                <Button 
+                  onClick={() => setColumnFilters(prev => ({ ...prev, urunDurumu: 'NETLENDI' }))} 
+                  variant="outline" 
+                  size="sm"
+                  className="text-green-700 border-green-300 hover:bg-green-50"
+                >
+                  🟢 Netlendi
+                </Button>
+                <Button 
+                  onClick={() => setColumnFilters(prev => ({ ...prev, status: 'SAVED' }))} 
+                  variant="outline" 
+                  size="sm"
+                  className="text-blue-700 border-blue-300 hover:bg-blue-50"
+                >
+                  ✅ Kaydedildi
+                </Button>
+                <Button 
+                  onClick={() => setColumnFilters(prev => ({ ...prev, status: 'NEW' }))} 
+                  variant="outline" 
+                  size="sm"
+                  className="text-orange-700 border-orange-300 hover:bg-orange-50"
+                >
+                  🆕 Yeni
+                </Button>
+              </div>
+              
+              {/* Satıcı Tipi Hızlı Filtreleri */}
+              <div className="flex items-center gap-2">
+                <Button 
+                  onClick={() => setColumnFilters(prev => ({ ...prev, saticiTipi: 'OZEL_FIRMA' }))} 
+                  variant="outline" 
+                  size="sm"
+                  className="text-blue-700 border-blue-300 hover:bg-blue-50"
+                >
+                  🏢 Özel Firma
+                </Button>
+                <Button 
+                  onClick={() => setColumnFilters(prev => ({ ...prev, saticiTipi: 'KOMISYONCU' }))} 
+                  variant="outline" 
+                  size="sm"
+                  className="text-green-700 border-green-300 hover:bg-green-50"
+                >
+                  🏪 Komisyoncu
+                </Button>
+                <Button 
+                  onClick={() => setColumnFilters(prev => ({ ...prev, saticiTipi: 'MUSTAHSIL' }))} 
+                  variant="outline" 
+                  size="sm"
+                  className="text-red-700 border-red-300 hover:bg-red-50"
+                >
+                  👨‍🌾 Müstahsil
+                </Button>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <Button onClick={clearFilters} variant="outline" size="sm">
+                  Filtreleri Temizle
+                </Button>
+                {Object.values(columnFilters).some(v => v && v !== 'all') && (
+                  <div className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
+                    {Object.values(columnFilters).filter(v => v && v !== 'all').length} Filtre Aktif
+                  </div>
+                )}
+              </div>
             </div>
             
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-6 gap-3">
               <div>
                 <Label className="text-xs font-medium">Satıcı Tipi</Label>
-                <Input
+                <Select
                   value={columnFilters.saticiTipi || ''}
-                  onChange={(e) => setColumnFilters(prev => ({ ...prev, saticiTipi: e.target.value }))}
-                  placeholder="Filtrele..."
-                  className="h-7 text-xs"
-                />
+                  onValueChange={(value) => setColumnFilters(prev => ({ ...prev, saticiTipi: value }))}
+                >
+                  <SelectTrigger className="h-7 text-xs">
+                    <SelectValue placeholder="Tümü" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tümü</SelectItem>
+                    <SelectItem value="OZEL_FIRMA" className="text-blue-700 bg-blue-50">🏢 Özel Firma</SelectItem>
+                    <SelectItem value="KOMISYONCU" className="text-green-700 bg-green-50">🏪 Komisyoncu</SelectItem>
+                    <SelectItem value="MUSTAHSIL" className="text-red-700 bg-red-50">👨‍🌾 Müstahsil</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label className="text-xs font-medium">Ürün</Label>
-                <Input
+                <Select
                   value={columnFilters.urunId || ''}
-                  onChange={(e) => setColumnFilters(prev => ({ ...prev, urunId: e.target.value }))}
-                  placeholder="Filtrele..."
-                  className="h-7 text-xs"
-                />
+                  onValueChange={(value) => setColumnFilters(prev => ({ ...prev, urunId: value }))}
+                >
+                  <SelectTrigger className="h-7 text-xs">
+                    <SelectValue placeholder="Tümü" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tümü</SelectItem>
+                    {urunler.map(urun => (
+                      <SelectItem key={urun.id} value={urun.id}>
+                        {urun.ad} - {urun.kategori}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label className="text-xs font-medium">Durum</Label>
-                <Input
+                <Select
                   value={columnFilters.urunDurumu || ''}
-                  onChange={(e) => setColumnFilters(prev => ({ ...prev, urunDurumu: e.target.value }))}
-                  placeholder="Filtrele..."
-                  className="h-7 text-xs"
-                />
+                  onValueChange={(value) => setColumnFilters(prev => ({ ...prev, urunDurumu: value }))}
+                >
+                  <SelectTrigger className="h-7 text-xs">
+                    <SelectValue placeholder="Tümü" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tümü</SelectItem>
+                    <SelectItem value="BEKLEMEDE" className="text-yellow-700 bg-yellow-50">🟡 Beklemede</SelectItem>
+                    <SelectItem value="NETLENDI" className="text-green-700 bg-green-50">🟢 Netlendi</SelectItem>
+                    <SelectItem value="IPTAL" className="text-red-700 bg-red-50">🔴 İptal</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <Label className="text-xs font-medium">Fiş No</Label>
@@ -1030,6 +1543,99 @@ export default function MalKabulTest() {
                   placeholder="Filtrele..."
                   className="h-7 text-xs"
                 />
+              </div>
+              <div>
+                <Label className="text-xs font-medium">Kayıt Durumu</Label>
+                <Select
+                  value={columnFilters.status || ''}
+                  onValueChange={(value) => setColumnFilters(prev => ({ ...prev, status: value }))}
+                >
+                  <SelectTrigger className="h-7 text-xs">
+                    <SelectValue placeholder="Tümü" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Tümü</SelectItem>
+                    <SelectItem value="NEW" className="text-blue-700 bg-blue-50">🆕 Yeni</SelectItem>
+                    <SelectItem value="SAVED" className="text-green-700 bg-green-50">✅ Kaydedildi</SelectItem>
+                    <SelectItem value="ERROR" className="text-red-700 bg-red-50">❌ Hata</SelectItem>
+                    <SelectItem value="LOADING" className="text-yellow-700 bg-yellow-50">⏳ Yükleniyor</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label className="text-xs font-medium">Tarih Aralığı</Label>
+                <div className="flex gap-1">
+                  <Input
+                    type="date"
+                    value={columnFilters.startDate || ''}
+                    onChange={(e) => setColumnFilters(prev => ({ ...prev, startDate: e.target.value }))}
+                    className="h-7 text-xs w-24"
+                    placeholder="Başlangıç"
+                  />
+                  <Input
+                    type="date"
+                    value={columnFilters.endDate || ''}
+                    onChange={(e) => setColumnFilters(prev => ({ ...prev, endDate: e.target.value }))}
+                    className="h-7 text-xs w-24"
+                    placeholder="Bitiş"
+                  />
+                </div>
+              </div>
+            </div>
+            
+            {/* Gelişmiş Filtre Seçenekleri */}
+            <div className="mt-3 pt-3 border-t border-gray-200">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs font-medium">Filtre Tipi:</Label>
+                  <Select
+                    value={filterType}
+                    onValueChange={(value: 'contains' | 'exact' | 'starts' | 'ends') => setFilterType(value)}
+                  >
+                    <SelectTrigger className="h-6 text-xs w-24">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="contains">İçerir</SelectItem>
+                      <SelectItem value="exact">Tam Eşleşir</SelectItem>
+                      <SelectItem value="starts">Başlar</SelectItem>
+                      <SelectItem value="ends">Biter</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <Label className="text-xs font-medium">Sıralama:</Label>
+                                    <Select
+                    value={sortColumn || 'none'}
+                    onValueChange={(value) => setSortColumn(value === 'none' ? null : (value as keyof MalKabulRow))}
+                  >
+                    <SelectTrigger className="h-6 text-xs w-32">
+                      <SelectValue placeholder="Sıralama yok" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Sıralama yok</SelectItem>
+                      <SelectItem value="tarih">Tarih</SelectItem>
+                      <SelectItem value="fisNo">Fiş No</SelectItem>
+                      <SelectItem value="saticiTipi">Satıcı Tipi</SelectItem>
+                      <SelectItem value="urunId">Ürün</SelectItem>
+                      <SelectItem value="kasaSayisi">Kasa Sayısı</SelectItem>
+                      <SelectItem value="brutKg">Brüt KG</SelectItem>
+                      <SelectItem value="netKg">Net KG</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  {sortColumn && (
+                    <Button
+                      onClick={() => setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc')}
+                      variant="outline"
+                      size="sm"
+                      className="h-6 w-6 p-0"
+                    >
+                      {sortDirection === 'asc' ? '↑' : '↓'}
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -1333,8 +1939,8 @@ export default function MalKabulTest() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="BEKLEMEDE">Beklemede</SelectItem>
-                          <SelectItem value="NETLENDI" disabled={!row.cikmaKg}>
-                            Netlendi {!row.cikmaKg && '(Çıkma KG gerekli)'}
+                          <SelectItem value="NETLENDI" disabled={!row.cikmaKg || parseFloat(row.cikmaKg) <= 0}>
+                            Netlendi {(!row.cikmaKg || parseFloat(row.cikmaKg) <= 0) && '(Çıkma KG > 0 gerekli)'}
                           </SelectItem>
                           <SelectItem value="IPTAL">İptal</SelectItem>
                         </SelectContent>
@@ -1343,15 +1949,31 @@ export default function MalKabulTest() {
 
                     {/* Fiş Yazdırma */}
                     <td className="border border-gray-300 px-1 py-1 text-center">
-                      <Button
-                        size="sm"
-                        variant={row.fisYazdirildi ? "default" : "outline"}
-                        onClick={() => toggleFisYazdirildi(row.id)}
-                        className={`h-7 w-7 p-0 ${row.fisYazdirildi ? 'bg-green-500 hover:bg-green-600' : ''}`}
-                        title={row.fisYazdirildi ? "Fiş yazdırıldı" : "Fiş yazdırılmadı"}
-                      >
-                        <Printer className="h-4 w-4" />
-                      </Button>
+                      <div className="flex flex-col gap-1">
+                        {/* İlk Kayıt Fişi */}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => printReceipt(row, 'ILK_KAYIT')}
+                          className="h-6 w-6 p-0 text-blue-600 hover:text-blue-700"
+                          title="İlk Kayıt Fişi Yazdır"
+                          disabled={!row.fisNo}
+                        >
+                          📄
+                        </Button>
+                        
+                        {/* Son Durum Fişi */}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => printReceipt(row, 'SON_DURUM')}
+                          className="h-6 w-6 p-0 text-green-600 hover:text-green-700"
+                          title="Son Durum Fişi Yazdır"
+                          disabled={row.urunDurumu !== 'NETLENDI' || !row.netKg || parseFloat(row.netKg) <= 0}
+                        >
+                          🧾
+                        </Button>
+                      </div>
                     </td>
 
                     {/* Durum */}
@@ -1379,18 +2001,7 @@ export default function MalKabulTest() {
           </div>
 
           {/* Kısayol Bilgileri */}
-          <div className="p-3 bg-gray-50 border-t border-gray-200">
-            <div className="text-xs font-medium text-gray-700 mb-2">💡 Kısayollar ve Özellikler:</div>
-            <div className="text-xs text-gray-600 space-y-1">
-              <div>• <strong>Tab</strong> - Sütunlar arası geçiş • <strong>Ctrl+S</strong> - Kaydet • <strong>Ctrl+N</strong> - Yeni satır</div>
-              <div>• <strong>Dropdown seçimleri</strong> - Satıcı tipi, ürün ve diğer alanlar dropdown'dan seçilir</div>
-              <div>• <strong>Otomatik hesaplama</strong> - Giriş KG = Brüt KG - Dara KG • <strong>Fire KG</strong> - Manuel giriş</div>
-              <div>• <strong>Net KG hesaplama</strong> - Net KG = Giriş KG - Çıkma KG - Fire KG (Fatura için)</div>
-              <div>• <strong>Netlendi kontrolü</strong> - Sadece Çıkma KG girildikten sonra seçilebilir</div>
-              <div>• <strong>Filtreleme & Sıralama</strong> - Sütun başlıklarına tıklayarak sıralayın, filtreleri kullanın</div>
-              <div>• <strong>Veritabanı entegrasyonu</strong> - Kayıtlar direkt veritabanına kaydedilir ve fiş yazdırılır</div>
-            </div>
-          </div>
+     
         </CardContent>
       </Card>
 

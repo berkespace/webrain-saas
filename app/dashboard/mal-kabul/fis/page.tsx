@@ -61,7 +61,7 @@ interface MalKabulRecord {
     ad: string
     soyad: string
   }
-  urun: {
+  urunler: {
     id: string
     ad: string
     kategori: string
@@ -78,7 +78,7 @@ interface MalKabulRecord {
     tipi: string
   }
   paletSayisi?: number
-  malKabulcu: {
+  users: {
     id: string
     firstName: string
     lastName: string
@@ -194,7 +194,7 @@ export default function MalKabulFisArsivi() {
       filtered = filtered.filter(record =>
         record.fisNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
         getSaticiAdi(record).toLowerCase().includes(searchTerm.toLowerCase()) ||
-        record.urun.ad.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        record.urunler.ad.toLowerCase().includes(searchTerm.toLowerCase()) ||
         record.notlar?.toLowerCase().includes(searchTerm.toLowerCase())
       )
       console.log('🔍 Arama sonrası kayıt sayısı:', filtered.length)
@@ -293,7 +293,7 @@ export default function MalKabulFisArsivi() {
         tarih: record.tarih,
         saticiTipi: record.saticiTipi,
         saticiAdi: getSaticiAdi(record),
-        urunAdi: record.urun.ad,
+        urunAdi: record.urunler.ad,
         brutKg: record.brutKg,
         daraKg: record.daraKg,
         girisKg: record.girisKg,
@@ -305,7 +305,7 @@ export default function MalKabulFisArsivi() {
         paletSayisi: record.paletSayisi,
         notlar: record.notlar,
         ureticiAdi: getUreticiAdi(record),
-        malKabulcuAdi: record.malKabulcu.firstName + ' ' + record.malKabulcu.lastName
+        malKabulcuAdi: record.users.firstName + ' ' + record.users.lastName
       }
       
       // QR kod ve barkod resimlerini oluştur
@@ -825,8 +825,8 @@ export default function MalKabulFisArsivi() {
                         </div>
                       </td>
                       <td className="py-3 px-2">
-                        <div className="max-w-xs truncate" title={record.urun.ad}>
-                          {record.urun.ad}
+                        <div className="max-w-xs truncate" title={record.urunler.ad}>
+                          {record.urunler.ad}
                         </div>
                       </td>
                       <td className="py-3 px-2">

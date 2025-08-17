@@ -37,11 +37,11 @@ export async function GET(request: NextRequest) {
       where.OR = [
         { fisNo: { contains: search, mode: 'insensitive' } },
         { notlar: { contains: search, mode: 'insensitive' } },
-        { komisyoncu: { dukkanAdi: { contains: search, mode: 'insensitive' } } },
-        { uretici: { ad: { contains: search, mode: 'insensitive' } } },
-        { uretici: { soyad: { contains: search, mode: 'insensitive' } } },
-        { ozelFirma: { firmaAdi: { contains: search, mode: 'insensitive' } } },
-        { urun: { ad: { contains: search, mode: 'insensitive' } } }
+        { komisyoncular: { dukkanAdi: { contains: search, mode: 'insensitive' } } },
+        { ureticiler: { ad: { contains: search, mode: 'insensitive' } } },
+        { ureticiler: { soyad: { contains: search, mode: 'insensitive' } } },
+        { ozel_firmalar: { firmaAdi: { contains: search, mode: 'insensitive' } } },
+        { urunler: { ad: { contains: search, mode: 'insensitive' } } }
       ]
     }
 
@@ -63,13 +63,13 @@ export async function GET(request: NextRequest) {
     const malKabulRecords = await prisma.mal_kabul_records.findMany({
       where,
       include: {
-        komisyoncu: { select: { id: true, dukkanAdi: true, sehir: true } },
-        uretici: { select: { id: true, ad: true, soyad: true, sehir: true } },
-        ozelFirma: { select: { id: true, firmaAdi: true, sehir: true } },
+        komisyoncular: { select: { id: true, dukkanAdi: true, sehir: true } },
+        ureticiler: { select: { id: true, ad: true, soyad: true, sehir: true } },
+        ozel_firmalar: { select: { id: true, firmaAdi: true, sehir: true } },
         mustahsil: { select: { id: true, ad: true, soyad: true } },
-        urun: { select: { id: true, ad: true, kategori: true } },
-        ambalaj: { select: { id: true, ad: true, tipi: true, daraKg: true } },
-        malKabulcu: { select: { id: true, firstName: true, lastName: true } }
+        urunler: { select: { id: true, ad: true, kategori: true } },
+        ambalajlar: { select: { id: true, ad: true, tipi: true, daraKg: true } },
+        users: { select: { id: true, firstName: true, lastName: true } }
       },
       orderBy: { tarih: 'desc' }
     })
@@ -200,6 +200,7 @@ export async function POST(request: NextRequest) {
     // Mal kabul kaydını oluştur
     const malKabulRecord = await prisma.mal_kabul_records.create({
       data: {
+        id: `mal-kabul-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         fisNo,
         saticiTipi,
         komisyoncuId: komisyoncuId && komisyoncuId !== '' ? komisyoncuId : null,
@@ -221,14 +222,14 @@ export async function POST(request: NextRequest) {
         malKabulcuId: malKabulcu.id
       },
       include: {
-        komisyoncu: {
+        komisyoncular: {
           select: {
             id: true,
             dukkanAdi: true,
             sehir: true
           }
         },
-        uretici: {
+        ureticiler: {
           select: {
             id: true,
             ad: true,
@@ -236,7 +237,7 @@ export async function POST(request: NextRequest) {
             sehir: true
           }
         },
-        ozelFirma: {
+        ozel_firmalar: {
           select: {
             id: true,
             firmaAdi: true,
@@ -250,14 +251,14 @@ export async function POST(request: NextRequest) {
             soyad: true
           }
         },
-        urun: {
+        urunler: {
           select: {
             id: true,
             ad: true,
             kategori: true
           }
         },
-        ambalaj: {
+        ambalajlar: {
           select: {
             id: true,
             ad: true,
@@ -265,7 +266,7 @@ export async function POST(request: NextRequest) {
             daraKg: true
           }
         },
-        malKabulcu: {
+        users: {
           select: {
             id: true,
             firstName: true,

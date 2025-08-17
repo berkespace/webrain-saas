@@ -79,9 +79,10 @@ export async function GET(request: NextRequest) {
     // Filtreleme koşulları
     const where: any = {}
 
-    if (status && status !== 'all') {
-      where.durum = status
-    }
+    // Status filtresi geçici olarak devre dışı
+    // if (status && status !== 'all') {
+    //   where.durum = status
+    // }
 
     if (search) {
       where.OR = [

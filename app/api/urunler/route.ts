@@ -19,15 +19,16 @@ export async function GET(request: NextRequest) {
       ]
     }
 
-    if (status && status !== 'all') {
-      where.durum = status
-    }
+    // Status filtresi geçici olarak devre dışı
+    // if (status && status !== 'all') {
+    //   where.durum = status
+    // }
 
     if (kategori && kategori !== 'all') {
       where.kategori = kategori
     }
 
-    const urunler = await prisma.urun.findMany({
+    const urunler = await prisma.urunler.findMany({
       where,
       orderBy: {
         ad: 'asc'
@@ -59,7 +60,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Son ürünü bul ve stok kodunu üret
-    const lastUrun = await prisma.urun.findFirst({
+    const lastUrun = await prisma.urunler.findFirst({
       orderBy: { stokKodu: 'desc' }
     })
 
@@ -87,7 +88,7 @@ export async function POST(request: NextRequest) {
 
     console.log('🔍 Üretilen stok kodu:', nextStokKodu)
 
-    const urun = await prisma.urun.create({
+    const urun = await prisma.urunler.create({
       data: {
         ad,
         stokKodu: nextStokKodu,

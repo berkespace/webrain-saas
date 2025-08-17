@@ -38,18 +38,18 @@ interface MalKabulRecord {
   fisNo: string
   tarih: string
   saticiTipi: 'OZEL_FIRMA' | 'KOMISYONCU' | 'MUSTAHSIL'
-  komisyoncu?: {
+  komisyoncular?: {
     id: string
     dukkanAdi: string
     sehir: string
   }
-  uretici?: {
+  ureticiler?: {
     id: string
     ad: string
     soyad: string
     sehir: string
   }
-  ozelFirma?: {
+  ozel_firmalar?: {
     id: string
     firmaAdi: string
     sehir: string
@@ -59,7 +59,7 @@ interface MalKabulRecord {
     ad: string
     soyad: string
   }
-  urun: {
+  urunler: {
     id: string
     ad: string
     kategori: string
@@ -114,16 +114,24 @@ export default function MalKabulDashboard() {
 
   const fetchMalKabulRecords = async () => {
     try {
+      console.log('fetchMalKabulRecords başladı')
       setLoading(true)
       const params = new URLSearchParams()
       if (searchTerm) params.append('search', searchTerm)
       if (filterStatus !== 'all') params.append('status', filterStatus)
       if (filterSaticiTipi !== 'all') params.append('saticiTipi', filterSaticiTipi)
 
+      console.log('API URL:', `/api/mal-kabul?${params.toString()}`)
       const response = await fetch(`/api/mal-kabul?${params.toString()}`)
+      console.log('Response status:', response.status)
+      
       if (response.ok) {
         const data = await response.json()
+        console.log('API Response:', data)
+        console.log('Records:', data.records)
+        console.log('Records length:', data.records?.length)
         setMalKabulRecords(data.records || [])
+        console.log('State güncellendi')
       } else {
         console.error('Mal kabul listesi alınamadı')
       }
@@ -131,6 +139,7 @@ export default function MalKabulDashboard() {
       console.error('Mal kabul listesi hatası:', error)
     } finally {
       setLoading(false)
+      console.log('Loading false yapıldı')
     }
   }
 
@@ -181,9 +190,9 @@ export default function MalKabulDashboard() {
   const getSaticiAdi = (record: MalKabulRecord) => {
     switch (record.saticiTipi) {
       case 'OZEL_FIRMA':
-        return record.ozelFirma?.firmaAdi || 'Bilinmiyor'
+        return record.ozel_firmalar?.firmaAdi || 'Bilinmiyor'
       case 'KOMISYONCU':
-        return record.komisyoncu?.dukkanAdi || 'Bilinmiyor'
+        return record.komisyoncular?.dukkanAdi || 'Bilinmiyor'
       case 'MUSTAHSIL':
         return record.mustahsil ? `${record.mustahsil.ad} ${record.mustahsil.soyad}` : 'Bilinmiyor'
       default:
@@ -307,7 +316,7 @@ export default function MalKabulDashboard() {
   const filteredData = malKabulRecords.filter(item => {
     const matchesSearch = 
       getSaticiAdi(item).toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.urun.ad.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.urunler.ad.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.fisNo.toLowerCase().includes(searchTerm)
 
     const matchesStatus = filterStatus === 'all' || item.status === filterStatus
@@ -315,6 +324,9 @@ export default function MalKabulDashboard() {
 
     return matchesSearch && matchesStatus && matchesSaticiTipi
   })
+
+  console.log('malKabulRecords state:', malKabulRecords)
+  console.log('filteredData:', filteredData)
 
   return (
     <div className="p-6">
@@ -523,7 +535,7 @@ export default function MalKabulDashboard() {
                             </span>
                           </td>
                           <td className="py-3 px-2 font-medium">{getSaticiAdi(item)}</td>
-                          <td className="py-3 px-2">{item.urun.ad}</td>
+                          <td className="py-3 px-2">{item.urunler.ad}</td>
                           <td className="py-3 px-2 text-right">{item.kasaSayisi.toLocaleString()}</td>
                           <td className="py-3 px-2 text-right">{item.brutKg.toLocaleString()}</td>
                           <td className="py-3 px-2 text-right">{item.daraKg.toLocaleString()}</td>

@@ -55,7 +55,7 @@ interface MalKabulRecord {
     ad: string
     soyad: string
   }
-  urun: {
+  urunler: {
     id: string
     ad: string
     kategori: string
@@ -420,7 +420,7 @@ export default function MalKabulDuzenle() {
     if (!record) return
     
     try {
-      const qrValue = `${record.fisNo}|${record.tarih}|${record.saticiTipi}|${record.urun.ad}`
+      const qrValue = `${record.fisNo}|${record.tarih}|${record.saticiTipi}|${record.urunler.ad}`
       
       // QR kod oluştur
       const QRCodeLib = await import('qrcode')
@@ -989,7 +989,7 @@ export default function MalKabulDuzenle() {
                   </div>
                   <div className="flex justify-between">
                     <span className="font-semibold">Ürün:</span>
-                    <span>{record.urun.ad}</span>
+                    <span>{record.urunler.ad}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="font-semibold">Net KG:</span>
@@ -1031,7 +1031,7 @@ export default function MalKabulDuzenle() {
                     : record.saticiTipi === 'OZEL_FIRMA' && record.ozelFirma
                     ? record.ozelFirma.firmaAdi
                     : 'Bilinmeyen',
-                  urunAdi: record.urun.ad,
+                  urunAdi: record.urunler.ad,
                   brutKg: record.brutKg,
                   daraKg: record.daraKg,
                   girisKg: record.girisKg,

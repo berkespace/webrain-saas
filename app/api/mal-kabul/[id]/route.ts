@@ -11,17 +11,17 @@ export async function GET(
   try {
     const { id } = await params
 
-    const malKabulRecord = await prisma.malKabulRecord.findUnique({
+    const malKabulRecord = await prisma.mal_kabul_records.findUnique({
       where: { id },
       include: {
-        komisyoncu: {
+        komisyoncular: {
           select: {
             id: true,
             dukkanAdi: true,
             sehir: true
           }
         },
-        uretici: {
+        ureticiler: {
           select: {
             id: true,
             ad: true,
@@ -29,7 +29,7 @@ export async function GET(
             sehir: true
           }
         },
-        ozelFirma: {
+        ozel_firmalar: {
           select: {
             id: true,
             firmaAdi: true,
@@ -43,14 +43,14 @@ export async function GET(
             soyad: true
           }
         },
-        urun: {
+        urunler: {
           select: {
             id: true,
             ad: true,
             kategori: true
           }
         },
-        ambalaj: {
+        ambalajlar: {
           select: {
             id: true,
             ad: true,
@@ -58,7 +58,7 @@ export async function GET(
             daraKg: true
           }
         },
-        malKabulcu: {
+        users: {
           select: {
             id: true,
             firstName: true,
@@ -123,7 +123,7 @@ export async function PUT(
     } = body
 
     // Mal kabul kaydının var olup olmadığını kontrol et
-    const existingRecord = await prisma.malKabulRecord.findUnique({
+    const existingRecord = await prisma.mal_kabul_records.findUnique({
       where: { id }
     })
 
@@ -165,7 +165,7 @@ export async function PUT(
     }
 
     // Mal kabul kaydını güncelle
-    const updatedRecord = await prisma.malKabulRecord.update({
+    const updatedRecord = await prisma.mal_kabul_records.update({
       where: { id },
       data: {
         saticiTipi,
@@ -189,14 +189,14 @@ export async function PUT(
         miktar: parseFloat(girisKg) || 0,
       },
       include: {
-        komisyoncu: {
+        komisyoncular: {
           select: {
             id: true,
             dukkanAdi: true,
             sehir: true
           }
         },
-        uretici: {
+        ureticiler: {
           select: {
             id: true,
             ad: true,
@@ -204,7 +204,7 @@ export async function PUT(
             sehir: true
           }
         },
-        ozelFirma: {
+        ozel_firmalar: {
           select: {
             id: true,
             firmaAdi: true,
@@ -218,14 +218,14 @@ export async function PUT(
             soyad: true
           }
         },
-        urun: {
+        urunler: {
           select: {
             id: true,
             ad: true,
             kategori: true
           }
         },
-        ambalaj: {
+        ambalajlar: {
           select: {
             id: true,
             ad: true,
@@ -233,7 +233,7 @@ export async function PUT(
             daraKg: true
           }
         },
-        malKabulcu: {
+        users: {
           select: {
             id: true,
             firstName: true,
@@ -273,7 +273,7 @@ export async function DELETE(
     const { id } = await params
 
     // Mal kabul kaydının var olup olmadığını kontrol et
-    const existingRecord = await prisma.malKabulRecord.findUnique({
+    const existingRecord = await prisma.mal_kabul_records.findUnique({
       where: { id }
     })
 
@@ -285,7 +285,7 @@ export async function DELETE(
     }
 
     // Mal kabul kaydını sil
-    await prisma.malKabulRecord.delete({
+    await prisma.mal_kabul_records.delete({
       where: { id }
     })
 

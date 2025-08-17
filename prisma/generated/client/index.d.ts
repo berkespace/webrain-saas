@@ -58,6 +58,11 @@ export type urunler = $Result.DefaultSelection<Prisma.$urunlerPayload>
  * 
  */
 export type users = $Result.DefaultSelection<Prisma.$usersPayload>
+/**
+ * Model malKabulRecords
+ * 
+ */
+export type malKabulRecords = $Result.DefaultSelection<Prisma.$malKabulRecordsPayload>
 
 /**
  * Enums
@@ -357,6 +362,16 @@ export class PrismaClient<
     * ```
     */
   get users(): Prisma.usersDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.malKabulRecords`: Exposes CRUD operations for the **malKabulRecords** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MalKabulRecords
+    * const malKabulRecords = await prisma.malKabulRecords.findMany()
+    * ```
+    */
+  get malKabulRecords(): Prisma.malKabulRecordsDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -805,7 +820,8 @@ export namespace Prisma {
     ozel_firmalar: 'ozel_firmalar',
     ureticiler: 'ureticiler',
     urunler: 'urunler',
-    users: 'users'
+    users: 'users',
+    malKabulRecords: 'malKabulRecords'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -824,7 +840,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "ambalajlar" | "faturalar" | "komisyoncular" | "mal_kabul_records" | "mustahsil" | "ozel_firmalar" | "ureticiler" | "urunler" | "users"
+      modelProps: "ambalajlar" | "faturalar" | "komisyoncular" | "mal_kabul_records" | "mustahsil" | "ozel_firmalar" | "ureticiler" | "urunler" | "users" | "malKabulRecords"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1494,6 +1510,80 @@ export namespace Prisma {
           }
         }
       }
+      malKabulRecords: {
+        payload: Prisma.$malKabulRecordsPayload<ExtArgs>
+        fields: Prisma.malKabulRecordsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.malKabulRecordsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$malKabulRecordsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.malKabulRecordsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$malKabulRecordsPayload>
+          }
+          findFirst: {
+            args: Prisma.malKabulRecordsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$malKabulRecordsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.malKabulRecordsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$malKabulRecordsPayload>
+          }
+          findMany: {
+            args: Prisma.malKabulRecordsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$malKabulRecordsPayload>[]
+          }
+          create: {
+            args: Prisma.malKabulRecordsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$malKabulRecordsPayload>
+          }
+          createMany: {
+            args: Prisma.malKabulRecordsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.malKabulRecordsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$malKabulRecordsPayload>[]
+          }
+          delete: {
+            args: Prisma.malKabulRecordsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$malKabulRecordsPayload>
+          }
+          update: {
+            args: Prisma.malKabulRecordsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$malKabulRecordsPayload>
+          }
+          deleteMany: {
+            args: Prisma.malKabulRecordsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.malKabulRecordsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.malKabulRecordsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$malKabulRecordsPayload>[]
+          }
+          upsert: {
+            args: Prisma.malKabulRecordsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$malKabulRecordsPayload>
+          }
+          aggregate: {
+            args: Prisma.MalKabulRecordsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMalKabulRecords>
+          }
+          groupBy: {
+            args: Prisma.malKabulRecordsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MalKabulRecordsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.malKabulRecordsCountArgs<ExtArgs>
+            result: $Utils.Optional<MalKabulRecordsCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1595,6 +1685,7 @@ export namespace Prisma {
     ureticiler?: ureticilerOmit
     urunler?: urunlerOmit
     users?: usersOmit
+    malKabulRecords?: malKabulRecordsOmit
   }
 
   /* Types for Logging */
@@ -1920,13 +2011,13 @@ export namespace Prisma {
    */
 
   export type UsersCountOutputType = {
-    faturalar: number
     mal_kabul_records: number
+    faturalar: number
   }
 
   export type UsersCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    faturalar?: boolean | UsersCountOutputTypeCountFaturalarArgs
     mal_kabul_records?: boolean | UsersCountOutputTypeCountMal_kabul_recordsArgs
+    faturalar?: boolean | UsersCountOutputTypeCountFaturalarArgs
   }
 
   // Custom InputTypes
@@ -1943,15 +2034,15 @@ export namespace Prisma {
   /**
    * UsersCountOutputType without action
    */
-  export type UsersCountOutputTypeCountFaturalarArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: faturalarWhereInput
+  export type UsersCountOutputTypeCountMal_kabul_recordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: mal_kabul_recordsWhereInput
   }
 
   /**
    * UsersCountOutputType without action
    */
-  export type UsersCountOutputTypeCountMal_kabul_recordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: mal_kabul_recordsWhereInput
+  export type UsersCountOutputTypeCountFaturalarArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: faturalarWhereInput
   }
 
 
@@ -1982,10 +2073,10 @@ export namespace Prisma {
   export type AmbalajlarMinAggregateOutputType = {
     id: string | null
     ad: string | null
-    tipi: $Enums.AmbalajTipi | null
+    tipi: string | null
     daraKg: number | null
     aciklama: string | null
-    durum: $Enums.Status | null
+    durum: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1993,10 +2084,10 @@ export namespace Prisma {
   export type AmbalajlarMaxAggregateOutputType = {
     id: string | null
     ad: string | null
-    tipi: $Enums.AmbalajTipi | null
+    tipi: string | null
     daraKg: number | null
     aciklama: string | null
-    durum: $Enums.Status | null
+    durum: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2145,12 +2236,12 @@ export namespace Prisma {
   export type AmbalajlarGroupByOutputType = {
     id: string
     ad: string
-    tipi: $Enums.AmbalajTipi
+    tipi: string
     daraKg: number
     aciklama: string | null
-    durum: $Enums.Status
-    createdAt: Date
-    updatedAt: Date
+    durum: string
+    createdAt: Date | null
+    updatedAt: Date | null
     _count: AmbalajlarCountAggregateOutputType | null
     _avg: AmbalajlarAvgAggregateOutputType | null
     _sum: AmbalajlarSumAggregateOutputType | null
@@ -2234,12 +2325,12 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       ad: string
-      tipi: $Enums.AmbalajTipi
+      tipi: string
       daraKg: number
       aciklama: string | null
-      durum: $Enums.Status
-      createdAt: Date
-      updatedAt: Date
+      durum: string
+      createdAt: Date | null
+      updatedAt: Date | null
     }, ExtArgs["result"]["ambalajlar"]>
     composites: {}
   }
@@ -2666,10 +2757,10 @@ export namespace Prisma {
   interface ambalajlarFieldRefs {
     readonly id: FieldRef<"ambalajlar", 'String'>
     readonly ad: FieldRef<"ambalajlar", 'String'>
-    readonly tipi: FieldRef<"ambalajlar", 'AmbalajTipi'>
+    readonly tipi: FieldRef<"ambalajlar", 'String'>
     readonly daraKg: FieldRef<"ambalajlar", 'Float'>
     readonly aciklama: FieldRef<"ambalajlar", 'String'>
-    readonly durum: FieldRef<"ambalajlar", 'Status'>
+    readonly durum: FieldRef<"ambalajlar", 'String'>
     readonly createdAt: FieldRef<"ambalajlar", 'DateTime'>
     readonly updatedAt: FieldRef<"ambalajlar", 'DateTime'>
   }
@@ -3318,15 +3409,15 @@ export namespace Prisma {
   export type FaturalarGroupByOutputType = {
     id: string
     faturaNo: string
-    tarih: Date
+    tarih: Date | null
     toplamTutar: number
-    kdvOrani: number
+    kdvOrani: number | null
     kdvTutari: number
     genelToplam: number
     notlar: string | null
     satinAlmaciId: string
-    createdAt: Date
-    updatedAt: Date
+    createdAt: Date | null
+    updatedAt: Date | null
     _count: FaturalarCountAggregateOutputType | null
     _avg: FaturalarAvgAggregateOutputType | null
     _sum: FaturalarSumAggregateOutputType | null
@@ -3360,8 +3451,8 @@ export namespace Prisma {
     satinAlmaciId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    users?: boolean | usersDefaultArgs<ExtArgs>
     mal_kabul_records?: boolean | faturalar$mal_kabul_recordsArgs<ExtArgs>
+    users?: boolean | usersDefaultArgs<ExtArgs>
     _count?: boolean | FaturalarCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["faturalar"]>
 
@@ -3411,8 +3502,8 @@ export namespace Prisma {
 
   export type faturalarOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "faturaNo" | "tarih" | "toplamTutar" | "kdvOrani" | "kdvTutari" | "genelToplam" | "notlar" | "satinAlmaciId" | "createdAt" | "updatedAt", ExtArgs["result"]["faturalar"]>
   export type faturalarInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    users?: boolean | usersDefaultArgs<ExtArgs>
     mal_kabul_records?: boolean | faturalar$mal_kabul_recordsArgs<ExtArgs>
+    users?: boolean | usersDefaultArgs<ExtArgs>
     _count?: boolean | FaturalarCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type faturalarIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3425,21 +3516,21 @@ export namespace Prisma {
   export type $faturalarPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "faturalar"
     objects: {
-      users: Prisma.$usersPayload<ExtArgs>
       mal_kabul_records: Prisma.$mal_kabul_recordsPayload<ExtArgs>[]
+      users: Prisma.$usersPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       faturaNo: string
-      tarih: Date
+      tarih: Date | null
       toplamTutar: number
-      kdvOrani: number
+      kdvOrani: number | null
       kdvTutari: number
       genelToplam: number
       notlar: string | null
       satinAlmaciId: string
-      createdAt: Date
-      updatedAt: Date
+      createdAt: Date | null
+      updatedAt: Date | null
     }, ExtArgs["result"]["faturalar"]>
     composites: {}
   }
@@ -3834,8 +3925,8 @@ export namespace Prisma {
    */
   export interface Prisma__faturalarClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    users<T extends usersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, usersDefaultArgs<ExtArgs>>): Prisma__usersClient<$Result.GetResult<Prisma.$usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     mal_kabul_records<T extends faturalar$mal_kabul_recordsArgs<ExtArgs> = {}>(args?: Subset<T, faturalar$mal_kabul_recordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$mal_kabul_recordsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    users<T extends usersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, usersDefaultArgs<ExtArgs>>): Prisma__usersClient<$Result.GetResult<Prisma.$usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4329,13 +4420,13 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     dukkanAdi: string | null
-    durum: $Enums.Status | null
+    durum: string | null
     komisyonNo: string | null
+    komisyonKodu: string | null
     sehir: string | null
     vkn: string | null
     yetkiliAdi: string | null
     yetkiliTelefon: string | null
-    komisyonKodu: string | null
   }
 
   export type KomisyoncularMaxAggregateOutputType = {
@@ -4343,13 +4434,13 @@ export namespace Prisma {
     createdAt: Date | null
     updatedAt: Date | null
     dukkanAdi: string | null
-    durum: $Enums.Status | null
+    durum: string | null
     komisyonNo: string | null
+    komisyonKodu: string | null
     sehir: string | null
     vkn: string | null
     yetkiliAdi: string | null
     yetkiliTelefon: string | null
-    komisyonKodu: string | null
   }
 
   export type KomisyoncularCountAggregateOutputType = {
@@ -4359,11 +4450,11 @@ export namespace Prisma {
     dukkanAdi: number
     durum: number
     komisyonNo: number
+    komisyonKodu: number
     sehir: number
     vkn: number
     yetkiliAdi: number
     yetkiliTelefon: number
-    komisyonKodu: number
     _all: number
   }
 
@@ -4375,11 +4466,11 @@ export namespace Prisma {
     dukkanAdi?: true
     durum?: true
     komisyonNo?: true
+    komisyonKodu?: true
     sehir?: true
     vkn?: true
     yetkiliAdi?: true
     yetkiliTelefon?: true
-    komisyonKodu?: true
   }
 
   export type KomisyoncularMaxAggregateInputType = {
@@ -4389,11 +4480,11 @@ export namespace Prisma {
     dukkanAdi?: true
     durum?: true
     komisyonNo?: true
+    komisyonKodu?: true
     sehir?: true
     vkn?: true
     yetkiliAdi?: true
     yetkiliTelefon?: true
-    komisyonKodu?: true
   }
 
   export type KomisyoncularCountAggregateInputType = {
@@ -4403,11 +4494,11 @@ export namespace Prisma {
     dukkanAdi?: true
     durum?: true
     komisyonNo?: true
+    komisyonKodu?: true
     sehir?: true
     vkn?: true
     yetkiliAdi?: true
     yetkiliTelefon?: true
-    komisyonKodu?: true
     _all?: true
   }
 
@@ -4485,16 +4576,16 @@ export namespace Prisma {
 
   export type KomisyoncularGroupByOutputType = {
     id: string
-    createdAt: Date
-    updatedAt: Date
+    createdAt: Date | null
+    updatedAt: Date | null
     dukkanAdi: string
-    durum: $Enums.Status
+    durum: string
     komisyonNo: string
+    komisyonKodu: string
     sehir: string
     vkn: string | null
     yetkiliAdi: string | null
     yetkiliTelefon: string | null
-    komisyonKodu: string
     _count: KomisyoncularCountAggregateOutputType | null
     _min: KomisyoncularMinAggregateOutputType | null
     _max: KomisyoncularMaxAggregateOutputType | null
@@ -4521,11 +4612,11 @@ export namespace Prisma {
     dukkanAdi?: boolean
     durum?: boolean
     komisyonNo?: boolean
+    komisyonKodu?: boolean
     sehir?: boolean
     vkn?: boolean
     yetkiliAdi?: boolean
     yetkiliTelefon?: boolean
-    komisyonKodu?: boolean
     mal_kabul_records?: boolean | komisyoncular$mal_kabul_recordsArgs<ExtArgs>
     ureticiler?: boolean | komisyoncular$ureticilerArgs<ExtArgs>
     _count?: boolean | KomisyoncularCountOutputTypeDefaultArgs<ExtArgs>
@@ -4538,11 +4629,11 @@ export namespace Prisma {
     dukkanAdi?: boolean
     durum?: boolean
     komisyonNo?: boolean
+    komisyonKodu?: boolean
     sehir?: boolean
     vkn?: boolean
     yetkiliAdi?: boolean
     yetkiliTelefon?: boolean
-    komisyonKodu?: boolean
   }, ExtArgs["result"]["komisyoncular"]>
 
   export type komisyoncularSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -4552,11 +4643,11 @@ export namespace Prisma {
     dukkanAdi?: boolean
     durum?: boolean
     komisyonNo?: boolean
+    komisyonKodu?: boolean
     sehir?: boolean
     vkn?: boolean
     yetkiliAdi?: boolean
     yetkiliTelefon?: boolean
-    komisyonKodu?: boolean
   }, ExtArgs["result"]["komisyoncular"]>
 
   export type komisyoncularSelectScalar = {
@@ -4566,14 +4657,14 @@ export namespace Prisma {
     dukkanAdi?: boolean
     durum?: boolean
     komisyonNo?: boolean
+    komisyonKodu?: boolean
     sehir?: boolean
     vkn?: boolean
     yetkiliAdi?: boolean
     yetkiliTelefon?: boolean
-    komisyonKodu?: boolean
   }
 
-  export type komisyoncularOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "dukkanAdi" | "durum" | "komisyonNo" | "sehir" | "vkn" | "yetkiliAdi" | "yetkiliTelefon" | "komisyonKodu", ExtArgs["result"]["komisyoncular"]>
+  export type komisyoncularOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "dukkanAdi" | "durum" | "komisyonNo" | "komisyonKodu" | "sehir" | "vkn" | "yetkiliAdi" | "yetkiliTelefon", ExtArgs["result"]["komisyoncular"]>
   export type komisyoncularInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     mal_kabul_records?: boolean | komisyoncular$mal_kabul_recordsArgs<ExtArgs>
     ureticiler?: boolean | komisyoncular$ureticilerArgs<ExtArgs>
@@ -4590,16 +4681,16 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      createdAt: Date
-      updatedAt: Date
+      createdAt: Date | null
+      updatedAt: Date | null
       dukkanAdi: string
-      durum: $Enums.Status
+      durum: string
       komisyonNo: string
+      komisyonKodu: string
       sehir: string
       vkn: string | null
       yetkiliAdi: string | null
       yetkiliTelefon: string | null
-      komisyonKodu: string
     }, ExtArgs["result"]["komisyoncular"]>
     composites: {}
   }
@@ -5029,13 +5120,13 @@ export namespace Prisma {
     readonly createdAt: FieldRef<"komisyoncular", 'DateTime'>
     readonly updatedAt: FieldRef<"komisyoncular", 'DateTime'>
     readonly dukkanAdi: FieldRef<"komisyoncular", 'String'>
-    readonly durum: FieldRef<"komisyoncular", 'Status'>
+    readonly durum: FieldRef<"komisyoncular", 'String'>
     readonly komisyonNo: FieldRef<"komisyoncular", 'String'>
+    readonly komisyonKodu: FieldRef<"komisyoncular", 'String'>
     readonly sehir: FieldRef<"komisyoncular", 'String'>
     readonly vkn: FieldRef<"komisyoncular", 'String'>
     readonly yetkiliAdi: FieldRef<"komisyoncular", 'String'>
     readonly yetkiliTelefon: FieldRef<"komisyoncular", 'String'>
-    readonly komisyonKodu: FieldRef<"komisyoncular", 'String'>
   }
     
 
@@ -5534,7 +5625,7 @@ export namespace Prisma {
     miktar: number | null
     birimFiyat: number | null
     toplamFiyat: number | null
-    status: $Enums.ProductStatus | null
+    status: string | null
     notlar: string | null
     malKabulcuId: string | null
     komisyoncuId: string | null
@@ -5546,7 +5637,7 @@ export namespace Prisma {
     fisNo: string | null
     mustahsilId: string | null
     ozelFirmaId: string | null
-    saticiTipi: $Enums.SaticiTipi | null
+    saticiTipi: string | null
     ambalajId: string | null
     paletSayisi: number | null
     kasaSayisi: number | null
@@ -5563,7 +5654,7 @@ export namespace Prisma {
     miktar: number | null
     birimFiyat: number | null
     toplamFiyat: number | null
-    status: $Enums.ProductStatus | null
+    status: string | null
     notlar: string | null
     malKabulcuId: string | null
     komisyoncuId: string | null
@@ -5575,7 +5666,7 @@ export namespace Prisma {
     fisNo: string | null
     mustahsilId: string | null
     ozelFirmaId: string | null
-    saticiTipi: $Enums.SaticiTipi | null
+    saticiTipi: string | null
     ambalajId: string | null
     paletSayisi: number | null
     kasaSayisi: number | null
@@ -5819,31 +5910,31 @@ export namespace Prisma {
 
   export type Mal_kabul_recordsGroupByOutputType = {
     id: string
-    tarih: Date
+    tarih: Date | null
     miktar: number
     birimFiyat: number | null
     toplamFiyat: number | null
-    status: $Enums.ProductStatus
+    status: string
     notlar: string | null
     malKabulcuId: string
     komisyoncuId: string | null
     ureticiId: string | null
     urunId: string
     faturaId: string | null
-    createdAt: Date
-    updatedAt: Date
+    createdAt: Date | null
+    updatedAt: Date | null
     fisNo: string
     mustahsilId: string | null
     ozelFirmaId: string | null
-    saticiTipi: $Enums.SaticiTipi
+    saticiTipi: string
     ambalajId: string | null
-    paletSayisi: number
-    kasaSayisi: number
-    brutKg: number
-    daraKg: number
-    girisKg: number
-    cikmaFireKg: number
-    netKg: number
+    paletSayisi: number | null
+    kasaSayisi: number | null
+    brutKg: number | null
+    daraKg: number | null
+    girisKg: number | null
+    cikmaFireKg: number | null
+    netKg: number | null
     _count: Mal_kabul_recordsCountAggregateOutputType | null
     _avg: Mal_kabul_recordsAvgAggregateOutputType | null
     _sum: Mal_kabul_recordsSumAggregateOutputType | null
@@ -5892,14 +5983,14 @@ export namespace Prisma {
     girisKg?: boolean
     cikmaFireKg?: boolean
     netKg?: boolean
-    ambalajlar?: boolean | mal_kabul_records$ambalajlarArgs<ExtArgs>
-    faturalar?: boolean | mal_kabul_records$faturalarArgs<ExtArgs>
-    komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     users?: boolean | usersDefaultArgs<ExtArgs>
-    mustahsil?: boolean | mal_kabul_records$mustahsilArgs<ExtArgs>
-    ozel_firmalar?: boolean | mal_kabul_records$ozel_firmalarArgs<ExtArgs>
+    komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     ureticiler?: boolean | mal_kabul_records$ureticilerArgs<ExtArgs>
     urunler?: boolean | urunlerDefaultArgs<ExtArgs>
+    faturalar?: boolean | mal_kabul_records$faturalarArgs<ExtArgs>
+    mustahsil?: boolean | mal_kabul_records$mustahsilArgs<ExtArgs>
+    ozel_firmalar?: boolean | mal_kabul_records$ozel_firmalarArgs<ExtArgs>
+    ambalajlar?: boolean | mal_kabul_records$ambalajlarArgs<ExtArgs>
   }, ExtArgs["result"]["mal_kabul_records"]>
 
   export type mal_kabul_recordsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -5929,14 +6020,14 @@ export namespace Prisma {
     girisKg?: boolean
     cikmaFireKg?: boolean
     netKg?: boolean
-    ambalajlar?: boolean | mal_kabul_records$ambalajlarArgs<ExtArgs>
-    faturalar?: boolean | mal_kabul_records$faturalarArgs<ExtArgs>
-    komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     users?: boolean | usersDefaultArgs<ExtArgs>
-    mustahsil?: boolean | mal_kabul_records$mustahsilArgs<ExtArgs>
-    ozel_firmalar?: boolean | mal_kabul_records$ozel_firmalarArgs<ExtArgs>
+    komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     ureticiler?: boolean | mal_kabul_records$ureticilerArgs<ExtArgs>
     urunler?: boolean | urunlerDefaultArgs<ExtArgs>
+    faturalar?: boolean | mal_kabul_records$faturalarArgs<ExtArgs>
+    mustahsil?: boolean | mal_kabul_records$mustahsilArgs<ExtArgs>
+    ozel_firmalar?: boolean | mal_kabul_records$ozel_firmalarArgs<ExtArgs>
+    ambalajlar?: boolean | mal_kabul_records$ambalajlarArgs<ExtArgs>
   }, ExtArgs["result"]["mal_kabul_records"]>
 
   export type mal_kabul_recordsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -5966,14 +6057,14 @@ export namespace Prisma {
     girisKg?: boolean
     cikmaFireKg?: boolean
     netKg?: boolean
-    ambalajlar?: boolean | mal_kabul_records$ambalajlarArgs<ExtArgs>
-    faturalar?: boolean | mal_kabul_records$faturalarArgs<ExtArgs>
-    komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     users?: boolean | usersDefaultArgs<ExtArgs>
-    mustahsil?: boolean | mal_kabul_records$mustahsilArgs<ExtArgs>
-    ozel_firmalar?: boolean | mal_kabul_records$ozel_firmalarArgs<ExtArgs>
+    komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     ureticiler?: boolean | mal_kabul_records$ureticilerArgs<ExtArgs>
     urunler?: boolean | urunlerDefaultArgs<ExtArgs>
+    faturalar?: boolean | mal_kabul_records$faturalarArgs<ExtArgs>
+    mustahsil?: boolean | mal_kabul_records$mustahsilArgs<ExtArgs>
+    ozel_firmalar?: boolean | mal_kabul_records$ozel_firmalarArgs<ExtArgs>
+    ambalajlar?: boolean | mal_kabul_records$ambalajlarArgs<ExtArgs>
   }, ExtArgs["result"]["mal_kabul_records"]>
 
   export type mal_kabul_recordsSelectScalar = {
@@ -6007,75 +6098,75 @@ export namespace Prisma {
 
   export type mal_kabul_recordsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tarih" | "miktar" | "birimFiyat" | "toplamFiyat" | "status" | "notlar" | "malKabulcuId" | "komisyoncuId" | "ureticiId" | "urunId" | "faturaId" | "createdAt" | "updatedAt" | "fisNo" | "mustahsilId" | "ozelFirmaId" | "saticiTipi" | "ambalajId" | "paletSayisi" | "kasaSayisi" | "brutKg" | "daraKg" | "girisKg" | "cikmaFireKg" | "netKg", ExtArgs["result"]["mal_kabul_records"]>
   export type mal_kabul_recordsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    ambalajlar?: boolean | mal_kabul_records$ambalajlarArgs<ExtArgs>
-    faturalar?: boolean | mal_kabul_records$faturalarArgs<ExtArgs>
-    komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     users?: boolean | usersDefaultArgs<ExtArgs>
-    mustahsil?: boolean | mal_kabul_records$mustahsilArgs<ExtArgs>
-    ozel_firmalar?: boolean | mal_kabul_records$ozel_firmalarArgs<ExtArgs>
+    komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     ureticiler?: boolean | mal_kabul_records$ureticilerArgs<ExtArgs>
     urunler?: boolean | urunlerDefaultArgs<ExtArgs>
+    faturalar?: boolean | mal_kabul_records$faturalarArgs<ExtArgs>
+    mustahsil?: boolean | mal_kabul_records$mustahsilArgs<ExtArgs>
+    ozel_firmalar?: boolean | mal_kabul_records$ozel_firmalarArgs<ExtArgs>
+    ambalajlar?: boolean | mal_kabul_records$ambalajlarArgs<ExtArgs>
   }
   export type mal_kabul_recordsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    ambalajlar?: boolean | mal_kabul_records$ambalajlarArgs<ExtArgs>
-    faturalar?: boolean | mal_kabul_records$faturalarArgs<ExtArgs>
-    komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     users?: boolean | usersDefaultArgs<ExtArgs>
-    mustahsil?: boolean | mal_kabul_records$mustahsilArgs<ExtArgs>
-    ozel_firmalar?: boolean | mal_kabul_records$ozel_firmalarArgs<ExtArgs>
+    komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     ureticiler?: boolean | mal_kabul_records$ureticilerArgs<ExtArgs>
     urunler?: boolean | urunlerDefaultArgs<ExtArgs>
+    faturalar?: boolean | mal_kabul_records$faturalarArgs<ExtArgs>
+    mustahsil?: boolean | mal_kabul_records$mustahsilArgs<ExtArgs>
+    ozel_firmalar?: boolean | mal_kabul_records$ozel_firmalarArgs<ExtArgs>
+    ambalajlar?: boolean | mal_kabul_records$ambalajlarArgs<ExtArgs>
   }
   export type mal_kabul_recordsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    ambalajlar?: boolean | mal_kabul_records$ambalajlarArgs<ExtArgs>
-    faturalar?: boolean | mal_kabul_records$faturalarArgs<ExtArgs>
-    komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     users?: boolean | usersDefaultArgs<ExtArgs>
-    mustahsil?: boolean | mal_kabul_records$mustahsilArgs<ExtArgs>
-    ozel_firmalar?: boolean | mal_kabul_records$ozel_firmalarArgs<ExtArgs>
+    komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     ureticiler?: boolean | mal_kabul_records$ureticilerArgs<ExtArgs>
     urunler?: boolean | urunlerDefaultArgs<ExtArgs>
+    faturalar?: boolean | mal_kabul_records$faturalarArgs<ExtArgs>
+    mustahsil?: boolean | mal_kabul_records$mustahsilArgs<ExtArgs>
+    ozel_firmalar?: boolean | mal_kabul_records$ozel_firmalarArgs<ExtArgs>
+    ambalajlar?: boolean | mal_kabul_records$ambalajlarArgs<ExtArgs>
   }
 
   export type $mal_kabul_recordsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "mal_kabul_records"
     objects: {
-      ambalajlar: Prisma.$ambalajlarPayload<ExtArgs> | null
-      faturalar: Prisma.$faturalarPayload<ExtArgs> | null
-      komisyoncular: Prisma.$komisyoncularPayload<ExtArgs> | null
       users: Prisma.$usersPayload<ExtArgs>
-      mustahsil: Prisma.$mustahsilPayload<ExtArgs> | null
-      ozel_firmalar: Prisma.$ozel_firmalarPayload<ExtArgs> | null
+      komisyoncular: Prisma.$komisyoncularPayload<ExtArgs> | null
       ureticiler: Prisma.$ureticilerPayload<ExtArgs> | null
       urunler: Prisma.$urunlerPayload<ExtArgs>
+      faturalar: Prisma.$faturalarPayload<ExtArgs> | null
+      mustahsil: Prisma.$mustahsilPayload<ExtArgs> | null
+      ozel_firmalar: Prisma.$ozel_firmalarPayload<ExtArgs> | null
+      ambalajlar: Prisma.$ambalajlarPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      tarih: Date
+      tarih: Date | null
       miktar: number
       birimFiyat: number | null
       toplamFiyat: number | null
-      status: $Enums.ProductStatus
+      status: string
       notlar: string | null
       malKabulcuId: string
       komisyoncuId: string | null
       ureticiId: string | null
       urunId: string
       faturaId: string | null
-      createdAt: Date
-      updatedAt: Date
+      createdAt: Date | null
+      updatedAt: Date | null
       fisNo: string
       mustahsilId: string | null
       ozelFirmaId: string | null
-      saticiTipi: $Enums.SaticiTipi
+      saticiTipi: string
       ambalajId: string | null
-      paletSayisi: number
-      kasaSayisi: number
-      brutKg: number
-      daraKg: number
-      girisKg: number
-      cikmaFireKg: number
-      netKg: number
+      paletSayisi: number | null
+      kasaSayisi: number | null
+      brutKg: number | null
+      daraKg: number | null
+      girisKg: number | null
+      cikmaFireKg: number | null
+      netKg: number | null
     }, ExtArgs["result"]["mal_kabul_records"]>
     composites: {}
   }
@@ -6470,14 +6561,14 @@ export namespace Prisma {
    */
   export interface Prisma__mal_kabul_recordsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    ambalajlar<T extends mal_kabul_records$ambalajlarArgs<ExtArgs> = {}>(args?: Subset<T, mal_kabul_records$ambalajlarArgs<ExtArgs>>): Prisma__ambalajlarClient<$Result.GetResult<Prisma.$ambalajlarPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    faturalar<T extends mal_kabul_records$faturalarArgs<ExtArgs> = {}>(args?: Subset<T, mal_kabul_records$faturalarArgs<ExtArgs>>): Prisma__faturalarClient<$Result.GetResult<Prisma.$faturalarPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    komisyoncular<T extends mal_kabul_records$komisyoncularArgs<ExtArgs> = {}>(args?: Subset<T, mal_kabul_records$komisyoncularArgs<ExtArgs>>): Prisma__komisyoncularClient<$Result.GetResult<Prisma.$komisyoncularPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     users<T extends usersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, usersDefaultArgs<ExtArgs>>): Prisma__usersClient<$Result.GetResult<Prisma.$usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    mustahsil<T extends mal_kabul_records$mustahsilArgs<ExtArgs> = {}>(args?: Subset<T, mal_kabul_records$mustahsilArgs<ExtArgs>>): Prisma__mustahsilClient<$Result.GetResult<Prisma.$mustahsilPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-    ozel_firmalar<T extends mal_kabul_records$ozel_firmalarArgs<ExtArgs> = {}>(args?: Subset<T, mal_kabul_records$ozel_firmalarArgs<ExtArgs>>): Prisma__ozel_firmalarClient<$Result.GetResult<Prisma.$ozel_firmalarPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    komisyoncular<T extends mal_kabul_records$komisyoncularArgs<ExtArgs> = {}>(args?: Subset<T, mal_kabul_records$komisyoncularArgs<ExtArgs>>): Prisma__komisyoncularClient<$Result.GetResult<Prisma.$komisyoncularPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     ureticiler<T extends mal_kabul_records$ureticilerArgs<ExtArgs> = {}>(args?: Subset<T, mal_kabul_records$ureticilerArgs<ExtArgs>>): Prisma__ureticilerClient<$Result.GetResult<Prisma.$ureticilerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     urunler<T extends urunlerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, urunlerDefaultArgs<ExtArgs>>): Prisma__urunlerClient<$Result.GetResult<Prisma.$urunlerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    faturalar<T extends mal_kabul_records$faturalarArgs<ExtArgs> = {}>(args?: Subset<T, mal_kabul_records$faturalarArgs<ExtArgs>>): Prisma__faturalarClient<$Result.GetResult<Prisma.$faturalarPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    mustahsil<T extends mal_kabul_records$mustahsilArgs<ExtArgs> = {}>(args?: Subset<T, mal_kabul_records$mustahsilArgs<ExtArgs>>): Prisma__mustahsilClient<$Result.GetResult<Prisma.$mustahsilPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    ozel_firmalar<T extends mal_kabul_records$ozel_firmalarArgs<ExtArgs> = {}>(args?: Subset<T, mal_kabul_records$ozel_firmalarArgs<ExtArgs>>): Prisma__ozel_firmalarClient<$Result.GetResult<Prisma.$ozel_firmalarPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    ambalajlar<T extends mal_kabul_records$ambalajlarArgs<ExtArgs> = {}>(args?: Subset<T, mal_kabul_records$ambalajlarArgs<ExtArgs>>): Prisma__ambalajlarClient<$Result.GetResult<Prisma.$ambalajlarPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6512,7 +6603,7 @@ export namespace Prisma {
     readonly miktar: FieldRef<"mal_kabul_records", 'Float'>
     readonly birimFiyat: FieldRef<"mal_kabul_records", 'Float'>
     readonly toplamFiyat: FieldRef<"mal_kabul_records", 'Float'>
-    readonly status: FieldRef<"mal_kabul_records", 'ProductStatus'>
+    readonly status: FieldRef<"mal_kabul_records", 'String'>
     readonly notlar: FieldRef<"mal_kabul_records", 'String'>
     readonly malKabulcuId: FieldRef<"mal_kabul_records", 'String'>
     readonly komisyoncuId: FieldRef<"mal_kabul_records", 'String'>
@@ -6524,7 +6615,7 @@ export namespace Prisma {
     readonly fisNo: FieldRef<"mal_kabul_records", 'String'>
     readonly mustahsilId: FieldRef<"mal_kabul_records", 'String'>
     readonly ozelFirmaId: FieldRef<"mal_kabul_records", 'String'>
-    readonly saticiTipi: FieldRef<"mal_kabul_records", 'SaticiTipi'>
+    readonly saticiTipi: FieldRef<"mal_kabul_records", 'String'>
     readonly ambalajId: FieldRef<"mal_kabul_records", 'String'>
     readonly paletSayisi: FieldRef<"mal_kabul_records", 'Int'>
     readonly kasaSayisi: FieldRef<"mal_kabul_records", 'Int'>
@@ -6929,22 +7020,41 @@ export namespace Prisma {
   }
 
   /**
-   * mal_kabul_records.ambalajlar
+   * mal_kabul_records.komisyoncular
    */
-  export type mal_kabul_records$ambalajlarArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type mal_kabul_records$komisyoncularArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ambalajlar
+     * Select specific fields to fetch from the komisyoncular
      */
-    select?: ambalajlarSelect<ExtArgs> | null
+    select?: komisyoncularSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ambalajlar
+     * Omit specific fields from the komisyoncular
      */
-    omit?: ambalajlarOmit<ExtArgs> | null
+    omit?: komisyoncularOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ambalajlarInclude<ExtArgs> | null
-    where?: ambalajlarWhereInput
+    include?: komisyoncularInclude<ExtArgs> | null
+    where?: komisyoncularWhereInput
+  }
+
+  /**
+   * mal_kabul_records.ureticiler
+   */
+  export type mal_kabul_records$ureticilerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ureticiler
+     */
+    select?: ureticilerSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ureticiler
+     */
+    omit?: ureticilerOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ureticilerInclude<ExtArgs> | null
+    where?: ureticilerWhereInput
   }
 
   /**
@@ -6964,25 +7074,6 @@ export namespace Prisma {
      */
     include?: faturalarInclude<ExtArgs> | null
     where?: faturalarWhereInput
-  }
-
-  /**
-   * mal_kabul_records.komisyoncular
-   */
-  export type mal_kabul_records$komisyoncularArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the komisyoncular
-     */
-    select?: komisyoncularSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the komisyoncular
-     */
-    omit?: komisyoncularOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: komisyoncularInclude<ExtArgs> | null
-    where?: komisyoncularWhereInput
   }
 
   /**
@@ -7024,22 +7115,22 @@ export namespace Prisma {
   }
 
   /**
-   * mal_kabul_records.ureticiler
+   * mal_kabul_records.ambalajlar
    */
-  export type mal_kabul_records$ureticilerArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type mal_kabul_records$ambalajlarArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ureticiler
+     * Select specific fields to fetch from the ambalajlar
      */
-    select?: ureticilerSelect<ExtArgs> | null
+    select?: ambalajlarSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ureticiler
+     * Omit specific fields from the ambalajlar
      */
-    omit?: ureticilerOmit<ExtArgs> | null
+    omit?: ambalajlarOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ureticilerInclude<ExtArgs> | null
-    where?: ureticilerWhereInput
+    include?: ambalajlarInclude<ExtArgs> | null
+    where?: ambalajlarWhereInput
   }
 
   /**
@@ -7077,15 +7168,15 @@ export namespace Prisma {
     soyad: string | null
     dogumTarihi: Date | null
     tcKimlikNo: string | null
-    ibanAdresi: string | null
-    adres: string | null
-    cinsiyet: $Enums.Gender | null
-    durum: $Enums.Status | null
-    createdAt: Date | null
-    updatedAt: Date | null
     mustahsilNo: string | null
     iletisim: string | null
     bankaAdi: string | null
+    ibanAdresi: string | null
+    adres: string | null
+    cinsiyet: string | null
+    durum: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type MustahsilMaxAggregateOutputType = {
@@ -7094,15 +7185,15 @@ export namespace Prisma {
     soyad: string | null
     dogumTarihi: Date | null
     tcKimlikNo: string | null
-    ibanAdresi: string | null
-    adres: string | null
-    cinsiyet: $Enums.Gender | null
-    durum: $Enums.Status | null
-    createdAt: Date | null
-    updatedAt: Date | null
     mustahsilNo: string | null
     iletisim: string | null
     bankaAdi: string | null
+    ibanAdresi: string | null
+    adres: string | null
+    cinsiyet: string | null
+    durum: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type MustahsilCountAggregateOutputType = {
@@ -7111,15 +7202,15 @@ export namespace Prisma {
     soyad: number
     dogumTarihi: number
     tcKimlikNo: number
+    mustahsilNo: number
+    iletisim: number
+    bankaAdi: number
     ibanAdresi: number
     adres: number
     cinsiyet: number
     durum: number
     createdAt: number
     updatedAt: number
-    mustahsilNo: number
-    iletisim: number
-    bankaAdi: number
     _all: number
   }
 
@@ -7130,15 +7221,15 @@ export namespace Prisma {
     soyad?: true
     dogumTarihi?: true
     tcKimlikNo?: true
+    mustahsilNo?: true
+    iletisim?: true
+    bankaAdi?: true
     ibanAdresi?: true
     adres?: true
     cinsiyet?: true
     durum?: true
     createdAt?: true
     updatedAt?: true
-    mustahsilNo?: true
-    iletisim?: true
-    bankaAdi?: true
   }
 
   export type MustahsilMaxAggregateInputType = {
@@ -7147,15 +7238,15 @@ export namespace Prisma {
     soyad?: true
     dogumTarihi?: true
     tcKimlikNo?: true
+    mustahsilNo?: true
+    iletisim?: true
+    bankaAdi?: true
     ibanAdresi?: true
     adres?: true
     cinsiyet?: true
     durum?: true
     createdAt?: true
     updatedAt?: true
-    mustahsilNo?: true
-    iletisim?: true
-    bankaAdi?: true
   }
 
   export type MustahsilCountAggregateInputType = {
@@ -7164,15 +7255,15 @@ export namespace Prisma {
     soyad?: true
     dogumTarihi?: true
     tcKimlikNo?: true
+    mustahsilNo?: true
+    iletisim?: true
+    bankaAdi?: true
     ibanAdresi?: true
     adres?: true
     cinsiyet?: true
     durum?: true
     createdAt?: true
     updatedAt?: true
-    mustahsilNo?: true
-    iletisim?: true
-    bankaAdi?: true
     _all?: true
   }
 
@@ -7254,15 +7345,15 @@ export namespace Prisma {
     soyad: string
     dogumTarihi: Date
     tcKimlikNo: string
-    ibanAdresi: string | null
-    adres: string | null
-    cinsiyet: $Enums.Gender
-    durum: $Enums.Status
-    createdAt: Date
-    updatedAt: Date
     mustahsilNo: string
     iletisim: string | null
     bankaAdi: string | null
+    ibanAdresi: string | null
+    adres: string | null
+    cinsiyet: string
+    durum: string
+    createdAt: Date | null
+    updatedAt: Date | null
     _count: MustahsilCountAggregateOutputType | null
     _min: MustahsilMinAggregateOutputType | null
     _max: MustahsilMaxAggregateOutputType | null
@@ -7288,15 +7379,15 @@ export namespace Prisma {
     soyad?: boolean
     dogumTarihi?: boolean
     tcKimlikNo?: boolean
+    mustahsilNo?: boolean
+    iletisim?: boolean
+    bankaAdi?: boolean
     ibanAdresi?: boolean
     adres?: boolean
     cinsiyet?: boolean
     durum?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    mustahsilNo?: boolean
-    iletisim?: boolean
-    bankaAdi?: boolean
     mal_kabul_records?: boolean | mustahsil$mal_kabul_recordsArgs<ExtArgs>
     _count?: boolean | MustahsilCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["mustahsil"]>
@@ -7307,15 +7398,15 @@ export namespace Prisma {
     soyad?: boolean
     dogumTarihi?: boolean
     tcKimlikNo?: boolean
+    mustahsilNo?: boolean
+    iletisim?: boolean
+    bankaAdi?: boolean
     ibanAdresi?: boolean
     adres?: boolean
     cinsiyet?: boolean
     durum?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    mustahsilNo?: boolean
-    iletisim?: boolean
-    bankaAdi?: boolean
   }, ExtArgs["result"]["mustahsil"]>
 
   export type mustahsilSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -7324,15 +7415,15 @@ export namespace Prisma {
     soyad?: boolean
     dogumTarihi?: boolean
     tcKimlikNo?: boolean
+    mustahsilNo?: boolean
+    iletisim?: boolean
+    bankaAdi?: boolean
     ibanAdresi?: boolean
     adres?: boolean
     cinsiyet?: boolean
     durum?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    mustahsilNo?: boolean
-    iletisim?: boolean
-    bankaAdi?: boolean
   }, ExtArgs["result"]["mustahsil"]>
 
   export type mustahsilSelectScalar = {
@@ -7341,18 +7432,18 @@ export namespace Prisma {
     soyad?: boolean
     dogumTarihi?: boolean
     tcKimlikNo?: boolean
+    mustahsilNo?: boolean
+    iletisim?: boolean
+    bankaAdi?: boolean
     ibanAdresi?: boolean
     adres?: boolean
     cinsiyet?: boolean
     durum?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    mustahsilNo?: boolean
-    iletisim?: boolean
-    bankaAdi?: boolean
   }
 
-  export type mustahsilOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ad" | "soyad" | "dogumTarihi" | "tcKimlikNo" | "ibanAdresi" | "adres" | "cinsiyet" | "durum" | "createdAt" | "updatedAt" | "mustahsilNo" | "iletisim" | "bankaAdi", ExtArgs["result"]["mustahsil"]>
+  export type mustahsilOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ad" | "soyad" | "dogumTarihi" | "tcKimlikNo" | "mustahsilNo" | "iletisim" | "bankaAdi" | "ibanAdresi" | "adres" | "cinsiyet" | "durum" | "createdAt" | "updatedAt", ExtArgs["result"]["mustahsil"]>
   export type mustahsilInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     mal_kabul_records?: boolean | mustahsil$mal_kabul_recordsArgs<ExtArgs>
     _count?: boolean | MustahsilCountOutputTypeDefaultArgs<ExtArgs>
@@ -7371,15 +7462,15 @@ export namespace Prisma {
       soyad: string
       dogumTarihi: Date
       tcKimlikNo: string
-      ibanAdresi: string | null
-      adres: string | null
-      cinsiyet: $Enums.Gender
-      durum: $Enums.Status
-      createdAt: Date
-      updatedAt: Date
       mustahsilNo: string
       iletisim: string | null
       bankaAdi: string | null
+      ibanAdresi: string | null
+      adres: string | null
+      cinsiyet: string
+      durum: string
+      createdAt: Date | null
+      updatedAt: Date | null
     }, ExtArgs["result"]["mustahsil"]>
     composites: {}
   }
@@ -7809,15 +7900,15 @@ export namespace Prisma {
     readonly soyad: FieldRef<"mustahsil", 'String'>
     readonly dogumTarihi: FieldRef<"mustahsil", 'DateTime'>
     readonly tcKimlikNo: FieldRef<"mustahsil", 'String'>
-    readonly ibanAdresi: FieldRef<"mustahsil", 'String'>
-    readonly adres: FieldRef<"mustahsil", 'String'>
-    readonly cinsiyet: FieldRef<"mustahsil", 'Gender'>
-    readonly durum: FieldRef<"mustahsil", 'Status'>
-    readonly createdAt: FieldRef<"mustahsil", 'DateTime'>
-    readonly updatedAt: FieldRef<"mustahsil", 'DateTime'>
     readonly mustahsilNo: FieldRef<"mustahsil", 'String'>
     readonly iletisim: FieldRef<"mustahsil", 'String'>
     readonly bankaAdi: FieldRef<"mustahsil", 'String'>
+    readonly ibanAdresi: FieldRef<"mustahsil", 'String'>
+    readonly adres: FieldRef<"mustahsil", 'String'>
+    readonly cinsiyet: FieldRef<"mustahsil", 'String'>
+    readonly durum: FieldRef<"mustahsil", 'String'>
+    readonly createdAt: FieldRef<"mustahsil", 'DateTime'>
+    readonly updatedAt: FieldRef<"mustahsil", 'DateTime'>
   }
     
 
@@ -8261,37 +8352,39 @@ export namespace Prisma {
   export type Ozel_firmalarMinAggregateOutputType = {
     id: string | null
     firmaAdi: string | null
+    firmaNo: string | null
     vkn: string | null
+    vergiDairesi: string | null
     yetkiliAdi: string | null
     yetkiliTelefon: string | null
     sehir: string | null
     adres: string | null
-    durum: $Enums.Status | null
+    durum: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    firmaNo: string | null
-    vergiDairesi: string | null
   }
 
   export type Ozel_firmalarMaxAggregateOutputType = {
     id: string | null
     firmaAdi: string | null
+    firmaNo: string | null
     vkn: string | null
+    vergiDairesi: string | null
     yetkiliAdi: string | null
     yetkiliTelefon: string | null
     sehir: string | null
     adres: string | null
-    durum: $Enums.Status | null
+    durum: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    firmaNo: string | null
-    vergiDairesi: string | null
   }
 
   export type Ozel_firmalarCountAggregateOutputType = {
     id: number
     firmaAdi: number
+    firmaNo: number
     vkn: number
+    vergiDairesi: number
     yetkiliAdi: number
     yetkiliTelefon: number
     sehir: number
@@ -8299,8 +8392,6 @@ export namespace Prisma {
     durum: number
     createdAt: number
     updatedAt: number
-    firmaNo: number
-    vergiDairesi: number
     _all: number
   }
 
@@ -8308,7 +8399,9 @@ export namespace Prisma {
   export type Ozel_firmalarMinAggregateInputType = {
     id?: true
     firmaAdi?: true
+    firmaNo?: true
     vkn?: true
+    vergiDairesi?: true
     yetkiliAdi?: true
     yetkiliTelefon?: true
     sehir?: true
@@ -8316,14 +8409,14 @@ export namespace Prisma {
     durum?: true
     createdAt?: true
     updatedAt?: true
-    firmaNo?: true
-    vergiDairesi?: true
   }
 
   export type Ozel_firmalarMaxAggregateInputType = {
     id?: true
     firmaAdi?: true
+    firmaNo?: true
     vkn?: true
+    vergiDairesi?: true
     yetkiliAdi?: true
     yetkiliTelefon?: true
     sehir?: true
@@ -8331,14 +8424,14 @@ export namespace Prisma {
     durum?: true
     createdAt?: true
     updatedAt?: true
-    firmaNo?: true
-    vergiDairesi?: true
   }
 
   export type Ozel_firmalarCountAggregateInputType = {
     id?: true
     firmaAdi?: true
+    firmaNo?: true
     vkn?: true
+    vergiDairesi?: true
     yetkiliAdi?: true
     yetkiliTelefon?: true
     sehir?: true
@@ -8346,8 +8439,6 @@ export namespace Prisma {
     durum?: true
     createdAt?: true
     updatedAt?: true
-    firmaNo?: true
-    vergiDairesi?: true
     _all?: true
   }
 
@@ -8426,16 +8517,16 @@ export namespace Prisma {
   export type Ozel_firmalarGroupByOutputType = {
     id: string
     firmaAdi: string
+    firmaNo: string
     vkn: string | null
+    vergiDairesi: string | null
     yetkiliAdi: string | null
     yetkiliTelefon: string | null
     sehir: string
     adres: string | null
-    durum: $Enums.Status
-    createdAt: Date
-    updatedAt: Date
-    firmaNo: string
-    vergiDairesi: string | null
+    durum: string
+    createdAt: Date | null
+    updatedAt: Date | null
     _count: Ozel_firmalarCountAggregateOutputType | null
     _min: Ozel_firmalarMinAggregateOutputType | null
     _max: Ozel_firmalarMaxAggregateOutputType | null
@@ -8458,7 +8549,9 @@ export namespace Prisma {
   export type ozel_firmalarSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     firmaAdi?: boolean
+    firmaNo?: boolean
     vkn?: boolean
+    vergiDairesi?: boolean
     yetkiliAdi?: boolean
     yetkiliTelefon?: boolean
     sehir?: boolean
@@ -8466,8 +8559,6 @@ export namespace Prisma {
     durum?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    firmaNo?: boolean
-    vergiDairesi?: boolean
     mal_kabul_records?: boolean | ozel_firmalar$mal_kabul_recordsArgs<ExtArgs>
     _count?: boolean | Ozel_firmalarCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["ozel_firmalar"]>
@@ -8475,7 +8566,9 @@ export namespace Prisma {
   export type ozel_firmalarSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     firmaAdi?: boolean
+    firmaNo?: boolean
     vkn?: boolean
+    vergiDairesi?: boolean
     yetkiliAdi?: boolean
     yetkiliTelefon?: boolean
     sehir?: boolean
@@ -8483,14 +8576,14 @@ export namespace Prisma {
     durum?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    firmaNo?: boolean
-    vergiDairesi?: boolean
   }, ExtArgs["result"]["ozel_firmalar"]>
 
   export type ozel_firmalarSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     firmaAdi?: boolean
+    firmaNo?: boolean
     vkn?: boolean
+    vergiDairesi?: boolean
     yetkiliAdi?: boolean
     yetkiliTelefon?: boolean
     sehir?: boolean
@@ -8498,14 +8591,14 @@ export namespace Prisma {
     durum?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    firmaNo?: boolean
-    vergiDairesi?: boolean
   }, ExtArgs["result"]["ozel_firmalar"]>
 
   export type ozel_firmalarSelectScalar = {
     id?: boolean
     firmaAdi?: boolean
+    firmaNo?: boolean
     vkn?: boolean
+    vergiDairesi?: boolean
     yetkiliAdi?: boolean
     yetkiliTelefon?: boolean
     sehir?: boolean
@@ -8513,11 +8606,9 @@ export namespace Prisma {
     durum?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    firmaNo?: boolean
-    vergiDairesi?: boolean
   }
 
-  export type ozel_firmalarOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "firmaAdi" | "vkn" | "yetkiliAdi" | "yetkiliTelefon" | "sehir" | "adres" | "durum" | "createdAt" | "updatedAt" | "firmaNo" | "vergiDairesi", ExtArgs["result"]["ozel_firmalar"]>
+  export type ozel_firmalarOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "firmaAdi" | "firmaNo" | "vkn" | "vergiDairesi" | "yetkiliAdi" | "yetkiliTelefon" | "sehir" | "adres" | "durum" | "createdAt" | "updatedAt", ExtArgs["result"]["ozel_firmalar"]>
   export type ozel_firmalarInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     mal_kabul_records?: boolean | ozel_firmalar$mal_kabul_recordsArgs<ExtArgs>
     _count?: boolean | Ozel_firmalarCountOutputTypeDefaultArgs<ExtArgs>
@@ -8533,16 +8624,16 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       firmaAdi: string
+      firmaNo: string
       vkn: string | null
+      vergiDairesi: string | null
       yetkiliAdi: string | null
       yetkiliTelefon: string | null
       sehir: string
       adres: string | null
-      durum: $Enums.Status
-      createdAt: Date
-      updatedAt: Date
-      firmaNo: string
-      vergiDairesi: string | null
+      durum: string
+      createdAt: Date | null
+      updatedAt: Date | null
     }, ExtArgs["result"]["ozel_firmalar"]>
     composites: {}
   }
@@ -8969,16 +9060,16 @@ export namespace Prisma {
   interface ozel_firmalarFieldRefs {
     readonly id: FieldRef<"ozel_firmalar", 'String'>
     readonly firmaAdi: FieldRef<"ozel_firmalar", 'String'>
+    readonly firmaNo: FieldRef<"ozel_firmalar", 'String'>
     readonly vkn: FieldRef<"ozel_firmalar", 'String'>
+    readonly vergiDairesi: FieldRef<"ozel_firmalar", 'String'>
     readonly yetkiliAdi: FieldRef<"ozel_firmalar", 'String'>
     readonly yetkiliTelefon: FieldRef<"ozel_firmalar", 'String'>
     readonly sehir: FieldRef<"ozel_firmalar", 'String'>
     readonly adres: FieldRef<"ozel_firmalar", 'String'>
-    readonly durum: FieldRef<"ozel_firmalar", 'Status'>
+    readonly durum: FieldRef<"ozel_firmalar", 'String'>
     readonly createdAt: FieldRef<"ozel_firmalar", 'DateTime'>
     readonly updatedAt: FieldRef<"ozel_firmalar", 'DateTime'>
-    readonly firmaNo: FieldRef<"ozel_firmalar", 'String'>
-    readonly vergiDairesi: FieldRef<"ozel_firmalar", 'String'>
   }
     
 
@@ -9424,14 +9515,14 @@ export namespace Prisma {
     ad: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    cinsiyet: $Enums.Gender | null
+    cinsiyet: string | null
     dogumTarihi: Date | null
-    durum: $Enums.Status | null
     iletisim: string | null
     komisyoncuId: string | null
     sehir: string | null
     soyad: string | null
     tcNo: string | null
+    durum: string | null
   }
 
   export type UreticilerMaxAggregateOutputType = {
@@ -9439,14 +9530,14 @@ export namespace Prisma {
     ad: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    cinsiyet: $Enums.Gender | null
+    cinsiyet: string | null
     dogumTarihi: Date | null
-    durum: $Enums.Status | null
     iletisim: string | null
     komisyoncuId: string | null
     sehir: string | null
     soyad: string | null
     tcNo: string | null
+    durum: string | null
   }
 
   export type UreticilerCountAggregateOutputType = {
@@ -9456,12 +9547,12 @@ export namespace Prisma {
     updatedAt: number
     cinsiyet: number
     dogumTarihi: number
-    durum: number
     iletisim: number
     komisyoncuId: number
     sehir: number
     soyad: number
     tcNo: number
+    durum: number
     _all: number
   }
 
@@ -9473,12 +9564,12 @@ export namespace Prisma {
     updatedAt?: true
     cinsiyet?: true
     dogumTarihi?: true
-    durum?: true
     iletisim?: true
     komisyoncuId?: true
     sehir?: true
     soyad?: true
     tcNo?: true
+    durum?: true
   }
 
   export type UreticilerMaxAggregateInputType = {
@@ -9488,12 +9579,12 @@ export namespace Prisma {
     updatedAt?: true
     cinsiyet?: true
     dogumTarihi?: true
-    durum?: true
     iletisim?: true
     komisyoncuId?: true
     sehir?: true
     soyad?: true
     tcNo?: true
+    durum?: true
   }
 
   export type UreticilerCountAggregateInputType = {
@@ -9503,12 +9594,12 @@ export namespace Prisma {
     updatedAt?: true
     cinsiyet?: true
     dogumTarihi?: true
-    durum?: true
     iletisim?: true
     komisyoncuId?: true
     sehir?: true
     soyad?: true
     tcNo?: true
+    durum?: true
     _all?: true
   }
 
@@ -9587,16 +9678,16 @@ export namespace Prisma {
   export type UreticilerGroupByOutputType = {
     id: string
     ad: string
-    createdAt: Date
-    updatedAt: Date
-    cinsiyet: $Enums.Gender
+    createdAt: Date | null
+    updatedAt: Date | null
+    cinsiyet: string
     dogumTarihi: Date | null
-    durum: $Enums.Status
     iletisim: string | null
     komisyoncuId: string | null
     sehir: string
     soyad: string
     tcNo: string | null
+    durum: string
     _count: UreticilerCountAggregateOutputType | null
     _min: UreticilerMinAggregateOutputType | null
     _max: UreticilerMaxAggregateOutputType | null
@@ -9623,12 +9714,12 @@ export namespace Prisma {
     updatedAt?: boolean
     cinsiyet?: boolean
     dogumTarihi?: boolean
-    durum?: boolean
     iletisim?: boolean
     komisyoncuId?: boolean
     sehir?: boolean
     soyad?: boolean
     tcNo?: boolean
+    durum?: boolean
     mal_kabul_records?: boolean | ureticiler$mal_kabul_recordsArgs<ExtArgs>
     komisyoncular?: boolean | ureticiler$komisyoncularArgs<ExtArgs>
     _count?: boolean | UreticilerCountOutputTypeDefaultArgs<ExtArgs>
@@ -9641,12 +9732,12 @@ export namespace Prisma {
     updatedAt?: boolean
     cinsiyet?: boolean
     dogumTarihi?: boolean
-    durum?: boolean
     iletisim?: boolean
     komisyoncuId?: boolean
     sehir?: boolean
     soyad?: boolean
     tcNo?: boolean
+    durum?: boolean
     komisyoncular?: boolean | ureticiler$komisyoncularArgs<ExtArgs>
   }, ExtArgs["result"]["ureticiler"]>
 
@@ -9657,12 +9748,12 @@ export namespace Prisma {
     updatedAt?: boolean
     cinsiyet?: boolean
     dogumTarihi?: boolean
-    durum?: boolean
     iletisim?: boolean
     komisyoncuId?: boolean
     sehir?: boolean
     soyad?: boolean
     tcNo?: boolean
+    durum?: boolean
     komisyoncular?: boolean | ureticiler$komisyoncularArgs<ExtArgs>
   }, ExtArgs["result"]["ureticiler"]>
 
@@ -9673,15 +9764,15 @@ export namespace Prisma {
     updatedAt?: boolean
     cinsiyet?: boolean
     dogumTarihi?: boolean
-    durum?: boolean
     iletisim?: boolean
     komisyoncuId?: boolean
     sehir?: boolean
     soyad?: boolean
     tcNo?: boolean
+    durum?: boolean
   }
 
-  export type ureticilerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ad" | "createdAt" | "updatedAt" | "cinsiyet" | "dogumTarihi" | "durum" | "iletisim" | "komisyoncuId" | "sehir" | "soyad" | "tcNo", ExtArgs["result"]["ureticiler"]>
+  export type ureticilerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ad" | "createdAt" | "updatedAt" | "cinsiyet" | "dogumTarihi" | "iletisim" | "komisyoncuId" | "sehir" | "soyad" | "tcNo" | "durum", ExtArgs["result"]["ureticiler"]>
   export type ureticilerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     mal_kabul_records?: boolean | ureticiler$mal_kabul_recordsArgs<ExtArgs>
     komisyoncular?: boolean | ureticiler$komisyoncularArgs<ExtArgs>
@@ -9703,16 +9794,16 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       ad: string
-      createdAt: Date
-      updatedAt: Date
-      cinsiyet: $Enums.Gender
+      createdAt: Date | null
+      updatedAt: Date | null
+      cinsiyet: string
       dogumTarihi: Date | null
-      durum: $Enums.Status
       iletisim: string | null
       komisyoncuId: string | null
       sehir: string
       soyad: string
       tcNo: string | null
+      durum: string
     }, ExtArgs["result"]["ureticiler"]>
     composites: {}
   }
@@ -10142,14 +10233,14 @@ export namespace Prisma {
     readonly ad: FieldRef<"ureticiler", 'String'>
     readonly createdAt: FieldRef<"ureticiler", 'DateTime'>
     readonly updatedAt: FieldRef<"ureticiler", 'DateTime'>
-    readonly cinsiyet: FieldRef<"ureticiler", 'Gender'>
+    readonly cinsiyet: FieldRef<"ureticiler", 'String'>
     readonly dogumTarihi: FieldRef<"ureticiler", 'DateTime'>
-    readonly durum: FieldRef<"ureticiler", 'Status'>
     readonly iletisim: FieldRef<"ureticiler", 'String'>
     readonly komisyoncuId: FieldRef<"ureticiler", 'String'>
     readonly sehir: FieldRef<"ureticiler", 'String'>
     readonly soyad: FieldRef<"ureticiler", 'String'>
     readonly tcNo: FieldRef<"ureticiler", 'String'>
+    readonly durum: FieldRef<"ureticiler", 'String'>
   }
     
 
@@ -10620,34 +10711,34 @@ export namespace Prisma {
   export type UrunlerMinAggregateOutputType = {
     id: string | null
     ad: string | null
+    stokKodu: string | null
     kategori: string | null
     birim: string | null
+    durum: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    durum: $Enums.Status | null
-    stokKodu: string | null
   }
 
   export type UrunlerMaxAggregateOutputType = {
     id: string | null
     ad: string | null
+    stokKodu: string | null
     kategori: string | null
     birim: string | null
+    durum: string | null
     createdAt: Date | null
     updatedAt: Date | null
-    durum: $Enums.Status | null
-    stokKodu: string | null
   }
 
   export type UrunlerCountAggregateOutputType = {
     id: number
     ad: number
+    stokKodu: number
     kategori: number
     birim: number
+    durum: number
     createdAt: number
     updatedAt: number
-    durum: number
-    stokKodu: number
     _all: number
   }
 
@@ -10655,34 +10746,34 @@ export namespace Prisma {
   export type UrunlerMinAggregateInputType = {
     id?: true
     ad?: true
+    stokKodu?: true
     kategori?: true
     birim?: true
+    durum?: true
     createdAt?: true
     updatedAt?: true
-    durum?: true
-    stokKodu?: true
   }
 
   export type UrunlerMaxAggregateInputType = {
     id?: true
     ad?: true
+    stokKodu?: true
     kategori?: true
     birim?: true
+    durum?: true
     createdAt?: true
     updatedAt?: true
-    durum?: true
-    stokKodu?: true
   }
 
   export type UrunlerCountAggregateInputType = {
     id?: true
     ad?: true
+    stokKodu?: true
     kategori?: true
     birim?: true
+    durum?: true
     createdAt?: true
     updatedAt?: true
-    durum?: true
-    stokKodu?: true
     _all?: true
   }
 
@@ -10761,12 +10852,12 @@ export namespace Prisma {
   export type UrunlerGroupByOutputType = {
     id: string
     ad: string
+    stokKodu: string
     kategori: string | null
     birim: string
-    createdAt: Date
-    updatedAt: Date
-    durum: $Enums.Status
-    stokKodu: string
+    durum: string
+    createdAt: Date | null
+    updatedAt: Date | null
     _count: UrunlerCountAggregateOutputType | null
     _min: UrunlerMinAggregateOutputType | null
     _max: UrunlerMaxAggregateOutputType | null
@@ -10789,12 +10880,12 @@ export namespace Prisma {
   export type urunlerSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     ad?: boolean
+    stokKodu?: boolean
     kategori?: boolean
     birim?: boolean
+    durum?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    durum?: boolean
-    stokKodu?: boolean
     mal_kabul_records?: boolean | urunler$mal_kabul_recordsArgs<ExtArgs>
     _count?: boolean | UrunlerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["urunler"]>
@@ -10802,37 +10893,37 @@ export namespace Prisma {
   export type urunlerSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     ad?: boolean
+    stokKodu?: boolean
     kategori?: boolean
     birim?: boolean
+    durum?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    durum?: boolean
-    stokKodu?: boolean
   }, ExtArgs["result"]["urunler"]>
 
   export type urunlerSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     ad?: boolean
+    stokKodu?: boolean
     kategori?: boolean
     birim?: boolean
+    durum?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    durum?: boolean
-    stokKodu?: boolean
   }, ExtArgs["result"]["urunler"]>
 
   export type urunlerSelectScalar = {
     id?: boolean
     ad?: boolean
+    stokKodu?: boolean
     kategori?: boolean
     birim?: boolean
+    durum?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    durum?: boolean
-    stokKodu?: boolean
   }
 
-  export type urunlerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ad" | "kategori" | "birim" | "createdAt" | "updatedAt" | "durum" | "stokKodu", ExtArgs["result"]["urunler"]>
+  export type urunlerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "ad" | "stokKodu" | "kategori" | "birim" | "durum" | "createdAt" | "updatedAt", ExtArgs["result"]["urunler"]>
   export type urunlerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     mal_kabul_records?: boolean | urunler$mal_kabul_recordsArgs<ExtArgs>
     _count?: boolean | UrunlerCountOutputTypeDefaultArgs<ExtArgs>
@@ -10848,12 +10939,12 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       ad: string
+      stokKodu: string
       kategori: string | null
       birim: string
-      createdAt: Date
-      updatedAt: Date
-      durum: $Enums.Status
-      stokKodu: string
+      durum: string
+      createdAt: Date | null
+      updatedAt: Date | null
     }, ExtArgs["result"]["urunler"]>
     composites: {}
   }
@@ -11280,12 +11371,12 @@ export namespace Prisma {
   interface urunlerFieldRefs {
     readonly id: FieldRef<"urunler", 'String'>
     readonly ad: FieldRef<"urunler", 'String'>
+    readonly stokKodu: FieldRef<"urunler", 'String'>
     readonly kategori: FieldRef<"urunler", 'String'>
     readonly birim: FieldRef<"urunler", 'String'>
+    readonly durum: FieldRef<"urunler", 'String'>
     readonly createdAt: FieldRef<"urunler", 'DateTime'>
     readonly updatedAt: FieldRef<"urunler", 'DateTime'>
-    readonly durum: FieldRef<"urunler", 'Status'>
-    readonly stokKodu: FieldRef<"urunler", 'String'>
   }
     
 
@@ -11732,7 +11823,7 @@ export namespace Prisma {
     lastName: string | null
     email: string | null
     password: string | null
-    role: $Enums.UserRole | null
+    role: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -11743,7 +11834,7 @@ export namespace Prisma {
     lastName: string | null
     email: string | null
     password: string | null
-    role: $Enums.UserRole | null
+    role: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -11873,9 +11964,9 @@ export namespace Prisma {
     lastName: string
     email: string
     password: string
-    role: $Enums.UserRole
-    createdAt: Date
-    updatedAt: Date
+    role: string
+    createdAt: Date | null
+    updatedAt: Date | null
     _count: UsersCountAggregateOutputType | null
     _min: UsersMinAggregateOutputType | null
     _max: UsersMaxAggregateOutputType | null
@@ -11904,8 +11995,8 @@ export namespace Prisma {
     role?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    faturalar?: boolean | users$faturalarArgs<ExtArgs>
     mal_kabul_records?: boolean | users$mal_kabul_recordsArgs<ExtArgs>
+    faturalar?: boolean | users$faturalarArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["users"]>
 
@@ -11944,8 +12035,8 @@ export namespace Prisma {
 
   export type usersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "firstName" | "lastName" | "email" | "password" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["users"]>
   export type usersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    faturalar?: boolean | users$faturalarArgs<ExtArgs>
     mal_kabul_records?: boolean | users$mal_kabul_recordsArgs<ExtArgs>
+    faturalar?: boolean | users$faturalarArgs<ExtArgs>
     _count?: boolean | UsersCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type usersIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -11954,8 +12045,8 @@ export namespace Prisma {
   export type $usersPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "users"
     objects: {
-      faturalar: Prisma.$faturalarPayload<ExtArgs>[]
       mal_kabul_records: Prisma.$mal_kabul_recordsPayload<ExtArgs>[]
+      faturalar: Prisma.$faturalarPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -11963,9 +12054,9 @@ export namespace Prisma {
       lastName: string
       email: string
       password: string
-      role: $Enums.UserRole
-      createdAt: Date
-      updatedAt: Date
+      role: string
+      createdAt: Date | null
+      updatedAt: Date | null
     }, ExtArgs["result"]["users"]>
     composites: {}
   }
@@ -12360,8 +12451,8 @@ export namespace Prisma {
    */
   export interface Prisma__usersClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    faturalar<T extends users$faturalarArgs<ExtArgs> = {}>(args?: Subset<T, users$faturalarArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$faturalarPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     mal_kabul_records<T extends users$mal_kabul_recordsArgs<ExtArgs> = {}>(args?: Subset<T, users$mal_kabul_recordsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$mal_kabul_recordsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    faturalar<T extends users$faturalarArgs<ExtArgs> = {}>(args?: Subset<T, users$faturalarArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$faturalarPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12396,7 +12487,7 @@ export namespace Prisma {
     readonly lastName: FieldRef<"users", 'String'>
     readonly email: FieldRef<"users", 'String'>
     readonly password: FieldRef<"users", 'String'>
-    readonly role: FieldRef<"users", 'UserRole'>
+    readonly role: FieldRef<"users", 'String'>
     readonly createdAt: FieldRef<"users", 'DateTime'>
     readonly updatedAt: FieldRef<"users", 'DateTime'>
   }
@@ -12787,30 +12878,6 @@ export namespace Prisma {
   }
 
   /**
-   * users.faturalar
-   */
-  export type users$faturalarArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the faturalar
-     */
-    select?: faturalarSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the faturalar
-     */
-    omit?: faturalarOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: faturalarInclude<ExtArgs> | null
-    where?: faturalarWhereInput
-    orderBy?: faturalarOrderByWithRelationInput | faturalarOrderByWithRelationInput[]
-    cursor?: faturalarWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: FaturalarScalarFieldEnum | FaturalarScalarFieldEnum[]
-  }
-
-  /**
    * users.mal_kabul_records
    */
   export type users$mal_kabul_recordsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12835,6 +12902,30 @@ export namespace Prisma {
   }
 
   /**
+   * users.faturalar
+   */
+  export type users$faturalarArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the faturalar
+     */
+    select?: faturalarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the faturalar
+     */
+    omit?: faturalarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: faturalarInclude<ExtArgs> | null
+    where?: faturalarWhereInput
+    orderBy?: faturalarOrderByWithRelationInput | faturalarOrderByWithRelationInput[]
+    cursor?: faturalarWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: FaturalarScalarFieldEnum | FaturalarScalarFieldEnum[]
+  }
+
+  /**
    * users without action
    */
   export type usersDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -12850,6 +12941,1224 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: usersInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model malKabulRecords
+   */
+
+  export type AggregateMalKabulRecords = {
+    _count: MalKabulRecordsCountAggregateOutputType | null
+    _avg: MalKabulRecordsAvgAggregateOutputType | null
+    _sum: MalKabulRecordsSumAggregateOutputType | null
+    _min: MalKabulRecordsMinAggregateOutputType | null
+    _max: MalKabulRecordsMaxAggregateOutputType | null
+  }
+
+  export type MalKabulRecordsAvgAggregateOutputType = {
+    brutKg: number | null
+    daraKg: number | null
+    girisKg: number | null
+    cikmaKg: number | null
+    fireKg: number | null
+    netKg: number | null
+  }
+
+  export type MalKabulRecordsSumAggregateOutputType = {
+    brutKg: number | null
+    daraKg: number | null
+    girisKg: number | null
+    cikmaKg: number | null
+    fireKg: number | null
+    netKg: number | null
+  }
+
+  export type MalKabulRecordsMinAggregateOutputType = {
+    id: string | null
+    fisNo: string | null
+    tarih: Date | null
+    saticiTipi: string | null
+    saticiId: string | null
+    urunId: string | null
+    ureticiId: string | null
+    ambalajId: string | null
+    brutKg: number | null
+    daraKg: number | null
+    girisKg: number | null
+    cikmaKg: number | null
+    fireKg: number | null
+    netKg: number | null
+    urunDurumu: string | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MalKabulRecordsMaxAggregateOutputType = {
+    id: string | null
+    fisNo: string | null
+    tarih: Date | null
+    saticiTipi: string | null
+    saticiId: string | null
+    urunId: string | null
+    ureticiId: string | null
+    ambalajId: string | null
+    brutKg: number | null
+    daraKg: number | null
+    girisKg: number | null
+    cikmaKg: number | null
+    fireKg: number | null
+    netKg: number | null
+    urunDurumu: string | null
+    userId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MalKabulRecordsCountAggregateOutputType = {
+    id: number
+    fisNo: number
+    tarih: number
+    saticiTipi: number
+    saticiId: number
+    urunId: number
+    ureticiId: number
+    ambalajId: number
+    brutKg: number
+    daraKg: number
+    girisKg: number
+    cikmaKg: number
+    fireKg: number
+    netKg: number
+    urunDurumu: number
+    userId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type MalKabulRecordsAvgAggregateInputType = {
+    brutKg?: true
+    daraKg?: true
+    girisKg?: true
+    cikmaKg?: true
+    fireKg?: true
+    netKg?: true
+  }
+
+  export type MalKabulRecordsSumAggregateInputType = {
+    brutKg?: true
+    daraKg?: true
+    girisKg?: true
+    cikmaKg?: true
+    fireKg?: true
+    netKg?: true
+  }
+
+  export type MalKabulRecordsMinAggregateInputType = {
+    id?: true
+    fisNo?: true
+    tarih?: true
+    saticiTipi?: true
+    saticiId?: true
+    urunId?: true
+    ureticiId?: true
+    ambalajId?: true
+    brutKg?: true
+    daraKg?: true
+    girisKg?: true
+    cikmaKg?: true
+    fireKg?: true
+    netKg?: true
+    urunDurumu?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MalKabulRecordsMaxAggregateInputType = {
+    id?: true
+    fisNo?: true
+    tarih?: true
+    saticiTipi?: true
+    saticiId?: true
+    urunId?: true
+    ureticiId?: true
+    ambalajId?: true
+    brutKg?: true
+    daraKg?: true
+    girisKg?: true
+    cikmaKg?: true
+    fireKg?: true
+    netKg?: true
+    urunDurumu?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MalKabulRecordsCountAggregateInputType = {
+    id?: true
+    fisNo?: true
+    tarih?: true
+    saticiTipi?: true
+    saticiId?: true
+    urunId?: true
+    ureticiId?: true
+    ambalajId?: true
+    brutKg?: true
+    daraKg?: true
+    girisKg?: true
+    cikmaKg?: true
+    fireKg?: true
+    netKg?: true
+    urunDurumu?: true
+    userId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type MalKabulRecordsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which malKabulRecords to aggregate.
+     */
+    where?: malKabulRecordsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of malKabulRecords to fetch.
+     */
+    orderBy?: malKabulRecordsOrderByWithRelationInput | malKabulRecordsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: malKabulRecordsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` malKabulRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` malKabulRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned malKabulRecords
+    **/
+    _count?: true | MalKabulRecordsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MalKabulRecordsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MalKabulRecordsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MalKabulRecordsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MalKabulRecordsMaxAggregateInputType
+  }
+
+  export type GetMalKabulRecordsAggregateType<T extends MalKabulRecordsAggregateArgs> = {
+        [P in keyof T & keyof AggregateMalKabulRecords]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMalKabulRecords[P]>
+      : GetScalarType<T[P], AggregateMalKabulRecords[P]>
+  }
+
+
+
+
+  export type malKabulRecordsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: malKabulRecordsWhereInput
+    orderBy?: malKabulRecordsOrderByWithAggregationInput | malKabulRecordsOrderByWithAggregationInput[]
+    by: MalKabulRecordsScalarFieldEnum[] | MalKabulRecordsScalarFieldEnum
+    having?: malKabulRecordsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MalKabulRecordsCountAggregateInputType | true
+    _avg?: MalKabulRecordsAvgAggregateInputType
+    _sum?: MalKabulRecordsSumAggregateInputType
+    _min?: MalKabulRecordsMinAggregateInputType
+    _max?: MalKabulRecordsMaxAggregateInputType
+  }
+
+  export type MalKabulRecordsGroupByOutputType = {
+    id: string
+    fisNo: string
+    tarih: Date
+    saticiTipi: string
+    saticiId: string
+    urunId: string
+    ureticiId: string
+    ambalajId: string
+    brutKg: number
+    daraKg: number
+    girisKg: number
+    cikmaKg: number
+    fireKg: number
+    netKg: number
+    urunDurumu: string
+    userId: string
+    createdAt: Date | null
+    updatedAt: Date | null
+    _count: MalKabulRecordsCountAggregateOutputType | null
+    _avg: MalKabulRecordsAvgAggregateOutputType | null
+    _sum: MalKabulRecordsSumAggregateOutputType | null
+    _min: MalKabulRecordsMinAggregateOutputType | null
+    _max: MalKabulRecordsMaxAggregateOutputType | null
+  }
+
+  type GetMalKabulRecordsGroupByPayload<T extends malKabulRecordsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MalKabulRecordsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MalKabulRecordsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MalKabulRecordsGroupByOutputType[P]>
+            : GetScalarType<T[P], MalKabulRecordsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type malKabulRecordsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    fisNo?: boolean
+    tarih?: boolean
+    saticiTipi?: boolean
+    saticiId?: boolean
+    urunId?: boolean
+    ureticiId?: boolean
+    ambalajId?: boolean
+    brutKg?: boolean
+    daraKg?: boolean
+    girisKg?: boolean
+    cikmaKg?: boolean
+    fireKg?: boolean
+    netKg?: boolean
+    urunDurumu?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["malKabulRecords"]>
+
+  export type malKabulRecordsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    fisNo?: boolean
+    tarih?: boolean
+    saticiTipi?: boolean
+    saticiId?: boolean
+    urunId?: boolean
+    ureticiId?: boolean
+    ambalajId?: boolean
+    brutKg?: boolean
+    daraKg?: boolean
+    girisKg?: boolean
+    cikmaKg?: boolean
+    fireKg?: boolean
+    netKg?: boolean
+    urunDurumu?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["malKabulRecords"]>
+
+  export type malKabulRecordsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    fisNo?: boolean
+    tarih?: boolean
+    saticiTipi?: boolean
+    saticiId?: boolean
+    urunId?: boolean
+    ureticiId?: boolean
+    ambalajId?: boolean
+    brutKg?: boolean
+    daraKg?: boolean
+    girisKg?: boolean
+    cikmaKg?: boolean
+    fireKg?: boolean
+    netKg?: boolean
+    urunDurumu?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }, ExtArgs["result"]["malKabulRecords"]>
+
+  export type malKabulRecordsSelectScalar = {
+    id?: boolean
+    fisNo?: boolean
+    tarih?: boolean
+    saticiTipi?: boolean
+    saticiId?: boolean
+    urunId?: boolean
+    ureticiId?: boolean
+    ambalajId?: boolean
+    brutKg?: boolean
+    daraKg?: boolean
+    girisKg?: boolean
+    cikmaKg?: boolean
+    fireKg?: boolean
+    netKg?: boolean
+    urunDurumu?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type malKabulRecordsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "fisNo" | "tarih" | "saticiTipi" | "saticiId" | "urunId" | "ureticiId" | "ambalajId" | "brutKg" | "daraKg" | "girisKg" | "cikmaKg" | "fireKg" | "netKg" | "urunDurumu" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["malKabulRecords"]>
+
+  export type $malKabulRecordsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "malKabulRecords"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      fisNo: string
+      tarih: Date
+      saticiTipi: string
+      saticiId: string
+      urunId: string
+      ureticiId: string
+      ambalajId: string
+      brutKg: number
+      daraKg: number
+      girisKg: number
+      cikmaKg: number
+      fireKg: number
+      netKg: number
+      urunDurumu: string
+      userId: string
+      createdAt: Date | null
+      updatedAt: Date | null
+    }, ExtArgs["result"]["malKabulRecords"]>
+    composites: {}
+  }
+
+  type malKabulRecordsGetPayload<S extends boolean | null | undefined | malKabulRecordsDefaultArgs> = $Result.GetResult<Prisma.$malKabulRecordsPayload, S>
+
+  type malKabulRecordsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<malKabulRecordsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MalKabulRecordsCountAggregateInputType | true
+    }
+
+  export interface malKabulRecordsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['malKabulRecords'], meta: { name: 'malKabulRecords' } }
+    /**
+     * Find zero or one MalKabulRecords that matches the filter.
+     * @param {malKabulRecordsFindUniqueArgs} args - Arguments to find a MalKabulRecords
+     * @example
+     * // Get one MalKabulRecords
+     * const malKabulRecords = await prisma.malKabulRecords.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends malKabulRecordsFindUniqueArgs>(args: SelectSubset<T, malKabulRecordsFindUniqueArgs<ExtArgs>>): Prisma__malKabulRecordsClient<$Result.GetResult<Prisma.$malKabulRecordsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MalKabulRecords that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {malKabulRecordsFindUniqueOrThrowArgs} args - Arguments to find a MalKabulRecords
+     * @example
+     * // Get one MalKabulRecords
+     * const malKabulRecords = await prisma.malKabulRecords.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends malKabulRecordsFindUniqueOrThrowArgs>(args: SelectSubset<T, malKabulRecordsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__malKabulRecordsClient<$Result.GetResult<Prisma.$malKabulRecordsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MalKabulRecords that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {malKabulRecordsFindFirstArgs} args - Arguments to find a MalKabulRecords
+     * @example
+     * // Get one MalKabulRecords
+     * const malKabulRecords = await prisma.malKabulRecords.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends malKabulRecordsFindFirstArgs>(args?: SelectSubset<T, malKabulRecordsFindFirstArgs<ExtArgs>>): Prisma__malKabulRecordsClient<$Result.GetResult<Prisma.$malKabulRecordsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MalKabulRecords that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {malKabulRecordsFindFirstOrThrowArgs} args - Arguments to find a MalKabulRecords
+     * @example
+     * // Get one MalKabulRecords
+     * const malKabulRecords = await prisma.malKabulRecords.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends malKabulRecordsFindFirstOrThrowArgs>(args?: SelectSubset<T, malKabulRecordsFindFirstOrThrowArgs<ExtArgs>>): Prisma__malKabulRecordsClient<$Result.GetResult<Prisma.$malKabulRecordsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MalKabulRecords that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {malKabulRecordsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MalKabulRecords
+     * const malKabulRecords = await prisma.malKabulRecords.findMany()
+     * 
+     * // Get first 10 MalKabulRecords
+     * const malKabulRecords = await prisma.malKabulRecords.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const malKabulRecordsWithIdOnly = await prisma.malKabulRecords.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends malKabulRecordsFindManyArgs>(args?: SelectSubset<T, malKabulRecordsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$malKabulRecordsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MalKabulRecords.
+     * @param {malKabulRecordsCreateArgs} args - Arguments to create a MalKabulRecords.
+     * @example
+     * // Create one MalKabulRecords
+     * const MalKabulRecords = await prisma.malKabulRecords.create({
+     *   data: {
+     *     // ... data to create a MalKabulRecords
+     *   }
+     * })
+     * 
+     */
+    create<T extends malKabulRecordsCreateArgs>(args: SelectSubset<T, malKabulRecordsCreateArgs<ExtArgs>>): Prisma__malKabulRecordsClient<$Result.GetResult<Prisma.$malKabulRecordsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MalKabulRecords.
+     * @param {malKabulRecordsCreateManyArgs} args - Arguments to create many MalKabulRecords.
+     * @example
+     * // Create many MalKabulRecords
+     * const malKabulRecords = await prisma.malKabulRecords.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends malKabulRecordsCreateManyArgs>(args?: SelectSubset<T, malKabulRecordsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MalKabulRecords and returns the data saved in the database.
+     * @param {malKabulRecordsCreateManyAndReturnArgs} args - Arguments to create many MalKabulRecords.
+     * @example
+     * // Create many MalKabulRecords
+     * const malKabulRecords = await prisma.malKabulRecords.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MalKabulRecords and only return the `id`
+     * const malKabulRecordsWithIdOnly = await prisma.malKabulRecords.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends malKabulRecordsCreateManyAndReturnArgs>(args?: SelectSubset<T, malKabulRecordsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$malKabulRecordsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MalKabulRecords.
+     * @param {malKabulRecordsDeleteArgs} args - Arguments to delete one MalKabulRecords.
+     * @example
+     * // Delete one MalKabulRecords
+     * const MalKabulRecords = await prisma.malKabulRecords.delete({
+     *   where: {
+     *     // ... filter to delete one MalKabulRecords
+     *   }
+     * })
+     * 
+     */
+    delete<T extends malKabulRecordsDeleteArgs>(args: SelectSubset<T, malKabulRecordsDeleteArgs<ExtArgs>>): Prisma__malKabulRecordsClient<$Result.GetResult<Prisma.$malKabulRecordsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MalKabulRecords.
+     * @param {malKabulRecordsUpdateArgs} args - Arguments to update one MalKabulRecords.
+     * @example
+     * // Update one MalKabulRecords
+     * const malKabulRecords = await prisma.malKabulRecords.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends malKabulRecordsUpdateArgs>(args: SelectSubset<T, malKabulRecordsUpdateArgs<ExtArgs>>): Prisma__malKabulRecordsClient<$Result.GetResult<Prisma.$malKabulRecordsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MalKabulRecords.
+     * @param {malKabulRecordsDeleteManyArgs} args - Arguments to filter MalKabulRecords to delete.
+     * @example
+     * // Delete a few MalKabulRecords
+     * const { count } = await prisma.malKabulRecords.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends malKabulRecordsDeleteManyArgs>(args?: SelectSubset<T, malKabulRecordsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MalKabulRecords.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {malKabulRecordsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MalKabulRecords
+     * const malKabulRecords = await prisma.malKabulRecords.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends malKabulRecordsUpdateManyArgs>(args: SelectSubset<T, malKabulRecordsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MalKabulRecords and returns the data updated in the database.
+     * @param {malKabulRecordsUpdateManyAndReturnArgs} args - Arguments to update many MalKabulRecords.
+     * @example
+     * // Update many MalKabulRecords
+     * const malKabulRecords = await prisma.malKabulRecords.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MalKabulRecords and only return the `id`
+     * const malKabulRecordsWithIdOnly = await prisma.malKabulRecords.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends malKabulRecordsUpdateManyAndReturnArgs>(args: SelectSubset<T, malKabulRecordsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$malKabulRecordsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MalKabulRecords.
+     * @param {malKabulRecordsUpsertArgs} args - Arguments to update or create a MalKabulRecords.
+     * @example
+     * // Update or create a MalKabulRecords
+     * const malKabulRecords = await prisma.malKabulRecords.upsert({
+     *   create: {
+     *     // ... data to create a MalKabulRecords
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MalKabulRecords we want to update
+     *   }
+     * })
+     */
+    upsert<T extends malKabulRecordsUpsertArgs>(args: SelectSubset<T, malKabulRecordsUpsertArgs<ExtArgs>>): Prisma__malKabulRecordsClient<$Result.GetResult<Prisma.$malKabulRecordsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MalKabulRecords.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {malKabulRecordsCountArgs} args - Arguments to filter MalKabulRecords to count.
+     * @example
+     * // Count the number of MalKabulRecords
+     * const count = await prisma.malKabulRecords.count({
+     *   where: {
+     *     // ... the filter for the MalKabulRecords we want to count
+     *   }
+     * })
+    **/
+    count<T extends malKabulRecordsCountArgs>(
+      args?: Subset<T, malKabulRecordsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MalKabulRecordsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MalKabulRecords.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MalKabulRecordsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MalKabulRecordsAggregateArgs>(args: Subset<T, MalKabulRecordsAggregateArgs>): Prisma.PrismaPromise<GetMalKabulRecordsAggregateType<T>>
+
+    /**
+     * Group by MalKabulRecords.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {malKabulRecordsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends malKabulRecordsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: malKabulRecordsGroupByArgs['orderBy'] }
+        : { orderBy?: malKabulRecordsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, malKabulRecordsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMalKabulRecordsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the malKabulRecords model
+   */
+  readonly fields: malKabulRecordsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for malKabulRecords.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__malKabulRecordsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the malKabulRecords model
+   */
+  interface malKabulRecordsFieldRefs {
+    readonly id: FieldRef<"malKabulRecords", 'String'>
+    readonly fisNo: FieldRef<"malKabulRecords", 'String'>
+    readonly tarih: FieldRef<"malKabulRecords", 'DateTime'>
+    readonly saticiTipi: FieldRef<"malKabulRecords", 'String'>
+    readonly saticiId: FieldRef<"malKabulRecords", 'String'>
+    readonly urunId: FieldRef<"malKabulRecords", 'String'>
+    readonly ureticiId: FieldRef<"malKabulRecords", 'String'>
+    readonly ambalajId: FieldRef<"malKabulRecords", 'String'>
+    readonly brutKg: FieldRef<"malKabulRecords", 'Float'>
+    readonly daraKg: FieldRef<"malKabulRecords", 'Float'>
+    readonly girisKg: FieldRef<"malKabulRecords", 'Float'>
+    readonly cikmaKg: FieldRef<"malKabulRecords", 'Float'>
+    readonly fireKg: FieldRef<"malKabulRecords", 'Float'>
+    readonly netKg: FieldRef<"malKabulRecords", 'Float'>
+    readonly urunDurumu: FieldRef<"malKabulRecords", 'String'>
+    readonly userId: FieldRef<"malKabulRecords", 'String'>
+    readonly createdAt: FieldRef<"malKabulRecords", 'DateTime'>
+    readonly updatedAt: FieldRef<"malKabulRecords", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * malKabulRecords findUnique
+   */
+  export type malKabulRecordsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the malKabulRecords
+     */
+    select?: malKabulRecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the malKabulRecords
+     */
+    omit?: malKabulRecordsOmit<ExtArgs> | null
+    /**
+     * Filter, which malKabulRecords to fetch.
+     */
+    where: malKabulRecordsWhereUniqueInput
+  }
+
+  /**
+   * malKabulRecords findUniqueOrThrow
+   */
+  export type malKabulRecordsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the malKabulRecords
+     */
+    select?: malKabulRecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the malKabulRecords
+     */
+    omit?: malKabulRecordsOmit<ExtArgs> | null
+    /**
+     * Filter, which malKabulRecords to fetch.
+     */
+    where: malKabulRecordsWhereUniqueInput
+  }
+
+  /**
+   * malKabulRecords findFirst
+   */
+  export type malKabulRecordsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the malKabulRecords
+     */
+    select?: malKabulRecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the malKabulRecords
+     */
+    omit?: malKabulRecordsOmit<ExtArgs> | null
+    /**
+     * Filter, which malKabulRecords to fetch.
+     */
+    where?: malKabulRecordsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of malKabulRecords to fetch.
+     */
+    orderBy?: malKabulRecordsOrderByWithRelationInput | malKabulRecordsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for malKabulRecords.
+     */
+    cursor?: malKabulRecordsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` malKabulRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` malKabulRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of malKabulRecords.
+     */
+    distinct?: MalKabulRecordsScalarFieldEnum | MalKabulRecordsScalarFieldEnum[]
+  }
+
+  /**
+   * malKabulRecords findFirstOrThrow
+   */
+  export type malKabulRecordsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the malKabulRecords
+     */
+    select?: malKabulRecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the malKabulRecords
+     */
+    omit?: malKabulRecordsOmit<ExtArgs> | null
+    /**
+     * Filter, which malKabulRecords to fetch.
+     */
+    where?: malKabulRecordsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of malKabulRecords to fetch.
+     */
+    orderBy?: malKabulRecordsOrderByWithRelationInput | malKabulRecordsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for malKabulRecords.
+     */
+    cursor?: malKabulRecordsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` malKabulRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` malKabulRecords.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of malKabulRecords.
+     */
+    distinct?: MalKabulRecordsScalarFieldEnum | MalKabulRecordsScalarFieldEnum[]
+  }
+
+  /**
+   * malKabulRecords findMany
+   */
+  export type malKabulRecordsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the malKabulRecords
+     */
+    select?: malKabulRecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the malKabulRecords
+     */
+    omit?: malKabulRecordsOmit<ExtArgs> | null
+    /**
+     * Filter, which malKabulRecords to fetch.
+     */
+    where?: malKabulRecordsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of malKabulRecords to fetch.
+     */
+    orderBy?: malKabulRecordsOrderByWithRelationInput | malKabulRecordsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing malKabulRecords.
+     */
+    cursor?: malKabulRecordsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` malKabulRecords from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` malKabulRecords.
+     */
+    skip?: number
+    distinct?: MalKabulRecordsScalarFieldEnum | MalKabulRecordsScalarFieldEnum[]
+  }
+
+  /**
+   * malKabulRecords create
+   */
+  export type malKabulRecordsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the malKabulRecords
+     */
+    select?: malKabulRecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the malKabulRecords
+     */
+    omit?: malKabulRecordsOmit<ExtArgs> | null
+    /**
+     * The data needed to create a malKabulRecords.
+     */
+    data: XOR<malKabulRecordsCreateInput, malKabulRecordsUncheckedCreateInput>
+  }
+
+  /**
+   * malKabulRecords createMany
+   */
+  export type malKabulRecordsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many malKabulRecords.
+     */
+    data: malKabulRecordsCreateManyInput | malKabulRecordsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * malKabulRecords createManyAndReturn
+   */
+  export type malKabulRecordsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the malKabulRecords
+     */
+    select?: malKabulRecordsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the malKabulRecords
+     */
+    omit?: malKabulRecordsOmit<ExtArgs> | null
+    /**
+     * The data used to create many malKabulRecords.
+     */
+    data: malKabulRecordsCreateManyInput | malKabulRecordsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * malKabulRecords update
+   */
+  export type malKabulRecordsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the malKabulRecords
+     */
+    select?: malKabulRecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the malKabulRecords
+     */
+    omit?: malKabulRecordsOmit<ExtArgs> | null
+    /**
+     * The data needed to update a malKabulRecords.
+     */
+    data: XOR<malKabulRecordsUpdateInput, malKabulRecordsUncheckedUpdateInput>
+    /**
+     * Choose, which malKabulRecords to update.
+     */
+    where: malKabulRecordsWhereUniqueInput
+  }
+
+  /**
+   * malKabulRecords updateMany
+   */
+  export type malKabulRecordsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update malKabulRecords.
+     */
+    data: XOR<malKabulRecordsUpdateManyMutationInput, malKabulRecordsUncheckedUpdateManyInput>
+    /**
+     * Filter which malKabulRecords to update
+     */
+    where?: malKabulRecordsWhereInput
+    /**
+     * Limit how many malKabulRecords to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * malKabulRecords updateManyAndReturn
+   */
+  export type malKabulRecordsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the malKabulRecords
+     */
+    select?: malKabulRecordsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the malKabulRecords
+     */
+    omit?: malKabulRecordsOmit<ExtArgs> | null
+    /**
+     * The data used to update malKabulRecords.
+     */
+    data: XOR<malKabulRecordsUpdateManyMutationInput, malKabulRecordsUncheckedUpdateManyInput>
+    /**
+     * Filter which malKabulRecords to update
+     */
+    where?: malKabulRecordsWhereInput
+    /**
+     * Limit how many malKabulRecords to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * malKabulRecords upsert
+   */
+  export type malKabulRecordsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the malKabulRecords
+     */
+    select?: malKabulRecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the malKabulRecords
+     */
+    omit?: malKabulRecordsOmit<ExtArgs> | null
+    /**
+     * The filter to search for the malKabulRecords to update in case it exists.
+     */
+    where: malKabulRecordsWhereUniqueInput
+    /**
+     * In case the malKabulRecords found by the `where` argument doesn't exist, create a new malKabulRecords with this data.
+     */
+    create: XOR<malKabulRecordsCreateInput, malKabulRecordsUncheckedCreateInput>
+    /**
+     * In case the malKabulRecords was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<malKabulRecordsUpdateInput, malKabulRecordsUncheckedUpdateInput>
+  }
+
+  /**
+   * malKabulRecords delete
+   */
+  export type malKabulRecordsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the malKabulRecords
+     */
+    select?: malKabulRecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the malKabulRecords
+     */
+    omit?: malKabulRecordsOmit<ExtArgs> | null
+    /**
+     * Filter which malKabulRecords to delete.
+     */
+    where: malKabulRecordsWhereUniqueInput
+  }
+
+  /**
+   * malKabulRecords deleteMany
+   */
+  export type malKabulRecordsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which malKabulRecords to delete
+     */
+    where?: malKabulRecordsWhereInput
+    /**
+     * Limit how many malKabulRecords to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * malKabulRecords without action
+   */
+  export type malKabulRecordsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the malKabulRecords
+     */
+    select?: malKabulRecordsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the malKabulRecords
+     */
+    omit?: malKabulRecordsOmit<ExtArgs> | null
   }
 
 
@@ -12905,11 +14214,11 @@ export namespace Prisma {
     dukkanAdi: 'dukkanAdi',
     durum: 'durum',
     komisyonNo: 'komisyonNo',
+    komisyonKodu: 'komisyonKodu',
     sehir: 'sehir',
     vkn: 'vkn',
     yetkiliAdi: 'yetkiliAdi',
-    yetkiliTelefon: 'yetkiliTelefon',
-    komisyonKodu: 'komisyonKodu'
+    yetkiliTelefon: 'yetkiliTelefon'
   };
 
   export type KomisyoncularScalarFieldEnum = (typeof KomisyoncularScalarFieldEnum)[keyof typeof KomisyoncularScalarFieldEnum]
@@ -12953,15 +14262,15 @@ export namespace Prisma {
     soyad: 'soyad',
     dogumTarihi: 'dogumTarihi',
     tcKimlikNo: 'tcKimlikNo',
+    mustahsilNo: 'mustahsilNo',
+    iletisim: 'iletisim',
+    bankaAdi: 'bankaAdi',
     ibanAdresi: 'ibanAdresi',
     adres: 'adres',
     cinsiyet: 'cinsiyet',
     durum: 'durum',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt',
-    mustahsilNo: 'mustahsilNo',
-    iletisim: 'iletisim',
-    bankaAdi: 'bankaAdi'
+    updatedAt: 'updatedAt'
   };
 
   export type MustahsilScalarFieldEnum = (typeof MustahsilScalarFieldEnum)[keyof typeof MustahsilScalarFieldEnum]
@@ -12970,16 +14279,16 @@ export namespace Prisma {
   export const Ozel_firmalarScalarFieldEnum: {
     id: 'id',
     firmaAdi: 'firmaAdi',
+    firmaNo: 'firmaNo',
     vkn: 'vkn',
+    vergiDairesi: 'vergiDairesi',
     yetkiliAdi: 'yetkiliAdi',
     yetkiliTelefon: 'yetkiliTelefon',
     sehir: 'sehir',
     adres: 'adres',
     durum: 'durum',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt',
-    firmaNo: 'firmaNo',
-    vergiDairesi: 'vergiDairesi'
+    updatedAt: 'updatedAt'
   };
 
   export type Ozel_firmalarScalarFieldEnum = (typeof Ozel_firmalarScalarFieldEnum)[keyof typeof Ozel_firmalarScalarFieldEnum]
@@ -12992,12 +14301,12 @@ export namespace Prisma {
     updatedAt: 'updatedAt',
     cinsiyet: 'cinsiyet',
     dogumTarihi: 'dogumTarihi',
-    durum: 'durum',
     iletisim: 'iletisim',
     komisyoncuId: 'komisyoncuId',
     sehir: 'sehir',
     soyad: 'soyad',
-    tcNo: 'tcNo'
+    tcNo: 'tcNo',
+    durum: 'durum'
   };
 
   export type UreticilerScalarFieldEnum = (typeof UreticilerScalarFieldEnum)[keyof typeof UreticilerScalarFieldEnum]
@@ -13006,12 +14315,12 @@ export namespace Prisma {
   export const UrunlerScalarFieldEnum: {
     id: 'id',
     ad: 'ad',
+    stokKodu: 'stokKodu',
     kategori: 'kategori',
     birim: 'birim',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt',
     durum: 'durum',
-    stokKodu: 'stokKodu'
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type UrunlerScalarFieldEnum = (typeof UrunlerScalarFieldEnum)[keyof typeof UrunlerScalarFieldEnum]
@@ -13029,6 +14338,30 @@ export namespace Prisma {
   };
 
   export type UsersScalarFieldEnum = (typeof UsersScalarFieldEnum)[keyof typeof UsersScalarFieldEnum]
+
+
+  export const MalKabulRecordsScalarFieldEnum: {
+    id: 'id',
+    fisNo: 'fisNo',
+    tarih: 'tarih',
+    saticiTipi: 'saticiTipi',
+    saticiId: 'saticiId',
+    urunId: 'urunId',
+    ureticiId: 'ureticiId',
+    ambalajId: 'ambalajId',
+    brutKg: 'brutKg',
+    daraKg: 'daraKg',
+    girisKg: 'girisKg',
+    cikmaKg: 'cikmaKg',
+    fireKg: 'fireKg',
+    netKg: 'netKg',
+    urunDurumu: 'urunDurumu',
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type MalKabulRecordsScalarFieldEnum = (typeof MalKabulRecordsScalarFieldEnum)[keyof typeof MalKabulRecordsScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -13075,20 +14408,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'AmbalajTipi'
-   */
-  export type EnumAmbalajTipiFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AmbalajTipi'>
-    
-
-
-  /**
-   * Reference to a field of type 'AmbalajTipi[]'
-   */
-  export type ListEnumAmbalajTipiFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AmbalajTipi[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -13099,20 +14418,6 @@ export namespace Prisma {
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Status'
-   */
-  export type EnumStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Status'>
-    
-
-
-  /**
-   * Reference to a field of type 'Status[]'
-   */
-  export type ListEnumStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Status[]'>
     
 
 
@@ -13131,34 +14436,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'ProductStatus'
-   */
-  export type EnumProductStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductStatus'>
-    
-
-
-  /**
-   * Reference to a field of type 'ProductStatus[]'
-   */
-  export type ListEnumProductStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProductStatus[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'SaticiTipi'
-   */
-  export type EnumSaticiTipiFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SaticiTipi'>
-    
-
-
-  /**
-   * Reference to a field of type 'SaticiTipi[]'
-   */
-  export type ListEnumSaticiTipiFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SaticiTipi[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -13169,34 +14446,6 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Gender'
-   */
-  export type EnumGenderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Gender'>
-    
-
-
-  /**
-   * Reference to a field of type 'Gender[]'
-   */
-  export type ListEnumGenderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Gender[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'UserRole'
-   */
-  export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
-    
-
-
-  /**
-   * Reference to a field of type 'UserRole[]'
-   */
-  export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole[]'>
     
   /**
    * Deep Input Types
@@ -13209,12 +14458,12 @@ export namespace Prisma {
     NOT?: ambalajlarWhereInput | ambalajlarWhereInput[]
     id?: StringFilter<"ambalajlar"> | string
     ad?: StringFilter<"ambalajlar"> | string
-    tipi?: EnumAmbalajTipiFilter<"ambalajlar"> | $Enums.AmbalajTipi
+    tipi?: StringFilter<"ambalajlar"> | string
     daraKg?: FloatFilter<"ambalajlar"> | number
     aciklama?: StringNullableFilter<"ambalajlar"> | string | null
-    durum?: EnumStatusFilter<"ambalajlar"> | $Enums.Status
-    createdAt?: DateTimeFilter<"ambalajlar"> | Date | string
-    updatedAt?: DateTimeFilter<"ambalajlar"> | Date | string
+    durum?: StringFilter<"ambalajlar"> | string
+    createdAt?: DateTimeNullableFilter<"ambalajlar"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"ambalajlar"> | Date | string | null
     mal_kabul_records?: Mal_kabul_recordsListRelationFilter
   }
 
@@ -13225,8 +14474,8 @@ export namespace Prisma {
     daraKg?: SortOrder
     aciklama?: SortOrderInput | SortOrder
     durum?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     mal_kabul_records?: mal_kabul_recordsOrderByRelationAggregateInput
   }
 
@@ -13236,12 +14485,12 @@ export namespace Prisma {
     OR?: ambalajlarWhereInput[]
     NOT?: ambalajlarWhereInput | ambalajlarWhereInput[]
     ad?: StringFilter<"ambalajlar"> | string
-    tipi?: EnumAmbalajTipiFilter<"ambalajlar"> | $Enums.AmbalajTipi
+    tipi?: StringFilter<"ambalajlar"> | string
     daraKg?: FloatFilter<"ambalajlar"> | number
     aciklama?: StringNullableFilter<"ambalajlar"> | string | null
-    durum?: EnumStatusFilter<"ambalajlar"> | $Enums.Status
-    createdAt?: DateTimeFilter<"ambalajlar"> | Date | string
-    updatedAt?: DateTimeFilter<"ambalajlar"> | Date | string
+    durum?: StringFilter<"ambalajlar"> | string
+    createdAt?: DateTimeNullableFilter<"ambalajlar"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"ambalajlar"> | Date | string | null
     mal_kabul_records?: Mal_kabul_recordsListRelationFilter
   }, "id">
 
@@ -13252,8 +14501,8 @@ export namespace Prisma {
     daraKg?: SortOrder
     aciklama?: SortOrderInput | SortOrder
     durum?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     _count?: ambalajlarCountOrderByAggregateInput
     _avg?: ambalajlarAvgOrderByAggregateInput
     _max?: ambalajlarMaxOrderByAggregateInput
@@ -13267,12 +14516,12 @@ export namespace Prisma {
     NOT?: ambalajlarScalarWhereWithAggregatesInput | ambalajlarScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"ambalajlar"> | string
     ad?: StringWithAggregatesFilter<"ambalajlar"> | string
-    tipi?: EnumAmbalajTipiWithAggregatesFilter<"ambalajlar"> | $Enums.AmbalajTipi
+    tipi?: StringWithAggregatesFilter<"ambalajlar"> | string
     daraKg?: FloatWithAggregatesFilter<"ambalajlar"> | number
     aciklama?: StringNullableWithAggregatesFilter<"ambalajlar"> | string | null
-    durum?: EnumStatusWithAggregatesFilter<"ambalajlar"> | $Enums.Status
-    createdAt?: DateTimeWithAggregatesFilter<"ambalajlar"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"ambalajlar"> | Date | string
+    durum?: StringWithAggregatesFilter<"ambalajlar"> | string
+    createdAt?: DateTimeNullableWithAggregatesFilter<"ambalajlar"> | Date | string | null
+    updatedAt?: DateTimeNullableWithAggregatesFilter<"ambalajlar"> | Date | string | null
   }
 
   export type faturalarWhereInput = {
@@ -13281,33 +14530,33 @@ export namespace Prisma {
     NOT?: faturalarWhereInput | faturalarWhereInput[]
     id?: StringFilter<"faturalar"> | string
     faturaNo?: StringFilter<"faturalar"> | string
-    tarih?: DateTimeFilter<"faturalar"> | Date | string
+    tarih?: DateTimeNullableFilter<"faturalar"> | Date | string | null
     toplamTutar?: FloatFilter<"faturalar"> | number
-    kdvOrani?: FloatFilter<"faturalar"> | number
+    kdvOrani?: FloatNullableFilter<"faturalar"> | number | null
     kdvTutari?: FloatFilter<"faturalar"> | number
     genelToplam?: FloatFilter<"faturalar"> | number
     notlar?: StringNullableFilter<"faturalar"> | string | null
     satinAlmaciId?: StringFilter<"faturalar"> | string
-    createdAt?: DateTimeFilter<"faturalar"> | Date | string
-    updatedAt?: DateTimeFilter<"faturalar"> | Date | string
-    users?: XOR<UsersScalarRelationFilter, usersWhereInput>
+    createdAt?: DateTimeNullableFilter<"faturalar"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"faturalar"> | Date | string | null
     mal_kabul_records?: Mal_kabul_recordsListRelationFilter
+    users?: XOR<UsersScalarRelationFilter, usersWhereInput>
   }
 
   export type faturalarOrderByWithRelationInput = {
     id?: SortOrder
     faturaNo?: SortOrder
-    tarih?: SortOrder
+    tarih?: SortOrderInput | SortOrder
     toplamTutar?: SortOrder
-    kdvOrani?: SortOrder
+    kdvOrani?: SortOrderInput | SortOrder
     kdvTutari?: SortOrder
     genelToplam?: SortOrder
     notlar?: SortOrderInput | SortOrder
     satinAlmaciId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    users?: usersOrderByWithRelationInput
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     mal_kabul_records?: mal_kabul_recordsOrderByRelationAggregateInput
+    users?: usersOrderByWithRelationInput
   }
 
   export type faturalarWhereUniqueInput = Prisma.AtLeast<{
@@ -13316,31 +14565,31 @@ export namespace Prisma {
     AND?: faturalarWhereInput | faturalarWhereInput[]
     OR?: faturalarWhereInput[]
     NOT?: faturalarWhereInput | faturalarWhereInput[]
-    tarih?: DateTimeFilter<"faturalar"> | Date | string
+    tarih?: DateTimeNullableFilter<"faturalar"> | Date | string | null
     toplamTutar?: FloatFilter<"faturalar"> | number
-    kdvOrani?: FloatFilter<"faturalar"> | number
+    kdvOrani?: FloatNullableFilter<"faturalar"> | number | null
     kdvTutari?: FloatFilter<"faturalar"> | number
     genelToplam?: FloatFilter<"faturalar"> | number
     notlar?: StringNullableFilter<"faturalar"> | string | null
     satinAlmaciId?: StringFilter<"faturalar"> | string
-    createdAt?: DateTimeFilter<"faturalar"> | Date | string
-    updatedAt?: DateTimeFilter<"faturalar"> | Date | string
-    users?: XOR<UsersScalarRelationFilter, usersWhereInput>
+    createdAt?: DateTimeNullableFilter<"faturalar"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"faturalar"> | Date | string | null
     mal_kabul_records?: Mal_kabul_recordsListRelationFilter
+    users?: XOR<UsersScalarRelationFilter, usersWhereInput>
   }, "id" | "faturaNo">
 
   export type faturalarOrderByWithAggregationInput = {
     id?: SortOrder
     faturaNo?: SortOrder
-    tarih?: SortOrder
+    tarih?: SortOrderInput | SortOrder
     toplamTutar?: SortOrder
-    kdvOrani?: SortOrder
+    kdvOrani?: SortOrderInput | SortOrder
     kdvTutari?: SortOrder
     genelToplam?: SortOrder
     notlar?: SortOrderInput | SortOrder
     satinAlmaciId?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     _count?: faturalarCountOrderByAggregateInput
     _avg?: faturalarAvgOrderByAggregateInput
     _max?: faturalarMaxOrderByAggregateInput
@@ -13354,15 +14603,15 @@ export namespace Prisma {
     NOT?: faturalarScalarWhereWithAggregatesInput | faturalarScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"faturalar"> | string
     faturaNo?: StringWithAggregatesFilter<"faturalar"> | string
-    tarih?: DateTimeWithAggregatesFilter<"faturalar"> | Date | string
+    tarih?: DateTimeNullableWithAggregatesFilter<"faturalar"> | Date | string | null
     toplamTutar?: FloatWithAggregatesFilter<"faturalar"> | number
-    kdvOrani?: FloatWithAggregatesFilter<"faturalar"> | number
+    kdvOrani?: FloatNullableWithAggregatesFilter<"faturalar"> | number | null
     kdvTutari?: FloatWithAggregatesFilter<"faturalar"> | number
     genelToplam?: FloatWithAggregatesFilter<"faturalar"> | number
     notlar?: StringNullableWithAggregatesFilter<"faturalar"> | string | null
     satinAlmaciId?: StringWithAggregatesFilter<"faturalar"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"faturalar"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"faturalar"> | Date | string
+    createdAt?: DateTimeNullableWithAggregatesFilter<"faturalar"> | Date | string | null
+    updatedAt?: DateTimeNullableWithAggregatesFilter<"faturalar"> | Date | string | null
   }
 
   export type komisyoncularWhereInput = {
@@ -13370,32 +14619,32 @@ export namespace Prisma {
     OR?: komisyoncularWhereInput[]
     NOT?: komisyoncularWhereInput | komisyoncularWhereInput[]
     id?: StringFilter<"komisyoncular"> | string
-    createdAt?: DateTimeFilter<"komisyoncular"> | Date | string
-    updatedAt?: DateTimeFilter<"komisyoncular"> | Date | string
+    createdAt?: DateTimeNullableFilter<"komisyoncular"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"komisyoncular"> | Date | string | null
     dukkanAdi?: StringFilter<"komisyoncular"> | string
-    durum?: EnumStatusFilter<"komisyoncular"> | $Enums.Status
+    durum?: StringFilter<"komisyoncular"> | string
     komisyonNo?: StringFilter<"komisyoncular"> | string
+    komisyonKodu?: StringFilter<"komisyoncular"> | string
     sehir?: StringFilter<"komisyoncular"> | string
     vkn?: StringNullableFilter<"komisyoncular"> | string | null
     yetkiliAdi?: StringNullableFilter<"komisyoncular"> | string | null
     yetkiliTelefon?: StringNullableFilter<"komisyoncular"> | string | null
-    komisyonKodu?: StringFilter<"komisyoncular"> | string
     mal_kabul_records?: Mal_kabul_recordsListRelationFilter
     ureticiler?: UreticilerListRelationFilter
   }
 
   export type komisyoncularOrderByWithRelationInput = {
     id?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     dukkanAdi?: SortOrder
     durum?: SortOrder
     komisyonNo?: SortOrder
+    komisyonKodu?: SortOrder
     sehir?: SortOrder
     vkn?: SortOrderInput | SortOrder
     yetkiliAdi?: SortOrderInput | SortOrder
     yetkiliTelefon?: SortOrderInput | SortOrder
-    komisyonKodu?: SortOrder
     mal_kabul_records?: mal_kabul_recordsOrderByRelationAggregateInput
     ureticiler?: ureticilerOrderByRelationAggregateInput
   }
@@ -13407,10 +14656,10 @@ export namespace Prisma {
     AND?: komisyoncularWhereInput | komisyoncularWhereInput[]
     OR?: komisyoncularWhereInput[]
     NOT?: komisyoncularWhereInput | komisyoncularWhereInput[]
-    createdAt?: DateTimeFilter<"komisyoncular"> | Date | string
-    updatedAt?: DateTimeFilter<"komisyoncular"> | Date | string
+    createdAt?: DateTimeNullableFilter<"komisyoncular"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"komisyoncular"> | Date | string | null
     dukkanAdi?: StringFilter<"komisyoncular"> | string
-    durum?: EnumStatusFilter<"komisyoncular"> | $Enums.Status
+    durum?: StringFilter<"komisyoncular"> | string
     sehir?: StringFilter<"komisyoncular"> | string
     vkn?: StringNullableFilter<"komisyoncular"> | string | null
     yetkiliAdi?: StringNullableFilter<"komisyoncular"> | string | null
@@ -13421,16 +14670,16 @@ export namespace Prisma {
 
   export type komisyoncularOrderByWithAggregationInput = {
     id?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     dukkanAdi?: SortOrder
     durum?: SortOrder
     komisyonNo?: SortOrder
+    komisyonKodu?: SortOrder
     sehir?: SortOrder
     vkn?: SortOrderInput | SortOrder
     yetkiliAdi?: SortOrderInput | SortOrder
     yetkiliTelefon?: SortOrderInput | SortOrder
-    komisyonKodu?: SortOrder
     _count?: komisyoncularCountOrderByAggregateInput
     _max?: komisyoncularMaxOrderByAggregateInput
     _min?: komisyoncularMinOrderByAggregateInput
@@ -13441,16 +14690,16 @@ export namespace Prisma {
     OR?: komisyoncularScalarWhereWithAggregatesInput[]
     NOT?: komisyoncularScalarWhereWithAggregatesInput | komisyoncularScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"komisyoncular"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"komisyoncular"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"komisyoncular"> | Date | string
+    createdAt?: DateTimeNullableWithAggregatesFilter<"komisyoncular"> | Date | string | null
+    updatedAt?: DateTimeNullableWithAggregatesFilter<"komisyoncular"> | Date | string | null
     dukkanAdi?: StringWithAggregatesFilter<"komisyoncular"> | string
-    durum?: EnumStatusWithAggregatesFilter<"komisyoncular"> | $Enums.Status
+    durum?: StringWithAggregatesFilter<"komisyoncular"> | string
     komisyonNo?: StringWithAggregatesFilter<"komisyoncular"> | string
+    komisyonKodu?: StringWithAggregatesFilter<"komisyoncular"> | string
     sehir?: StringWithAggregatesFilter<"komisyoncular"> | string
     vkn?: StringNullableWithAggregatesFilter<"komisyoncular"> | string | null
     yetkiliAdi?: StringNullableWithAggregatesFilter<"komisyoncular"> | string | null
     yetkiliTelefon?: StringNullableWithAggregatesFilter<"komisyoncular"> | string | null
-    komisyonKodu?: StringWithAggregatesFilter<"komisyoncular"> | string
   }
 
   export type mal_kabul_recordsWhereInput = {
@@ -13458,44 +14707,44 @@ export namespace Prisma {
     OR?: mal_kabul_recordsWhereInput[]
     NOT?: mal_kabul_recordsWhereInput | mal_kabul_recordsWhereInput[]
     id?: StringFilter<"mal_kabul_records"> | string
-    tarih?: DateTimeFilter<"mal_kabul_records"> | Date | string
+    tarih?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
     miktar?: FloatFilter<"mal_kabul_records"> | number
     birimFiyat?: FloatNullableFilter<"mal_kabul_records"> | number | null
     toplamFiyat?: FloatNullableFilter<"mal_kabul_records"> | number | null
-    status?: EnumProductStatusFilter<"mal_kabul_records"> | $Enums.ProductStatus
+    status?: StringFilter<"mal_kabul_records"> | string
     notlar?: StringNullableFilter<"mal_kabul_records"> | string | null
     malKabulcuId?: StringFilter<"mal_kabul_records"> | string
     komisyoncuId?: StringNullableFilter<"mal_kabul_records"> | string | null
     ureticiId?: StringNullableFilter<"mal_kabul_records"> | string | null
     urunId?: StringFilter<"mal_kabul_records"> | string
     faturaId?: StringNullableFilter<"mal_kabul_records"> | string | null
-    createdAt?: DateTimeFilter<"mal_kabul_records"> | Date | string
-    updatedAt?: DateTimeFilter<"mal_kabul_records"> | Date | string
+    createdAt?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
     fisNo?: StringFilter<"mal_kabul_records"> | string
     mustahsilId?: StringNullableFilter<"mal_kabul_records"> | string | null
     ozelFirmaId?: StringNullableFilter<"mal_kabul_records"> | string | null
-    saticiTipi?: EnumSaticiTipiFilter<"mal_kabul_records"> | $Enums.SaticiTipi
+    saticiTipi?: StringFilter<"mal_kabul_records"> | string
     ambalajId?: StringNullableFilter<"mal_kabul_records"> | string | null
-    paletSayisi?: IntFilter<"mal_kabul_records"> | number
-    kasaSayisi?: IntFilter<"mal_kabul_records"> | number
-    brutKg?: FloatFilter<"mal_kabul_records"> | number
-    daraKg?: FloatFilter<"mal_kabul_records"> | number
-    girisKg?: FloatFilter<"mal_kabul_records"> | number
-    cikmaFireKg?: FloatFilter<"mal_kabul_records"> | number
-    netKg?: FloatFilter<"mal_kabul_records"> | number
-    ambalajlar?: XOR<AmbalajlarNullableScalarRelationFilter, ambalajlarWhereInput> | null
-    faturalar?: XOR<FaturalarNullableScalarRelationFilter, faturalarWhereInput> | null
-    komisyoncular?: XOR<KomisyoncularNullableScalarRelationFilter, komisyoncularWhereInput> | null
+    paletSayisi?: IntNullableFilter<"mal_kabul_records"> | number | null
+    kasaSayisi?: IntNullableFilter<"mal_kabul_records"> | number | null
+    brutKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    daraKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    girisKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    cikmaFireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    netKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     users?: XOR<UsersScalarRelationFilter, usersWhereInput>
-    mustahsil?: XOR<MustahsilNullableScalarRelationFilter, mustahsilWhereInput> | null
-    ozel_firmalar?: XOR<Ozel_firmalarNullableScalarRelationFilter, ozel_firmalarWhereInput> | null
+    komisyoncular?: XOR<KomisyoncularNullableScalarRelationFilter, komisyoncularWhereInput> | null
     ureticiler?: XOR<UreticilerNullableScalarRelationFilter, ureticilerWhereInput> | null
     urunler?: XOR<UrunlerScalarRelationFilter, urunlerWhereInput>
+    faturalar?: XOR<FaturalarNullableScalarRelationFilter, faturalarWhereInput> | null
+    mustahsil?: XOR<MustahsilNullableScalarRelationFilter, mustahsilWhereInput> | null
+    ozel_firmalar?: XOR<Ozel_firmalarNullableScalarRelationFilter, ozel_firmalarWhereInput> | null
+    ambalajlar?: XOR<AmbalajlarNullableScalarRelationFilter, ambalajlarWhereInput> | null
   }
 
   export type mal_kabul_recordsOrderByWithRelationInput = {
     id?: SortOrder
-    tarih?: SortOrder
+    tarih?: SortOrderInput | SortOrder
     miktar?: SortOrder
     birimFiyat?: SortOrderInput | SortOrder
     toplamFiyat?: SortOrderInput | SortOrder
@@ -13506,28 +14755,28 @@ export namespace Prisma {
     ureticiId?: SortOrderInput | SortOrder
     urunId?: SortOrder
     faturaId?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     fisNo?: SortOrder
     mustahsilId?: SortOrderInput | SortOrder
     ozelFirmaId?: SortOrderInput | SortOrder
     saticiTipi?: SortOrder
     ambalajId?: SortOrderInput | SortOrder
-    paletSayisi?: SortOrder
-    kasaSayisi?: SortOrder
-    brutKg?: SortOrder
-    daraKg?: SortOrder
-    girisKg?: SortOrder
-    cikmaFireKg?: SortOrder
-    netKg?: SortOrder
-    ambalajlar?: ambalajlarOrderByWithRelationInput
-    faturalar?: faturalarOrderByWithRelationInput
-    komisyoncular?: komisyoncularOrderByWithRelationInput
+    paletSayisi?: SortOrderInput | SortOrder
+    kasaSayisi?: SortOrderInput | SortOrder
+    brutKg?: SortOrderInput | SortOrder
+    daraKg?: SortOrderInput | SortOrder
+    girisKg?: SortOrderInput | SortOrder
+    cikmaFireKg?: SortOrderInput | SortOrder
+    netKg?: SortOrderInput | SortOrder
     users?: usersOrderByWithRelationInput
-    mustahsil?: mustahsilOrderByWithRelationInput
-    ozel_firmalar?: ozel_firmalarOrderByWithRelationInput
+    komisyoncular?: komisyoncularOrderByWithRelationInput
     ureticiler?: ureticilerOrderByWithRelationInput
     urunler?: urunlerOrderByWithRelationInput
+    faturalar?: faturalarOrderByWithRelationInput
+    mustahsil?: mustahsilOrderByWithRelationInput
+    ozel_firmalar?: ozel_firmalarOrderByWithRelationInput
+    ambalajlar?: ambalajlarOrderByWithRelationInput
   }
 
   export type mal_kabul_recordsWhereUniqueInput = Prisma.AtLeast<{
@@ -13536,43 +14785,43 @@ export namespace Prisma {
     AND?: mal_kabul_recordsWhereInput | mal_kabul_recordsWhereInput[]
     OR?: mal_kabul_recordsWhereInput[]
     NOT?: mal_kabul_recordsWhereInput | mal_kabul_recordsWhereInput[]
-    tarih?: DateTimeFilter<"mal_kabul_records"> | Date | string
+    tarih?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
     miktar?: FloatFilter<"mal_kabul_records"> | number
     birimFiyat?: FloatNullableFilter<"mal_kabul_records"> | number | null
     toplamFiyat?: FloatNullableFilter<"mal_kabul_records"> | number | null
-    status?: EnumProductStatusFilter<"mal_kabul_records"> | $Enums.ProductStatus
+    status?: StringFilter<"mal_kabul_records"> | string
     notlar?: StringNullableFilter<"mal_kabul_records"> | string | null
     malKabulcuId?: StringFilter<"mal_kabul_records"> | string
     komisyoncuId?: StringNullableFilter<"mal_kabul_records"> | string | null
     ureticiId?: StringNullableFilter<"mal_kabul_records"> | string | null
     urunId?: StringFilter<"mal_kabul_records"> | string
     faturaId?: StringNullableFilter<"mal_kabul_records"> | string | null
-    createdAt?: DateTimeFilter<"mal_kabul_records"> | Date | string
-    updatedAt?: DateTimeFilter<"mal_kabul_records"> | Date | string
+    createdAt?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
     mustahsilId?: StringNullableFilter<"mal_kabul_records"> | string | null
     ozelFirmaId?: StringNullableFilter<"mal_kabul_records"> | string | null
-    saticiTipi?: EnumSaticiTipiFilter<"mal_kabul_records"> | $Enums.SaticiTipi
+    saticiTipi?: StringFilter<"mal_kabul_records"> | string
     ambalajId?: StringNullableFilter<"mal_kabul_records"> | string | null
-    paletSayisi?: IntFilter<"mal_kabul_records"> | number
-    kasaSayisi?: IntFilter<"mal_kabul_records"> | number
-    brutKg?: FloatFilter<"mal_kabul_records"> | number
-    daraKg?: FloatFilter<"mal_kabul_records"> | number
-    girisKg?: FloatFilter<"mal_kabul_records"> | number
-    cikmaFireKg?: FloatFilter<"mal_kabul_records"> | number
-    netKg?: FloatFilter<"mal_kabul_records"> | number
-    ambalajlar?: XOR<AmbalajlarNullableScalarRelationFilter, ambalajlarWhereInput> | null
-    faturalar?: XOR<FaturalarNullableScalarRelationFilter, faturalarWhereInput> | null
-    komisyoncular?: XOR<KomisyoncularNullableScalarRelationFilter, komisyoncularWhereInput> | null
+    paletSayisi?: IntNullableFilter<"mal_kabul_records"> | number | null
+    kasaSayisi?: IntNullableFilter<"mal_kabul_records"> | number | null
+    brutKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    daraKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    girisKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    cikmaFireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    netKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     users?: XOR<UsersScalarRelationFilter, usersWhereInput>
-    mustahsil?: XOR<MustahsilNullableScalarRelationFilter, mustahsilWhereInput> | null
-    ozel_firmalar?: XOR<Ozel_firmalarNullableScalarRelationFilter, ozel_firmalarWhereInput> | null
+    komisyoncular?: XOR<KomisyoncularNullableScalarRelationFilter, komisyoncularWhereInput> | null
     ureticiler?: XOR<UreticilerNullableScalarRelationFilter, ureticilerWhereInput> | null
     urunler?: XOR<UrunlerScalarRelationFilter, urunlerWhereInput>
+    faturalar?: XOR<FaturalarNullableScalarRelationFilter, faturalarWhereInput> | null
+    mustahsil?: XOR<MustahsilNullableScalarRelationFilter, mustahsilWhereInput> | null
+    ozel_firmalar?: XOR<Ozel_firmalarNullableScalarRelationFilter, ozel_firmalarWhereInput> | null
+    ambalajlar?: XOR<AmbalajlarNullableScalarRelationFilter, ambalajlarWhereInput> | null
   }, "id" | "fisNo">
 
   export type mal_kabul_recordsOrderByWithAggregationInput = {
     id?: SortOrder
-    tarih?: SortOrder
+    tarih?: SortOrderInput | SortOrder
     miktar?: SortOrder
     birimFiyat?: SortOrderInput | SortOrder
     toplamFiyat?: SortOrderInput | SortOrder
@@ -13583,20 +14832,20 @@ export namespace Prisma {
     ureticiId?: SortOrderInput | SortOrder
     urunId?: SortOrder
     faturaId?: SortOrderInput | SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     fisNo?: SortOrder
     mustahsilId?: SortOrderInput | SortOrder
     ozelFirmaId?: SortOrderInput | SortOrder
     saticiTipi?: SortOrder
     ambalajId?: SortOrderInput | SortOrder
-    paletSayisi?: SortOrder
-    kasaSayisi?: SortOrder
-    brutKg?: SortOrder
-    daraKg?: SortOrder
-    girisKg?: SortOrder
-    cikmaFireKg?: SortOrder
-    netKg?: SortOrder
+    paletSayisi?: SortOrderInput | SortOrder
+    kasaSayisi?: SortOrderInput | SortOrder
+    brutKg?: SortOrderInput | SortOrder
+    daraKg?: SortOrderInput | SortOrder
+    girisKg?: SortOrderInput | SortOrder
+    cikmaFireKg?: SortOrderInput | SortOrder
+    netKg?: SortOrderInput | SortOrder
     _count?: mal_kabul_recordsCountOrderByAggregateInput
     _avg?: mal_kabul_recordsAvgOrderByAggregateInput
     _max?: mal_kabul_recordsMaxOrderByAggregateInput
@@ -13609,31 +14858,31 @@ export namespace Prisma {
     OR?: mal_kabul_recordsScalarWhereWithAggregatesInput[]
     NOT?: mal_kabul_recordsScalarWhereWithAggregatesInput | mal_kabul_recordsScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"mal_kabul_records"> | string
-    tarih?: DateTimeWithAggregatesFilter<"mal_kabul_records"> | Date | string
+    tarih?: DateTimeNullableWithAggregatesFilter<"mal_kabul_records"> | Date | string | null
     miktar?: FloatWithAggregatesFilter<"mal_kabul_records"> | number
     birimFiyat?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     toplamFiyat?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
-    status?: EnumProductStatusWithAggregatesFilter<"mal_kabul_records"> | $Enums.ProductStatus
+    status?: StringWithAggregatesFilter<"mal_kabul_records"> | string
     notlar?: StringNullableWithAggregatesFilter<"mal_kabul_records"> | string | null
     malKabulcuId?: StringWithAggregatesFilter<"mal_kabul_records"> | string
     komisyoncuId?: StringNullableWithAggregatesFilter<"mal_kabul_records"> | string | null
     ureticiId?: StringNullableWithAggregatesFilter<"mal_kabul_records"> | string | null
     urunId?: StringWithAggregatesFilter<"mal_kabul_records"> | string
     faturaId?: StringNullableWithAggregatesFilter<"mal_kabul_records"> | string | null
-    createdAt?: DateTimeWithAggregatesFilter<"mal_kabul_records"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"mal_kabul_records"> | Date | string
+    createdAt?: DateTimeNullableWithAggregatesFilter<"mal_kabul_records"> | Date | string | null
+    updatedAt?: DateTimeNullableWithAggregatesFilter<"mal_kabul_records"> | Date | string | null
     fisNo?: StringWithAggregatesFilter<"mal_kabul_records"> | string
     mustahsilId?: StringNullableWithAggregatesFilter<"mal_kabul_records"> | string | null
     ozelFirmaId?: StringNullableWithAggregatesFilter<"mal_kabul_records"> | string | null
-    saticiTipi?: EnumSaticiTipiWithAggregatesFilter<"mal_kabul_records"> | $Enums.SaticiTipi
+    saticiTipi?: StringWithAggregatesFilter<"mal_kabul_records"> | string
     ambalajId?: StringNullableWithAggregatesFilter<"mal_kabul_records"> | string | null
-    paletSayisi?: IntWithAggregatesFilter<"mal_kabul_records"> | number
-    kasaSayisi?: IntWithAggregatesFilter<"mal_kabul_records"> | number
-    brutKg?: FloatWithAggregatesFilter<"mal_kabul_records"> | number
-    daraKg?: FloatWithAggregatesFilter<"mal_kabul_records"> | number
-    girisKg?: FloatWithAggregatesFilter<"mal_kabul_records"> | number
-    cikmaFireKg?: FloatWithAggregatesFilter<"mal_kabul_records"> | number
-    netKg?: FloatWithAggregatesFilter<"mal_kabul_records"> | number
+    paletSayisi?: IntNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
+    kasaSayisi?: IntNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
+    brutKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
+    daraKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
+    girisKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
+    cikmaFireKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
+    netKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
   }
 
   export type mustahsilWhereInput = {
@@ -13645,15 +14894,15 @@ export namespace Prisma {
     soyad?: StringFilter<"mustahsil"> | string
     dogumTarihi?: DateTimeFilter<"mustahsil"> | Date | string
     tcKimlikNo?: StringFilter<"mustahsil"> | string
-    ibanAdresi?: StringNullableFilter<"mustahsil"> | string | null
-    adres?: StringNullableFilter<"mustahsil"> | string | null
-    cinsiyet?: EnumGenderFilter<"mustahsil"> | $Enums.Gender
-    durum?: EnumStatusFilter<"mustahsil"> | $Enums.Status
-    createdAt?: DateTimeFilter<"mustahsil"> | Date | string
-    updatedAt?: DateTimeFilter<"mustahsil"> | Date | string
     mustahsilNo?: StringFilter<"mustahsil"> | string
     iletisim?: StringNullableFilter<"mustahsil"> | string | null
     bankaAdi?: StringNullableFilter<"mustahsil"> | string | null
+    ibanAdresi?: StringNullableFilter<"mustahsil"> | string | null
+    adres?: StringNullableFilter<"mustahsil"> | string | null
+    cinsiyet?: StringFilter<"mustahsil"> | string
+    durum?: StringFilter<"mustahsil"> | string
+    createdAt?: DateTimeNullableFilter<"mustahsil"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"mustahsil"> | Date | string | null
     mal_kabul_records?: Mal_kabul_recordsListRelationFilter
   }
 
@@ -13663,15 +14912,15 @@ export namespace Prisma {
     soyad?: SortOrder
     dogumTarihi?: SortOrder
     tcKimlikNo?: SortOrder
+    mustahsilNo?: SortOrder
+    iletisim?: SortOrderInput | SortOrder
+    bankaAdi?: SortOrderInput | SortOrder
     ibanAdresi?: SortOrderInput | SortOrder
     adres?: SortOrderInput | SortOrder
     cinsiyet?: SortOrder
     durum?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    mustahsilNo?: SortOrder
-    iletisim?: SortOrderInput | SortOrder
-    bankaAdi?: SortOrderInput | SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     mal_kabul_records?: mal_kabul_recordsOrderByRelationAggregateInput
   }
 
@@ -13685,14 +14934,14 @@ export namespace Prisma {
     ad?: StringFilter<"mustahsil"> | string
     soyad?: StringFilter<"mustahsil"> | string
     dogumTarihi?: DateTimeFilter<"mustahsil"> | Date | string
-    ibanAdresi?: StringNullableFilter<"mustahsil"> | string | null
-    adres?: StringNullableFilter<"mustahsil"> | string | null
-    cinsiyet?: EnumGenderFilter<"mustahsil"> | $Enums.Gender
-    durum?: EnumStatusFilter<"mustahsil"> | $Enums.Status
-    createdAt?: DateTimeFilter<"mustahsil"> | Date | string
-    updatedAt?: DateTimeFilter<"mustahsil"> | Date | string
     iletisim?: StringNullableFilter<"mustahsil"> | string | null
     bankaAdi?: StringNullableFilter<"mustahsil"> | string | null
+    ibanAdresi?: StringNullableFilter<"mustahsil"> | string | null
+    adres?: StringNullableFilter<"mustahsil"> | string | null
+    cinsiyet?: StringFilter<"mustahsil"> | string
+    durum?: StringFilter<"mustahsil"> | string
+    createdAt?: DateTimeNullableFilter<"mustahsil"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"mustahsil"> | Date | string | null
     mal_kabul_records?: Mal_kabul_recordsListRelationFilter
   }, "id" | "tcKimlikNo" | "mustahsilNo">
 
@@ -13702,15 +14951,15 @@ export namespace Prisma {
     soyad?: SortOrder
     dogumTarihi?: SortOrder
     tcKimlikNo?: SortOrder
+    mustahsilNo?: SortOrder
+    iletisim?: SortOrderInput | SortOrder
+    bankaAdi?: SortOrderInput | SortOrder
     ibanAdresi?: SortOrderInput | SortOrder
     adres?: SortOrderInput | SortOrder
     cinsiyet?: SortOrder
     durum?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    mustahsilNo?: SortOrder
-    iletisim?: SortOrderInput | SortOrder
-    bankaAdi?: SortOrderInput | SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     _count?: mustahsilCountOrderByAggregateInput
     _max?: mustahsilMaxOrderByAggregateInput
     _min?: mustahsilMinOrderByAggregateInput
@@ -13725,15 +14974,15 @@ export namespace Prisma {
     soyad?: StringWithAggregatesFilter<"mustahsil"> | string
     dogumTarihi?: DateTimeWithAggregatesFilter<"mustahsil"> | Date | string
     tcKimlikNo?: StringWithAggregatesFilter<"mustahsil"> | string
-    ibanAdresi?: StringNullableWithAggregatesFilter<"mustahsil"> | string | null
-    adres?: StringNullableWithAggregatesFilter<"mustahsil"> | string | null
-    cinsiyet?: EnumGenderWithAggregatesFilter<"mustahsil"> | $Enums.Gender
-    durum?: EnumStatusWithAggregatesFilter<"mustahsil"> | $Enums.Status
-    createdAt?: DateTimeWithAggregatesFilter<"mustahsil"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"mustahsil"> | Date | string
     mustahsilNo?: StringWithAggregatesFilter<"mustahsil"> | string
     iletisim?: StringNullableWithAggregatesFilter<"mustahsil"> | string | null
     bankaAdi?: StringNullableWithAggregatesFilter<"mustahsil"> | string | null
+    ibanAdresi?: StringNullableWithAggregatesFilter<"mustahsil"> | string | null
+    adres?: StringNullableWithAggregatesFilter<"mustahsil"> | string | null
+    cinsiyet?: StringWithAggregatesFilter<"mustahsil"> | string
+    durum?: StringWithAggregatesFilter<"mustahsil"> | string
+    createdAt?: DateTimeNullableWithAggregatesFilter<"mustahsil"> | Date | string | null
+    updatedAt?: DateTimeNullableWithAggregatesFilter<"mustahsil"> | Date | string | null
   }
 
   export type ozel_firmalarWhereInput = {
@@ -13742,32 +14991,32 @@ export namespace Prisma {
     NOT?: ozel_firmalarWhereInput | ozel_firmalarWhereInput[]
     id?: StringFilter<"ozel_firmalar"> | string
     firmaAdi?: StringFilter<"ozel_firmalar"> | string
+    firmaNo?: StringFilter<"ozel_firmalar"> | string
     vkn?: StringNullableFilter<"ozel_firmalar"> | string | null
+    vergiDairesi?: StringNullableFilter<"ozel_firmalar"> | string | null
     yetkiliAdi?: StringNullableFilter<"ozel_firmalar"> | string | null
     yetkiliTelefon?: StringNullableFilter<"ozel_firmalar"> | string | null
     sehir?: StringFilter<"ozel_firmalar"> | string
     adres?: StringNullableFilter<"ozel_firmalar"> | string | null
-    durum?: EnumStatusFilter<"ozel_firmalar"> | $Enums.Status
-    createdAt?: DateTimeFilter<"ozel_firmalar"> | Date | string
-    updatedAt?: DateTimeFilter<"ozel_firmalar"> | Date | string
-    firmaNo?: StringFilter<"ozel_firmalar"> | string
-    vergiDairesi?: StringNullableFilter<"ozel_firmalar"> | string | null
+    durum?: StringFilter<"ozel_firmalar"> | string
+    createdAt?: DateTimeNullableFilter<"ozel_firmalar"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"ozel_firmalar"> | Date | string | null
     mal_kabul_records?: Mal_kabul_recordsListRelationFilter
   }
 
   export type ozel_firmalarOrderByWithRelationInput = {
     id?: SortOrder
     firmaAdi?: SortOrder
+    firmaNo?: SortOrder
     vkn?: SortOrderInput | SortOrder
+    vergiDairesi?: SortOrderInput | SortOrder
     yetkiliAdi?: SortOrderInput | SortOrder
     yetkiliTelefon?: SortOrderInput | SortOrder
     sehir?: SortOrder
     adres?: SortOrderInput | SortOrder
     durum?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    firmaNo?: SortOrder
-    vergiDairesi?: SortOrderInput | SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     mal_kabul_records?: mal_kabul_recordsOrderByRelationAggregateInput
   }
 
@@ -13779,30 +15028,30 @@ export namespace Prisma {
     NOT?: ozel_firmalarWhereInput | ozel_firmalarWhereInput[]
     firmaAdi?: StringFilter<"ozel_firmalar"> | string
     vkn?: StringNullableFilter<"ozel_firmalar"> | string | null
+    vergiDairesi?: StringNullableFilter<"ozel_firmalar"> | string | null
     yetkiliAdi?: StringNullableFilter<"ozel_firmalar"> | string | null
     yetkiliTelefon?: StringNullableFilter<"ozel_firmalar"> | string | null
     sehir?: StringFilter<"ozel_firmalar"> | string
     adres?: StringNullableFilter<"ozel_firmalar"> | string | null
-    durum?: EnumStatusFilter<"ozel_firmalar"> | $Enums.Status
-    createdAt?: DateTimeFilter<"ozel_firmalar"> | Date | string
-    updatedAt?: DateTimeFilter<"ozel_firmalar"> | Date | string
-    vergiDairesi?: StringNullableFilter<"ozel_firmalar"> | string | null
+    durum?: StringFilter<"ozel_firmalar"> | string
+    createdAt?: DateTimeNullableFilter<"ozel_firmalar"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"ozel_firmalar"> | Date | string | null
     mal_kabul_records?: Mal_kabul_recordsListRelationFilter
   }, "id" | "firmaNo">
 
   export type ozel_firmalarOrderByWithAggregationInput = {
     id?: SortOrder
     firmaAdi?: SortOrder
+    firmaNo?: SortOrder
     vkn?: SortOrderInput | SortOrder
+    vergiDairesi?: SortOrderInput | SortOrder
     yetkiliAdi?: SortOrderInput | SortOrder
     yetkiliTelefon?: SortOrderInput | SortOrder
     sehir?: SortOrder
     adres?: SortOrderInput | SortOrder
     durum?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    firmaNo?: SortOrder
-    vergiDairesi?: SortOrderInput | SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     _count?: ozel_firmalarCountOrderByAggregateInput
     _max?: ozel_firmalarMaxOrderByAggregateInput
     _min?: ozel_firmalarMinOrderByAggregateInput
@@ -13814,16 +15063,16 @@ export namespace Prisma {
     NOT?: ozel_firmalarScalarWhereWithAggregatesInput | ozel_firmalarScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"ozel_firmalar"> | string
     firmaAdi?: StringWithAggregatesFilter<"ozel_firmalar"> | string
+    firmaNo?: StringWithAggregatesFilter<"ozel_firmalar"> | string
     vkn?: StringNullableWithAggregatesFilter<"ozel_firmalar"> | string | null
+    vergiDairesi?: StringNullableWithAggregatesFilter<"ozel_firmalar"> | string | null
     yetkiliAdi?: StringNullableWithAggregatesFilter<"ozel_firmalar"> | string | null
     yetkiliTelefon?: StringNullableWithAggregatesFilter<"ozel_firmalar"> | string | null
     sehir?: StringWithAggregatesFilter<"ozel_firmalar"> | string
     adres?: StringNullableWithAggregatesFilter<"ozel_firmalar"> | string | null
-    durum?: EnumStatusWithAggregatesFilter<"ozel_firmalar"> | $Enums.Status
-    createdAt?: DateTimeWithAggregatesFilter<"ozel_firmalar"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"ozel_firmalar"> | Date | string
-    firmaNo?: StringWithAggregatesFilter<"ozel_firmalar"> | string
-    vergiDairesi?: StringNullableWithAggregatesFilter<"ozel_firmalar"> | string | null
+    durum?: StringWithAggregatesFilter<"ozel_firmalar"> | string
+    createdAt?: DateTimeNullableWithAggregatesFilter<"ozel_firmalar"> | Date | string | null
+    updatedAt?: DateTimeNullableWithAggregatesFilter<"ozel_firmalar"> | Date | string | null
   }
 
   export type ureticilerWhereInput = {
@@ -13832,16 +15081,16 @@ export namespace Prisma {
     NOT?: ureticilerWhereInput | ureticilerWhereInput[]
     id?: StringFilter<"ureticiler"> | string
     ad?: StringFilter<"ureticiler"> | string
-    createdAt?: DateTimeFilter<"ureticiler"> | Date | string
-    updatedAt?: DateTimeFilter<"ureticiler"> | Date | string
-    cinsiyet?: EnumGenderFilter<"ureticiler"> | $Enums.Gender
+    createdAt?: DateTimeNullableFilter<"ureticiler"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"ureticiler"> | Date | string | null
+    cinsiyet?: StringFilter<"ureticiler"> | string
     dogumTarihi?: DateTimeNullableFilter<"ureticiler"> | Date | string | null
-    durum?: EnumStatusFilter<"ureticiler"> | $Enums.Status
     iletisim?: StringNullableFilter<"ureticiler"> | string | null
     komisyoncuId?: StringNullableFilter<"ureticiler"> | string | null
     sehir?: StringFilter<"ureticiler"> | string
     soyad?: StringFilter<"ureticiler"> | string
     tcNo?: StringNullableFilter<"ureticiler"> | string | null
+    durum?: StringFilter<"ureticiler"> | string
     mal_kabul_records?: Mal_kabul_recordsListRelationFilter
     komisyoncular?: XOR<KomisyoncularNullableScalarRelationFilter, komisyoncularWhereInput> | null
   }
@@ -13849,16 +15098,16 @@ export namespace Prisma {
   export type ureticilerOrderByWithRelationInput = {
     id?: SortOrder
     ad?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     cinsiyet?: SortOrder
     dogumTarihi?: SortOrderInput | SortOrder
-    durum?: SortOrder
     iletisim?: SortOrderInput | SortOrder
     komisyoncuId?: SortOrderInput | SortOrder
     sehir?: SortOrder
     soyad?: SortOrder
     tcNo?: SortOrderInput | SortOrder
+    durum?: SortOrder
     mal_kabul_records?: mal_kabul_recordsOrderByRelationAggregateInput
     komisyoncular?: komisyoncularOrderByWithRelationInput
   }
@@ -13869,16 +15118,16 @@ export namespace Prisma {
     OR?: ureticilerWhereInput[]
     NOT?: ureticilerWhereInput | ureticilerWhereInput[]
     ad?: StringFilter<"ureticiler"> | string
-    createdAt?: DateTimeFilter<"ureticiler"> | Date | string
-    updatedAt?: DateTimeFilter<"ureticiler"> | Date | string
-    cinsiyet?: EnumGenderFilter<"ureticiler"> | $Enums.Gender
+    createdAt?: DateTimeNullableFilter<"ureticiler"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"ureticiler"> | Date | string | null
+    cinsiyet?: StringFilter<"ureticiler"> | string
     dogumTarihi?: DateTimeNullableFilter<"ureticiler"> | Date | string | null
-    durum?: EnumStatusFilter<"ureticiler"> | $Enums.Status
     iletisim?: StringNullableFilter<"ureticiler"> | string | null
     komisyoncuId?: StringNullableFilter<"ureticiler"> | string | null
     sehir?: StringFilter<"ureticiler"> | string
     soyad?: StringFilter<"ureticiler"> | string
     tcNo?: StringNullableFilter<"ureticiler"> | string | null
+    durum?: StringFilter<"ureticiler"> | string
     mal_kabul_records?: Mal_kabul_recordsListRelationFilter
     komisyoncular?: XOR<KomisyoncularNullableScalarRelationFilter, komisyoncularWhereInput> | null
   }, "id">
@@ -13886,16 +15135,16 @@ export namespace Prisma {
   export type ureticilerOrderByWithAggregationInput = {
     id?: SortOrder
     ad?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     cinsiyet?: SortOrder
     dogumTarihi?: SortOrderInput | SortOrder
-    durum?: SortOrder
     iletisim?: SortOrderInput | SortOrder
     komisyoncuId?: SortOrderInput | SortOrder
     sehir?: SortOrder
     soyad?: SortOrder
     tcNo?: SortOrderInput | SortOrder
+    durum?: SortOrder
     _count?: ureticilerCountOrderByAggregateInput
     _max?: ureticilerMaxOrderByAggregateInput
     _min?: ureticilerMinOrderByAggregateInput
@@ -13907,16 +15156,16 @@ export namespace Prisma {
     NOT?: ureticilerScalarWhereWithAggregatesInput | ureticilerScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"ureticiler"> | string
     ad?: StringWithAggregatesFilter<"ureticiler"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"ureticiler"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"ureticiler"> | Date | string
-    cinsiyet?: EnumGenderWithAggregatesFilter<"ureticiler"> | $Enums.Gender
+    createdAt?: DateTimeNullableWithAggregatesFilter<"ureticiler"> | Date | string | null
+    updatedAt?: DateTimeNullableWithAggregatesFilter<"ureticiler"> | Date | string | null
+    cinsiyet?: StringWithAggregatesFilter<"ureticiler"> | string
     dogumTarihi?: DateTimeNullableWithAggregatesFilter<"ureticiler"> | Date | string | null
-    durum?: EnumStatusWithAggregatesFilter<"ureticiler"> | $Enums.Status
     iletisim?: StringNullableWithAggregatesFilter<"ureticiler"> | string | null
     komisyoncuId?: StringNullableWithAggregatesFilter<"ureticiler"> | string | null
     sehir?: StringWithAggregatesFilter<"ureticiler"> | string
     soyad?: StringWithAggregatesFilter<"ureticiler"> | string
     tcNo?: StringNullableWithAggregatesFilter<"ureticiler"> | string | null
+    durum?: StringWithAggregatesFilter<"ureticiler"> | string
   }
 
   export type urunlerWhereInput = {
@@ -13925,24 +15174,24 @@ export namespace Prisma {
     NOT?: urunlerWhereInput | urunlerWhereInput[]
     id?: StringFilter<"urunler"> | string
     ad?: StringFilter<"urunler"> | string
+    stokKodu?: StringFilter<"urunler"> | string
     kategori?: StringNullableFilter<"urunler"> | string | null
     birim?: StringFilter<"urunler"> | string
-    createdAt?: DateTimeFilter<"urunler"> | Date | string
-    updatedAt?: DateTimeFilter<"urunler"> | Date | string
-    durum?: EnumStatusFilter<"urunler"> | $Enums.Status
-    stokKodu?: StringFilter<"urunler"> | string
+    durum?: StringFilter<"urunler"> | string
+    createdAt?: DateTimeNullableFilter<"urunler"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"urunler"> | Date | string | null
     mal_kabul_records?: Mal_kabul_recordsListRelationFilter
   }
 
   export type urunlerOrderByWithRelationInput = {
     id?: SortOrder
     ad?: SortOrder
+    stokKodu?: SortOrder
     kategori?: SortOrderInput | SortOrder
     birim?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
     durum?: SortOrder
-    stokKodu?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     mal_kabul_records?: mal_kabul_recordsOrderByRelationAggregateInput
   }
 
@@ -13955,21 +15204,21 @@ export namespace Prisma {
     ad?: StringFilter<"urunler"> | string
     kategori?: StringNullableFilter<"urunler"> | string | null
     birim?: StringFilter<"urunler"> | string
-    createdAt?: DateTimeFilter<"urunler"> | Date | string
-    updatedAt?: DateTimeFilter<"urunler"> | Date | string
-    durum?: EnumStatusFilter<"urunler"> | $Enums.Status
+    durum?: StringFilter<"urunler"> | string
+    createdAt?: DateTimeNullableFilter<"urunler"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"urunler"> | Date | string | null
     mal_kabul_records?: Mal_kabul_recordsListRelationFilter
   }, "id" | "stokKodu">
 
   export type urunlerOrderByWithAggregationInput = {
     id?: SortOrder
     ad?: SortOrder
+    stokKodu?: SortOrder
     kategori?: SortOrderInput | SortOrder
     birim?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
     durum?: SortOrder
-    stokKodu?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     _count?: urunlerCountOrderByAggregateInput
     _max?: urunlerMaxOrderByAggregateInput
     _min?: urunlerMinOrderByAggregateInput
@@ -13981,12 +15230,12 @@ export namespace Prisma {
     NOT?: urunlerScalarWhereWithAggregatesInput | urunlerScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"urunler"> | string
     ad?: StringWithAggregatesFilter<"urunler"> | string
+    stokKodu?: StringWithAggregatesFilter<"urunler"> | string
     kategori?: StringNullableWithAggregatesFilter<"urunler"> | string | null
     birim?: StringWithAggregatesFilter<"urunler"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"urunler"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"urunler"> | Date | string
-    durum?: EnumStatusWithAggregatesFilter<"urunler"> | $Enums.Status
-    stokKodu?: StringWithAggregatesFilter<"urunler"> | string
+    durum?: StringWithAggregatesFilter<"urunler"> | string
+    createdAt?: DateTimeNullableWithAggregatesFilter<"urunler"> | Date | string | null
+    updatedAt?: DateTimeNullableWithAggregatesFilter<"urunler"> | Date | string | null
   }
 
   export type usersWhereInput = {
@@ -13998,11 +15247,11 @@ export namespace Prisma {
     lastName?: StringFilter<"users"> | string
     email?: StringFilter<"users"> | string
     password?: StringFilter<"users"> | string
-    role?: EnumUserRoleFilter<"users"> | $Enums.UserRole
-    createdAt?: DateTimeFilter<"users"> | Date | string
-    updatedAt?: DateTimeFilter<"users"> | Date | string
-    faturalar?: FaturalarListRelationFilter
+    role?: StringFilter<"users"> | string
+    createdAt?: DateTimeNullableFilter<"users"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"users"> | Date | string | null
     mal_kabul_records?: Mal_kabul_recordsListRelationFilter
+    faturalar?: FaturalarListRelationFilter
   }
 
   export type usersOrderByWithRelationInput = {
@@ -14012,10 +15261,10 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     role?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
-    faturalar?: faturalarOrderByRelationAggregateInput
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     mal_kabul_records?: mal_kabul_recordsOrderByRelationAggregateInput
+    faturalar?: faturalarOrderByRelationAggregateInput
   }
 
   export type usersWhereUniqueInput = Prisma.AtLeast<{
@@ -14027,11 +15276,11 @@ export namespace Prisma {
     firstName?: StringFilter<"users"> | string
     lastName?: StringFilter<"users"> | string
     password?: StringFilter<"users"> | string
-    role?: EnumUserRoleFilter<"users"> | $Enums.UserRole
-    createdAt?: DateTimeFilter<"users"> | Date | string
-    updatedAt?: DateTimeFilter<"users"> | Date | string
-    faturalar?: FaturalarListRelationFilter
+    role?: StringFilter<"users"> | string
+    createdAt?: DateTimeNullableFilter<"users"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"users"> | Date | string | null
     mal_kabul_records?: Mal_kabul_recordsListRelationFilter
+    faturalar?: FaturalarListRelationFilter
   }, "id" | "email">
 
   export type usersOrderByWithAggregationInput = {
@@ -14041,8 +15290,8 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     role?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
     _count?: usersCountOrderByAggregateInput
     _max?: usersMaxOrderByAggregateInput
     _min?: usersMinOrderByAggregateInput
@@ -14057,492 +15306,611 @@ export namespace Prisma {
     lastName?: StringWithAggregatesFilter<"users"> | string
     email?: StringWithAggregatesFilter<"users"> | string
     password?: StringWithAggregatesFilter<"users"> | string
-    role?: EnumUserRoleWithAggregatesFilter<"users"> | $Enums.UserRole
-    createdAt?: DateTimeWithAggregatesFilter<"users"> | Date | string
-    updatedAt?: DateTimeWithAggregatesFilter<"users"> | Date | string
+    role?: StringWithAggregatesFilter<"users"> | string
+    createdAt?: DateTimeNullableWithAggregatesFilter<"users"> | Date | string | null
+    updatedAt?: DateTimeNullableWithAggregatesFilter<"users"> | Date | string | null
+  }
+
+  export type malKabulRecordsWhereInput = {
+    AND?: malKabulRecordsWhereInput | malKabulRecordsWhereInput[]
+    OR?: malKabulRecordsWhereInput[]
+    NOT?: malKabulRecordsWhereInput | malKabulRecordsWhereInput[]
+    id?: StringFilter<"malKabulRecords"> | string
+    fisNo?: StringFilter<"malKabulRecords"> | string
+    tarih?: DateTimeFilter<"malKabulRecords"> | Date | string
+    saticiTipi?: StringFilter<"malKabulRecords"> | string
+    saticiId?: StringFilter<"malKabulRecords"> | string
+    urunId?: StringFilter<"malKabulRecords"> | string
+    ureticiId?: StringFilter<"malKabulRecords"> | string
+    ambalajId?: StringFilter<"malKabulRecords"> | string
+    brutKg?: FloatFilter<"malKabulRecords"> | number
+    daraKg?: FloatFilter<"malKabulRecords"> | number
+    girisKg?: FloatFilter<"malKabulRecords"> | number
+    cikmaKg?: FloatFilter<"malKabulRecords"> | number
+    fireKg?: FloatFilter<"malKabulRecords"> | number
+    netKg?: FloatFilter<"malKabulRecords"> | number
+    urunDurumu?: StringFilter<"malKabulRecords"> | string
+    userId?: StringFilter<"malKabulRecords"> | string
+    createdAt?: DateTimeNullableFilter<"malKabulRecords"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"malKabulRecords"> | Date | string | null
+  }
+
+  export type malKabulRecordsOrderByWithRelationInput = {
+    id?: SortOrder
+    fisNo?: SortOrder
+    tarih?: SortOrder
+    saticiTipi?: SortOrder
+    saticiId?: SortOrder
+    urunId?: SortOrder
+    ureticiId?: SortOrder
+    ambalajId?: SortOrder
+    brutKg?: SortOrder
+    daraKg?: SortOrder
+    girisKg?: SortOrder
+    cikmaKg?: SortOrder
+    fireKg?: SortOrder
+    netKg?: SortOrder
+    urunDurumu?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
+  }
+
+  export type malKabulRecordsWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: malKabulRecordsWhereInput | malKabulRecordsWhereInput[]
+    OR?: malKabulRecordsWhereInput[]
+    NOT?: malKabulRecordsWhereInput | malKabulRecordsWhereInput[]
+    fisNo?: StringFilter<"malKabulRecords"> | string
+    tarih?: DateTimeFilter<"malKabulRecords"> | Date | string
+    saticiTipi?: StringFilter<"malKabulRecords"> | string
+    saticiId?: StringFilter<"malKabulRecords"> | string
+    urunId?: StringFilter<"malKabulRecords"> | string
+    ureticiId?: StringFilter<"malKabulRecords"> | string
+    ambalajId?: StringFilter<"malKabulRecords"> | string
+    brutKg?: FloatFilter<"malKabulRecords"> | number
+    daraKg?: FloatFilter<"malKabulRecords"> | number
+    girisKg?: FloatFilter<"malKabulRecords"> | number
+    cikmaKg?: FloatFilter<"malKabulRecords"> | number
+    fireKg?: FloatFilter<"malKabulRecords"> | number
+    netKg?: FloatFilter<"malKabulRecords"> | number
+    urunDurumu?: StringFilter<"malKabulRecords"> | string
+    userId?: StringFilter<"malKabulRecords"> | string
+    createdAt?: DateTimeNullableFilter<"malKabulRecords"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"malKabulRecords"> | Date | string | null
+  }, "id">
+
+  export type malKabulRecordsOrderByWithAggregationInput = {
+    id?: SortOrder
+    fisNo?: SortOrder
+    tarih?: SortOrder
+    saticiTipi?: SortOrder
+    saticiId?: SortOrder
+    urunId?: SortOrder
+    ureticiId?: SortOrder
+    ambalajId?: SortOrder
+    brutKg?: SortOrder
+    daraKg?: SortOrder
+    girisKg?: SortOrder
+    cikmaKg?: SortOrder
+    fireKg?: SortOrder
+    netKg?: SortOrder
+    urunDurumu?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
+    _count?: malKabulRecordsCountOrderByAggregateInput
+    _avg?: malKabulRecordsAvgOrderByAggregateInput
+    _max?: malKabulRecordsMaxOrderByAggregateInput
+    _min?: malKabulRecordsMinOrderByAggregateInput
+    _sum?: malKabulRecordsSumOrderByAggregateInput
+  }
+
+  export type malKabulRecordsScalarWhereWithAggregatesInput = {
+    AND?: malKabulRecordsScalarWhereWithAggregatesInput | malKabulRecordsScalarWhereWithAggregatesInput[]
+    OR?: malKabulRecordsScalarWhereWithAggregatesInput[]
+    NOT?: malKabulRecordsScalarWhereWithAggregatesInput | malKabulRecordsScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"malKabulRecords"> | string
+    fisNo?: StringWithAggregatesFilter<"malKabulRecords"> | string
+    tarih?: DateTimeWithAggregatesFilter<"malKabulRecords"> | Date | string
+    saticiTipi?: StringWithAggregatesFilter<"malKabulRecords"> | string
+    saticiId?: StringWithAggregatesFilter<"malKabulRecords"> | string
+    urunId?: StringWithAggregatesFilter<"malKabulRecords"> | string
+    ureticiId?: StringWithAggregatesFilter<"malKabulRecords"> | string
+    ambalajId?: StringWithAggregatesFilter<"malKabulRecords"> | string
+    brutKg?: FloatWithAggregatesFilter<"malKabulRecords"> | number
+    daraKg?: FloatWithAggregatesFilter<"malKabulRecords"> | number
+    girisKg?: FloatWithAggregatesFilter<"malKabulRecords"> | number
+    cikmaKg?: FloatWithAggregatesFilter<"malKabulRecords"> | number
+    fireKg?: FloatWithAggregatesFilter<"malKabulRecords"> | number
+    netKg?: FloatWithAggregatesFilter<"malKabulRecords"> | number
+    urunDurumu?: StringWithAggregatesFilter<"malKabulRecords"> | string
+    userId?: StringWithAggregatesFilter<"malKabulRecords"> | string
+    createdAt?: DateTimeNullableWithAggregatesFilter<"malKabulRecords"> | Date | string | null
+    updatedAt?: DateTimeNullableWithAggregatesFilter<"malKabulRecords"> | Date | string | null
   }
 
   export type ambalajlarCreateInput = {
     id: string
     ad: string
-    tipi: $Enums.AmbalajTipi
+    tipi: string
     daraKg: number
     aciklama?: string | null
-    durum?: $Enums.Status
-    createdAt?: Date | string
-    updatedAt: Date | string
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     mal_kabul_records?: mal_kabul_recordsCreateNestedManyWithoutAmbalajlarInput
   }
 
   export type ambalajlarUncheckedCreateInput = {
     id: string
     ad: string
-    tipi: $Enums.AmbalajTipi
+    tipi: string
     daraKg: number
     aciklama?: string | null
-    durum?: $Enums.Status
-    createdAt?: Date | string
-    updatedAt: Date | string
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     mal_kabul_records?: mal_kabul_recordsUncheckedCreateNestedManyWithoutAmbalajlarInput
   }
 
   export type ambalajlarUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     ad?: StringFieldUpdateOperationsInput | string
-    tipi?: EnumAmbalajTipiFieldUpdateOperationsInput | $Enums.AmbalajTipi
+    tipi?: StringFieldUpdateOperationsInput | string
     daraKg?: FloatFieldUpdateOperationsInput | number
     aciklama?: NullableStringFieldUpdateOperationsInput | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mal_kabul_records?: mal_kabul_recordsUpdateManyWithoutAmbalajlarNestedInput
   }
 
   export type ambalajlarUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     ad?: StringFieldUpdateOperationsInput | string
-    tipi?: EnumAmbalajTipiFieldUpdateOperationsInput | $Enums.AmbalajTipi
+    tipi?: StringFieldUpdateOperationsInput | string
     daraKg?: FloatFieldUpdateOperationsInput | number
     aciklama?: NullableStringFieldUpdateOperationsInput | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mal_kabul_records?: mal_kabul_recordsUncheckedUpdateManyWithoutAmbalajlarNestedInput
   }
 
   export type ambalajlarCreateManyInput = {
     id: string
     ad: string
-    tipi: $Enums.AmbalajTipi
+    tipi: string
     daraKg: number
     aciklama?: string | null
-    durum?: $Enums.Status
-    createdAt?: Date | string
-    updatedAt: Date | string
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
   }
 
   export type ambalajlarUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     ad?: StringFieldUpdateOperationsInput | string
-    tipi?: EnumAmbalajTipiFieldUpdateOperationsInput | $Enums.AmbalajTipi
+    tipi?: StringFieldUpdateOperationsInput | string
     daraKg?: FloatFieldUpdateOperationsInput | number
     aciklama?: NullableStringFieldUpdateOperationsInput | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ambalajlarUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     ad?: StringFieldUpdateOperationsInput | string
-    tipi?: EnumAmbalajTipiFieldUpdateOperationsInput | $Enums.AmbalajTipi
+    tipi?: StringFieldUpdateOperationsInput | string
     daraKg?: FloatFieldUpdateOperationsInput | number
     aciklama?: NullableStringFieldUpdateOperationsInput | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type faturalarCreateInput = {
     id: string
     faturaNo: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     toplamTutar: number
-    kdvOrani?: number
+    kdvOrani?: number | null
     kdvTutari: number
     genelToplam: number
     notlar?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
-    users: usersCreateNestedOneWithoutFaturalarInput
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     mal_kabul_records?: mal_kabul_recordsCreateNestedManyWithoutFaturalarInput
+    users: usersCreateNestedOneWithoutFaturalarInput
   }
 
   export type faturalarUncheckedCreateInput = {
     id: string
     faturaNo: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     toplamTutar: number
-    kdvOrani?: number
+    kdvOrani?: number | null
     kdvTutari: number
     genelToplam: number
     notlar?: string | null
     satinAlmaciId: string
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     mal_kabul_records?: mal_kabul_recordsUncheckedCreateNestedManyWithoutFaturalarInput
   }
 
   export type faturalarUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     faturaNo?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     toplamTutar?: FloatFieldUpdateOperationsInput | number
-    kdvOrani?: FloatFieldUpdateOperationsInput | number
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvTutari?: FloatFieldUpdateOperationsInput | number
     genelToplam?: FloatFieldUpdateOperationsInput | number
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: usersUpdateOneRequiredWithoutFaturalarNestedInput
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mal_kabul_records?: mal_kabul_recordsUpdateManyWithoutFaturalarNestedInput
+    users?: usersUpdateOneRequiredWithoutFaturalarNestedInput
   }
 
   export type faturalarUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     faturaNo?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     toplamTutar?: FloatFieldUpdateOperationsInput | number
-    kdvOrani?: FloatFieldUpdateOperationsInput | number
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvTutari?: FloatFieldUpdateOperationsInput | number
     genelToplam?: FloatFieldUpdateOperationsInput | number
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     satinAlmaciId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mal_kabul_records?: mal_kabul_recordsUncheckedUpdateManyWithoutFaturalarNestedInput
   }
 
   export type faturalarCreateManyInput = {
     id: string
     faturaNo: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     toplamTutar: number
-    kdvOrani?: number
+    kdvOrani?: number | null
     kdvTutari: number
     genelToplam: number
     notlar?: string | null
     satinAlmaciId: string
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
   }
 
   export type faturalarUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     faturaNo?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     toplamTutar?: FloatFieldUpdateOperationsInput | number
-    kdvOrani?: FloatFieldUpdateOperationsInput | number
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvTutari?: FloatFieldUpdateOperationsInput | number
     genelToplam?: FloatFieldUpdateOperationsInput | number
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type faturalarUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     faturaNo?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     toplamTutar?: FloatFieldUpdateOperationsInput | number
-    kdvOrani?: FloatFieldUpdateOperationsInput | number
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvTutari?: FloatFieldUpdateOperationsInput | number
     genelToplam?: FloatFieldUpdateOperationsInput | number
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     satinAlmaciId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type komisyoncularCreateInput = {
     id: string
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     dukkanAdi: string
-    durum?: $Enums.Status
+    durum?: string
     komisyonNo: string
+    komisyonKodu: string
     sehir: string
     vkn?: string | null
     yetkiliAdi?: string | null
     yetkiliTelefon?: string | null
-    komisyonKodu: string
     mal_kabul_records?: mal_kabul_recordsCreateNestedManyWithoutKomisyoncularInput
     ureticiler?: ureticilerCreateNestedManyWithoutKomisyoncularInput
   }
 
   export type komisyoncularUncheckedCreateInput = {
     id: string
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     dukkanAdi: string
-    durum?: $Enums.Status
+    durum?: string
     komisyonNo: string
+    komisyonKodu: string
     sehir: string
     vkn?: string | null
     yetkiliAdi?: string | null
     yetkiliTelefon?: string | null
-    komisyonKodu: string
     mal_kabul_records?: mal_kabul_recordsUncheckedCreateNestedManyWithoutKomisyoncularInput
     ureticiler?: ureticilerUncheckedCreateNestedManyWithoutKomisyoncularInput
   }
 
   export type komisyoncularUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dukkanAdi?: StringFieldUpdateOperationsInput | string
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    durum?: StringFieldUpdateOperationsInput | string
     komisyonNo?: StringFieldUpdateOperationsInput | string
+    komisyonKodu?: StringFieldUpdateOperationsInput | string
     sehir?: StringFieldUpdateOperationsInput | string
     vkn?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliAdi?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliTelefon?: NullableStringFieldUpdateOperationsInput | string | null
-    komisyonKodu?: StringFieldUpdateOperationsInput | string
     mal_kabul_records?: mal_kabul_recordsUpdateManyWithoutKomisyoncularNestedInput
     ureticiler?: ureticilerUpdateManyWithoutKomisyoncularNestedInput
   }
 
   export type komisyoncularUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dukkanAdi?: StringFieldUpdateOperationsInput | string
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    durum?: StringFieldUpdateOperationsInput | string
     komisyonNo?: StringFieldUpdateOperationsInput | string
+    komisyonKodu?: StringFieldUpdateOperationsInput | string
     sehir?: StringFieldUpdateOperationsInput | string
     vkn?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliAdi?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliTelefon?: NullableStringFieldUpdateOperationsInput | string | null
-    komisyonKodu?: StringFieldUpdateOperationsInput | string
     mal_kabul_records?: mal_kabul_recordsUncheckedUpdateManyWithoutKomisyoncularNestedInput
     ureticiler?: ureticilerUncheckedUpdateManyWithoutKomisyoncularNestedInput
   }
 
   export type komisyoncularCreateManyInput = {
     id: string
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     dukkanAdi: string
-    durum?: $Enums.Status
+    durum?: string
     komisyonNo: string
+    komisyonKodu: string
     sehir: string
     vkn?: string | null
     yetkiliAdi?: string | null
     yetkiliTelefon?: string | null
-    komisyonKodu: string
   }
 
   export type komisyoncularUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dukkanAdi?: StringFieldUpdateOperationsInput | string
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    durum?: StringFieldUpdateOperationsInput | string
     komisyonNo?: StringFieldUpdateOperationsInput | string
+    komisyonKodu?: StringFieldUpdateOperationsInput | string
     sehir?: StringFieldUpdateOperationsInput | string
     vkn?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliAdi?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliTelefon?: NullableStringFieldUpdateOperationsInput | string | null
-    komisyonKodu?: StringFieldUpdateOperationsInput | string
   }
 
   export type komisyoncularUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dukkanAdi?: StringFieldUpdateOperationsInput | string
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    durum?: StringFieldUpdateOperationsInput | string
     komisyonNo?: StringFieldUpdateOperationsInput | string
+    komisyonKodu?: StringFieldUpdateOperationsInput | string
     sehir?: StringFieldUpdateOperationsInput | string
     vkn?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliAdi?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliTelefon?: NullableStringFieldUpdateOperationsInput | string | null
-    komisyonKodu?: StringFieldUpdateOperationsInput | string
   }
 
   export type mal_kabul_recordsCreateInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
-    saticiTipi?: $Enums.SaticiTipi
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
-    ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
-    faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
-    komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
+    saticiTipi?: string
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
-    mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
-    ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
+    komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
     urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
+    faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
+    mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
+    ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
+    ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
   }
 
   export type mal_kabul_recordsUncheckedCreateInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
     ureticiId?: string | null
     urunId: string
     faturaId?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
     mustahsilId?: string | null
     ozelFirmaId?: string | null
-    saticiTipi?: $Enums.SaticiTipi
+    saticiTipi?: string
     ambalajId?: string | null
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
   }
 
   export type mal_kabul_recordsUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
-    ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
-    faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
-    komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
-    mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
-    ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
     urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
+    faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
+    ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
     ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
     urunId?: StringFieldUpdateOperationsInput | string
     faturaId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
     mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
     ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
+    saticiTipi?: StringFieldUpdateOperationsInput | string
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsCreateManyInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
     ureticiId?: string | null
     urunId: string
     faturaId?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
     mustahsilId?: string | null
     ozelFirmaId?: string | null
-    saticiTipi?: $Enums.SaticiTipi
+    saticiTipi?: string
     ambalajId?: string | null
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
   }
 
   export type mal_kabul_recordsUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
     ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
     urunId?: StringFieldUpdateOperationsInput | string
     faturaId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
     mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
     ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
+    saticiTipi?: StringFieldUpdateOperationsInput | string
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type mustahsilCreateInput = {
@@ -14551,15 +15919,15 @@ export namespace Prisma {
     soyad: string
     dogumTarihi: Date | string
     tcKimlikNo: string
-    ibanAdresi?: string | null
-    adres?: string | null
-    cinsiyet: $Enums.Gender
-    durum?: $Enums.Status
-    createdAt?: Date | string
-    updatedAt: Date | string
     mustahsilNo: string
     iletisim?: string | null
     bankaAdi?: string | null
+    ibanAdresi?: string | null
+    adres?: string | null
+    cinsiyet: string
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     mal_kabul_records?: mal_kabul_recordsCreateNestedManyWithoutMustahsilInput
   }
 
@@ -14569,15 +15937,15 @@ export namespace Prisma {
     soyad: string
     dogumTarihi: Date | string
     tcKimlikNo: string
-    ibanAdresi?: string | null
-    adres?: string | null
-    cinsiyet: $Enums.Gender
-    durum?: $Enums.Status
-    createdAt?: Date | string
-    updatedAt: Date | string
     mustahsilNo: string
     iletisim?: string | null
     bankaAdi?: string | null
+    ibanAdresi?: string | null
+    adres?: string | null
+    cinsiyet: string
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     mal_kabul_records?: mal_kabul_recordsUncheckedCreateNestedManyWithoutMustahsilInput
   }
 
@@ -14587,15 +15955,15 @@ export namespace Prisma {
     soyad?: StringFieldUpdateOperationsInput | string
     dogumTarihi?: DateTimeFieldUpdateOperationsInput | Date | string
     tcKimlikNo?: StringFieldUpdateOperationsInput | string
-    ibanAdresi?: NullableStringFieldUpdateOperationsInput | string | null
-    adres?: NullableStringFieldUpdateOperationsInput | string | null
-    cinsiyet?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     mustahsilNo?: StringFieldUpdateOperationsInput | string
     iletisim?: NullableStringFieldUpdateOperationsInput | string | null
     bankaAdi?: NullableStringFieldUpdateOperationsInput | string | null
+    ibanAdresi?: NullableStringFieldUpdateOperationsInput | string | null
+    adres?: NullableStringFieldUpdateOperationsInput | string | null
+    cinsiyet?: StringFieldUpdateOperationsInput | string
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mal_kabul_records?: mal_kabul_recordsUpdateManyWithoutMustahsilNestedInput
   }
 
@@ -14605,15 +15973,15 @@ export namespace Prisma {
     soyad?: StringFieldUpdateOperationsInput | string
     dogumTarihi?: DateTimeFieldUpdateOperationsInput | Date | string
     tcKimlikNo?: StringFieldUpdateOperationsInput | string
-    ibanAdresi?: NullableStringFieldUpdateOperationsInput | string | null
-    adres?: NullableStringFieldUpdateOperationsInput | string | null
-    cinsiyet?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     mustahsilNo?: StringFieldUpdateOperationsInput | string
     iletisim?: NullableStringFieldUpdateOperationsInput | string | null
     bankaAdi?: NullableStringFieldUpdateOperationsInput | string | null
+    ibanAdresi?: NullableStringFieldUpdateOperationsInput | string | null
+    adres?: NullableStringFieldUpdateOperationsInput | string | null
+    cinsiyet?: StringFieldUpdateOperationsInput | string
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mal_kabul_records?: mal_kabul_recordsUncheckedUpdateManyWithoutMustahsilNestedInput
   }
 
@@ -14623,15 +15991,15 @@ export namespace Prisma {
     soyad: string
     dogumTarihi: Date | string
     tcKimlikNo: string
-    ibanAdresi?: string | null
-    adres?: string | null
-    cinsiyet: $Enums.Gender
-    durum?: $Enums.Status
-    createdAt?: Date | string
-    updatedAt: Date | string
     mustahsilNo: string
     iletisim?: string | null
     bankaAdi?: string | null
+    ibanAdresi?: string | null
+    adres?: string | null
+    cinsiyet: string
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
   }
 
   export type mustahsilUpdateManyMutationInput = {
@@ -14640,15 +16008,15 @@ export namespace Prisma {
     soyad?: StringFieldUpdateOperationsInput | string
     dogumTarihi?: DateTimeFieldUpdateOperationsInput | Date | string
     tcKimlikNo?: StringFieldUpdateOperationsInput | string
-    ibanAdresi?: NullableStringFieldUpdateOperationsInput | string | null
-    adres?: NullableStringFieldUpdateOperationsInput | string | null
-    cinsiyet?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     mustahsilNo?: StringFieldUpdateOperationsInput | string
     iletisim?: NullableStringFieldUpdateOperationsInput | string | null
     bankaAdi?: NullableStringFieldUpdateOperationsInput | string | null
+    ibanAdresi?: NullableStringFieldUpdateOperationsInput | string | null
+    adres?: NullableStringFieldUpdateOperationsInput | string | null
+    cinsiyet?: StringFieldUpdateOperationsInput | string
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mustahsilUncheckedUpdateManyInput = {
@@ -14657,138 +16025,138 @@ export namespace Prisma {
     soyad?: StringFieldUpdateOperationsInput | string
     dogumTarihi?: DateTimeFieldUpdateOperationsInput | Date | string
     tcKimlikNo?: StringFieldUpdateOperationsInput | string
-    ibanAdresi?: NullableStringFieldUpdateOperationsInput | string | null
-    adres?: NullableStringFieldUpdateOperationsInput | string | null
-    cinsiyet?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     mustahsilNo?: StringFieldUpdateOperationsInput | string
     iletisim?: NullableStringFieldUpdateOperationsInput | string | null
     bankaAdi?: NullableStringFieldUpdateOperationsInput | string | null
+    ibanAdresi?: NullableStringFieldUpdateOperationsInput | string | null
+    adres?: NullableStringFieldUpdateOperationsInput | string | null
+    cinsiyet?: StringFieldUpdateOperationsInput | string
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ozel_firmalarCreateInput = {
     id: string
     firmaAdi: string
+    firmaNo: string
     vkn?: string | null
+    vergiDairesi?: string | null
     yetkiliAdi?: string | null
     yetkiliTelefon?: string | null
     sehir: string
     adres?: string | null
-    durum?: $Enums.Status
-    createdAt?: Date | string
-    updatedAt: Date | string
-    firmaNo: string
-    vergiDairesi?: string | null
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     mal_kabul_records?: mal_kabul_recordsCreateNestedManyWithoutOzel_firmalarInput
   }
 
   export type ozel_firmalarUncheckedCreateInput = {
     id: string
     firmaAdi: string
+    firmaNo: string
     vkn?: string | null
+    vergiDairesi?: string | null
     yetkiliAdi?: string | null
     yetkiliTelefon?: string | null
     sehir: string
     adres?: string | null
-    durum?: $Enums.Status
-    createdAt?: Date | string
-    updatedAt: Date | string
-    firmaNo: string
-    vergiDairesi?: string | null
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     mal_kabul_records?: mal_kabul_recordsUncheckedCreateNestedManyWithoutOzel_firmalarInput
   }
 
   export type ozel_firmalarUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     firmaAdi?: StringFieldUpdateOperationsInput | string
+    firmaNo?: StringFieldUpdateOperationsInput | string
     vkn?: NullableStringFieldUpdateOperationsInput | string | null
+    vergiDairesi?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliAdi?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliTelefon?: NullableStringFieldUpdateOperationsInput | string | null
     sehir?: StringFieldUpdateOperationsInput | string
     adres?: NullableStringFieldUpdateOperationsInput | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    firmaNo?: StringFieldUpdateOperationsInput | string
-    vergiDairesi?: NullableStringFieldUpdateOperationsInput | string | null
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mal_kabul_records?: mal_kabul_recordsUpdateManyWithoutOzel_firmalarNestedInput
   }
 
   export type ozel_firmalarUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     firmaAdi?: StringFieldUpdateOperationsInput | string
+    firmaNo?: StringFieldUpdateOperationsInput | string
     vkn?: NullableStringFieldUpdateOperationsInput | string | null
+    vergiDairesi?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliAdi?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliTelefon?: NullableStringFieldUpdateOperationsInput | string | null
     sehir?: StringFieldUpdateOperationsInput | string
     adres?: NullableStringFieldUpdateOperationsInput | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    firmaNo?: StringFieldUpdateOperationsInput | string
-    vergiDairesi?: NullableStringFieldUpdateOperationsInput | string | null
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mal_kabul_records?: mal_kabul_recordsUncheckedUpdateManyWithoutOzel_firmalarNestedInput
   }
 
   export type ozel_firmalarCreateManyInput = {
     id: string
     firmaAdi: string
+    firmaNo: string
     vkn?: string | null
+    vergiDairesi?: string | null
     yetkiliAdi?: string | null
     yetkiliTelefon?: string | null
     sehir: string
     adres?: string | null
-    durum?: $Enums.Status
-    createdAt?: Date | string
-    updatedAt: Date | string
-    firmaNo: string
-    vergiDairesi?: string | null
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
   }
 
   export type ozel_firmalarUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     firmaAdi?: StringFieldUpdateOperationsInput | string
+    firmaNo?: StringFieldUpdateOperationsInput | string
     vkn?: NullableStringFieldUpdateOperationsInput | string | null
+    vergiDairesi?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliAdi?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliTelefon?: NullableStringFieldUpdateOperationsInput | string | null
     sehir?: StringFieldUpdateOperationsInput | string
     adres?: NullableStringFieldUpdateOperationsInput | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    firmaNo?: StringFieldUpdateOperationsInput | string
-    vergiDairesi?: NullableStringFieldUpdateOperationsInput | string | null
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ozel_firmalarUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     firmaAdi?: StringFieldUpdateOperationsInput | string
+    firmaNo?: StringFieldUpdateOperationsInput | string
     vkn?: NullableStringFieldUpdateOperationsInput | string | null
+    vergiDairesi?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliAdi?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliTelefon?: NullableStringFieldUpdateOperationsInput | string | null
     sehir?: StringFieldUpdateOperationsInput | string
     adres?: NullableStringFieldUpdateOperationsInput | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    firmaNo?: StringFieldUpdateOperationsInput | string
-    vergiDairesi?: NullableStringFieldUpdateOperationsInput | string | null
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ureticilerCreateInput = {
     id: string
     ad: string
-    createdAt?: Date | string
-    updatedAt: Date | string
-    cinsiyet: $Enums.Gender
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    cinsiyet: string
     dogumTarihi?: Date | string | null
-    durum?: $Enums.Status
     iletisim?: string | null
     sehir: string
     soyad: string
     tcNo?: string | null
+    durum?: string
     mal_kabul_records?: mal_kabul_recordsCreateNestedManyWithoutUreticilerInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutUreticilerInput
   }
@@ -14796,31 +16164,31 @@ export namespace Prisma {
   export type ureticilerUncheckedCreateInput = {
     id: string
     ad: string
-    createdAt?: Date | string
-    updatedAt: Date | string
-    cinsiyet: $Enums.Gender
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    cinsiyet: string
     dogumTarihi?: Date | string | null
-    durum?: $Enums.Status
     iletisim?: string | null
     komisyoncuId?: string | null
     sehir: string
     soyad: string
     tcNo?: string | null
+    durum?: string
     mal_kabul_records?: mal_kabul_recordsUncheckedCreateNestedManyWithoutUreticilerInput
   }
 
   export type ureticilerUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     ad?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    cinsiyet?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cinsiyet?: StringFieldUpdateOperationsInput | string
     dogumTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     iletisim?: NullableStringFieldUpdateOperationsInput | string | null
     sehir?: StringFieldUpdateOperationsInput | string
     soyad?: StringFieldUpdateOperationsInput | string
     tcNo?: NullableStringFieldUpdateOperationsInput | string | null
+    durum?: StringFieldUpdateOperationsInput | string
     mal_kabul_records?: mal_kabul_recordsUpdateManyWithoutUreticilerNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutUreticilerNestedInput
   }
@@ -14828,142 +16196,142 @@ export namespace Prisma {
   export type ureticilerUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     ad?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    cinsiyet?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cinsiyet?: StringFieldUpdateOperationsInput | string
     dogumTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     iletisim?: NullableStringFieldUpdateOperationsInput | string | null
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
     sehir?: StringFieldUpdateOperationsInput | string
     soyad?: StringFieldUpdateOperationsInput | string
     tcNo?: NullableStringFieldUpdateOperationsInput | string | null
+    durum?: StringFieldUpdateOperationsInput | string
     mal_kabul_records?: mal_kabul_recordsUncheckedUpdateManyWithoutUreticilerNestedInput
   }
 
   export type ureticilerCreateManyInput = {
     id: string
     ad: string
-    createdAt?: Date | string
-    updatedAt: Date | string
-    cinsiyet: $Enums.Gender
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    cinsiyet: string
     dogumTarihi?: Date | string | null
-    durum?: $Enums.Status
     iletisim?: string | null
     komisyoncuId?: string | null
     sehir: string
     soyad: string
     tcNo?: string | null
+    durum?: string
   }
 
   export type ureticilerUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     ad?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    cinsiyet?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cinsiyet?: StringFieldUpdateOperationsInput | string
     dogumTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     iletisim?: NullableStringFieldUpdateOperationsInput | string | null
     sehir?: StringFieldUpdateOperationsInput | string
     soyad?: StringFieldUpdateOperationsInput | string
     tcNo?: NullableStringFieldUpdateOperationsInput | string | null
+    durum?: StringFieldUpdateOperationsInput | string
   }
 
   export type ureticilerUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     ad?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    cinsiyet?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cinsiyet?: StringFieldUpdateOperationsInput | string
     dogumTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     iletisim?: NullableStringFieldUpdateOperationsInput | string | null
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
     sehir?: StringFieldUpdateOperationsInput | string
     soyad?: StringFieldUpdateOperationsInput | string
     tcNo?: NullableStringFieldUpdateOperationsInput | string | null
+    durum?: StringFieldUpdateOperationsInput | string
   }
 
   export type urunlerCreateInput = {
     id: string
     ad: string
+    stokKodu: string
     kategori?: string | null
     birim: string
-    createdAt?: Date | string
-    updatedAt: Date | string
-    durum?: $Enums.Status
-    stokKodu: string
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     mal_kabul_records?: mal_kabul_recordsCreateNestedManyWithoutUrunlerInput
   }
 
   export type urunlerUncheckedCreateInput = {
     id: string
     ad: string
+    stokKodu: string
     kategori?: string | null
     birim: string
-    createdAt?: Date | string
-    updatedAt: Date | string
-    durum?: $Enums.Status
-    stokKodu: string
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     mal_kabul_records?: mal_kabul_recordsUncheckedCreateNestedManyWithoutUrunlerInput
   }
 
   export type urunlerUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     ad?: StringFieldUpdateOperationsInput | string
+    stokKodu?: StringFieldUpdateOperationsInput | string
     kategori?: NullableStringFieldUpdateOperationsInput | string | null
     birim?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    stokKodu?: StringFieldUpdateOperationsInput | string
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mal_kabul_records?: mal_kabul_recordsUpdateManyWithoutUrunlerNestedInput
   }
 
   export type urunlerUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     ad?: StringFieldUpdateOperationsInput | string
+    stokKodu?: StringFieldUpdateOperationsInput | string
     kategori?: NullableStringFieldUpdateOperationsInput | string | null
     birim?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    stokKodu?: StringFieldUpdateOperationsInput | string
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mal_kabul_records?: mal_kabul_recordsUncheckedUpdateManyWithoutUrunlerNestedInput
   }
 
   export type urunlerCreateManyInput = {
     id: string
     ad: string
+    stokKodu: string
     kategori?: string | null
     birim: string
-    createdAt?: Date | string
-    updatedAt: Date | string
-    durum?: $Enums.Status
-    stokKodu: string
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
   }
 
   export type urunlerUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     ad?: StringFieldUpdateOperationsInput | string
+    stokKodu?: StringFieldUpdateOperationsInput | string
     kategori?: NullableStringFieldUpdateOperationsInput | string | null
     birim?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    stokKodu?: StringFieldUpdateOperationsInput | string
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type urunlerUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     ad?: StringFieldUpdateOperationsInput | string
+    stokKodu?: StringFieldUpdateOperationsInput | string
     kategori?: NullableStringFieldUpdateOperationsInput | string | null
     birim?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    stokKodu?: StringFieldUpdateOperationsInput | string
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type usersCreateInput = {
@@ -14972,11 +16340,11 @@ export namespace Prisma {
     lastName: string
     email: string
     password: string
-    role?: $Enums.UserRole
-    createdAt?: Date | string
-    updatedAt: Date | string
-    faturalar?: faturalarCreateNestedManyWithoutUsersInput
+    role?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     mal_kabul_records?: mal_kabul_recordsCreateNestedManyWithoutUsersInput
+    faturalar?: faturalarCreateNestedManyWithoutUsersInput
   }
 
   export type usersUncheckedCreateInput = {
@@ -14985,11 +16353,11 @@ export namespace Prisma {
     lastName: string
     email: string
     password: string
-    role?: $Enums.UserRole
-    createdAt?: Date | string
-    updatedAt: Date | string
-    faturalar?: faturalarUncheckedCreateNestedManyWithoutUsersInput
+    role?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     mal_kabul_records?: mal_kabul_recordsUncheckedCreateNestedManyWithoutUsersInput
+    faturalar?: faturalarUncheckedCreateNestedManyWithoutUsersInput
   }
 
   export type usersUpdateInput = {
@@ -14998,11 +16366,11 @@ export namespace Prisma {
     lastName?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    faturalar?: faturalarUpdateManyWithoutUsersNestedInput
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mal_kabul_records?: mal_kabul_recordsUpdateManyWithoutUsersNestedInput
+    faturalar?: faturalarUpdateManyWithoutUsersNestedInput
   }
 
   export type usersUncheckedUpdateInput = {
@@ -15011,11 +16379,11 @@ export namespace Prisma {
     lastName?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    faturalar?: faturalarUncheckedUpdateManyWithoutUsersNestedInput
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mal_kabul_records?: mal_kabul_recordsUncheckedUpdateManyWithoutUsersNestedInput
+    faturalar?: faturalarUncheckedUpdateManyWithoutUsersNestedInput
   }
 
   export type usersCreateManyInput = {
@@ -15024,9 +16392,9 @@ export namespace Prisma {
     lastName: string
     email: string
     password: string
-    role?: $Enums.UserRole
-    createdAt?: Date | string
-    updatedAt: Date | string
+    role?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
   }
 
   export type usersUpdateManyMutationInput = {
@@ -15035,9 +16403,9 @@ export namespace Prisma {
     lastName?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type usersUncheckedUpdateManyInput = {
@@ -15046,9 +16414,156 @@ export namespace Prisma {
     lastName?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type malKabulRecordsCreateInput = {
+    id: string
+    fisNo: string
+    tarih: Date | string
+    saticiTipi: string
+    saticiId: string
+    urunId: string
+    ureticiId: string
+    ambalajId: string
+    brutKg: number
+    daraKg: number
+    girisKg: number
+    cikmaKg?: number
+    fireKg?: number
+    netKg?: number
+    urunDurumu?: string
+    userId: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type malKabulRecordsUncheckedCreateInput = {
+    id: string
+    fisNo: string
+    tarih: Date | string
+    saticiTipi: string
+    saticiId: string
+    urunId: string
+    ureticiId: string
+    ambalajId: string
+    brutKg: number
+    daraKg: number
+    girisKg: number
+    cikmaKg?: number
+    fireKg?: number
+    netKg?: number
+    urunDurumu?: string
+    userId: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type malKabulRecordsUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fisNo?: StringFieldUpdateOperationsInput | string
+    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    saticiId?: StringFieldUpdateOperationsInput | string
+    urunId?: StringFieldUpdateOperationsInput | string
+    ureticiId?: StringFieldUpdateOperationsInput | string
+    ambalajId?: StringFieldUpdateOperationsInput | string
+    brutKg?: FloatFieldUpdateOperationsInput | number
+    daraKg?: FloatFieldUpdateOperationsInput | number
+    girisKg?: FloatFieldUpdateOperationsInput | number
+    cikmaKg?: FloatFieldUpdateOperationsInput | number
+    fireKg?: FloatFieldUpdateOperationsInput | number
+    netKg?: FloatFieldUpdateOperationsInput | number
+    urunDurumu?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type malKabulRecordsUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fisNo?: StringFieldUpdateOperationsInput | string
+    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    saticiId?: StringFieldUpdateOperationsInput | string
+    urunId?: StringFieldUpdateOperationsInput | string
+    ureticiId?: StringFieldUpdateOperationsInput | string
+    ambalajId?: StringFieldUpdateOperationsInput | string
+    brutKg?: FloatFieldUpdateOperationsInput | number
+    daraKg?: FloatFieldUpdateOperationsInput | number
+    girisKg?: FloatFieldUpdateOperationsInput | number
+    cikmaKg?: FloatFieldUpdateOperationsInput | number
+    fireKg?: FloatFieldUpdateOperationsInput | number
+    netKg?: FloatFieldUpdateOperationsInput | number
+    urunDurumu?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type malKabulRecordsCreateManyInput = {
+    id: string
+    fisNo: string
+    tarih: Date | string
+    saticiTipi: string
+    saticiId: string
+    urunId: string
+    ureticiId: string
+    ambalajId: string
+    brutKg: number
+    daraKg: number
+    girisKg: number
+    cikmaKg?: number
+    fireKg?: number
+    netKg?: number
+    urunDurumu?: string
+    userId: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type malKabulRecordsUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fisNo?: StringFieldUpdateOperationsInput | string
+    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    saticiId?: StringFieldUpdateOperationsInput | string
+    urunId?: StringFieldUpdateOperationsInput | string
+    ureticiId?: StringFieldUpdateOperationsInput | string
+    ambalajId?: StringFieldUpdateOperationsInput | string
+    brutKg?: FloatFieldUpdateOperationsInput | number
+    daraKg?: FloatFieldUpdateOperationsInput | number
+    girisKg?: FloatFieldUpdateOperationsInput | number
+    cikmaKg?: FloatFieldUpdateOperationsInput | number
+    fireKg?: FloatFieldUpdateOperationsInput | number
+    netKg?: FloatFieldUpdateOperationsInput | number
+    urunDurumu?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type malKabulRecordsUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fisNo?: StringFieldUpdateOperationsInput | string
+    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    saticiId?: StringFieldUpdateOperationsInput | string
+    urunId?: StringFieldUpdateOperationsInput | string
+    ureticiId?: StringFieldUpdateOperationsInput | string
+    ambalajId?: StringFieldUpdateOperationsInput | string
+    brutKg?: FloatFieldUpdateOperationsInput | number
+    daraKg?: FloatFieldUpdateOperationsInput | number
+    girisKg?: FloatFieldUpdateOperationsInput | number
+    cikmaKg?: FloatFieldUpdateOperationsInput | number
+    fireKg?: FloatFieldUpdateOperationsInput | number
+    netKg?: FloatFieldUpdateOperationsInput | number
+    urunDurumu?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -15064,13 +16579,6 @@ export namespace Prisma {
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     mode?: QueryMode
     not?: NestedStringFilter<$PrismaModel> | string
-  }
-
-  export type EnumAmbalajTipiFilter<$PrismaModel = never> = {
-    equals?: $Enums.AmbalajTipi | EnumAmbalajTipiFieldRefInput<$PrismaModel>
-    in?: $Enums.AmbalajTipi[] | ListEnumAmbalajTipiFieldRefInput<$PrismaModel>
-    notIn?: $Enums.AmbalajTipi[] | ListEnumAmbalajTipiFieldRefInput<$PrismaModel>
-    not?: NestedEnumAmbalajTipiFilter<$PrismaModel> | $Enums.AmbalajTipi
   }
 
   export type FloatFilter<$PrismaModel = never> = {
@@ -15099,22 +16607,15 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type EnumStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.Status | EnumStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.Status[] | ListEnumStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Status[] | ListEnumStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumStatusFilter<$PrismaModel> | $Enums.Status
-  }
-
-  export type DateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
     lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type Mal_kabul_recordsListRelationFilter = {
@@ -15191,16 +16692,6 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type EnumAmbalajTipiWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.AmbalajTipi | EnumAmbalajTipiFieldRefInput<$PrismaModel>
-    in?: $Enums.AmbalajTipi[] | ListEnumAmbalajTipiFieldRefInput<$PrismaModel>
-    notIn?: $Enums.AmbalajTipi[] | ListEnumAmbalajTipiFieldRefInput<$PrismaModel>
-    not?: NestedEnumAmbalajTipiWithAggregatesFilter<$PrismaModel> | $Enums.AmbalajTipi
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumAmbalajTipiFilter<$PrismaModel>
-    _max?: NestedEnumAmbalajTipiFilter<$PrismaModel>
-  }
-
   export type FloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -15235,28 +16726,29 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type EnumStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Status | EnumStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.Status[] | ListEnumStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Status[] | ListEnumStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumStatusWithAggregatesFilter<$PrismaModel> | $Enums.Status
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumStatusFilter<$PrismaModel>
-    _max?: NestedEnumStatusFilter<$PrismaModel>
-  }
-
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
     lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type UsersScalarRelationFilter = {
@@ -15320,6 +16812,22 @@ export namespace Prisma {
     genelToplam?: SortOrder
   }
 
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
   export type UreticilerListRelationFilter = {
     every?: ureticilerWhereInput
     some?: ureticilerWhereInput
@@ -15337,11 +16845,11 @@ export namespace Prisma {
     dukkanAdi?: SortOrder
     durum?: SortOrder
     komisyonNo?: SortOrder
+    komisyonKodu?: SortOrder
     sehir?: SortOrder
     vkn?: SortOrder
     yetkiliAdi?: SortOrder
     yetkiliTelefon?: SortOrder
-    komisyonKodu?: SortOrder
   }
 
   export type komisyoncularMaxOrderByAggregateInput = {
@@ -15351,11 +16859,11 @@ export namespace Prisma {
     dukkanAdi?: SortOrder
     durum?: SortOrder
     komisyonNo?: SortOrder
+    komisyonKodu?: SortOrder
     sehir?: SortOrder
     vkn?: SortOrder
     yetkiliAdi?: SortOrder
     yetkiliTelefon?: SortOrder
-    komisyonKodu?: SortOrder
   }
 
   export type komisyoncularMinOrderByAggregateInput = {
@@ -15365,62 +16873,42 @@ export namespace Prisma {
     dukkanAdi?: SortOrder
     durum?: SortOrder
     komisyonNo?: SortOrder
+    komisyonKodu?: SortOrder
     sehir?: SortOrder
     vkn?: SortOrder
     yetkiliAdi?: SortOrder
     yetkiliTelefon?: SortOrder
-    komisyonKodu?: SortOrder
   }
 
-  export type FloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type EnumProductStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.ProductStatus | EnumProductStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumProductStatusFilter<$PrismaModel> | $Enums.ProductStatus
-  }
-
-  export type EnumSaticiTipiFilter<$PrismaModel = never> = {
-    equals?: $Enums.SaticiTipi | EnumSaticiTipiFieldRefInput<$PrismaModel>
-    in?: $Enums.SaticiTipi[] | ListEnumSaticiTipiFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SaticiTipi[] | ListEnumSaticiTipiFieldRefInput<$PrismaModel>
-    not?: NestedEnumSaticiTipiFilter<$PrismaModel> | $Enums.SaticiTipi
-  }
-
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
-  export type AmbalajlarNullableScalarRelationFilter = {
-    is?: ambalajlarWhereInput | null
-    isNot?: ambalajlarWhereInput | null
-  }
-
-  export type FaturalarNullableScalarRelationFilter = {
-    is?: faturalarWhereInput | null
-    isNot?: faturalarWhereInput | null
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type KomisyoncularNullableScalarRelationFilter = {
     is?: komisyoncularWhereInput | null
     isNot?: komisyoncularWhereInput | null
+  }
+
+  export type UreticilerNullableScalarRelationFilter = {
+    is?: ureticilerWhereInput | null
+    isNot?: ureticilerWhereInput | null
+  }
+
+  export type UrunlerScalarRelationFilter = {
+    is?: urunlerWhereInput
+    isNot?: urunlerWhereInput
+  }
+
+  export type FaturalarNullableScalarRelationFilter = {
+    is?: faturalarWhereInput | null
+    isNot?: faturalarWhereInput | null
   }
 
   export type MustahsilNullableScalarRelationFilter = {
@@ -15433,14 +16921,9 @@ export namespace Prisma {
     isNot?: ozel_firmalarWhereInput | null
   }
 
-  export type UreticilerNullableScalarRelationFilter = {
-    is?: ureticilerWhereInput | null
-    isNot?: ureticilerWhereInput | null
-  }
-
-  export type UrunlerScalarRelationFilter = {
-    is?: urunlerWhereInput
-    isNot?: urunlerWhereInput
+  export type AmbalajlarNullableScalarRelationFilter = {
+    is?: ambalajlarWhereInput | null
+    isNot?: ambalajlarWhereInput | null
   }
 
   export type mal_kabul_recordsCountOrderByAggregateInput = {
@@ -15556,63 +17039,31 @@ export namespace Prisma {
     netKg?: SortOrder
   }
 
-  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedFloatNullableFilter<$PrismaModel>
-    _min?: NestedFloatNullableFilter<$PrismaModel>
-    _max?: NestedFloatNullableFilter<$PrismaModel>
-  }
-
-  export type EnumProductStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.ProductStatus | EnumProductStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumProductStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProductStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumProductStatusFilter<$PrismaModel>
-    _max?: NestedEnumProductStatusFilter<$PrismaModel>
-  }
-
-  export type EnumSaticiTipiWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.SaticiTipi | EnumSaticiTipiFieldRefInput<$PrismaModel>
-    in?: $Enums.SaticiTipi[] | ListEnumSaticiTipiFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SaticiTipi[] | ListEnumSaticiTipiFieldRefInput<$PrismaModel>
-    not?: NestedEnumSaticiTipiWithAggregatesFilter<$PrismaModel> | $Enums.SaticiTipi
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumSaticiTipiFilter<$PrismaModel>
-    _max?: NestedEnumSaticiTipiFilter<$PrismaModel>
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
-  export type EnumGenderFilter<$PrismaModel = never> = {
-    equals?: $Enums.Gender | EnumGenderFieldRefInput<$PrismaModel>
-    in?: $Enums.Gender[] | ListEnumGenderFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Gender[] | ListEnumGenderFieldRefInput<$PrismaModel>
-    not?: NestedEnumGenderFilter<$PrismaModel> | $Enums.Gender
+  export type DateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
   export type mustahsilCountOrderByAggregateInput = {
@@ -15621,15 +17072,15 @@ export namespace Prisma {
     soyad?: SortOrder
     dogumTarihi?: SortOrder
     tcKimlikNo?: SortOrder
+    mustahsilNo?: SortOrder
+    iletisim?: SortOrder
+    bankaAdi?: SortOrder
     ibanAdresi?: SortOrder
     adres?: SortOrder
     cinsiyet?: SortOrder
     durum?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    mustahsilNo?: SortOrder
-    iletisim?: SortOrder
-    bankaAdi?: SortOrder
   }
 
   export type mustahsilMaxOrderByAggregateInput = {
@@ -15638,15 +17089,15 @@ export namespace Prisma {
     soyad?: SortOrder
     dogumTarihi?: SortOrder
     tcKimlikNo?: SortOrder
+    mustahsilNo?: SortOrder
+    iletisim?: SortOrder
+    bankaAdi?: SortOrder
     ibanAdresi?: SortOrder
     adres?: SortOrder
     cinsiyet?: SortOrder
     durum?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    mustahsilNo?: SortOrder
-    iletisim?: SortOrder
-    bankaAdi?: SortOrder
   }
 
   export type mustahsilMinOrderByAggregateInput = {
@@ -15655,31 +17106,37 @@ export namespace Prisma {
     soyad?: SortOrder
     dogumTarihi?: SortOrder
     tcKimlikNo?: SortOrder
+    mustahsilNo?: SortOrder
+    iletisim?: SortOrder
+    bankaAdi?: SortOrder
     ibanAdresi?: SortOrder
     adres?: SortOrder
     cinsiyet?: SortOrder
     durum?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    mustahsilNo?: SortOrder
-    iletisim?: SortOrder
-    bankaAdi?: SortOrder
   }
 
-  export type EnumGenderWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Gender | EnumGenderFieldRefInput<$PrismaModel>
-    in?: $Enums.Gender[] | ListEnumGenderFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Gender[] | ListEnumGenderFieldRefInput<$PrismaModel>
-    not?: NestedEnumGenderWithAggregatesFilter<$PrismaModel> | $Enums.Gender
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumGenderFilter<$PrismaModel>
-    _max?: NestedEnumGenderFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type ozel_firmalarCountOrderByAggregateInput = {
     id?: SortOrder
     firmaAdi?: SortOrder
+    firmaNo?: SortOrder
     vkn?: SortOrder
+    vergiDairesi?: SortOrder
     yetkiliAdi?: SortOrder
     yetkiliTelefon?: SortOrder
     sehir?: SortOrder
@@ -15687,14 +17144,14 @@ export namespace Prisma {
     durum?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    firmaNo?: SortOrder
-    vergiDairesi?: SortOrder
   }
 
   export type ozel_firmalarMaxOrderByAggregateInput = {
     id?: SortOrder
     firmaAdi?: SortOrder
+    firmaNo?: SortOrder
     vkn?: SortOrder
+    vergiDairesi?: SortOrder
     yetkiliAdi?: SortOrder
     yetkiliTelefon?: SortOrder
     sehir?: SortOrder
@@ -15702,14 +17159,14 @@ export namespace Prisma {
     durum?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    firmaNo?: SortOrder
-    vergiDairesi?: SortOrder
   }
 
   export type ozel_firmalarMinOrderByAggregateInput = {
     id?: SortOrder
     firmaAdi?: SortOrder
+    firmaNo?: SortOrder
     vkn?: SortOrder
+    vergiDairesi?: SortOrder
     yetkiliAdi?: SortOrder
     yetkiliTelefon?: SortOrder
     sehir?: SortOrder
@@ -15717,19 +17174,6 @@ export namespace Prisma {
     durum?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    firmaNo?: SortOrder
-    vergiDairesi?: SortOrder
-  }
-
-  export type DateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type ureticilerCountOrderByAggregateInput = {
@@ -15739,12 +17183,12 @@ export namespace Prisma {
     updatedAt?: SortOrder
     cinsiyet?: SortOrder
     dogumTarihi?: SortOrder
-    durum?: SortOrder
     iletisim?: SortOrder
     komisyoncuId?: SortOrder
     sehir?: SortOrder
     soyad?: SortOrder
     tcNo?: SortOrder
+    durum?: SortOrder
   }
 
   export type ureticilerMaxOrderByAggregateInput = {
@@ -15754,12 +17198,12 @@ export namespace Prisma {
     updatedAt?: SortOrder
     cinsiyet?: SortOrder
     dogumTarihi?: SortOrder
-    durum?: SortOrder
     iletisim?: SortOrder
     komisyoncuId?: SortOrder
     sehir?: SortOrder
     soyad?: SortOrder
     tcNo?: SortOrder
+    durum?: SortOrder
   }
 
   export type ureticilerMinOrderByAggregateInput = {
@@ -15769,66 +17213,45 @@ export namespace Prisma {
     updatedAt?: SortOrder
     cinsiyet?: SortOrder
     dogumTarihi?: SortOrder
-    durum?: SortOrder
     iletisim?: SortOrder
     komisyoncuId?: SortOrder
     sehir?: SortOrder
     soyad?: SortOrder
     tcNo?: SortOrder
-  }
-
-  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+    durum?: SortOrder
   }
 
   export type urunlerCountOrderByAggregateInput = {
     id?: SortOrder
     ad?: SortOrder
+    stokKodu?: SortOrder
     kategori?: SortOrder
     birim?: SortOrder
+    durum?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    durum?: SortOrder
-    stokKodu?: SortOrder
   }
 
   export type urunlerMaxOrderByAggregateInput = {
     id?: SortOrder
     ad?: SortOrder
+    stokKodu?: SortOrder
     kategori?: SortOrder
     birim?: SortOrder
+    durum?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    durum?: SortOrder
-    stokKodu?: SortOrder
   }
 
   export type urunlerMinOrderByAggregateInput = {
     id?: SortOrder
     ad?: SortOrder
+    stokKodu?: SortOrder
     kategori?: SortOrder
     birim?: SortOrder
+    durum?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    durum?: SortOrder
-    stokKodu?: SortOrder
-  }
-
-  export type EnumUserRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
   }
 
   export type FaturalarListRelationFilter = {
@@ -15874,14 +17297,85 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
-  export type EnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserRoleWithAggregatesFilter<$PrismaModel> | $Enums.UserRole
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumUserRoleFilter<$PrismaModel>
-    _max?: NestedEnumUserRoleFilter<$PrismaModel>
+  export type malKabulRecordsCountOrderByAggregateInput = {
+    id?: SortOrder
+    fisNo?: SortOrder
+    tarih?: SortOrder
+    saticiTipi?: SortOrder
+    saticiId?: SortOrder
+    urunId?: SortOrder
+    ureticiId?: SortOrder
+    ambalajId?: SortOrder
+    brutKg?: SortOrder
+    daraKg?: SortOrder
+    girisKg?: SortOrder
+    cikmaKg?: SortOrder
+    fireKg?: SortOrder
+    netKg?: SortOrder
+    urunDurumu?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type malKabulRecordsAvgOrderByAggregateInput = {
+    brutKg?: SortOrder
+    daraKg?: SortOrder
+    girisKg?: SortOrder
+    cikmaKg?: SortOrder
+    fireKg?: SortOrder
+    netKg?: SortOrder
+  }
+
+  export type malKabulRecordsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    fisNo?: SortOrder
+    tarih?: SortOrder
+    saticiTipi?: SortOrder
+    saticiId?: SortOrder
+    urunId?: SortOrder
+    ureticiId?: SortOrder
+    ambalajId?: SortOrder
+    brutKg?: SortOrder
+    daraKg?: SortOrder
+    girisKg?: SortOrder
+    cikmaKg?: SortOrder
+    fireKg?: SortOrder
+    netKg?: SortOrder
+    urunDurumu?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type malKabulRecordsMinOrderByAggregateInput = {
+    id?: SortOrder
+    fisNo?: SortOrder
+    tarih?: SortOrder
+    saticiTipi?: SortOrder
+    saticiId?: SortOrder
+    urunId?: SortOrder
+    ureticiId?: SortOrder
+    ambalajId?: SortOrder
+    brutKg?: SortOrder
+    daraKg?: SortOrder
+    girisKg?: SortOrder
+    cikmaKg?: SortOrder
+    fireKg?: SortOrder
+    netKg?: SortOrder
+    urunDurumu?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type malKabulRecordsSumOrderByAggregateInput = {
+    brutKg?: SortOrder
+    daraKg?: SortOrder
+    girisKg?: SortOrder
+    cikmaKg?: SortOrder
+    fireKg?: SortOrder
+    netKg?: SortOrder
   }
 
   export type mal_kabul_recordsCreateNestedManyWithoutAmbalajlarInput = {
@@ -15902,10 +17396,6 @@ export namespace Prisma {
     set?: string
   }
 
-  export type EnumAmbalajTipiFieldUpdateOperationsInput = {
-    set?: $Enums.AmbalajTipi
-  }
-
   export type FloatFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -15918,12 +17408,8 @@ export namespace Prisma {
     set?: string | null
   }
 
-  export type EnumStatusFieldUpdateOperationsInput = {
-    set?: $Enums.Status
-  }
-
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type mal_kabul_recordsUpdateManyWithoutAmbalajlarNestedInput = {
@@ -15954,17 +17440,17 @@ export namespace Prisma {
     deleteMany?: mal_kabul_recordsScalarWhereInput | mal_kabul_recordsScalarWhereInput[]
   }
 
-  export type usersCreateNestedOneWithoutFaturalarInput = {
-    create?: XOR<usersCreateWithoutFaturalarInput, usersUncheckedCreateWithoutFaturalarInput>
-    connectOrCreate?: usersCreateOrConnectWithoutFaturalarInput
-    connect?: usersWhereUniqueInput
-  }
-
   export type mal_kabul_recordsCreateNestedManyWithoutFaturalarInput = {
     create?: XOR<mal_kabul_recordsCreateWithoutFaturalarInput, mal_kabul_recordsUncheckedCreateWithoutFaturalarInput> | mal_kabul_recordsCreateWithoutFaturalarInput[] | mal_kabul_recordsUncheckedCreateWithoutFaturalarInput[]
     connectOrCreate?: mal_kabul_recordsCreateOrConnectWithoutFaturalarInput | mal_kabul_recordsCreateOrConnectWithoutFaturalarInput[]
     createMany?: mal_kabul_recordsCreateManyFaturalarInputEnvelope
     connect?: mal_kabul_recordsWhereUniqueInput | mal_kabul_recordsWhereUniqueInput[]
+  }
+
+  export type usersCreateNestedOneWithoutFaturalarInput = {
+    create?: XOR<usersCreateWithoutFaturalarInput, usersUncheckedCreateWithoutFaturalarInput>
+    connectOrCreate?: usersCreateOrConnectWithoutFaturalarInput
+    connect?: usersWhereUniqueInput
   }
 
   export type mal_kabul_recordsUncheckedCreateNestedManyWithoutFaturalarInput = {
@@ -15974,12 +17460,12 @@ export namespace Prisma {
     connect?: mal_kabul_recordsWhereUniqueInput | mal_kabul_recordsWhereUniqueInput[]
   }
 
-  export type usersUpdateOneRequiredWithoutFaturalarNestedInput = {
-    create?: XOR<usersCreateWithoutFaturalarInput, usersUncheckedCreateWithoutFaturalarInput>
-    connectOrCreate?: usersCreateOrConnectWithoutFaturalarInput
-    upsert?: usersUpsertWithoutFaturalarInput
-    connect?: usersWhereUniqueInput
-    update?: XOR<XOR<usersUpdateToOneWithWhereWithoutFaturalarInput, usersUpdateWithoutFaturalarInput>, usersUncheckedUpdateWithoutFaturalarInput>
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type mal_kabul_recordsUpdateManyWithoutFaturalarNestedInput = {
@@ -15994,6 +17480,14 @@ export namespace Prisma {
     update?: mal_kabul_recordsUpdateWithWhereUniqueWithoutFaturalarInput | mal_kabul_recordsUpdateWithWhereUniqueWithoutFaturalarInput[]
     updateMany?: mal_kabul_recordsUpdateManyWithWhereWithoutFaturalarInput | mal_kabul_recordsUpdateManyWithWhereWithoutFaturalarInput[]
     deleteMany?: mal_kabul_recordsScalarWhereInput | mal_kabul_recordsScalarWhereInput[]
+  }
+
+  export type usersUpdateOneRequiredWithoutFaturalarNestedInput = {
+    create?: XOR<usersCreateWithoutFaturalarInput, usersUncheckedCreateWithoutFaturalarInput>
+    connectOrCreate?: usersCreateOrConnectWithoutFaturalarInput
+    upsert?: usersUpsertWithoutFaturalarInput
+    connect?: usersWhereUniqueInput
+    update?: XOR<XOR<usersUpdateToOneWithWhereWithoutFaturalarInput, usersUpdateWithoutFaturalarInput>, usersUncheckedUpdateWithoutFaturalarInput>
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutFaturalarNestedInput = {
@@ -16094,40 +17588,16 @@ export namespace Prisma {
     deleteMany?: ureticilerScalarWhereInput | ureticilerScalarWhereInput[]
   }
 
-  export type ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput = {
-    create?: XOR<ambalajlarCreateWithoutMal_kabul_recordsInput, ambalajlarUncheckedCreateWithoutMal_kabul_recordsInput>
-    connectOrCreate?: ambalajlarCreateOrConnectWithoutMal_kabul_recordsInput
-    connect?: ambalajlarWhereUniqueInput
-  }
-
-  export type faturalarCreateNestedOneWithoutMal_kabul_recordsInput = {
-    create?: XOR<faturalarCreateWithoutMal_kabul_recordsInput, faturalarUncheckedCreateWithoutMal_kabul_recordsInput>
-    connectOrCreate?: faturalarCreateOrConnectWithoutMal_kabul_recordsInput
-    connect?: faturalarWhereUniqueInput
-  }
-
-  export type komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput = {
-    create?: XOR<komisyoncularCreateWithoutMal_kabul_recordsInput, komisyoncularUncheckedCreateWithoutMal_kabul_recordsInput>
-    connectOrCreate?: komisyoncularCreateOrConnectWithoutMal_kabul_recordsInput
-    connect?: komisyoncularWhereUniqueInput
-  }
-
   export type usersCreateNestedOneWithoutMal_kabul_recordsInput = {
     create?: XOR<usersCreateWithoutMal_kabul_recordsInput, usersUncheckedCreateWithoutMal_kabul_recordsInput>
     connectOrCreate?: usersCreateOrConnectWithoutMal_kabul_recordsInput
     connect?: usersWhereUniqueInput
   }
 
-  export type mustahsilCreateNestedOneWithoutMal_kabul_recordsInput = {
-    create?: XOR<mustahsilCreateWithoutMal_kabul_recordsInput, mustahsilUncheckedCreateWithoutMal_kabul_recordsInput>
-    connectOrCreate?: mustahsilCreateOrConnectWithoutMal_kabul_recordsInput
-    connect?: mustahsilWhereUniqueInput
-  }
-
-  export type ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput = {
-    create?: XOR<ozel_firmalarCreateWithoutMal_kabul_recordsInput, ozel_firmalarUncheckedCreateWithoutMal_kabul_recordsInput>
-    connectOrCreate?: ozel_firmalarCreateOrConnectWithoutMal_kabul_recordsInput
-    connect?: ozel_firmalarWhereUniqueInput
+  export type komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput = {
+    create?: XOR<komisyoncularCreateWithoutMal_kabul_recordsInput, komisyoncularUncheckedCreateWithoutMal_kabul_recordsInput>
+    connectOrCreate?: komisyoncularCreateOrConnectWithoutMal_kabul_recordsInput
+    connect?: komisyoncularWhereUniqueInput
   }
 
   export type ureticilerCreateNestedOneWithoutMal_kabul_recordsInput = {
@@ -16142,7 +17612,31 @@ export namespace Prisma {
     connect?: urunlerWhereUniqueInput
   }
 
-  export type NullableFloatFieldUpdateOperationsInput = {
+  export type faturalarCreateNestedOneWithoutMal_kabul_recordsInput = {
+    create?: XOR<faturalarCreateWithoutMal_kabul_recordsInput, faturalarUncheckedCreateWithoutMal_kabul_recordsInput>
+    connectOrCreate?: faturalarCreateOrConnectWithoutMal_kabul_recordsInput
+    connect?: faturalarWhereUniqueInput
+  }
+
+  export type mustahsilCreateNestedOneWithoutMal_kabul_recordsInput = {
+    create?: XOR<mustahsilCreateWithoutMal_kabul_recordsInput, mustahsilUncheckedCreateWithoutMal_kabul_recordsInput>
+    connectOrCreate?: mustahsilCreateOrConnectWithoutMal_kabul_recordsInput
+    connect?: mustahsilWhereUniqueInput
+  }
+
+  export type ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput = {
+    create?: XOR<ozel_firmalarCreateWithoutMal_kabul_recordsInput, ozel_firmalarUncheckedCreateWithoutMal_kabul_recordsInput>
+    connectOrCreate?: ozel_firmalarCreateOrConnectWithoutMal_kabul_recordsInput
+    connect?: ozel_firmalarWhereUniqueInput
+  }
+
+  export type ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput = {
+    create?: XOR<ambalajlarCreateWithoutMal_kabul_recordsInput, ambalajlarUncheckedCreateWithoutMal_kabul_recordsInput>
+    connectOrCreate?: ambalajlarCreateOrConnectWithoutMal_kabul_recordsInput
+    connect?: ambalajlarWhereUniqueInput
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
     set?: number | null
     increment?: number
     decrement?: number
@@ -16150,40 +17644,12 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type EnumProductStatusFieldUpdateOperationsInput = {
-    set?: $Enums.ProductStatus
-  }
-
-  export type EnumSaticiTipiFieldUpdateOperationsInput = {
-    set?: $Enums.SaticiTipi
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
-  }
-
-  export type ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput = {
-    create?: XOR<ambalajlarCreateWithoutMal_kabul_recordsInput, ambalajlarUncheckedCreateWithoutMal_kabul_recordsInput>
-    connectOrCreate?: ambalajlarCreateOrConnectWithoutMal_kabul_recordsInput
-    upsert?: ambalajlarUpsertWithoutMal_kabul_recordsInput
-    disconnect?: ambalajlarWhereInput | boolean
-    delete?: ambalajlarWhereInput | boolean
-    connect?: ambalajlarWhereUniqueInput
-    update?: XOR<XOR<ambalajlarUpdateToOneWithWhereWithoutMal_kabul_recordsInput, ambalajlarUpdateWithoutMal_kabul_recordsInput>, ambalajlarUncheckedUpdateWithoutMal_kabul_recordsInput>
-  }
-
-  export type faturalarUpdateOneWithoutMal_kabul_recordsNestedInput = {
-    create?: XOR<faturalarCreateWithoutMal_kabul_recordsInput, faturalarUncheckedCreateWithoutMal_kabul_recordsInput>
-    connectOrCreate?: faturalarCreateOrConnectWithoutMal_kabul_recordsInput
-    upsert?: faturalarUpsertWithoutMal_kabul_recordsInput
-    disconnect?: faturalarWhereInput | boolean
-    delete?: faturalarWhereInput | boolean
-    connect?: faturalarWhereUniqueInput
-    update?: XOR<XOR<faturalarUpdateToOneWithWhereWithoutMal_kabul_recordsInput, faturalarUpdateWithoutMal_kabul_recordsInput>, faturalarUncheckedUpdateWithoutMal_kabul_recordsInput>
+  export type usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput = {
+    create?: XOR<usersCreateWithoutMal_kabul_recordsInput, usersUncheckedCreateWithoutMal_kabul_recordsInput>
+    connectOrCreate?: usersCreateOrConnectWithoutMal_kabul_recordsInput
+    upsert?: usersUpsertWithoutMal_kabul_recordsInput
+    connect?: usersWhereUniqueInput
+    update?: XOR<XOR<usersUpdateToOneWithWhereWithoutMal_kabul_recordsInput, usersUpdateWithoutMal_kabul_recordsInput>, usersUncheckedUpdateWithoutMal_kabul_recordsInput>
   }
 
   export type komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput = {
@@ -16196,12 +17662,32 @@ export namespace Prisma {
     update?: XOR<XOR<komisyoncularUpdateToOneWithWhereWithoutMal_kabul_recordsInput, komisyoncularUpdateWithoutMal_kabul_recordsInput>, komisyoncularUncheckedUpdateWithoutMal_kabul_recordsInput>
   }
 
-  export type usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput = {
-    create?: XOR<usersCreateWithoutMal_kabul_recordsInput, usersUncheckedCreateWithoutMal_kabul_recordsInput>
-    connectOrCreate?: usersCreateOrConnectWithoutMal_kabul_recordsInput
-    upsert?: usersUpsertWithoutMal_kabul_recordsInput
-    connect?: usersWhereUniqueInput
-    update?: XOR<XOR<usersUpdateToOneWithWhereWithoutMal_kabul_recordsInput, usersUpdateWithoutMal_kabul_recordsInput>, usersUncheckedUpdateWithoutMal_kabul_recordsInput>
+  export type ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput = {
+    create?: XOR<ureticilerCreateWithoutMal_kabul_recordsInput, ureticilerUncheckedCreateWithoutMal_kabul_recordsInput>
+    connectOrCreate?: ureticilerCreateOrConnectWithoutMal_kabul_recordsInput
+    upsert?: ureticilerUpsertWithoutMal_kabul_recordsInput
+    disconnect?: ureticilerWhereInput | boolean
+    delete?: ureticilerWhereInput | boolean
+    connect?: ureticilerWhereUniqueInput
+    update?: XOR<XOR<ureticilerUpdateToOneWithWhereWithoutMal_kabul_recordsInput, ureticilerUpdateWithoutMal_kabul_recordsInput>, ureticilerUncheckedUpdateWithoutMal_kabul_recordsInput>
+  }
+
+  export type urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput = {
+    create?: XOR<urunlerCreateWithoutMal_kabul_recordsInput, urunlerUncheckedCreateWithoutMal_kabul_recordsInput>
+    connectOrCreate?: urunlerCreateOrConnectWithoutMal_kabul_recordsInput
+    upsert?: urunlerUpsertWithoutMal_kabul_recordsInput
+    connect?: urunlerWhereUniqueInput
+    update?: XOR<XOR<urunlerUpdateToOneWithWhereWithoutMal_kabul_recordsInput, urunlerUpdateWithoutMal_kabul_recordsInput>, urunlerUncheckedUpdateWithoutMal_kabul_recordsInput>
+  }
+
+  export type faturalarUpdateOneWithoutMal_kabul_recordsNestedInput = {
+    create?: XOR<faturalarCreateWithoutMal_kabul_recordsInput, faturalarUncheckedCreateWithoutMal_kabul_recordsInput>
+    connectOrCreate?: faturalarCreateOrConnectWithoutMal_kabul_recordsInput
+    upsert?: faturalarUpsertWithoutMal_kabul_recordsInput
+    disconnect?: faturalarWhereInput | boolean
+    delete?: faturalarWhereInput | boolean
+    connect?: faturalarWhereUniqueInput
+    update?: XOR<XOR<faturalarUpdateToOneWithWhereWithoutMal_kabul_recordsInput, faturalarUpdateWithoutMal_kabul_recordsInput>, faturalarUncheckedUpdateWithoutMal_kabul_recordsInput>
   }
 
   export type mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput = {
@@ -16224,22 +17710,14 @@ export namespace Prisma {
     update?: XOR<XOR<ozel_firmalarUpdateToOneWithWhereWithoutMal_kabul_recordsInput, ozel_firmalarUpdateWithoutMal_kabul_recordsInput>, ozel_firmalarUncheckedUpdateWithoutMal_kabul_recordsInput>
   }
 
-  export type ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput = {
-    create?: XOR<ureticilerCreateWithoutMal_kabul_recordsInput, ureticilerUncheckedCreateWithoutMal_kabul_recordsInput>
-    connectOrCreate?: ureticilerCreateOrConnectWithoutMal_kabul_recordsInput
-    upsert?: ureticilerUpsertWithoutMal_kabul_recordsInput
-    disconnect?: ureticilerWhereInput | boolean
-    delete?: ureticilerWhereInput | boolean
-    connect?: ureticilerWhereUniqueInput
-    update?: XOR<XOR<ureticilerUpdateToOneWithWhereWithoutMal_kabul_recordsInput, ureticilerUpdateWithoutMal_kabul_recordsInput>, ureticilerUncheckedUpdateWithoutMal_kabul_recordsInput>
-  }
-
-  export type urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput = {
-    create?: XOR<urunlerCreateWithoutMal_kabul_recordsInput, urunlerUncheckedCreateWithoutMal_kabul_recordsInput>
-    connectOrCreate?: urunlerCreateOrConnectWithoutMal_kabul_recordsInput
-    upsert?: urunlerUpsertWithoutMal_kabul_recordsInput
-    connect?: urunlerWhereUniqueInput
-    update?: XOR<XOR<urunlerUpdateToOneWithWhereWithoutMal_kabul_recordsInput, urunlerUpdateWithoutMal_kabul_recordsInput>, urunlerUncheckedUpdateWithoutMal_kabul_recordsInput>
+  export type ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput = {
+    create?: XOR<ambalajlarCreateWithoutMal_kabul_recordsInput, ambalajlarUncheckedCreateWithoutMal_kabul_recordsInput>
+    connectOrCreate?: ambalajlarCreateOrConnectWithoutMal_kabul_recordsInput
+    upsert?: ambalajlarUpsertWithoutMal_kabul_recordsInput
+    disconnect?: ambalajlarWhereInput | boolean
+    delete?: ambalajlarWhereInput | boolean
+    connect?: ambalajlarWhereUniqueInput
+    update?: XOR<XOR<ambalajlarUpdateToOneWithWhereWithoutMal_kabul_recordsInput, ambalajlarUpdateWithoutMal_kabul_recordsInput>, ambalajlarUncheckedUpdateWithoutMal_kabul_recordsInput>
   }
 
   export type mal_kabul_recordsCreateNestedManyWithoutMustahsilInput = {
@@ -16256,8 +17734,8 @@ export namespace Prisma {
     connect?: mal_kabul_recordsWhereUniqueInput | mal_kabul_recordsWhereUniqueInput[]
   }
 
-  export type EnumGenderFieldUpdateOperationsInput = {
-    set?: $Enums.Gender
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
   }
 
   export type mal_kabul_recordsUpdateManyWithoutMustahsilNestedInput = {
@@ -16350,10 +17828,6 @@ export namespace Prisma {
     connect?: mal_kabul_recordsWhereUniqueInput | mal_kabul_recordsWhereUniqueInput[]
   }
 
-  export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null
-  }
-
   export type mal_kabul_recordsUpdateManyWithoutUreticilerNestedInput = {
     create?: XOR<mal_kabul_recordsCreateWithoutUreticilerInput, mal_kabul_recordsUncheckedCreateWithoutUreticilerInput> | mal_kabul_recordsCreateWithoutUreticilerInput[] | mal_kabul_recordsUncheckedCreateWithoutUreticilerInput[]
     connectOrCreate?: mal_kabul_recordsCreateOrConnectWithoutUreticilerInput | mal_kabul_recordsCreateOrConnectWithoutUreticilerInput[]
@@ -16434,13 +17908,6 @@ export namespace Prisma {
     deleteMany?: mal_kabul_recordsScalarWhereInput | mal_kabul_recordsScalarWhereInput[]
   }
 
-  export type faturalarCreateNestedManyWithoutUsersInput = {
-    create?: XOR<faturalarCreateWithoutUsersInput, faturalarUncheckedCreateWithoutUsersInput> | faturalarCreateWithoutUsersInput[] | faturalarUncheckedCreateWithoutUsersInput[]
-    connectOrCreate?: faturalarCreateOrConnectWithoutUsersInput | faturalarCreateOrConnectWithoutUsersInput[]
-    createMany?: faturalarCreateManyUsersInputEnvelope
-    connect?: faturalarWhereUniqueInput | faturalarWhereUniqueInput[]
-  }
-
   export type mal_kabul_recordsCreateNestedManyWithoutUsersInput = {
     create?: XOR<mal_kabul_recordsCreateWithoutUsersInput, mal_kabul_recordsUncheckedCreateWithoutUsersInput> | mal_kabul_recordsCreateWithoutUsersInput[] | mal_kabul_recordsUncheckedCreateWithoutUsersInput[]
     connectOrCreate?: mal_kabul_recordsCreateOrConnectWithoutUsersInput | mal_kabul_recordsCreateOrConnectWithoutUsersInput[]
@@ -16448,7 +17915,7 @@ export namespace Prisma {
     connect?: mal_kabul_recordsWhereUniqueInput | mal_kabul_recordsWhereUniqueInput[]
   }
 
-  export type faturalarUncheckedCreateNestedManyWithoutUsersInput = {
+  export type faturalarCreateNestedManyWithoutUsersInput = {
     create?: XOR<faturalarCreateWithoutUsersInput, faturalarUncheckedCreateWithoutUsersInput> | faturalarCreateWithoutUsersInput[] | faturalarUncheckedCreateWithoutUsersInput[]
     connectOrCreate?: faturalarCreateOrConnectWithoutUsersInput | faturalarCreateOrConnectWithoutUsersInput[]
     createMany?: faturalarCreateManyUsersInputEnvelope
@@ -16462,22 +17929,11 @@ export namespace Prisma {
     connect?: mal_kabul_recordsWhereUniqueInput | mal_kabul_recordsWhereUniqueInput[]
   }
 
-  export type EnumUserRoleFieldUpdateOperationsInput = {
-    set?: $Enums.UserRole
-  }
-
-  export type faturalarUpdateManyWithoutUsersNestedInput = {
+  export type faturalarUncheckedCreateNestedManyWithoutUsersInput = {
     create?: XOR<faturalarCreateWithoutUsersInput, faturalarUncheckedCreateWithoutUsersInput> | faturalarCreateWithoutUsersInput[] | faturalarUncheckedCreateWithoutUsersInput[]
     connectOrCreate?: faturalarCreateOrConnectWithoutUsersInput | faturalarCreateOrConnectWithoutUsersInput[]
-    upsert?: faturalarUpsertWithWhereUniqueWithoutUsersInput | faturalarUpsertWithWhereUniqueWithoutUsersInput[]
     createMany?: faturalarCreateManyUsersInputEnvelope
-    set?: faturalarWhereUniqueInput | faturalarWhereUniqueInput[]
-    disconnect?: faturalarWhereUniqueInput | faturalarWhereUniqueInput[]
-    delete?: faturalarWhereUniqueInput | faturalarWhereUniqueInput[]
     connect?: faturalarWhereUniqueInput | faturalarWhereUniqueInput[]
-    update?: faturalarUpdateWithWhereUniqueWithoutUsersInput | faturalarUpdateWithWhereUniqueWithoutUsersInput[]
-    updateMany?: faturalarUpdateManyWithWhereWithoutUsersInput | faturalarUpdateManyWithWhereWithoutUsersInput[]
-    deleteMany?: faturalarScalarWhereInput | faturalarScalarWhereInput[]
   }
 
   export type mal_kabul_recordsUpdateManyWithoutUsersNestedInput = {
@@ -16494,7 +17950,7 @@ export namespace Prisma {
     deleteMany?: mal_kabul_recordsScalarWhereInput | mal_kabul_recordsScalarWhereInput[]
   }
 
-  export type faturalarUncheckedUpdateManyWithoutUsersNestedInput = {
+  export type faturalarUpdateManyWithoutUsersNestedInput = {
     create?: XOR<faturalarCreateWithoutUsersInput, faturalarUncheckedCreateWithoutUsersInput> | faturalarCreateWithoutUsersInput[] | faturalarUncheckedCreateWithoutUsersInput[]
     connectOrCreate?: faturalarCreateOrConnectWithoutUsersInput | faturalarCreateOrConnectWithoutUsersInput[]
     upsert?: faturalarUpsertWithWhereUniqueWithoutUsersInput | faturalarUpsertWithWhereUniqueWithoutUsersInput[]
@@ -16522,6 +17978,20 @@ export namespace Prisma {
     deleteMany?: mal_kabul_recordsScalarWhereInput | mal_kabul_recordsScalarWhereInput[]
   }
 
+  export type faturalarUncheckedUpdateManyWithoutUsersNestedInput = {
+    create?: XOR<faturalarCreateWithoutUsersInput, faturalarUncheckedCreateWithoutUsersInput> | faturalarCreateWithoutUsersInput[] | faturalarUncheckedCreateWithoutUsersInput[]
+    connectOrCreate?: faturalarCreateOrConnectWithoutUsersInput | faturalarCreateOrConnectWithoutUsersInput[]
+    upsert?: faturalarUpsertWithWhereUniqueWithoutUsersInput | faturalarUpsertWithWhereUniqueWithoutUsersInput[]
+    createMany?: faturalarCreateManyUsersInputEnvelope
+    set?: faturalarWhereUniqueInput | faturalarWhereUniqueInput[]
+    disconnect?: faturalarWhereUniqueInput | faturalarWhereUniqueInput[]
+    delete?: faturalarWhereUniqueInput | faturalarWhereUniqueInput[]
+    connect?: faturalarWhereUniqueInput | faturalarWhereUniqueInput[]
+    update?: faturalarUpdateWithWhereUniqueWithoutUsersInput | faturalarUpdateWithWhereUniqueWithoutUsersInput[]
+    updateMany?: faturalarUpdateManyWithWhereWithoutUsersInput | faturalarUpdateManyWithWhereWithoutUsersInput[]
+    deleteMany?: faturalarScalarWhereInput | faturalarScalarWhereInput[]
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -16534,13 +18004,6 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringFilter<$PrismaModel> | string
-  }
-
-  export type NestedEnumAmbalajTipiFilter<$PrismaModel = never> = {
-    equals?: $Enums.AmbalajTipi | EnumAmbalajTipiFieldRefInput<$PrismaModel>
-    in?: $Enums.AmbalajTipi[] | ListEnumAmbalajTipiFieldRefInput<$PrismaModel>
-    notIn?: $Enums.AmbalajTipi[] | ListEnumAmbalajTipiFieldRefInput<$PrismaModel>
-    not?: NestedEnumAmbalajTipiFilter<$PrismaModel> | $Enums.AmbalajTipi
   }
 
   export type NestedFloatFilter<$PrismaModel = never> = {
@@ -16568,22 +18031,15 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type NestedEnumStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.Status | EnumStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.Status[] | ListEnumStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Status[] | ListEnumStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumStatusFilter<$PrismaModel> | $Enums.Status
-  }
-
-  export type NestedDateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
     lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
@@ -16612,16 +18068,6 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
-  }
-
-  export type NestedEnumAmbalajTipiWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.AmbalajTipi | EnumAmbalajTipiFieldRefInput<$PrismaModel>
-    in?: $Enums.AmbalajTipi[] | ListEnumAmbalajTipiFieldRefInput<$PrismaModel>
-    notIn?: $Enums.AmbalajTipi[] | ListEnumAmbalajTipiFieldRefInput<$PrismaModel>
-    not?: NestedEnumAmbalajTipiWithAggregatesFilter<$PrismaModel> | $Enums.AmbalajTipi
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumAmbalajTipiFilter<$PrismaModel>
-    _max?: NestedEnumAmbalajTipiFilter<$PrismaModel>
   }
 
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -16668,28 +18114,18 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedEnumStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Status | EnumStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.Status[] | ListEnumStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Status[] | ListEnumStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumStatusWithAggregatesFilter<$PrismaModel> | $Enums.Status
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumStatusFilter<$PrismaModel>
-    _max?: NestedEnumStatusFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
     lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedFloatNullableFilter<$PrismaModel = never> = {
@@ -16701,20 +18137,6 @@ export namespace Prisma {
     gt?: number | FloatFieldRefInput<$PrismaModel>
     gte?: number | FloatFieldRefInput<$PrismaModel>
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type NestedEnumProductStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.ProductStatus | EnumProductStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumProductStatusFilter<$PrismaModel> | $Enums.ProductStatus
-  }
-
-  export type NestedEnumSaticiTipiFilter<$PrismaModel = never> = {
-    equals?: $Enums.SaticiTipi | EnumSaticiTipiFieldRefInput<$PrismaModel>
-    in?: $Enums.SaticiTipi[] | ListEnumSaticiTipiFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SaticiTipi[] | ListEnumSaticiTipiFieldRefInput<$PrismaModel>
-    not?: NestedEnumSaticiTipiFilter<$PrismaModel> | $Enums.SaticiTipi
   }
 
   export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -16733,155 +18155,101 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
-  export type NestedEnumProductStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.ProductStatus | EnumProductStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.ProductStatus[] | ListEnumProductStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumProductStatusWithAggregatesFilter<$PrismaModel> | $Enums.ProductStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumProductStatusFilter<$PrismaModel>
-    _max?: NestedEnumProductStatusFilter<$PrismaModel>
-  }
-
-  export type NestedEnumSaticiTipiWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.SaticiTipi | EnumSaticiTipiFieldRefInput<$PrismaModel>
-    in?: $Enums.SaticiTipi[] | ListEnumSaticiTipiFieldRefInput<$PrismaModel>
-    notIn?: $Enums.SaticiTipi[] | ListEnumSaticiTipiFieldRefInput<$PrismaModel>
-    not?: NestedEnumSaticiTipiWithAggregatesFilter<$PrismaModel> | $Enums.SaticiTipi
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumSaticiTipiFilter<$PrismaModel>
-    _max?: NestedEnumSaticiTipiFilter<$PrismaModel>
-  }
-
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedEnumGenderFilter<$PrismaModel = never> = {
-    equals?: $Enums.Gender | EnumGenderFieldRefInput<$PrismaModel>
-    in?: $Enums.Gender[] | ListEnumGenderFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Gender[] | ListEnumGenderFieldRefInput<$PrismaModel>
-    not?: NestedEnumGenderFilter<$PrismaModel> | $Enums.Gender
-  }
-
-  export type NestedEnumGenderWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Gender | EnumGenderFieldRefInput<$PrismaModel>
-    in?: $Enums.Gender[] | ListEnumGenderFieldRefInput<$PrismaModel>
-    notIn?: $Enums.Gender[] | ListEnumGenderFieldRefInput<$PrismaModel>
-    not?: NestedEnumGenderWithAggregatesFilter<$PrismaModel> | $Enums.Gender
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumGenderFilter<$PrismaModel>
-    _max?: NestedEnumGenderFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
-  }
-
-  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
     _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedDateTimeNullableFilter<$PrismaModel>
-    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
-  export type NestedEnumUserRoleFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserRoleFilter<$PrismaModel> | $Enums.UserRole
+  export type NestedDateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type NestedEnumUserRoleWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.UserRole | EnumUserRoleFieldRefInput<$PrismaModel>
-    in?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    notIn?: $Enums.UserRole[] | ListEnumUserRoleFieldRefInput<$PrismaModel>
-    not?: NestedEnumUserRoleWithAggregatesFilter<$PrismaModel> | $Enums.UserRole
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
     _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumUserRoleFilter<$PrismaModel>
-    _max?: NestedEnumUserRoleFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type mal_kabul_recordsCreateWithoutAmbalajlarInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
-    saticiTipi?: $Enums.SaticiTipi
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
-    faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
-    komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
+    saticiTipi?: string
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
-    mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
-    ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
+    komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
     urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
+    faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
+    mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
+    ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
   }
 
   export type mal_kabul_recordsUncheckedCreateWithoutAmbalajlarInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
     ureticiId?: string | null
     urunId: string
     faturaId?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
     mustahsilId?: string | null
     ozelFirmaId?: string | null
-    saticiTipi?: $Enums.SaticiTipi
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
+    saticiTipi?: string
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutAmbalajlarInput = {
@@ -16915,116 +18283,87 @@ export namespace Prisma {
     OR?: mal_kabul_recordsScalarWhereInput[]
     NOT?: mal_kabul_recordsScalarWhereInput | mal_kabul_recordsScalarWhereInput[]
     id?: StringFilter<"mal_kabul_records"> | string
-    tarih?: DateTimeFilter<"mal_kabul_records"> | Date | string
+    tarih?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
     miktar?: FloatFilter<"mal_kabul_records"> | number
     birimFiyat?: FloatNullableFilter<"mal_kabul_records"> | number | null
     toplamFiyat?: FloatNullableFilter<"mal_kabul_records"> | number | null
-    status?: EnumProductStatusFilter<"mal_kabul_records"> | $Enums.ProductStatus
+    status?: StringFilter<"mal_kabul_records"> | string
     notlar?: StringNullableFilter<"mal_kabul_records"> | string | null
     malKabulcuId?: StringFilter<"mal_kabul_records"> | string
     komisyoncuId?: StringNullableFilter<"mal_kabul_records"> | string | null
     ureticiId?: StringNullableFilter<"mal_kabul_records"> | string | null
     urunId?: StringFilter<"mal_kabul_records"> | string
     faturaId?: StringNullableFilter<"mal_kabul_records"> | string | null
-    createdAt?: DateTimeFilter<"mal_kabul_records"> | Date | string
-    updatedAt?: DateTimeFilter<"mal_kabul_records"> | Date | string
+    createdAt?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
     fisNo?: StringFilter<"mal_kabul_records"> | string
     mustahsilId?: StringNullableFilter<"mal_kabul_records"> | string | null
     ozelFirmaId?: StringNullableFilter<"mal_kabul_records"> | string | null
-    saticiTipi?: EnumSaticiTipiFilter<"mal_kabul_records"> | $Enums.SaticiTipi
+    saticiTipi?: StringFilter<"mal_kabul_records"> | string
     ambalajId?: StringNullableFilter<"mal_kabul_records"> | string | null
-    paletSayisi?: IntFilter<"mal_kabul_records"> | number
-    kasaSayisi?: IntFilter<"mal_kabul_records"> | number
-    brutKg?: FloatFilter<"mal_kabul_records"> | number
-    daraKg?: FloatFilter<"mal_kabul_records"> | number
-    girisKg?: FloatFilter<"mal_kabul_records"> | number
-    cikmaFireKg?: FloatFilter<"mal_kabul_records"> | number
-    netKg?: FloatFilter<"mal_kabul_records"> | number
-  }
-
-  export type usersCreateWithoutFaturalarInput = {
-    id: string
-    firstName: string
-    lastName: string
-    email: string
-    password: string
-    role?: $Enums.UserRole
-    createdAt?: Date | string
-    updatedAt: Date | string
-    mal_kabul_records?: mal_kabul_recordsCreateNestedManyWithoutUsersInput
-  }
-
-  export type usersUncheckedCreateWithoutFaturalarInput = {
-    id: string
-    firstName: string
-    lastName: string
-    email: string
-    password: string
-    role?: $Enums.UserRole
-    createdAt?: Date | string
-    updatedAt: Date | string
-    mal_kabul_records?: mal_kabul_recordsUncheckedCreateNestedManyWithoutUsersInput
-  }
-
-  export type usersCreateOrConnectWithoutFaturalarInput = {
-    where: usersWhereUniqueInput
-    create: XOR<usersCreateWithoutFaturalarInput, usersUncheckedCreateWithoutFaturalarInput>
+    paletSayisi?: IntNullableFilter<"mal_kabul_records"> | number | null
+    kasaSayisi?: IntNullableFilter<"mal_kabul_records"> | number | null
+    brutKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    daraKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    girisKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    cikmaFireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    netKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
   }
 
   export type mal_kabul_recordsCreateWithoutFaturalarInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
-    saticiTipi?: $Enums.SaticiTipi
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
-    ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
-    komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
+    saticiTipi?: string
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
-    mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
-    ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
+    komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
     urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
+    mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
+    ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
+    ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
   }
 
   export type mal_kabul_recordsUncheckedCreateWithoutFaturalarInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
     ureticiId?: string | null
     urunId: string
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
     mustahsilId?: string | null
     ozelFirmaId?: string | null
-    saticiTipi?: $Enums.SaticiTipi
+    saticiTipi?: string
     ambalajId?: string | null
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutFaturalarInput = {
@@ -17035,6 +18374,51 @@ export namespace Prisma {
   export type mal_kabul_recordsCreateManyFaturalarInputEnvelope = {
     data: mal_kabul_recordsCreateManyFaturalarInput | mal_kabul_recordsCreateManyFaturalarInput[]
     skipDuplicates?: boolean
+  }
+
+  export type usersCreateWithoutFaturalarInput = {
+    id: string
+    firstName: string
+    lastName: string
+    email: string
+    password: string
+    role?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    mal_kabul_records?: mal_kabul_recordsCreateNestedManyWithoutUsersInput
+  }
+
+  export type usersUncheckedCreateWithoutFaturalarInput = {
+    id: string
+    firstName: string
+    lastName: string
+    email: string
+    password: string
+    role?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    mal_kabul_records?: mal_kabul_recordsUncheckedCreateNestedManyWithoutUsersInput
+  }
+
+  export type usersCreateOrConnectWithoutFaturalarInput = {
+    where: usersWhereUniqueInput
+    create: XOR<usersCreateWithoutFaturalarInput, usersUncheckedCreateWithoutFaturalarInput>
+  }
+
+  export type mal_kabul_recordsUpsertWithWhereUniqueWithoutFaturalarInput = {
+    where: mal_kabul_recordsWhereUniqueInput
+    update: XOR<mal_kabul_recordsUpdateWithoutFaturalarInput, mal_kabul_recordsUncheckedUpdateWithoutFaturalarInput>
+    create: XOR<mal_kabul_recordsCreateWithoutFaturalarInput, mal_kabul_recordsUncheckedCreateWithoutFaturalarInput>
+  }
+
+  export type mal_kabul_recordsUpdateWithWhereUniqueWithoutFaturalarInput = {
+    where: mal_kabul_recordsWhereUniqueInput
+    data: XOR<mal_kabul_recordsUpdateWithoutFaturalarInput, mal_kabul_recordsUncheckedUpdateWithoutFaturalarInput>
+  }
+
+  export type mal_kabul_recordsUpdateManyWithWhereWithoutFaturalarInput = {
+    where: mal_kabul_recordsScalarWhereInput
+    data: XOR<mal_kabul_recordsUpdateManyMutationInput, mal_kabul_recordsUncheckedUpdateManyWithoutFaturalarInput>
   }
 
   export type usersUpsertWithoutFaturalarInput = {
@@ -17054,9 +18438,9 @@ export namespace Prisma {
     lastName?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mal_kabul_records?: mal_kabul_recordsUpdateManyWithoutUsersNestedInput
   }
 
@@ -17066,82 +18450,66 @@ export namespace Prisma {
     lastName?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mal_kabul_records?: mal_kabul_recordsUncheckedUpdateManyWithoutUsersNestedInput
-  }
-
-  export type mal_kabul_recordsUpsertWithWhereUniqueWithoutFaturalarInput = {
-    where: mal_kabul_recordsWhereUniqueInput
-    update: XOR<mal_kabul_recordsUpdateWithoutFaturalarInput, mal_kabul_recordsUncheckedUpdateWithoutFaturalarInput>
-    create: XOR<mal_kabul_recordsCreateWithoutFaturalarInput, mal_kabul_recordsUncheckedCreateWithoutFaturalarInput>
-  }
-
-  export type mal_kabul_recordsUpdateWithWhereUniqueWithoutFaturalarInput = {
-    where: mal_kabul_recordsWhereUniqueInput
-    data: XOR<mal_kabul_recordsUpdateWithoutFaturalarInput, mal_kabul_recordsUncheckedUpdateWithoutFaturalarInput>
-  }
-
-  export type mal_kabul_recordsUpdateManyWithWhereWithoutFaturalarInput = {
-    where: mal_kabul_recordsScalarWhereInput
-    data: XOR<mal_kabul_recordsUpdateManyMutationInput, mal_kabul_recordsUncheckedUpdateManyWithoutFaturalarInput>
   }
 
   export type mal_kabul_recordsCreateWithoutKomisyoncularInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
-    saticiTipi?: $Enums.SaticiTipi
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
-    ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
-    faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
+    saticiTipi?: string
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
-    mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
-    ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
     urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
+    faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
+    mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
+    ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
+    ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
   }
 
   export type mal_kabul_recordsUncheckedCreateWithoutKomisyoncularInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
     malKabulcuId: string
     ureticiId?: string | null
     urunId: string
     faturaId?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
     mustahsilId?: string | null
     ozelFirmaId?: string | null
-    saticiTipi?: $Enums.SaticiTipi
+    saticiTipi?: string
     ambalajId?: string | null
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutKomisyoncularInput = {
@@ -17157,30 +18525,30 @@ export namespace Prisma {
   export type ureticilerCreateWithoutKomisyoncularInput = {
     id: string
     ad: string
-    createdAt?: Date | string
-    updatedAt: Date | string
-    cinsiyet: $Enums.Gender
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    cinsiyet: string
     dogumTarihi?: Date | string | null
-    durum?: $Enums.Status
     iletisim?: string | null
     sehir: string
     soyad: string
     tcNo?: string | null
+    durum?: string
     mal_kabul_records?: mal_kabul_recordsCreateNestedManyWithoutUreticilerInput
   }
 
   export type ureticilerUncheckedCreateWithoutKomisyoncularInput = {
     id: string
     ad: string
-    createdAt?: Date | string
-    updatedAt: Date | string
-    cinsiyet: $Enums.Gender
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    cinsiyet: string
     dogumTarihi?: Date | string | null
-    durum?: $Enums.Status
     iletisim?: string | null
     sehir: string
     soyad: string
     tcNo?: string | null
+    durum?: string
     mal_kabul_records?: mal_kabul_recordsUncheckedCreateNestedManyWithoutUreticilerInput
   }
 
@@ -17232,111 +18600,16 @@ export namespace Prisma {
     NOT?: ureticilerScalarWhereInput | ureticilerScalarWhereInput[]
     id?: StringFilter<"ureticiler"> | string
     ad?: StringFilter<"ureticiler"> | string
-    createdAt?: DateTimeFilter<"ureticiler"> | Date | string
-    updatedAt?: DateTimeFilter<"ureticiler"> | Date | string
-    cinsiyet?: EnumGenderFilter<"ureticiler"> | $Enums.Gender
+    createdAt?: DateTimeNullableFilter<"ureticiler"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"ureticiler"> | Date | string | null
+    cinsiyet?: StringFilter<"ureticiler"> | string
     dogumTarihi?: DateTimeNullableFilter<"ureticiler"> | Date | string | null
-    durum?: EnumStatusFilter<"ureticiler"> | $Enums.Status
     iletisim?: StringNullableFilter<"ureticiler"> | string | null
     komisyoncuId?: StringNullableFilter<"ureticiler"> | string | null
     sehir?: StringFilter<"ureticiler"> | string
     soyad?: StringFilter<"ureticiler"> | string
     tcNo?: StringNullableFilter<"ureticiler"> | string | null
-  }
-
-  export type ambalajlarCreateWithoutMal_kabul_recordsInput = {
-    id: string
-    ad: string
-    tipi: $Enums.AmbalajTipi
-    daraKg: number
-    aciklama?: string | null
-    durum?: $Enums.Status
-    createdAt?: Date | string
-    updatedAt: Date | string
-  }
-
-  export type ambalajlarUncheckedCreateWithoutMal_kabul_recordsInput = {
-    id: string
-    ad: string
-    tipi: $Enums.AmbalajTipi
-    daraKg: number
-    aciklama?: string | null
-    durum?: $Enums.Status
-    createdAt?: Date | string
-    updatedAt: Date | string
-  }
-
-  export type ambalajlarCreateOrConnectWithoutMal_kabul_recordsInput = {
-    where: ambalajlarWhereUniqueInput
-    create: XOR<ambalajlarCreateWithoutMal_kabul_recordsInput, ambalajlarUncheckedCreateWithoutMal_kabul_recordsInput>
-  }
-
-  export type faturalarCreateWithoutMal_kabul_recordsInput = {
-    id: string
-    faturaNo: string
-    tarih?: Date | string
-    toplamTutar: number
-    kdvOrani?: number
-    kdvTutari: number
-    genelToplam: number
-    notlar?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
-    users: usersCreateNestedOneWithoutFaturalarInput
-  }
-
-  export type faturalarUncheckedCreateWithoutMal_kabul_recordsInput = {
-    id: string
-    faturaNo: string
-    tarih?: Date | string
-    toplamTutar: number
-    kdvOrani?: number
-    kdvTutari: number
-    genelToplam: number
-    notlar?: string | null
-    satinAlmaciId: string
-    createdAt?: Date | string
-    updatedAt: Date | string
-  }
-
-  export type faturalarCreateOrConnectWithoutMal_kabul_recordsInput = {
-    where: faturalarWhereUniqueInput
-    create: XOR<faturalarCreateWithoutMal_kabul_recordsInput, faturalarUncheckedCreateWithoutMal_kabul_recordsInput>
-  }
-
-  export type komisyoncularCreateWithoutMal_kabul_recordsInput = {
-    id: string
-    createdAt?: Date | string
-    updatedAt: Date | string
-    dukkanAdi: string
-    durum?: $Enums.Status
-    komisyonNo: string
-    sehir: string
-    vkn?: string | null
-    yetkiliAdi?: string | null
-    yetkiliTelefon?: string | null
-    komisyonKodu: string
-    ureticiler?: ureticilerCreateNestedManyWithoutKomisyoncularInput
-  }
-
-  export type komisyoncularUncheckedCreateWithoutMal_kabul_recordsInput = {
-    id: string
-    createdAt?: Date | string
-    updatedAt: Date | string
-    dukkanAdi: string
-    durum?: $Enums.Status
-    komisyonNo: string
-    sehir: string
-    vkn?: string | null
-    yetkiliAdi?: string | null
-    yetkiliTelefon?: string | null
-    komisyonKodu: string
-    ureticiler?: ureticilerUncheckedCreateNestedManyWithoutKomisyoncularInput
-  }
-
-  export type komisyoncularCreateOrConnectWithoutMal_kabul_recordsInput = {
-    where: komisyoncularWhereUniqueInput
-    create: XOR<komisyoncularCreateWithoutMal_kabul_recordsInput, komisyoncularUncheckedCreateWithoutMal_kabul_recordsInput>
+    durum?: StringFilter<"ureticiler"> | string
   }
 
   export type usersCreateWithoutMal_kabul_recordsInput = {
@@ -17345,9 +18618,9 @@ export namespace Prisma {
     lastName: string
     email: string
     password: string
-    role?: $Enums.UserRole
-    createdAt?: Date | string
-    updatedAt: Date | string
+    role?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     faturalar?: faturalarCreateNestedManyWithoutUsersInput
   }
 
@@ -17357,9 +18630,9 @@ export namespace Prisma {
     lastName: string
     email: string
     password: string
-    role?: $Enums.UserRole
-    createdAt?: Date | string
-    updatedAt: Date | string
+    role?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     faturalar?: faturalarUncheckedCreateNestedManyWithoutUsersInput
   }
 
@@ -17368,108 +18641,69 @@ export namespace Prisma {
     create: XOR<usersCreateWithoutMal_kabul_recordsInput, usersUncheckedCreateWithoutMal_kabul_recordsInput>
   }
 
-  export type mustahsilCreateWithoutMal_kabul_recordsInput = {
+  export type komisyoncularCreateWithoutMal_kabul_recordsInput = {
     id: string
-    ad: string
-    soyad: string
-    dogumTarihi: Date | string
-    tcKimlikNo: string
-    ibanAdresi?: string | null
-    adres?: string | null
-    cinsiyet: $Enums.Gender
-    durum?: $Enums.Status
-    createdAt?: Date | string
-    updatedAt: Date | string
-    mustahsilNo: string
-    iletisim?: string | null
-    bankaAdi?: string | null
-  }
-
-  export type mustahsilUncheckedCreateWithoutMal_kabul_recordsInput = {
-    id: string
-    ad: string
-    soyad: string
-    dogumTarihi: Date | string
-    tcKimlikNo: string
-    ibanAdresi?: string | null
-    adres?: string | null
-    cinsiyet: $Enums.Gender
-    durum?: $Enums.Status
-    createdAt?: Date | string
-    updatedAt: Date | string
-    mustahsilNo: string
-    iletisim?: string | null
-    bankaAdi?: string | null
-  }
-
-  export type mustahsilCreateOrConnectWithoutMal_kabul_recordsInput = {
-    where: mustahsilWhereUniqueInput
-    create: XOR<mustahsilCreateWithoutMal_kabul_recordsInput, mustahsilUncheckedCreateWithoutMal_kabul_recordsInput>
-  }
-
-  export type ozel_firmalarCreateWithoutMal_kabul_recordsInput = {
-    id: string
-    firmaAdi: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    dukkanAdi: string
+    durum?: string
+    komisyonNo: string
+    komisyonKodu: string
+    sehir: string
     vkn?: string | null
     yetkiliAdi?: string | null
     yetkiliTelefon?: string | null
-    sehir: string
-    adres?: string | null
-    durum?: $Enums.Status
-    createdAt?: Date | string
-    updatedAt: Date | string
-    firmaNo: string
-    vergiDairesi?: string | null
+    ureticiler?: ureticilerCreateNestedManyWithoutKomisyoncularInput
   }
 
-  export type ozel_firmalarUncheckedCreateWithoutMal_kabul_recordsInput = {
+  export type komisyoncularUncheckedCreateWithoutMal_kabul_recordsInput = {
     id: string
-    firmaAdi: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    dukkanAdi: string
+    durum?: string
+    komisyonNo: string
+    komisyonKodu: string
+    sehir: string
     vkn?: string | null
     yetkiliAdi?: string | null
     yetkiliTelefon?: string | null
-    sehir: string
-    adres?: string | null
-    durum?: $Enums.Status
-    createdAt?: Date | string
-    updatedAt: Date | string
-    firmaNo: string
-    vergiDairesi?: string | null
+    ureticiler?: ureticilerUncheckedCreateNestedManyWithoutKomisyoncularInput
   }
 
-  export type ozel_firmalarCreateOrConnectWithoutMal_kabul_recordsInput = {
-    where: ozel_firmalarWhereUniqueInput
-    create: XOR<ozel_firmalarCreateWithoutMal_kabul_recordsInput, ozel_firmalarUncheckedCreateWithoutMal_kabul_recordsInput>
+  export type komisyoncularCreateOrConnectWithoutMal_kabul_recordsInput = {
+    where: komisyoncularWhereUniqueInput
+    create: XOR<komisyoncularCreateWithoutMal_kabul_recordsInput, komisyoncularUncheckedCreateWithoutMal_kabul_recordsInput>
   }
 
   export type ureticilerCreateWithoutMal_kabul_recordsInput = {
     id: string
     ad: string
-    createdAt?: Date | string
-    updatedAt: Date | string
-    cinsiyet: $Enums.Gender
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    cinsiyet: string
     dogumTarihi?: Date | string | null
-    durum?: $Enums.Status
     iletisim?: string | null
     sehir: string
     soyad: string
     tcNo?: string | null
+    durum?: string
     komisyoncular?: komisyoncularCreateNestedOneWithoutUreticilerInput
   }
 
   export type ureticilerUncheckedCreateWithoutMal_kabul_recordsInput = {
     id: string
     ad: string
-    createdAt?: Date | string
-    updatedAt: Date | string
-    cinsiyet: $Enums.Gender
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    cinsiyet: string
     dogumTarihi?: Date | string | null
-    durum?: $Enums.Status
     iletisim?: string | null
     komisyoncuId?: string | null
     sehir: string
     soyad: string
     tcNo?: string | null
+    durum?: string
   }
 
   export type ureticilerCreateOrConnectWithoutMal_kabul_recordsInput = {
@@ -17480,23 +18714,23 @@ export namespace Prisma {
   export type urunlerCreateWithoutMal_kabul_recordsInput = {
     id: string
     ad: string
+    stokKodu: string
     kategori?: string | null
     birim: string
-    createdAt?: Date | string
-    updatedAt: Date | string
-    durum?: $Enums.Status
-    stokKodu: string
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
   }
 
   export type urunlerUncheckedCreateWithoutMal_kabul_recordsInput = {
     id: string
     ad: string
+    stokKodu: string
     kategori?: string | null
     birim: string
-    createdAt?: Date | string
-    updatedAt: Date | string
-    durum?: $Enums.Status
-    stokKodu: string
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
   }
 
   export type urunlerCreateOrConnectWithoutMal_kabul_recordsInput = {
@@ -17504,117 +18738,138 @@ export namespace Prisma {
     create: XOR<urunlerCreateWithoutMal_kabul_recordsInput, urunlerUncheckedCreateWithoutMal_kabul_recordsInput>
   }
 
-  export type ambalajlarUpsertWithoutMal_kabul_recordsInput = {
-    update: XOR<ambalajlarUpdateWithoutMal_kabul_recordsInput, ambalajlarUncheckedUpdateWithoutMal_kabul_recordsInput>
-    create: XOR<ambalajlarCreateWithoutMal_kabul_recordsInput, ambalajlarUncheckedCreateWithoutMal_kabul_recordsInput>
-    where?: ambalajlarWhereInput
+  export type faturalarCreateWithoutMal_kabul_recordsInput = {
+    id: string
+    faturaNo: string
+    tarih?: Date | string | null
+    toplamTutar: number
+    kdvOrani?: number | null
+    kdvTutari: number
+    genelToplam: number
+    notlar?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    users: usersCreateNestedOneWithoutFaturalarInput
   }
 
-  export type ambalajlarUpdateToOneWithWhereWithoutMal_kabul_recordsInput = {
-    where?: ambalajlarWhereInput
-    data: XOR<ambalajlarUpdateWithoutMal_kabul_recordsInput, ambalajlarUncheckedUpdateWithoutMal_kabul_recordsInput>
+  export type faturalarUncheckedCreateWithoutMal_kabul_recordsInput = {
+    id: string
+    faturaNo: string
+    tarih?: Date | string | null
+    toplamTutar: number
+    kdvOrani?: number | null
+    kdvTutari: number
+    genelToplam: number
+    notlar?: string | null
+    satinAlmaciId: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
   }
 
-  export type ambalajlarUpdateWithoutMal_kabul_recordsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    ad?: StringFieldUpdateOperationsInput | string
-    tipi?: EnumAmbalajTipiFieldUpdateOperationsInput | $Enums.AmbalajTipi
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    aciklama?: NullableStringFieldUpdateOperationsInput | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ambalajlarUncheckedUpdateWithoutMal_kabul_recordsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    ad?: StringFieldUpdateOperationsInput | string
-    tipi?: EnumAmbalajTipiFieldUpdateOperationsInput | $Enums.AmbalajTipi
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    aciklama?: NullableStringFieldUpdateOperationsInput | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type faturalarUpsertWithoutMal_kabul_recordsInput = {
-    update: XOR<faturalarUpdateWithoutMal_kabul_recordsInput, faturalarUncheckedUpdateWithoutMal_kabul_recordsInput>
+  export type faturalarCreateOrConnectWithoutMal_kabul_recordsInput = {
+    where: faturalarWhereUniqueInput
     create: XOR<faturalarCreateWithoutMal_kabul_recordsInput, faturalarUncheckedCreateWithoutMal_kabul_recordsInput>
-    where?: faturalarWhereInput
   }
 
-  export type faturalarUpdateToOneWithWhereWithoutMal_kabul_recordsInput = {
-    where?: faturalarWhereInput
-    data: XOR<faturalarUpdateWithoutMal_kabul_recordsInput, faturalarUncheckedUpdateWithoutMal_kabul_recordsInput>
+  export type mustahsilCreateWithoutMal_kabul_recordsInput = {
+    id: string
+    ad: string
+    soyad: string
+    dogumTarihi: Date | string
+    tcKimlikNo: string
+    mustahsilNo: string
+    iletisim?: string | null
+    bankaAdi?: string | null
+    ibanAdresi?: string | null
+    adres?: string | null
+    cinsiyet: string
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
   }
 
-  export type faturalarUpdateWithoutMal_kabul_recordsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    faturaNo?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
-    toplamTutar?: FloatFieldUpdateOperationsInput | number
-    kdvOrani?: FloatFieldUpdateOperationsInput | number
-    kdvTutari?: FloatFieldUpdateOperationsInput | number
-    genelToplam?: FloatFieldUpdateOperationsInput | number
-    notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    users?: usersUpdateOneRequiredWithoutFaturalarNestedInput
+  export type mustahsilUncheckedCreateWithoutMal_kabul_recordsInput = {
+    id: string
+    ad: string
+    soyad: string
+    dogumTarihi: Date | string
+    tcKimlikNo: string
+    mustahsilNo: string
+    iletisim?: string | null
+    bankaAdi?: string | null
+    ibanAdresi?: string | null
+    adres?: string | null
+    cinsiyet: string
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
   }
 
-  export type faturalarUncheckedUpdateWithoutMal_kabul_recordsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    faturaNo?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
-    toplamTutar?: FloatFieldUpdateOperationsInput | number
-    kdvOrani?: FloatFieldUpdateOperationsInput | number
-    kdvTutari?: FloatFieldUpdateOperationsInput | number
-    genelToplam?: FloatFieldUpdateOperationsInput | number
-    notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    satinAlmaciId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type mustahsilCreateOrConnectWithoutMal_kabul_recordsInput = {
+    where: mustahsilWhereUniqueInput
+    create: XOR<mustahsilCreateWithoutMal_kabul_recordsInput, mustahsilUncheckedCreateWithoutMal_kabul_recordsInput>
   }
 
-  export type komisyoncularUpsertWithoutMal_kabul_recordsInput = {
-    update: XOR<komisyoncularUpdateWithoutMal_kabul_recordsInput, komisyoncularUncheckedUpdateWithoutMal_kabul_recordsInput>
-    create: XOR<komisyoncularCreateWithoutMal_kabul_recordsInput, komisyoncularUncheckedCreateWithoutMal_kabul_recordsInput>
-    where?: komisyoncularWhereInput
+  export type ozel_firmalarCreateWithoutMal_kabul_recordsInput = {
+    id: string
+    firmaAdi: string
+    firmaNo: string
+    vkn?: string | null
+    vergiDairesi?: string | null
+    yetkiliAdi?: string | null
+    yetkiliTelefon?: string | null
+    sehir: string
+    adres?: string | null
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
   }
 
-  export type komisyoncularUpdateToOneWithWhereWithoutMal_kabul_recordsInput = {
-    where?: komisyoncularWhereInput
-    data: XOR<komisyoncularUpdateWithoutMal_kabul_recordsInput, komisyoncularUncheckedUpdateWithoutMal_kabul_recordsInput>
+  export type ozel_firmalarUncheckedCreateWithoutMal_kabul_recordsInput = {
+    id: string
+    firmaAdi: string
+    firmaNo: string
+    vkn?: string | null
+    vergiDairesi?: string | null
+    yetkiliAdi?: string | null
+    yetkiliTelefon?: string | null
+    sehir: string
+    adres?: string | null
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
   }
 
-  export type komisyoncularUpdateWithoutMal_kabul_recordsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    dukkanAdi?: StringFieldUpdateOperationsInput | string
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    komisyonNo?: StringFieldUpdateOperationsInput | string
-    sehir?: StringFieldUpdateOperationsInput | string
-    vkn?: NullableStringFieldUpdateOperationsInput | string | null
-    yetkiliAdi?: NullableStringFieldUpdateOperationsInput | string | null
-    yetkiliTelefon?: NullableStringFieldUpdateOperationsInput | string | null
-    komisyonKodu?: StringFieldUpdateOperationsInput | string
-    ureticiler?: ureticilerUpdateManyWithoutKomisyoncularNestedInput
+  export type ozel_firmalarCreateOrConnectWithoutMal_kabul_recordsInput = {
+    where: ozel_firmalarWhereUniqueInput
+    create: XOR<ozel_firmalarCreateWithoutMal_kabul_recordsInput, ozel_firmalarUncheckedCreateWithoutMal_kabul_recordsInput>
   }
 
-  export type komisyoncularUncheckedUpdateWithoutMal_kabul_recordsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    dukkanAdi?: StringFieldUpdateOperationsInput | string
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    komisyonNo?: StringFieldUpdateOperationsInput | string
-    sehir?: StringFieldUpdateOperationsInput | string
-    vkn?: NullableStringFieldUpdateOperationsInput | string | null
-    yetkiliAdi?: NullableStringFieldUpdateOperationsInput | string | null
-    yetkiliTelefon?: NullableStringFieldUpdateOperationsInput | string | null
-    komisyonKodu?: StringFieldUpdateOperationsInput | string
-    ureticiler?: ureticilerUncheckedUpdateManyWithoutKomisyoncularNestedInput
+  export type ambalajlarCreateWithoutMal_kabul_recordsInput = {
+    id: string
+    ad: string
+    tipi: string
+    daraKg: number
+    aciklama?: string | null
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type ambalajlarUncheckedCreateWithoutMal_kabul_recordsInput = {
+    id: string
+    ad: string
+    tipi: string
+    daraKg: number
+    aciklama?: string | null
+    durum?: string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type ambalajlarCreateOrConnectWithoutMal_kabul_recordsInput = {
+    where: ambalajlarWhereUniqueInput
+    create: XOR<ambalajlarCreateWithoutMal_kabul_recordsInput, ambalajlarUncheckedCreateWithoutMal_kabul_recordsInput>
   }
 
   export type usersUpsertWithoutMal_kabul_recordsInput = {
@@ -17634,9 +18889,9 @@ export namespace Prisma {
     lastName?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     faturalar?: faturalarUpdateManyWithoutUsersNestedInput
   }
 
@@ -17646,10 +18901,164 @@ export namespace Prisma {
     lastName?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
-    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     faturalar?: faturalarUncheckedUpdateManyWithoutUsersNestedInput
+  }
+
+  export type komisyoncularUpsertWithoutMal_kabul_recordsInput = {
+    update: XOR<komisyoncularUpdateWithoutMal_kabul_recordsInput, komisyoncularUncheckedUpdateWithoutMal_kabul_recordsInput>
+    create: XOR<komisyoncularCreateWithoutMal_kabul_recordsInput, komisyoncularUncheckedCreateWithoutMal_kabul_recordsInput>
+    where?: komisyoncularWhereInput
+  }
+
+  export type komisyoncularUpdateToOneWithWhereWithoutMal_kabul_recordsInput = {
+    where?: komisyoncularWhereInput
+    data: XOR<komisyoncularUpdateWithoutMal_kabul_recordsInput, komisyoncularUncheckedUpdateWithoutMal_kabul_recordsInput>
+  }
+
+  export type komisyoncularUpdateWithoutMal_kabul_recordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dukkanAdi?: StringFieldUpdateOperationsInput | string
+    durum?: StringFieldUpdateOperationsInput | string
+    komisyonNo?: StringFieldUpdateOperationsInput | string
+    komisyonKodu?: StringFieldUpdateOperationsInput | string
+    sehir?: StringFieldUpdateOperationsInput | string
+    vkn?: NullableStringFieldUpdateOperationsInput | string | null
+    yetkiliAdi?: NullableStringFieldUpdateOperationsInput | string | null
+    yetkiliTelefon?: NullableStringFieldUpdateOperationsInput | string | null
+    ureticiler?: ureticilerUpdateManyWithoutKomisyoncularNestedInput
+  }
+
+  export type komisyoncularUncheckedUpdateWithoutMal_kabul_recordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    dukkanAdi?: StringFieldUpdateOperationsInput | string
+    durum?: StringFieldUpdateOperationsInput | string
+    komisyonNo?: StringFieldUpdateOperationsInput | string
+    komisyonKodu?: StringFieldUpdateOperationsInput | string
+    sehir?: StringFieldUpdateOperationsInput | string
+    vkn?: NullableStringFieldUpdateOperationsInput | string | null
+    yetkiliAdi?: NullableStringFieldUpdateOperationsInput | string | null
+    yetkiliTelefon?: NullableStringFieldUpdateOperationsInput | string | null
+    ureticiler?: ureticilerUncheckedUpdateManyWithoutKomisyoncularNestedInput
+  }
+
+  export type ureticilerUpsertWithoutMal_kabul_recordsInput = {
+    update: XOR<ureticilerUpdateWithoutMal_kabul_recordsInput, ureticilerUncheckedUpdateWithoutMal_kabul_recordsInput>
+    create: XOR<ureticilerCreateWithoutMal_kabul_recordsInput, ureticilerUncheckedCreateWithoutMal_kabul_recordsInput>
+    where?: ureticilerWhereInput
+  }
+
+  export type ureticilerUpdateToOneWithWhereWithoutMal_kabul_recordsInput = {
+    where?: ureticilerWhereInput
+    data: XOR<ureticilerUpdateWithoutMal_kabul_recordsInput, ureticilerUncheckedUpdateWithoutMal_kabul_recordsInput>
+  }
+
+  export type ureticilerUpdateWithoutMal_kabul_recordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ad?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cinsiyet?: StringFieldUpdateOperationsInput | string
+    dogumTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    iletisim?: NullableStringFieldUpdateOperationsInput | string | null
+    sehir?: StringFieldUpdateOperationsInput | string
+    soyad?: StringFieldUpdateOperationsInput | string
+    tcNo?: NullableStringFieldUpdateOperationsInput | string | null
+    durum?: StringFieldUpdateOperationsInput | string
+    komisyoncular?: komisyoncularUpdateOneWithoutUreticilerNestedInput
+  }
+
+  export type ureticilerUncheckedUpdateWithoutMal_kabul_recordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ad?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cinsiyet?: StringFieldUpdateOperationsInput | string
+    dogumTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    iletisim?: NullableStringFieldUpdateOperationsInput | string | null
+    komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
+    sehir?: StringFieldUpdateOperationsInput | string
+    soyad?: StringFieldUpdateOperationsInput | string
+    tcNo?: NullableStringFieldUpdateOperationsInput | string | null
+    durum?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type urunlerUpsertWithoutMal_kabul_recordsInput = {
+    update: XOR<urunlerUpdateWithoutMal_kabul_recordsInput, urunlerUncheckedUpdateWithoutMal_kabul_recordsInput>
+    create: XOR<urunlerCreateWithoutMal_kabul_recordsInput, urunlerUncheckedCreateWithoutMal_kabul_recordsInput>
+    where?: urunlerWhereInput
+  }
+
+  export type urunlerUpdateToOneWithWhereWithoutMal_kabul_recordsInput = {
+    where?: urunlerWhereInput
+    data: XOR<urunlerUpdateWithoutMal_kabul_recordsInput, urunlerUncheckedUpdateWithoutMal_kabul_recordsInput>
+  }
+
+  export type urunlerUpdateWithoutMal_kabul_recordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ad?: StringFieldUpdateOperationsInput | string
+    stokKodu?: StringFieldUpdateOperationsInput | string
+    kategori?: NullableStringFieldUpdateOperationsInput | string | null
+    birim?: StringFieldUpdateOperationsInput | string
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type urunlerUncheckedUpdateWithoutMal_kabul_recordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    ad?: StringFieldUpdateOperationsInput | string
+    stokKodu?: StringFieldUpdateOperationsInput | string
+    kategori?: NullableStringFieldUpdateOperationsInput | string | null
+    birim?: StringFieldUpdateOperationsInput | string
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type faturalarUpsertWithoutMal_kabul_recordsInput = {
+    update: XOR<faturalarUpdateWithoutMal_kabul_recordsInput, faturalarUncheckedUpdateWithoutMal_kabul_recordsInput>
+    create: XOR<faturalarCreateWithoutMal_kabul_recordsInput, faturalarUncheckedCreateWithoutMal_kabul_recordsInput>
+    where?: faturalarWhereInput
+  }
+
+  export type faturalarUpdateToOneWithWhereWithoutMal_kabul_recordsInput = {
+    where?: faturalarWhereInput
+    data: XOR<faturalarUpdateWithoutMal_kabul_recordsInput, faturalarUncheckedUpdateWithoutMal_kabul_recordsInput>
+  }
+
+  export type faturalarUpdateWithoutMal_kabul_recordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    faturaNo?: StringFieldUpdateOperationsInput | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    toplamTutar?: FloatFieldUpdateOperationsInput | number
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvTutari?: FloatFieldUpdateOperationsInput | number
+    genelToplam?: FloatFieldUpdateOperationsInput | number
+    notlar?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    users?: usersUpdateOneRequiredWithoutFaturalarNestedInput
+  }
+
+  export type faturalarUncheckedUpdateWithoutMal_kabul_recordsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    faturaNo?: StringFieldUpdateOperationsInput | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    toplamTutar?: FloatFieldUpdateOperationsInput | number
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvTutari?: FloatFieldUpdateOperationsInput | number
+    genelToplam?: FloatFieldUpdateOperationsInput | number
+    notlar?: NullableStringFieldUpdateOperationsInput | string | null
+    satinAlmaciId?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mustahsilUpsertWithoutMal_kabul_recordsInput = {
@@ -17669,15 +19078,15 @@ export namespace Prisma {
     soyad?: StringFieldUpdateOperationsInput | string
     dogumTarihi?: DateTimeFieldUpdateOperationsInput | Date | string
     tcKimlikNo?: StringFieldUpdateOperationsInput | string
-    ibanAdresi?: NullableStringFieldUpdateOperationsInput | string | null
-    adres?: NullableStringFieldUpdateOperationsInput | string | null
-    cinsiyet?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     mustahsilNo?: StringFieldUpdateOperationsInput | string
     iletisim?: NullableStringFieldUpdateOperationsInput | string | null
     bankaAdi?: NullableStringFieldUpdateOperationsInput | string | null
+    ibanAdresi?: NullableStringFieldUpdateOperationsInput | string | null
+    adres?: NullableStringFieldUpdateOperationsInput | string | null
+    cinsiyet?: StringFieldUpdateOperationsInput | string
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mustahsilUncheckedUpdateWithoutMal_kabul_recordsInput = {
@@ -17686,15 +19095,15 @@ export namespace Prisma {
     soyad?: StringFieldUpdateOperationsInput | string
     dogumTarihi?: DateTimeFieldUpdateOperationsInput | Date | string
     tcKimlikNo?: StringFieldUpdateOperationsInput | string
-    ibanAdresi?: NullableStringFieldUpdateOperationsInput | string | null
-    adres?: NullableStringFieldUpdateOperationsInput | string | null
-    cinsiyet?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     mustahsilNo?: StringFieldUpdateOperationsInput | string
     iletisim?: NullableStringFieldUpdateOperationsInput | string | null
     bankaAdi?: NullableStringFieldUpdateOperationsInput | string | null
+    ibanAdresi?: NullableStringFieldUpdateOperationsInput | string | null
+    adres?: NullableStringFieldUpdateOperationsInput | string | null
+    cinsiyet?: StringFieldUpdateOperationsInput | string
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ozel_firmalarUpsertWithoutMal_kabul_recordsInput = {
@@ -17711,161 +19120,120 @@ export namespace Prisma {
   export type ozel_firmalarUpdateWithoutMal_kabul_recordsInput = {
     id?: StringFieldUpdateOperationsInput | string
     firmaAdi?: StringFieldUpdateOperationsInput | string
+    firmaNo?: StringFieldUpdateOperationsInput | string
     vkn?: NullableStringFieldUpdateOperationsInput | string | null
+    vergiDairesi?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliAdi?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliTelefon?: NullableStringFieldUpdateOperationsInput | string | null
     sehir?: StringFieldUpdateOperationsInput | string
     adres?: NullableStringFieldUpdateOperationsInput | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    firmaNo?: StringFieldUpdateOperationsInput | string
-    vergiDairesi?: NullableStringFieldUpdateOperationsInput | string | null
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ozel_firmalarUncheckedUpdateWithoutMal_kabul_recordsInput = {
     id?: StringFieldUpdateOperationsInput | string
     firmaAdi?: StringFieldUpdateOperationsInput | string
+    firmaNo?: StringFieldUpdateOperationsInput | string
     vkn?: NullableStringFieldUpdateOperationsInput | string | null
+    vergiDairesi?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliAdi?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliTelefon?: NullableStringFieldUpdateOperationsInput | string | null
     sehir?: StringFieldUpdateOperationsInput | string
     adres?: NullableStringFieldUpdateOperationsInput | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    firmaNo?: StringFieldUpdateOperationsInput | string
-    vergiDairesi?: NullableStringFieldUpdateOperationsInput | string | null
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type ureticilerUpsertWithoutMal_kabul_recordsInput = {
-    update: XOR<ureticilerUpdateWithoutMal_kabul_recordsInput, ureticilerUncheckedUpdateWithoutMal_kabul_recordsInput>
-    create: XOR<ureticilerCreateWithoutMal_kabul_recordsInput, ureticilerUncheckedCreateWithoutMal_kabul_recordsInput>
-    where?: ureticilerWhereInput
+  export type ambalajlarUpsertWithoutMal_kabul_recordsInput = {
+    update: XOR<ambalajlarUpdateWithoutMal_kabul_recordsInput, ambalajlarUncheckedUpdateWithoutMal_kabul_recordsInput>
+    create: XOR<ambalajlarCreateWithoutMal_kabul_recordsInput, ambalajlarUncheckedCreateWithoutMal_kabul_recordsInput>
+    where?: ambalajlarWhereInput
   }
 
-  export type ureticilerUpdateToOneWithWhereWithoutMal_kabul_recordsInput = {
-    where?: ureticilerWhereInput
-    data: XOR<ureticilerUpdateWithoutMal_kabul_recordsInput, ureticilerUncheckedUpdateWithoutMal_kabul_recordsInput>
+  export type ambalajlarUpdateToOneWithWhereWithoutMal_kabul_recordsInput = {
+    where?: ambalajlarWhereInput
+    data: XOR<ambalajlarUpdateWithoutMal_kabul_recordsInput, ambalajlarUncheckedUpdateWithoutMal_kabul_recordsInput>
   }
 
-  export type ureticilerUpdateWithoutMal_kabul_recordsInput = {
+  export type ambalajlarUpdateWithoutMal_kabul_recordsInput = {
     id?: StringFieldUpdateOperationsInput | string
     ad?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    cinsiyet?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-    dogumTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    iletisim?: NullableStringFieldUpdateOperationsInput | string | null
-    sehir?: StringFieldUpdateOperationsInput | string
-    soyad?: StringFieldUpdateOperationsInput | string
-    tcNo?: NullableStringFieldUpdateOperationsInput | string | null
-    komisyoncular?: komisyoncularUpdateOneWithoutUreticilerNestedInput
+    tipi?: StringFieldUpdateOperationsInput | string
+    daraKg?: FloatFieldUpdateOperationsInput | number
+    aciklama?: NullableStringFieldUpdateOperationsInput | string | null
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type ureticilerUncheckedUpdateWithoutMal_kabul_recordsInput = {
+  export type ambalajlarUncheckedUpdateWithoutMal_kabul_recordsInput = {
     id?: StringFieldUpdateOperationsInput | string
     ad?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    cinsiyet?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
-    dogumTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    iletisim?: NullableStringFieldUpdateOperationsInput | string | null
-    komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
-    sehir?: StringFieldUpdateOperationsInput | string
-    soyad?: StringFieldUpdateOperationsInput | string
-    tcNo?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type urunlerUpsertWithoutMal_kabul_recordsInput = {
-    update: XOR<urunlerUpdateWithoutMal_kabul_recordsInput, urunlerUncheckedUpdateWithoutMal_kabul_recordsInput>
-    create: XOR<urunlerCreateWithoutMal_kabul_recordsInput, urunlerUncheckedCreateWithoutMal_kabul_recordsInput>
-    where?: urunlerWhereInput
-  }
-
-  export type urunlerUpdateToOneWithWhereWithoutMal_kabul_recordsInput = {
-    where?: urunlerWhereInput
-    data: XOR<urunlerUpdateWithoutMal_kabul_recordsInput, urunlerUncheckedUpdateWithoutMal_kabul_recordsInput>
-  }
-
-  export type urunlerUpdateWithoutMal_kabul_recordsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    ad?: StringFieldUpdateOperationsInput | string
-    kategori?: NullableStringFieldUpdateOperationsInput | string | null
-    birim?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    stokKodu?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type urunlerUncheckedUpdateWithoutMal_kabul_recordsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    ad?: StringFieldUpdateOperationsInput | string
-    kategori?: NullableStringFieldUpdateOperationsInput | string | null
-    birim?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
-    stokKodu?: StringFieldUpdateOperationsInput | string
+    tipi?: StringFieldUpdateOperationsInput | string
+    daraKg?: FloatFieldUpdateOperationsInput | number
+    aciklama?: NullableStringFieldUpdateOperationsInput | string | null
+    durum?: StringFieldUpdateOperationsInput | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mal_kabul_recordsCreateWithoutMustahsilInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
-    saticiTipi?: $Enums.SaticiTipi
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
-    ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
-    faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
-    komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
+    saticiTipi?: string
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
-    ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
+    komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
     urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
+    faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
+    ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
+    ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
   }
 
   export type mal_kabul_recordsUncheckedCreateWithoutMustahsilInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
     ureticiId?: string | null
     urunId: string
     faturaId?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
     ozelFirmaId?: string | null
-    saticiTipi?: $Enums.SaticiTipi
+    saticiTipi?: string
     ambalajId?: string | null
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutMustahsilInput = {
@@ -17896,58 +19264,58 @@ export namespace Prisma {
 
   export type mal_kabul_recordsCreateWithoutOzel_firmalarInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
-    saticiTipi?: $Enums.SaticiTipi
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
-    ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
-    faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
-    komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
+    saticiTipi?: string
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
-    mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
+    komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
     urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
+    faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
+    mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
+    ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
   }
 
   export type mal_kabul_recordsUncheckedCreateWithoutOzel_firmalarInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
     ureticiId?: string | null
     urunId: string
     faturaId?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
     mustahsilId?: string | null
-    saticiTipi?: $Enums.SaticiTipi
+    saticiTipi?: string
     ambalajId?: string | null
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutOzel_firmalarInput = {
@@ -17978,58 +19346,58 @@ export namespace Prisma {
 
   export type mal_kabul_recordsCreateWithoutUreticilerInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
-    saticiTipi?: $Enums.SaticiTipi
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
-    ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
-    faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
-    komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
+    saticiTipi?: string
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
+    komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
+    urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
+    faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
     mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
     ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
-    urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
+    ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
   }
 
   export type mal_kabul_recordsUncheckedCreateWithoutUreticilerInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
     urunId: string
     faturaId?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
     mustahsilId?: string | null
     ozelFirmaId?: string | null
-    saticiTipi?: $Enums.SaticiTipi
+    saticiTipi?: string
     ambalajId?: string | null
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutUreticilerInput = {
@@ -18044,31 +19412,31 @@ export namespace Prisma {
 
   export type komisyoncularCreateWithoutUreticilerInput = {
     id: string
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     dukkanAdi: string
-    durum?: $Enums.Status
+    durum?: string
     komisyonNo: string
+    komisyonKodu: string
     sehir: string
     vkn?: string | null
     yetkiliAdi?: string | null
     yetkiliTelefon?: string | null
-    komisyonKodu: string
     mal_kabul_records?: mal_kabul_recordsCreateNestedManyWithoutKomisyoncularInput
   }
 
   export type komisyoncularUncheckedCreateWithoutUreticilerInput = {
     id: string
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     dukkanAdi: string
-    durum?: $Enums.Status
+    durum?: string
     komisyonNo: string
+    komisyonKodu: string
     sehir: string
     vkn?: string | null
     yetkiliAdi?: string | null
     yetkiliTelefon?: string | null
-    komisyonKodu: string
     mal_kabul_records?: mal_kabul_recordsUncheckedCreateNestedManyWithoutKomisyoncularInput
   }
 
@@ -18106,88 +19474,88 @@ export namespace Prisma {
 
   export type komisyoncularUpdateWithoutUreticilerInput = {
     id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dukkanAdi?: StringFieldUpdateOperationsInput | string
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    durum?: StringFieldUpdateOperationsInput | string
     komisyonNo?: StringFieldUpdateOperationsInput | string
+    komisyonKodu?: StringFieldUpdateOperationsInput | string
     sehir?: StringFieldUpdateOperationsInput | string
     vkn?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliAdi?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliTelefon?: NullableStringFieldUpdateOperationsInput | string | null
-    komisyonKodu?: StringFieldUpdateOperationsInput | string
     mal_kabul_records?: mal_kabul_recordsUpdateManyWithoutKomisyoncularNestedInput
   }
 
   export type komisyoncularUncheckedUpdateWithoutUreticilerInput = {
     id?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     dukkanAdi?: StringFieldUpdateOperationsInput | string
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
+    durum?: StringFieldUpdateOperationsInput | string
     komisyonNo?: StringFieldUpdateOperationsInput | string
+    komisyonKodu?: StringFieldUpdateOperationsInput | string
     sehir?: StringFieldUpdateOperationsInput | string
     vkn?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliAdi?: NullableStringFieldUpdateOperationsInput | string | null
     yetkiliTelefon?: NullableStringFieldUpdateOperationsInput | string | null
-    komisyonKodu?: StringFieldUpdateOperationsInput | string
     mal_kabul_records?: mal_kabul_recordsUncheckedUpdateManyWithoutKomisyoncularNestedInput
   }
 
   export type mal_kabul_recordsCreateWithoutUrunlerInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
-    saticiTipi?: $Enums.SaticiTipi
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
-    ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
-    faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
-    komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
+    saticiTipi?: string
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
+    komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
+    ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
+    faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
     mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
     ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
-    ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
+    ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
   }
 
   export type mal_kabul_recordsUncheckedCreateWithoutUrunlerInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
     ureticiId?: string | null
     faturaId?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
     mustahsilId?: string | null
     ozelFirmaId?: string | null
-    saticiTipi?: $Enums.SaticiTipi
+    saticiTipi?: string
     ambalajId?: string | null
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutUrunlerInput = {
@@ -18216,31 +19584,97 @@ export namespace Prisma {
     data: XOR<mal_kabul_recordsUpdateManyMutationInput, mal_kabul_recordsUncheckedUpdateManyWithoutUrunlerInput>
   }
 
+  export type mal_kabul_recordsCreateWithoutUsersInput = {
+    id: string
+    tarih?: Date | string | null
+    miktar: number
+    birimFiyat?: number | null
+    toplamFiyat?: number | null
+    status?: string
+    notlar?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    fisNo: string
+    saticiTipi?: string
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
+    komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
+    ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
+    urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
+    faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
+    mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
+    ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
+    ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
+  }
+
+  export type mal_kabul_recordsUncheckedCreateWithoutUsersInput = {
+    id: string
+    tarih?: Date | string | null
+    miktar: number
+    birimFiyat?: number | null
+    toplamFiyat?: number | null
+    status?: string
+    notlar?: string | null
+    komisyoncuId?: string | null
+    ureticiId?: string | null
+    urunId: string
+    faturaId?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    fisNo: string
+    mustahsilId?: string | null
+    ozelFirmaId?: string | null
+    saticiTipi?: string
+    ambalajId?: string | null
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
+  }
+
+  export type mal_kabul_recordsCreateOrConnectWithoutUsersInput = {
+    where: mal_kabul_recordsWhereUniqueInput
+    create: XOR<mal_kabul_recordsCreateWithoutUsersInput, mal_kabul_recordsUncheckedCreateWithoutUsersInput>
+  }
+
+  export type mal_kabul_recordsCreateManyUsersInputEnvelope = {
+    data: mal_kabul_recordsCreateManyUsersInput | mal_kabul_recordsCreateManyUsersInput[]
+    skipDuplicates?: boolean
+  }
+
   export type faturalarCreateWithoutUsersInput = {
     id: string
     faturaNo: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     toplamTutar: number
-    kdvOrani?: number
+    kdvOrani?: number | null
     kdvTutari: number
     genelToplam: number
     notlar?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     mal_kabul_records?: mal_kabul_recordsCreateNestedManyWithoutFaturalarInput
   }
 
   export type faturalarUncheckedCreateWithoutUsersInput = {
     id: string
     faturaNo: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     toplamTutar: number
-    kdvOrani?: number
+    kdvOrani?: number | null
     kdvTutari: number
     genelToplam: number
     notlar?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     mal_kabul_records?: mal_kabul_recordsUncheckedCreateNestedManyWithoutFaturalarInput
   }
 
@@ -18254,70 +19688,20 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type mal_kabul_recordsCreateWithoutUsersInput = {
-    id: string
-    tarih?: Date | string
-    miktar: number
-    birimFiyat?: number | null
-    toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
-    notlar?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
-    fisNo: string
-    saticiTipi?: $Enums.SaticiTipi
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
-    ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
-    faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
-    komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
-    mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
-    ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
-    ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
-    urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
-  }
-
-  export type mal_kabul_recordsUncheckedCreateWithoutUsersInput = {
-    id: string
-    tarih?: Date | string
-    miktar: number
-    birimFiyat?: number | null
-    toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
-    notlar?: string | null
-    komisyoncuId?: string | null
-    ureticiId?: string | null
-    urunId: string
-    faturaId?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
-    fisNo: string
-    mustahsilId?: string | null
-    ozelFirmaId?: string | null
-    saticiTipi?: $Enums.SaticiTipi
-    ambalajId?: string | null
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
-  }
-
-  export type mal_kabul_recordsCreateOrConnectWithoutUsersInput = {
+  export type mal_kabul_recordsUpsertWithWhereUniqueWithoutUsersInput = {
     where: mal_kabul_recordsWhereUniqueInput
+    update: XOR<mal_kabul_recordsUpdateWithoutUsersInput, mal_kabul_recordsUncheckedUpdateWithoutUsersInput>
     create: XOR<mal_kabul_recordsCreateWithoutUsersInput, mal_kabul_recordsUncheckedCreateWithoutUsersInput>
   }
 
-  export type mal_kabul_recordsCreateManyUsersInputEnvelope = {
-    data: mal_kabul_recordsCreateManyUsersInput | mal_kabul_recordsCreateManyUsersInput[]
-    skipDuplicates?: boolean
+  export type mal_kabul_recordsUpdateWithWhereUniqueWithoutUsersInput = {
+    where: mal_kabul_recordsWhereUniqueInput
+    data: XOR<mal_kabul_recordsUpdateWithoutUsersInput, mal_kabul_recordsUncheckedUpdateWithoutUsersInput>
+  }
+
+  export type mal_kabul_recordsUpdateManyWithWhereWithoutUsersInput = {
+    where: mal_kabul_recordsScalarWhereInput
+    data: XOR<mal_kabul_recordsUpdateManyMutationInput, mal_kabul_recordsUncheckedUpdateManyWithoutUsersInput>
   }
 
   export type faturalarUpsertWithWhereUniqueWithoutUsersInput = {
@@ -18342,1039 +19726,1023 @@ export namespace Prisma {
     NOT?: faturalarScalarWhereInput | faturalarScalarWhereInput[]
     id?: StringFilter<"faturalar"> | string
     faturaNo?: StringFilter<"faturalar"> | string
-    tarih?: DateTimeFilter<"faturalar"> | Date | string
+    tarih?: DateTimeNullableFilter<"faturalar"> | Date | string | null
     toplamTutar?: FloatFilter<"faturalar"> | number
-    kdvOrani?: FloatFilter<"faturalar"> | number
+    kdvOrani?: FloatNullableFilter<"faturalar"> | number | null
     kdvTutari?: FloatFilter<"faturalar"> | number
     genelToplam?: FloatFilter<"faturalar"> | number
     notlar?: StringNullableFilter<"faturalar"> | string | null
     satinAlmaciId?: StringFilter<"faturalar"> | string
-    createdAt?: DateTimeFilter<"faturalar"> | Date | string
-    updatedAt?: DateTimeFilter<"faturalar"> | Date | string
-  }
-
-  export type mal_kabul_recordsUpsertWithWhereUniqueWithoutUsersInput = {
-    where: mal_kabul_recordsWhereUniqueInput
-    update: XOR<mal_kabul_recordsUpdateWithoutUsersInput, mal_kabul_recordsUncheckedUpdateWithoutUsersInput>
-    create: XOR<mal_kabul_recordsCreateWithoutUsersInput, mal_kabul_recordsUncheckedCreateWithoutUsersInput>
-  }
-
-  export type mal_kabul_recordsUpdateWithWhereUniqueWithoutUsersInput = {
-    where: mal_kabul_recordsWhereUniqueInput
-    data: XOR<mal_kabul_recordsUpdateWithoutUsersInput, mal_kabul_recordsUncheckedUpdateWithoutUsersInput>
-  }
-
-  export type mal_kabul_recordsUpdateManyWithWhereWithoutUsersInput = {
-    where: mal_kabul_recordsScalarWhereInput
-    data: XOR<mal_kabul_recordsUpdateManyMutationInput, mal_kabul_recordsUncheckedUpdateManyWithoutUsersInput>
+    createdAt?: DateTimeNullableFilter<"faturalar"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"faturalar"> | Date | string | null
   }
 
   export type mal_kabul_recordsCreateManyAmbalajlarInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
     ureticiId?: string | null
     urunId: string
     faturaId?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
     mustahsilId?: string | null
     ozelFirmaId?: string | null
-    saticiTipi?: $Enums.SaticiTipi
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
+    saticiTipi?: string
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
   }
 
   export type mal_kabul_recordsUpdateWithoutAmbalajlarInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
-    faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
-    komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
-    mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
-    ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
     urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
+    faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
+    ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateWithoutAmbalajlarInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
     ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
     urunId?: StringFieldUpdateOperationsInput | string
     faturaId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
     mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
     ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutAmbalajlarInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
     ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
     urunId?: StringFieldUpdateOperationsInput | string
     faturaId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
     mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
     ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsCreateManyFaturalarInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
     ureticiId?: string | null
     urunId: string
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
     mustahsilId?: string | null
     ozelFirmaId?: string | null
-    saticiTipi?: $Enums.SaticiTipi
+    saticiTipi?: string
     ambalajId?: string | null
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
   }
 
   export type mal_kabul_recordsUpdateWithoutFaturalarInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
-    ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
-    komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
-    mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
-    ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
     urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
+    mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
+    ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateWithoutFaturalarInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
     ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
     urunId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
     mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
     ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
+    saticiTipi?: StringFieldUpdateOperationsInput | string
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutFaturalarInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
     ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
     urunId?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
     mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
     ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
+    saticiTipi?: StringFieldUpdateOperationsInput | string
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsCreateManyKomisyoncularInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
     malKabulcuId: string
     ureticiId?: string | null
     urunId: string
     faturaId?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
     mustahsilId?: string | null
     ozelFirmaId?: string | null
-    saticiTipi?: $Enums.SaticiTipi
+    saticiTipi?: string
     ambalajId?: string | null
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
   }
 
   export type ureticilerCreateManyKomisyoncularInput = {
     id: string
     ad: string
-    createdAt?: Date | string
-    updatedAt: Date | string
-    cinsiyet: $Enums.Gender
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    cinsiyet: string
     dogumTarihi?: Date | string | null
-    durum?: $Enums.Status
     iletisim?: string | null
     sehir: string
     soyad: string
     tcNo?: string | null
+    durum?: string
   }
 
   export type mal_kabul_recordsUpdateWithoutKomisyoncularInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
-    ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
-    faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
-    mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
-    ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
     urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
+    faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
+    ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateWithoutKomisyoncularInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
     urunId?: StringFieldUpdateOperationsInput | string
     faturaId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
     mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
     ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
+    saticiTipi?: StringFieldUpdateOperationsInput | string
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutKomisyoncularInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
     urunId?: StringFieldUpdateOperationsInput | string
     faturaId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
     mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
     ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
+    saticiTipi?: StringFieldUpdateOperationsInput | string
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type ureticilerUpdateWithoutKomisyoncularInput = {
     id?: StringFieldUpdateOperationsInput | string
     ad?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    cinsiyet?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cinsiyet?: StringFieldUpdateOperationsInput | string
     dogumTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     iletisim?: NullableStringFieldUpdateOperationsInput | string | null
     sehir?: StringFieldUpdateOperationsInput | string
     soyad?: StringFieldUpdateOperationsInput | string
     tcNo?: NullableStringFieldUpdateOperationsInput | string | null
+    durum?: StringFieldUpdateOperationsInput | string
     mal_kabul_records?: mal_kabul_recordsUpdateManyWithoutUreticilerNestedInput
   }
 
   export type ureticilerUncheckedUpdateWithoutKomisyoncularInput = {
     id?: StringFieldUpdateOperationsInput | string
     ad?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    cinsiyet?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cinsiyet?: StringFieldUpdateOperationsInput | string
     dogumTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     iletisim?: NullableStringFieldUpdateOperationsInput | string | null
     sehir?: StringFieldUpdateOperationsInput | string
     soyad?: StringFieldUpdateOperationsInput | string
     tcNo?: NullableStringFieldUpdateOperationsInput | string | null
+    durum?: StringFieldUpdateOperationsInput | string
     mal_kabul_records?: mal_kabul_recordsUncheckedUpdateManyWithoutUreticilerNestedInput
   }
 
   export type ureticilerUncheckedUpdateManyWithoutKomisyoncularInput = {
     id?: StringFieldUpdateOperationsInput | string
     ad?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    cinsiyet?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cinsiyet?: StringFieldUpdateOperationsInput | string
     dogumTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    durum?: EnumStatusFieldUpdateOperationsInput | $Enums.Status
     iletisim?: NullableStringFieldUpdateOperationsInput | string | null
     sehir?: StringFieldUpdateOperationsInput | string
     soyad?: StringFieldUpdateOperationsInput | string
     tcNo?: NullableStringFieldUpdateOperationsInput | string | null
+    durum?: StringFieldUpdateOperationsInput | string
   }
 
   export type mal_kabul_recordsCreateManyMustahsilInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
     ureticiId?: string | null
     urunId: string
     faturaId?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
     ozelFirmaId?: string | null
-    saticiTipi?: $Enums.SaticiTipi
+    saticiTipi?: string
     ambalajId?: string | null
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
   }
 
   export type mal_kabul_recordsUpdateWithoutMustahsilInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
-    ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
-    faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
-    komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
-    ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
     urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
+    faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateWithoutMustahsilInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
     ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
     urunId?: StringFieldUpdateOperationsInput | string
     faturaId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
     ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
+    saticiTipi?: StringFieldUpdateOperationsInput | string
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutMustahsilInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
     ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
     urunId?: StringFieldUpdateOperationsInput | string
     faturaId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
     ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
+    saticiTipi?: StringFieldUpdateOperationsInput | string
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsCreateManyOzel_firmalarInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
     ureticiId?: string | null
     urunId: string
     faturaId?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
     mustahsilId?: string | null
-    saticiTipi?: $Enums.SaticiTipi
+    saticiTipi?: string
     ambalajId?: string | null
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
   }
 
   export type mal_kabul_recordsUpdateWithoutOzel_firmalarInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
-    ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
-    faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
-    komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
-    mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
+    komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
     urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
+    faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
+    ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateWithoutOzel_firmalarInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
     ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
     urunId?: StringFieldUpdateOperationsInput | string
     faturaId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
     mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
+    saticiTipi?: StringFieldUpdateOperationsInput | string
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutOzel_firmalarInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
     ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
     urunId?: StringFieldUpdateOperationsInput | string
     faturaId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
     mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
+    saticiTipi?: StringFieldUpdateOperationsInput | string
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsCreateManyUreticilerInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
     urunId: string
     faturaId?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
     mustahsilId?: string | null
     ozelFirmaId?: string | null
-    saticiTipi?: $Enums.SaticiTipi
+    saticiTipi?: string
     ambalajId?: string | null
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
   }
 
   export type mal_kabul_recordsUpdateWithoutUreticilerInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
-    ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
-    faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
-    komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
+    komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
+    urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
+    faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
     mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
     ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
-    urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
+    ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateWithoutUreticilerInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
     urunId?: StringFieldUpdateOperationsInput | string
     faturaId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
     mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
     ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
+    saticiTipi?: StringFieldUpdateOperationsInput | string
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutUreticilerInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
     urunId?: StringFieldUpdateOperationsInput | string
     faturaId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
     mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
     ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
+    saticiTipi?: StringFieldUpdateOperationsInput | string
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsCreateManyUrunlerInput = {
     id: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
+    status?: string
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
     ureticiId?: string | null
     faturaId?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
     fisNo: string
     mustahsilId?: string | null
     ozelFirmaId?: string | null
-    saticiTipi?: $Enums.SaticiTipi
+    saticiTipi?: string
     ambalajId?: string | null
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
   }
 
   export type mal_kabul_recordsUpdateWithoutUrunlerInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
-    ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
-    faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
-    komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
+    komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
+    ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
+    faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
     mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
     ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
-    ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
+    ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateWithoutUrunlerInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
     ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
     faturaId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
     mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
     ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
+    saticiTipi?: StringFieldUpdateOperationsInput | string
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutUrunlerInput = {
     id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
+    status?: StringFieldUpdateOperationsInput | string
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
     ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
     faturaId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     fisNo?: StringFieldUpdateOperationsInput | string
     mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
     ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
+    saticiTipi?: StringFieldUpdateOperationsInput | string
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+  }
+
+  export type mal_kabul_recordsCreateManyUsersInput = {
+    id: string
+    tarih?: Date | string | null
+    miktar: number
+    birimFiyat?: number | null
+    toplamFiyat?: number | null
+    status?: string
+    notlar?: string | null
+    komisyoncuId?: string | null
+    ureticiId?: string | null
+    urunId: string
+    faturaId?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    fisNo: string
+    mustahsilId?: string | null
+    ozelFirmaId?: string | null
+    saticiTipi?: string
+    ambalajId?: string | null
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
   }
 
   export type faturalarCreateManyUsersInput = {
     id: string
     faturaNo: string
-    tarih?: Date | string
+    tarih?: Date | string | null
     toplamTutar: number
-    kdvOrani?: number
+    kdvOrani?: number | null
     kdvTutari: number
     genelToplam: number
     notlar?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
   }
 
-  export type mal_kabul_recordsCreateManyUsersInput = {
-    id: string
-    tarih?: Date | string
-    miktar: number
-    birimFiyat?: number | null
-    toplamFiyat?: number | null
-    status?: $Enums.ProductStatus
-    notlar?: string | null
-    komisyoncuId?: string | null
-    ureticiId?: string | null
-    urunId: string
-    faturaId?: string | null
-    createdAt?: Date | string
-    updatedAt: Date | string
-    fisNo: string
-    mustahsilId?: string | null
-    ozelFirmaId?: string | null
-    saticiTipi?: $Enums.SaticiTipi
-    ambalajId?: string | null
-    paletSayisi?: number
-    kasaSayisi?: number
-    brutKg?: number
-    daraKg?: number
-    girisKg?: number
-    cikmaFireKg?: number
-    netKg?: number
+  export type mal_kabul_recordsUpdateWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    miktar?: FloatFieldUpdateOperationsInput | number
+    birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
+    toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    notlar?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fisNo?: StringFieldUpdateOperationsInput | string
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
+    ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
+    urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
+    faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
+    ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
+  }
+
+  export type mal_kabul_recordsUncheckedUpdateWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    miktar?: FloatFieldUpdateOperationsInput | number
+    birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
+    toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    notlar?: NullableStringFieldUpdateOperationsInput | string | null
+    komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
+    ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
+    urunId?: StringFieldUpdateOperationsInput | string
+    faturaId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fisNo?: StringFieldUpdateOperationsInput | string
+    mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
+    ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+  }
+
+  export type mal_kabul_recordsUncheckedUpdateManyWithoutUsersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    miktar?: FloatFieldUpdateOperationsInput | number
+    birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
+    toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    notlar?: NullableStringFieldUpdateOperationsInput | string | null
+    komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
+    ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
+    urunId?: StringFieldUpdateOperationsInput | string
+    faturaId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fisNo?: StringFieldUpdateOperationsInput | string
+    mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
+    ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
 
   export type faturalarUpdateWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     faturaNo?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     toplamTutar?: FloatFieldUpdateOperationsInput | number
-    kdvOrani?: FloatFieldUpdateOperationsInput | number
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvTutari?: FloatFieldUpdateOperationsInput | number
     genelToplam?: FloatFieldUpdateOperationsInput | number
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mal_kabul_records?: mal_kabul_recordsUpdateManyWithoutFaturalarNestedInput
   }
 
   export type faturalarUncheckedUpdateWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     faturaNo?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     toplamTutar?: FloatFieldUpdateOperationsInput | number
-    kdvOrani?: FloatFieldUpdateOperationsInput | number
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvTutari?: FloatFieldUpdateOperationsInput | number
     genelToplam?: FloatFieldUpdateOperationsInput | number
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     mal_kabul_records?: mal_kabul_recordsUncheckedUpdateManyWithoutFaturalarNestedInput
   }
 
   export type faturalarUncheckedUpdateManyWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     faturaNo?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     toplamTutar?: FloatFieldUpdateOperationsInput | number
-    kdvOrani?: FloatFieldUpdateOperationsInput | number
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvTutari?: FloatFieldUpdateOperationsInput | number
     genelToplam?: FloatFieldUpdateOperationsInput | number
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type mal_kabul_recordsUpdateWithoutUsersInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
-    miktar?: FloatFieldUpdateOperationsInput | number
-    birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
-    notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    fisNo?: StringFieldUpdateOperationsInput | string
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
-    ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
-    faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
-    komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
-    mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
-    ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
-    ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
-    urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
-  }
-
-  export type mal_kabul_recordsUncheckedUpdateWithoutUsersInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
-    miktar?: FloatFieldUpdateOperationsInput | number
-    birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
-    notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
-    ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
-    urunId?: StringFieldUpdateOperationsInput | string
-    faturaId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    fisNo?: StringFieldUpdateOperationsInput | string
-    mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
-    ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
-    ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
-  }
-
-  export type mal_kabul_recordsUncheckedUpdateManyWithoutUsersInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    tarih?: DateTimeFieldUpdateOperationsInput | Date | string
-    miktar?: FloatFieldUpdateOperationsInput | number
-    birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: EnumProductStatusFieldUpdateOperationsInput | $Enums.ProductStatus
-    notlar?: NullableStringFieldUpdateOperationsInput | string | null
-    komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
-    ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
-    urunId?: StringFieldUpdateOperationsInput | string
-    faturaId?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    fisNo?: StringFieldUpdateOperationsInput | string
-    mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
-    ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
-    saticiTipi?: EnumSaticiTipiFieldUpdateOperationsInput | $Enums.SaticiTipi
-    ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
-    paletSayisi?: IntFieldUpdateOperationsInput | number
-    kasaSayisi?: IntFieldUpdateOperationsInput | number
-    brutKg?: FloatFieldUpdateOperationsInput | number
-    daraKg?: FloatFieldUpdateOperationsInput | number
-    girisKg?: FloatFieldUpdateOperationsInput | number
-    cikmaFireKg?: FloatFieldUpdateOperationsInput | number
-    netKg?: FloatFieldUpdateOperationsInput | number
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
 
