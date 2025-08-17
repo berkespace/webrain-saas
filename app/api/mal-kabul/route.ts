@@ -60,7 +60,7 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    const malKabulRecords = await prisma.malKabulRecord.findMany({
+    const malKabulRecords = await prisma.mal_kabul_records.findMany({
       where,
       include: {
         komisyoncu: { select: { id: true, dukkanAdi: true, sehir: true } },
@@ -170,7 +170,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Mal kabulcu kullanıcısını bul
-    const malKabulcu = await prisma.user.findUnique({
+    const malKabulcu = await prisma.users.findUnique({
       where: { email: session.user.email }
     })
 
@@ -187,7 +187,7 @@ export async function POST(request: NextRequest) {
                    (today.getMonth() + 1).toString().padStart(2, '0') + 
                    today.getDate().toString().padStart(2, '0')
     
-    const todayRecords = await prisma.malKabulRecord.count({
+    const todayRecords = await prisma.mal_kabul_records.count({
       where: {
         fisNo: {
           startsWith: dateStr
@@ -198,7 +198,7 @@ export async function POST(request: NextRequest) {
     const fisNo = dateStr + (todayRecords + 1).toString().padStart(4, '0')
 
     // Mal kabul kaydını oluştur
-    const malKabulRecord = await prisma.malKabulRecord.create({
+    const malKabulRecord = await prisma.mal_kabul_records.create({
       data: {
         fisNo,
         saticiTipi,
