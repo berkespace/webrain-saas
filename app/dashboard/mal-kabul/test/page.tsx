@@ -33,6 +33,7 @@ import { Barcode } from '@/components/ui/barcode'
 
 interface MalKabulRow {
   id: string
+  dbId?: string // Gerçek veritabanı ID'si
   fisNo?: string
   tarih?: string
   saticiTipi: string
@@ -101,6 +102,7 @@ export default function MalKabulTest() {
   const [rows, setRows] = useState<MalKabulRow[]>([
     {
       id: '1',
+      dbId: undefined, // Başlangıç satırı için dbId yok
       saticiTipi: '',
       komisyoncuId: '',
       ureticiId: '',
@@ -228,6 +230,7 @@ export default function MalKabulTest() {
         const convertedRows = existingRows.map((record: any, index: number) => {
           return {
             id: `existing-${record.id}`,
+            dbId: record.id, // Gerçek veritabanı ID'si
             fisNo: record.fisNo,
             tarih: record.tarih,
             saticiTipi: record.saticiTipi, // API'den gelen değeri kullan
@@ -280,6 +283,7 @@ export default function MalKabulTest() {
   const addRow = () => {
     const newRow: MalKabulRow = {
       id: Date.now().toString(),
+      dbId: undefined, // Yeni satırlar için dbId yok
       saticiTipi: '',
       komisyoncuId: '',
       ureticiId: '',
@@ -301,9 +305,69 @@ export default function MalKabulTest() {
     setRows([...rows, newRow])
   }
 
-  const removeRow = (rowId: string) => {
+  const removeRow = async (rowId: string) => {
+    console.log('removeRow çağrıldı:', rowId)
+    console.log('Mevcut satırlar:', rows)
+    console.log('Silinecek satır ID:', rowId)
+    
     if (rows.length > 1) {
-      setRows(rows.filter(row => row.id !== rowId))
+      const rowToDelete = rows.find(row => row.id === rowId)
+      
+      // Eğer satır veritabanından yüklenmişse (dbId varsa), veritabanından da sil
+      if (rowToDelete?.dbId) {
+        try {
+          console.log('Veritabanından siliniyor:', rowToDelete.dbId)
+          
+          const response = await fetch(`/api/mal-kabul/${rowToDelete.dbId}`, {
+            method: 'DELETE',
+          })
+          
+          if (response.ok) {
+            console.log('Veritabanından başarıyla silindi')
+            
+            // Frontend'den de sil
+            const newRows = rows.filter(row => row.id !== rowId)
+            setRows(newRows)
+            
+            toast({
+              title: "Kayıt Silindi",
+              description: "Satır hem ekrandan hem veritabanından silindi",
+              variant: "success",
+            })
+          } else {
+            console.error('Veritabanından silme hatası:', response.status)
+            toast({
+              title: "Hata",
+              description: "Veritabanından silinirken hata oluştu",
+              variant: "destructive",
+            })
+          }
+        } catch (error) {
+          console.error('Veritabanı silme hatası:', error)
+          toast({
+            title: "Hata",
+            description: "Veritabanından silinirken hata oluştu",
+            variant: "destructive",
+          })
+        }
+      } else {
+        // Sadece frontend'den sil (henüz kaydedilmemiş satır)
+        console.log('Sadece frontend\'den siliniyor (henüz kaydedilmemiş)')
+        const newRows = rows.filter(row => row.id !== rowId)
+        setRows(newRows)
+        
+        toast({
+          title: "Satır Silindi",
+          description: "Henüz kaydedilmemiş satır silindi",
+          variant: "success",
+        })
+      }
+    } else {
+      toast({
+        title: "Uyarı",
+        description: "En az bir satır kalmalıdır",
+        variant: "destructive",
+      })
     }
   }
 
@@ -578,7 +642,7 @@ export default function MalKabulTest() {
     return `${year}${month}${day}${random}`
   }
 
-  // Fiş yazdırma fonksiyonu
+  // Fiş yazdırma fonksiyonu (yeni sayfadaki ile aynı tasarım)
   const printReceipt = async (row: MalKabulRow, fişTipi: 'ILK_KAYIT' | 'SON_DURUM') => {
     try {
       // Fiş verilerini hazırla
@@ -727,7 +791,7 @@ export default function MalKabulTest() {
               </div>
               
               <div class="section">
-                <div class="label">ÜRÜN BİLGİLERİ</div>
+                <div class="section-title">ÜRÜN BİLGİLERİ</div>
                 <div class="row">
                   <span class="label">Ürün:</span>
                   <span class="value">${receiptData.urunAdi}</span>
@@ -736,6 +800,12 @@ export default function MalKabulTest() {
                   <span class="label">Kasa Sayısı:</span>
                   <span class="value">${receiptData.kasaSayisi}</span>
                 </div>
+                ${receiptData.paletAdi ? `
+                <div class="row">
+                  <span class="label">Palet:</span>
+                  <span class="value">${receiptData.paletAdi} (${receiptData.paletSayisi})</span>
+                </div>
+                ` : ''}
               </div>
               
               <div class="section">
@@ -777,7 +847,15 @@ export default function MalKabulTest() {
                 Bu fiş ${fişTipi === 'ILK_KAYIT' ? 'ilk kayıt' : 'son durum'} için yazdırılmıştır
               </div>
               
-              <div class="copy-label">ORİJİNAL</div>
+              <div class="copy-label">ORİJİNAL - MAL KABULCU İÇİN</div>
+              
+              <div class="qr-code">
+                <img src="${qrDataUrl}" alt="QR Code" style="width: 80px; height: 80px; display: block; margin: 10px auto;" />
+              </div>
+              
+              <div class="barcode">
+                <img src="${barcodeDataUrl}" alt="Barcode" style="width: 100%; height: 50px; display: block; margin: 10px auto;" />
+              </div>
               
               <div class="page-break"></div>
               
@@ -789,7 +867,7 @@ export default function MalKabulTest() {
                   <span class="label">Fiş No:</span>
                   <span class="value">${receiptData.fisNo}</span>
                 </div>
-                <div class row>
+                <div class="row">
                   <span class="label">Tarih:</span>
                   <span class="value">${new Date(receiptData.tarih).toLocaleDateString('tr-TR')}</span>
                 </div>
@@ -817,10 +895,16 @@ export default function MalKabulTest() {
                   <span class="label">Ürün:</span>
                   <span class="value">${receiptData.urunAdi}</span>
                 </div>
-                <div class="row class="row">
+                <div class="row">
                   <span class="label">Kasa Sayısı:</span>
                   <span class="value">${receiptData.kasaSayisi}</span>
                 </div>
+                ${receiptData.paletAdi ? `
+                <div class="row">
+                  <span class="label">Palet:</span>
+                  <span class="value">${receiptData.paletAdi} (${receiptData.paletSayisi})</span>
+                </div>
+                ` : ''}
               </div>
               
               <div class="section">
@@ -845,7 +929,7 @@ export default function MalKabulTest() {
                 <div class="row">
                   <span class="label">Net KG:</span>
                   <span class="value">${receiptData.netKg.toFixed(2)}</span>
-                  </div>
+                </div>
                 ` : ''}
               </div>
               
@@ -862,7 +946,7 @@ export default function MalKabulTest() {
                 Bu fiş ${fişTipi === 'ILK_KAYIT' ? 'ilk kayıt' : 'son durum'} için yazdırılmıştır
               </div>
               
-              <div class="copy-label">KOPYA</div>
+              <div class="copy-label">KOPYA - ÜRETİCİ İÇİN</div>
               
               <div class="qr-code">
                 <img src="${qrDataUrl}" alt="QR Code" style="width: 80px; height: 80px; display: block; margin: 10px auto;" />
@@ -933,6 +1017,46 @@ export default function MalKabulTest() {
       case 'NETLENDI': return 'bg-green-600 text-white border-green-600' // Yeşil
       case 'IPTAL': return 'bg-red-600 text-white border-red-600' // Kırmızı
       default: return 'bg-gray-50 text-gray-700 border-gray-200'
+    }
+  }
+
+  // İptal edilmiş satırlar için stil sınıfı
+  const getRowStyle = (row: MalKabulRow) => {
+    if (row.urunDurumu === 'IPTAL') {
+      return 'opacity-50 bg-gray-100 cursor-not-allowed'
+    }
+    return ''
+  }
+
+  // İptal edilmiş satırlar için input alanlarını devre dışı bırak
+  const isRowDisabled = (row: MalKabulRow) => {
+    return row.urunDurumu === 'IPTAL'
+  }
+
+  // Kullanıcının iptal işlemini geri alabilme yetkisi var mı?
+  const canReactivateRow = () => {
+    const userRole = session?.user?.role
+    return userRole === 'MUHASEBECI' || userRole === 'YONETICI'
+  }
+
+  // İptal edilmiş satırı tekrar aktif hale getir
+  const reactivateRow = (rowId: string) => {
+    if (!canReactivateRow()) {
+      toast({
+        title: "Yetki Hatası",
+        description: "Bu işlemi yapmaya yetkiniz yok",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (confirm('Bu satırı tekrar aktif hale getirmek istediğinizden emin misiniz?')) {
+      updateCell(rowId, 'urunDurumu', 'BEKLEMEDE')
+      toast({
+        title: "Başarılı",
+        description: "Satır tekrar aktif hale getirildi",
+        variant: "success",
+      })
     }
   }
 
@@ -1730,7 +1854,7 @@ export default function MalKabulTest() {
               {/* Tablo Gövdesi */}
               <tbody>
                 {getFilteredRows().map((row) => (
-                  <tr key={row.id} className={`hover:bg-gray-50 ${selectedRowId === row.id ? 'bg-blue-50 border-blue-300' : ''}`}>
+                  <tr key={row.id} className={`hover:bg-gray-50 ${selectedRowId === row.id ? 'bg-blue-50 border-blue-300' : ''} ${getRowStyle(row)}`}>
                     {/* Seçim */}
                     <td className="border border-gray-300 px-1 py-1 text-center">
                       <input
@@ -1739,6 +1863,7 @@ export default function MalKabulTest() {
                         checked={selectedRowId === row.id}
                         onChange={() => setSelectedRowId(row.id)}
                         className="w-4 h-4 text-blue-600"
+                        disabled={isRowDisabled(row)}
                       />
                     </td>
                     {/* Satıcı Tipi */}
@@ -1746,6 +1871,7 @@ export default function MalKabulTest() {
                       <Select
                         value={row.saticiTipi}
                         onValueChange={(value) => handleSaticiTipiChange(row.id, value)}
+                        disabled={isRowDisabled(row)}
                       >
                         <SelectTrigger className="h-7 text-xs border-0 p-1">
                           <SelectValue placeholder="Seç" />
@@ -1771,9 +1897,9 @@ export default function MalKabulTest() {
                             updateCell(row.id, 'ozelFirmaId', value)
                           }
                         }}
-                        disabled={!row.saticiTipi}
+                        disabled={!row.saticiTipi || isRowDisabled(row)}
                       >
-                        <SelectTrigger className="h-7 text-xs border-0 p-1">
+                        <SelectTrigger className="h-7 text-xs border-0 p-0">
                           <SelectValue placeholder={getColumnTitle(row.saticiTipi)} />
                         </SelectTrigger>
                         <SelectContent>
@@ -1787,7 +1913,7 @@ export default function MalKabulTest() {
                       <Select
                         value={row.ureticiId}
                         onValueChange={(value) => updateCell(row.id, 'ureticiId', value)}
-                        disabled={!row.komisyoncuId || row.saticiTipi !== 'KOMISYONCU'}
+                        disabled={!row.komisyoncuId || row.saticiTipi !== 'KOMISYONCU' || isRowDisabled(row)}
                       >
                         <SelectTrigger className="h-7 text-xs border-0 p-1">
                           <SelectValue placeholder="Üretici" />
@@ -1809,6 +1935,7 @@ export default function MalKabulTest() {
                       <Select
                         value={row.urunId}
                         onValueChange={(value) => updateCell(row.id, 'urunId', value)}
+                        disabled={isRowDisabled(row)}
                       >
                         <SelectTrigger className="h-7 text-xs border-0 p-1">
                           <SelectValue placeholder="Ürün" />
@@ -1831,6 +1958,7 @@ export default function MalKabulTest() {
                         onChange={(e) => updateCell(row.id, 'kasaSayisi', e.target.value)}
                         className="h-7 text-xs border-0 p-1"
                         placeholder="0"
+                        disabled={isRowDisabled(row)}
                       />
                     </td>
 
@@ -1843,6 +1971,7 @@ export default function MalKabulTest() {
                         onChange={(e) => updateCell(row.id, 'brutKg', e.target.value)}
                         className="h-7 text-xs border-0 p-1"
                         placeholder="0.00"
+                        disabled={isRowDisabled(row)}
                       />
                     </td>
 
@@ -1855,6 +1984,7 @@ export default function MalKabulTest() {
                         onChange={(e) => updateCell(row.id, 'daraKg', e.target.value)}
                         className="h-7 text-xs border-0 p-1"
                         placeholder="0.00"
+                        disabled={isRowDisabled(row)}
                       />
                     </td>
 
@@ -1868,6 +1998,7 @@ export default function MalKabulTest() {
                         className="h-7 text-xs border-0 p-1 bg-gray-50"
                         placeholder="0.00"
                         readOnly
+                        disabled={isRowDisabled(row)}
                       />
                     </td>
 
@@ -1880,6 +2011,7 @@ export default function MalKabulTest() {
                         onChange={(e) => updateCell(row.id, 'fireKg', e.target.value)}
                         className="h-7 text-xs border-0 p-1"
                         placeholder="0.00"
+                        disabled={isRowDisabled(row)}
                       />
                     </td>
 
@@ -1892,6 +2024,7 @@ export default function MalKabulTest() {
                         onChange={(e) => updateCell(row.id, 'cikmaKg', e.target.value)}
                         className="h-7 text-xs border-0 p-1"
                         placeholder="0.00"
+                        disabled={isRowDisabled(row)}
                       />
                     </td>
 
@@ -1905,46 +2038,62 @@ export default function MalKabulTest() {
                         className="h-7 text-xs border-0 p-1 bg-gray-50"
                         placeholder="0.00"
                         readOnly
+                        disabled={isRowDisabled(row)}
                       />
                     </td>
 
                     {/* Ürün Durumu */}
                     <td className="border border-gray-300 px-1 py-1">
-                      <Select
-                        value={row.urunDurumu}
-                        onValueChange={(value: 'BEKLEMEDE' | 'NETLENDI' | 'IPTAL') => {
-                          if (value === 'NETLENDI' && !row.cikmaKg) {
-                            toast({
-                              title: "Hata",
-                              description: "Netlendi seçmek için önce Çıkma KG girmelisiniz",
-                              variant: "destructive",
-                            })
-                            return
-                          }
-                          
-                          if (value === 'NETLENDI' && !row.fisYazdirildi) {
-                            if (confirm('Fiş yazdırılmamış. Fiş yazdırmak istiyor musunuz?')) {
-                              toggleFisYazdirildi(row.id)
-                            } else {
+                      <div className="flex flex-col gap-1">
+                        <Select
+                          value={row.urunDurumu}
+                          onValueChange={(value: 'BEKLEMEDE' | 'NETLENDI' | 'IPTAL') => {
+                            if (value === 'NETLENDI' && !row.cikmaKg) {
+                              toast({
+                                title: "Hata",
+                                description: "Netlendi seçmek için önce Çıkma KG girmelisiniz",
+                                variant: "destructive",
+                              })
                               return
                             }
-                          }
-                          
-                          updateCell(row.id, 'urunDurumu', value)
-                        }}
-                        disabled={row.urunDurumu === 'NETLENDI' && !row.cikmaKg}
-                      >
-                        <SelectTrigger className={`h-7 text-xs border-0 p-1 ${getUrunDurumuColor(row.urunDurumu)}`}>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="BEKLEMEDE">Beklemede</SelectItem>
-                          <SelectItem value="NETLENDI" disabled={!row.cikmaKg || parseFloat(row.cikmaKg) <= 0}>
-                            Netlendi {(!row.cikmaKg || parseFloat(row.cikmaKg) <= 0) && '(Çıkma KG > 0 gerekli)'}
-                          </SelectItem>
-                          <SelectItem value="IPTAL">İptal</SelectItem>
-                        </SelectContent>
-                      </Select>
+                            
+                            if (value === 'NETLENDI' && !row.fisYazdirildi) {
+                              if (confirm('Fiş yazdırılmamış. Fiş yazdırmak istiyor musunuz?')) {
+                                toggleFisYazdirildi(row.id)
+                              } else {
+                                return
+                              }
+                            }
+                            
+                            updateCell(row.id, 'urunDurumu', value)
+                          }}
+                          disabled={(row.urunDurumu === 'NETLENDI' && !row.cikmaKg) || isRowDisabled(row)}
+                        >
+                          <SelectTrigger className={`h-7 text-xs border-0 p-1 ${getUrunDurumuColor(row.urunDurumu)}`}>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="BEKLEMEDE">Beklemede</SelectItem>
+                            <SelectItem value="NETLENDI" disabled={!row.cikmaKg || parseFloat(row.cikmaKg) <= 0}>
+                              Netlendi {(!row.cikmaKg || parseFloat(row.cikmaKg) <= 0) && '(Çıkma KG > 0 gerekli)'}
+                            </SelectItem>
+                            <SelectItem value="IPTAL">İptal</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        
+                        {/* Aktif Et Butonu - Sadece iptal edilmiş satırlarda ve yetkili kullanıcılarda görünür */}
+                        {row.urunDurumu === 'IPTAL' && canReactivateRow() && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => reactivateRow(row.id)}
+                            className="h-6 w-6 p-0 text-green-600 hover:text-green-700 border-green-300"
+                            title="Satırı tekrar aktif hale getir"
+                          >
+                            🔄
+                          </Button>
+                        )}
+                      </div>
                     </td>
 
                     {/* Fiş Yazdırma */}
@@ -1957,7 +2106,7 @@ export default function MalKabulTest() {
                           onClick={() => printReceipt(row, 'ILK_KAYIT')}
                           className="h-6 w-6 p-0 text-blue-600 hover:text-blue-700"
                           title="İlk Kayıt Fişi Yazdır"
-                          disabled={!row.fisNo}
+                          disabled={!row.fisNo || isRowDisabled(row)}
                         >
                           📄
                         </Button>
@@ -1969,7 +2118,7 @@ export default function MalKabulTest() {
                           onClick={() => printReceipt(row, 'SON_DURUM')}
                           className="h-6 w-6 p-0 text-green-600 hover:text-green-700"
                           title="Son Durum Fişi Yazdır"
-                          disabled={row.urunDurumu !== 'NETLENDI' || !row.netKg || parseFloat(row.netKg) <= 0}
+                          disabled={row.urunDurumu !== 'NETLENDI' || !row.netKg || parseFloat(row.netKg) <= 0 || isRowDisabled(row)}
                         >
                           🧾
                         </Button>
@@ -1987,7 +2136,7 @@ export default function MalKabulTest() {
                         size="sm"
                         variant="ghost"
                         onClick={() => removeRow(row.id)}
-                        disabled={rows.length === 1}
+                        disabled={rows.length === 1 || isRowDisabled(row)}
                         className="h-6 w-6 p-0 text-red-500 hover:text-red-700"
                         title="Satırı sil"
                       >

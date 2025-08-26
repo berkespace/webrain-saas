@@ -1177,51 +1177,77 @@ export default function YeniMalKabul() {
     return ''
   }
 
+  // Fiş numarası oluşturma
+  const generateFisNo = () => {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    const day = String(now.getDate()).padStart(2, '0')
+    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0')
+    return `${year}${month}${day}${random}`
+  }
+
   const handlePrint = async () => {
     if (!receiptData) return
     
     try {
-      console.log('Starting print process...')
+      // Fiş verilerini hazırla
+      const printData = {
+        fisNo: receiptData.fisNo || generateFisNo(),
+        tarih: receiptData.tarih || new Date().toISOString(),
+        saticiTipi: receiptData.saticiTipi,
+        saticiAdi: getSaticiAdi(receiptData),
+        urunAdi: receiptData.urunAdi || '',
+        brutKg: parseFloat(receiptData.brutKg) || 0,
+        daraKg: parseFloat(receiptData.daraKg) || 0,
+        girisKg: parseFloat(receiptData.girisKg) || 0,
+        cikmaFireKg: parseFloat(receiptData.cikmaFireKg) || 0,
+        netKg: parseFloat(receiptData.netKg) || 0,
+        ambalajAdi: receiptData.ambalajAdi || 'Kasa',
+        kasaSayisi: parseInt(receiptData.kasaSayisi) || 0,
+        paletAdi: receiptData.paletAdi || null,
+        paletSayisi: parseInt(receiptData.paletSayisi) || 0,
+        notlar: receiptData.notlar || '',
+        malKabulcuAdi: session?.user?.name || ''
+      }
       
       // QR kod ve barkod resimlerini oluştur
-      const qrValue = `${receiptData.fisNo}|${receiptData.tarih}|${receiptData.saticiTipi}|${receiptData.urunAdi}`
-      console.log('QR value:', qrValue)
+      const qrValue = `${printData.fisNo}|${printData.tarih}|${printData.saticiTipi}|${printData.urunAdi}`
       
       // QR kod oluştur
       const QRCodeLib = await import('qrcode')
       const qrDataUrl = await QRCodeLib.toDataURL(qrValue, {
-        width: 80, // 40px'den 80px'e çıkarıldı
+        width: 80,
         margin: 1,
         color: {
           dark: '#000000',
           light: '#FFFFFF'
         }
       })
-      console.log('QR code generated:', qrDataUrl.substring(0, 50) + '...')
       
       // Barkod oluştur
       const JsBarcode = await import('jsbarcode')
       const canvas = document.createElement('canvas')
-      JsBarcode.default(canvas, receiptData.fisNo, {
+      JsBarcode.default(canvas, printData.fisNo, {
         format: 'CODE128',
-        width: 2, // 1.5'ten 2'ye çıkarıldı
-        height: 50, // 30'dan 50'ye çıkarıldı
+        width: 2,
+        height: 50,
         displayValue: true,
-        fontSize: 12, // 10'dan 12'ye çıkarıldı
-        margin: 5 // 3'ten 5'e çıkarıldı
+        fontSize: 12,
+        margin: 5
       })
       const barcodeDataUrl = canvas.toDataURL('image/png')
-      console.log('Barcode generated:', barcodeDataUrl.substring(0, 50) + '...')
       
-      console.log('Opening print window...')
+      // Yazdırma penceresini aç
     const printWindow = window.open('', '_blank')
     if (printWindow) {
-        console.log('Print window opened, writing content...')
+        const fişBaşlığı = 'BİLGİ FİŞİ'
+        
       printWindow.document.write(`
         <!DOCTYPE html>
         <html>
           <head>
-            <title>Bilgi Fişi - ${receiptData.fisNo}</title>
+              <title>${fişBaşlığı} - ${printData.fisNo}</title>
             <style>
               body { 
                 font-family: monospace; 
@@ -1261,7 +1287,6 @@ export default function YeniMalKabul() {
                 border-radius: 5px; 
               }
               
-              /* Print media CSS for QR codes and barcodes */
               @media print {
                 body { 
                   width: 80mm !important; 
@@ -1276,300 +1301,599 @@ export default function YeniMalKabul() {
                 }
                 .qr-code img, .barcode img { 
                   display: block !important; 
-                  visibility: visible !important; 
-                  opacity: 1 !important; 
-                  max-width: 80mm !important; 
-                  width: auto !important; 
-                  height: auto !important;
-                }
-                img { 
-                  display: block !important; 
-                  visibility: visible !important; 
-                  opacity: 1 !important; 
-                  page-break-inside: avoid !important; 
-                  break-inside: avoid !important;
                 }
               }
             </style>
           </head>
           <body>
-            <!-- 1. Fiş - Mal Kabulcu İçin -->
-            <div class="copy-label">MAL KABULCU İÇİN - FİZİKSEL OLARAK SAKLANACAK</div>
-            
-            <div class="header">WEBRAIN TARIM</div>
-            <div class="header">BİLGİ FİŞİ</div>
+              <div class="header">${fişBaşlığı}</div>
             
             <div class="section">
-              <div class="section-title">TEMEL BİLGİLER</div>
+                <div class="section-title">FİŞ BİLGİLERİ</div>
               <div class="row">
-                <span>Fiş No:</span>
-                <span class="value">${receiptData.fisNo}</span>
+                  <span class="label">Fiş No:</span>
+                  <span class="value">${printData.fisNo}</span>
               </div>
               <div class="row">
-                <span>Tarih:</span>
-                <span class="value">${new Date(receiptData.tarih).toLocaleDateString('tr-TR')}</span>
+                  <span class="label">Tarih:</span>
+                  <span class="value">${new Date(printData.tarih).toLocaleDateString('tr-TR')}</span>
               </div>
               <div class="row">
-                <span>Saat:</span>
-                <span class="value">${new Date(receiptData.tarih).toLocaleTimeString('tr-TR')}</span>
+                  <span class="label">Mal Kabulcu:</span>
+                  <span class="value">${printData.malKabulcuAdi}</span>
               </div>
             </div>
             
             <div class="section">
               <div class="section-title">SATICI BİLGİLERİ</div>
               <div class="row">
-                <span>Tip:</span>
-                <span class="value">${receiptData.saticiTipi === 'OZEL_FIRMA' ? 'ÖZEL FİRMA' : receiptData.saticiTipi === 'KOMISYONCU' ? 'KOMİSYONCU' : 'MÜSTAHSİL'}</span>
+                  <span class="label">Satıcı Tipi:</span>
+                  <span class="value">${printData.saticiTipi}</span>
               </div>
               <div class="row">
-                <span>Ad:</span>
-                <span class="value">${receiptData.saticiAdi}</span>
+                  <span class="label">Satıcı Adı:</span>
+                  <span class="value">${printData.saticiAdi}</span>
               </div>
             </div>
             
             <div class="section">
               <div class="section-title">ÜRÜN BİLGİLERİ</div>
               <div class="row">
-                <span>Ürün:</span>
-                <span class="value">${receiptData.urunAdi}</span>
+                  <span class="label">Ürün:</span>
+                  <span class="value">${printData.urunAdi}</span>
               </div>
-              ${receiptData.ambalajAdi ? `
               <div class="row">
-                <span>Ambalaj:</span>
-                <span class="value">${receiptData.ambalajAdi} x ${receiptData.kasaSayisi}</span>
+                  <span class="label">Kasa Sayısı:</span>
+                  <span class="value">${printData.kasaSayisi}</span>
               </div>
-              ` : ''}
-              ${receiptData.paletAdi ? `
+                ${printData.paletAdi ? `
               <div class="row">
-                <span>Palet:</span>
-                <span class="value">${receiptData.paletAdi} x ${receiptData.paletSayisi}</span>
+                  <span class="label">Palet:</span>
+                  <span class="value">${printData.paletAdi} (${printData.paletSayisi})</span>
               </div>
               ` : ''}
             </div>
             
             <div class="section">
-              <div class="section-title">AĞIRLIK BİLGİLERİ</div>
+                <div class="section-title">KİLOGRAM BİLGİLERİ</div>
               <div class="row">
-                <span>Brüt KG:</span>
-                <span class="value">${receiptData.brutKg.toFixed(2)} kg</span>
+                  <span class="label">Brüt KG:</span>
+                  <span class="value">${printData.brutKg.toFixed(2)}</span>
               </div>
               <div class="row">
-                <span>Dara KG:</span>
-                <span class="value">${receiptData.daraKg.toFixed(2)} kg</span>
+                  <span class="label">Dara KG:</span>
+                  <span class="value">${printData.daraKg.toFixed(2)}</span>
               </div>
               <div class="row">
-                <span>Giriş KG:</span>
-                <span class="value">${receiptData.girisKg.toFixed(2)} kg</span>
+                  <span class="label">Giriş KG:</span>
+                  <span class="value">${printData.girisKg.toFixed(2)}</span>
               </div>
+                ${printData.cikmaFireKg > 0 ? `
               <div class="row">
-                <span>Çıkma/Fire KG:</span>
-                <span class="value">${receiptData.cikmaFireKg ? receiptData.cikmaFireKg.toFixed(2) : '0.00'} kg</span>
+                  <span class="label">Çıkma Fire KG:</span>
+                  <span class="value">${printData.cikmaFireKg.toFixed(2)}</span>
               </div>
+                ` : ''}
+                ${printData.netKg > 0 ? `
+                <div class="row">
+                  <span class="label">Net KG:</span>
+                  <span class="value">${printData.netKg.toFixed(2)}</span>
+                </div>
+                ` : ''}
             </div>
             
-            ${receiptData.notlar ? `
+              ${printData.notlar ? `
             <div class="section">
               <div class="section-title">NOTLAR</div>
-              <div style="text-align: center; font-size: 11px; padding: 5px; background: #f9f9f9; border-radius: 3px;">${receiptData.notlar}</div>
+                <div class="row">
+                  <span class="value">${printData.notlar}</span>
+                </div>
             </div>
             ` : ''}
+              
+              <div class="copy-info">
+                Bu fiş ilk kayıt için yazdırılmıştır
+              </div>
+              
+              <div class="copy-label">ORİJİNAL - MAL KABULCU İÇİN</div>
+              
+              <div class="qr-code">
+                <img src="${qrDataUrl}" alt="QR Code" style="width: 80px; height: 80px; display: block; margin: 10px auto;" />
+              </div>
+              
+              <div class="barcode">
+                <img src="${barcodeDataUrl}" alt="Barcode" style="width: 100%; height: 50px; display: block; margin: 10px auto;" />
+              </div>
+              
+              <div class="page-break"></div>
+              
+              <div class="header">${fişBaşlığı}</div>
             
             <div class="section">
-              <div class="section-title">MAL KABUL BİLGİLERİ</div>
+                <div class="section-title">FİŞ BİLGİLERİ</div>
               <div class="row">
-                <span>Mal Kabulcu:</span>
-                <span class="value">${receiptData.malKabulcuAdi}</span>
+                  <span class="label">Fiş No:</span>
+                  <span class="value">${printData.fisNo}</span>
               </div>
               <div class="row">
-                <span>İşlem Tarihi:</span>
-                <span class="value">${new Date().toLocaleDateString('tr-TR')}</span>
+                  <span class="label">Tarih:</span>
+                  <span class="value">${new Date(printData.tarih).toLocaleDateString('tr-TR')}</span>
               </div>
               <div class="row">
-                <span>İşlem Saati:</span>
-                <span class="value">${new Date().toLocaleTimeString('tr-TR')}</span>
+                  <span class="label">Mal Kabulcu:</span>
+                  <span class="value">${printData.malKabulcuAdi}</span>
               </div>
             </div>
             
             <div class="section">
-              <div class="section-title">QR KOD VE BARKOD</div>
-              <div style="text-align: center; margin: 8px 0;">
-                <div style="font-size: 8px; color: #888; line-height: 1.2; margin-bottom: 8px;">
-                  Ürün işlendiğinde bu QR kod ile düzenleme ekranına gidin
+                <div class="section-title">SATICI BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Satıcı Tipi:</span>
+                  <span class="value">${printData.saticiTipi}</span>
                 </div>
-                <div style="margin-top: 8px; padding: 6px; background: #f0f0f0; border-radius: 3px;">
-                  <div style="font-size: 7px; color: #666; margin-bottom: 4px;">QR Kod</div>
-                  <img src="${qrDataUrl}" alt="QR Kod" class="qr-code" style="width: 80px; height: 80px; margin: 0 auto; display: block;" />
-                  <div style="font-size: 7px; color: #666; margin-top: 4px;">Barkod</div>
-                  <img src="${barcodeDataUrl}" alt="Barkod" class="barcode" style="width: 120px; height: 50px; margin: 0 auto; display: block;" />
+                <div class="row">
+                  <span class="label">Satıcı Adı:</span>
+                  <span class="value">${printData.saticiAdi}</span>
                 </div>
               </div>
+              
+              <div class="section">
+                <div class="section-title">ÜRÜN BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Ürün:</span>
+                  <span class="value">${printData.urunAdi}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Kasa Sayısı:</span>
+                  <span class="value">${printData.kasaSayisi}</span>
+                </div>
+                ${printData.paletAdi ? `
+                <div class="row">
+                  <span class="label">Palet:</span>
+                  <span class="value">${printData.paletAdi} (${printData.paletSayisi})</span>
+                </div>
+                ` : ''}
             </div>
           
-          <div style="text-align: center; margin-top: 20px; padding: 10px; background: #f9f9f9; border-radius: 5px;">
-            <div style="font-size: 10px; color: #666; font-weight: bold; margin-bottom: 5px;">
-              ⚠️ BU FİŞİ SAKLAYIN - ÜRÜN İŞLENDİĞİNDE GEREKLİ OLACAK
+              <div class="section">
+                <div class="section-title">KİLOGRAM BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Brüt KG:</span>
+                  <span class="value">${printData.brutKg.toFixed(2)}</span>
             </div>
-            <div style="font-size: 9px; color: #888; line-height: 1.3;">
-              <div>Fiş Yazdırma Tarihi: ${new Date().toLocaleDateString('tr-TR')}</div>
-              <div>Fiş Yazdırma Saati: ${new Date().toLocaleTimeString('tr-TR')}</div>
-              <div style="margin-top: 5px; font-weight: bold;">WEBRAIN YAZILIM</div>
+                <div class="row">
+                  <span class="label">Dara KG:</span>
+                  <span class="value">${printData.daraKg.toFixed(2)}</span>
             </div>
+                <div class="row">
+                  <span class="label">Giriş KG:</span>
+                  <span class="value">${printData.girisKg.toFixed(2)}</span>
+                </div>
+                ${printData.cikmaFireKg > 0 ? `
+                <div class="row">
+                  <span class="label">Çıkma Fire KG:</span>
+                  <span class="value">${printData.cikmaFireKg.toFixed(2)}</span>
+                </div>
+                ` : ''}
+                ${printData.netKg > 0 ? `
+                <div class="row">
+                  <span class="label">Net KG:</span>
+                  <span class="value">${printData.netKg.toFixed(2)}</span>
+                </div>
+                ` : ''}
           </div>
           
-          <div class="page-break"></div>
-          
-          <!-- 2. Fiş - Üretici İçin -->
-          <div class="copy-label">ÜRETİCİ İÇİN - ÜRETİCİYE VERİLECEK</div>
-          
-          <div class="header">WEBRAIN TARIM</div>
-          <div class="header">BİLGİ FİŞİ</div>
-          
-          <div class="section">
-            <div class="section-title">TEMEL BİLGİLER</div>
-            <div class="row">
-              <span>Fiş No:</span>
-              <span class="value">${receiptData.fisNo}</span>
-            </div>
-            <div class="row">
-              <span>Tarih:</span>
-              <span class="value">${new Date(receiptData.tarih).toLocaleDateString('tr-TR')}</span>
-            </div>
-            <div class="row">
-              <span>Saat:</span>
-              <span class="value">${new Date(receiptData.tarih).toLocaleTimeString('tr-TR')}</span>
-            </div>
-          </div>
-          
-          <div class="section">
-            <div class="section-title">SATICI BİLGİLERİ</div>
-            <div class="row">
-              <span>Tip:</span>
-              <span class="value">${receiptData.saticiTipi === 'OZEL_FIRMA' ? 'ÖZEL FİRMA' : receiptData.saticiTipi === 'KOMISYONCU' ? 'KOMİSYONCU' : 'MÜSTAHSİL'}</span>
-            </div>
-            <div class="row">
-              <span>Ad:</span>
-              <span class="value">${receiptData.saticiAdi}</span>
-            </div>
-          </div>
-          
-          <div class="section">
-            <div class="section-title">ÜRÜN BİLGİLERİ</div>
-            <div class="row">
-              <span>Ürün:</span>
-              <span class="value">${receiptData.urunAdi}</span>
-            </div>
-            ${receiptData.ambalajAdi ? `
-            <div class="row">
-              <span>Ambalaj:</span>
-              <span class="value">${receiptData.ambalajAdi} x ${receiptData.kasaSayisi}</span>
-            </div>
-            ` : ''}
-            ${receiptData.paletAdi ? `
-            <div class="row">
-              <span>Palet:</span>
-              <span class="value">${receiptData.paletAdi} x ${receiptData.paletSayisi}</span>
-            </div>
-            ` : ''}
-          </div>
-          
-          <div class="section">
-            <div class="section-title">AĞIRLIK BİLGİLERİ</div>
-            <div class="row">
-              <span>Brüt KG:</span>
-              <span class="value">${receiptData.brutKg.toFixed(2)} kg</span>
-            </div>
-            <div class="row">
-              <span>Dara KG:</span>
-              <span class="value">${receiptData.daraKg.toFixed(2)} kg</span>
-            </div>
-            <div class="row">
-              <span>Giriş KG:</span>
-              <span class="value">${receiptData.girisKg.toFixed(2)} kg</span>
-            </div>
-            <div class="row">
-              <span>Çıkma/Fire KG:</span>
-              <span class="value">${receiptData.cikmaFireKg ? receiptData.cikmaFireKg.toFixed(2) : '0.00'} kg</span>
-            </div>
-          </div>
-          
-          ${receiptData.notlar ? `
-          <div class="section">
-            <div class="section-title">NOTLAR</div>
-            <div style="text-align: center; font-size: 11px; padding: 5px; background: #f9f9f9; border-radius: 3px;">${receiptData.notlar}</div>
-          </div>
-          ` : ''}
-          
-          <div class="section">
-            <div class="section-title">MAL KABUL BİLGİLERİ</div>
-            <div class="row">
-              <span>Mal Kabulcu:</span>
-              <span class="value">${receiptData.malKabulcuAdi}</span>
-            </div>
-            <div class="row">
-              <span>İşlem Tarihi:</span>
-              <span class="value">${new Date().toLocaleDateString('tr-TR')}</span>
-            </div>
-            <div class="row">
-              <span>İşlem Saati:</span>
-              <span class="value">${new Date().toLocaleTimeString('tr-TR')}</span>
-            </div>
-          </div>
-          
-          <div class="section">
-            <div class="section-title">QR KOD VE BARKOD</div>
-            <div style="text-align: center; margin: 8px 0;">
-              <div style="font-size: 8px; color: #888; line-height: 1.2; margin-bottom: 8px;">
-                Ürün işlendiğinde bu QR kod ile düzenleme ekranına gidin
+              ${printData.notlar ? `
+              <div class="section">
+                <div class="section-title">NOTLAR</div>
+                <div class="row">
+                  <span class="value">${printData.notlar}</span>
+                </div>
               </div>
-              <div style="margin-top: 8px; padding: 6px; background: #f0f0f0; border-radius: 3px;">
-                <div style="font-size: 7px; color: #666; margin-bottom: 4px;">QR Kod</div>
-                <img src="${qrDataUrl}" alt="QR Kod" class="qr-code" style="width: 80px; height: 80px; margin: 0 auto; display: block;" />
-                <div style="font-size: 7px; color: #666; margin-top: 4px;">Barkod</div>
-                <img src="${barcodeDataUrl}" alt="Barkod" class="barcode" style="width: 120px; height: 50px; margin: 0 auto; display: block;" />
+              ` : ''}
+              
+              <div class="copy-info">
+                Bu fiş ilk kayıt için yazdırılmıştır
               </div>
-            </div>
-          </div>
+              
+              <div style="text-align: center; margin: 15px 0; padding: 10px; background: #ffeb3b; border: 2px solid #f57f17; border-radius: 5px;">
+                <div style="font-size: 12px; font-weight: bold; color: #d84315; line-height: 1.4;">
+                  ⚠️ ÖNEMLİ UYARI ⚠️
+                </div>
+                <div style="font-size: 11px; font-weight: bold; color: #bf360c; margin-top: 5px;">
+                  Bu fişi tekrar geldiğinizde getirmeniz kolaylık sağlayacaktır!
+                </div>
+              </div>
+              
+              <div class="copy-label">KOPYA - ÜRETİCİ İÇİN</div>
+              
+              <div class="qr-code">
+                <img src="${qrDataUrl}" alt="QR Code" style="width: 80px; height: 80px; display: block; margin: 10px auto;" />
+              </div>
+              
+              <div class="barcode">
+                <img src="${barcodeDataUrl}" alt="Barcode" style="width: 100%; height: 50px; display: block; margin: 10px auto;" />
+              </div>
+            </body>
+          </html>
+        `)
         
-        <div style="text-align: center; margin-top: 20px; padding: 10px; background: #f9f9f9; border-radius: 5px;">
-          <div style="font-size: 10px; color: #666; font-weight: bold; margin-bottom: 5px;">
-            ⚠️ BU FİŞİ SAKLAYIN - ÜRÜN İŞLENDİĞİNDE GEREKLİ OLACAK
-          </div>
-          <div style="font-size: 9px; color: #888; line-height: 1.3;">
-            <div>Fiş Yazdırma Tarihi: ${new Date().toLocaleDateString('tr-TR')}</div>
-            <div>Fiş Yazdırma Saati: ${new Date().toLocaleTimeString('tr-TR')}</div>
-            <div style="margin-top: 5px; font-weight: bold;">WEBRAIN YAZILIM  </div>
-          </div>
-        </div>
-        </body>
-      </html>
-    `)
-        
-      printWindow.document.close()
-      
-        console.log('Content written to print window, starting print...')
+        printWindow.document.close()
         
         // Yazdırma işlemini başlat
-      setTimeout(() => {
-          console.log('Executing print command...')
-        printWindow.print()
+        setTimeout(() => {
+          printWindow.print()
           printWindow.close()
-          console.log('Print process completed')
           
-          // Fiş yazdırma tamamlandıktan sonra kullanıcıya form sıfırlama seçeneği ver
           toast({
             title: "Fiş Yazdırıldı",
-            description: "Fiş yazdırma işlemi tamamlandı. Form sıfırlamak için 'Formu Sıfırla' butonuna tıklayın.",
+            description: "Bilgi fişi başarıyla yazdırıldı",
             variant: "success",
           })
-        }, 100)
-      } else {
-        console.error('Failed to open print window')
+        }, 500)
       }
     } catch (error) {
       console.error('Fiş yazdırma hatası:', error)
       toast({
         title: "Hata",
         description: "Fiş yazdırılırken hata oluştu",
+        variant: "destructive",
+      })
+    }
+  }
+
+  // Son fiş yazdırma fonksiyonu (ürün işlendikten sonra)
+  const handlePrintFinalReceipt = async () => {
+    if (!receiptData) return
+    
+    try {
+      // Fiş verilerini hazırla
+      const printData = {
+        fisNo: receiptData.fisNo || generateFisNo(),
+        tarih: receiptData.tarih || new Date().toISOString(),
+        saticiTipi: receiptData.saticiTipi,
+        saticiAdi: getSaticiAdi(receiptData),
+        urunAdi: receiptData.urunAdi || '',
+        brutKg: parseFloat(receiptData.brutKg) || 0,
+        daraKg: parseFloat(receiptData.daraKg) || 0,
+        girisKg: parseFloat(receiptData.girisKg) || 0,
+        cikmaFireKg: parseFloat(receiptData.cikmaFireKg) || 0,
+        netKg: parseFloat(receiptData.netKg) || 0,
+        ambalajAdi: receiptData.ambalajAdi || 'Kasa',
+        kasaSayisi: parseInt(receiptData.kasaSayisi) || 0,
+        paletAdi: receiptData.paletAdi || null,
+        paletSayisi: parseInt(receiptData.paletSayisi) || 0,
+        notlar: receiptData.notlar || '',
+        malKabulcuAdi: session?.user?.name || ''
+      }
+      
+      // QR kod ve barkod resimlerini oluştur
+      const qrValue = `${printData.fisNo}|${printData.tarih}|${printData.saticiTipi}|${printData.urunAdi}|SON_FIS`
+      
+      // QR kod oluştur
+      const QRCodeLib = await import('qrcode')
+      const qrDataUrl = await QRCodeLib.toDataURL(qrValue, {
+        width: 80,
+        margin: 1,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      })
+      
+      // Barkod oluştur
+      const JsBarcode = await import('jsbarcode')
+      const canvas = document.createElement('canvas')
+      JsBarcode.default(canvas, printData.fisNo, {
+        format: 'CODE128',
+        width: 2,
+        height: 50,
+        displayValue: true,
+        fontSize: 12,
+        margin: 5
+      })
+      const barcodeDataUrl = canvas.toDataURL('image/png')
+      
+      // Yazdırma penceresini aç
+      const printWindow = window.open('', '_blank')
+      if (printWindow) {
+        const fişBaşlığı = 'SON DURUM FİŞİ'
+        
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>${fişBaşlığı} - ${printData.fisNo}</title>
+              <style>
+                body { 
+                  font-family: monospace; 
+                  font-size: 12px; 
+                  width: 80mm; 
+                  max-width: 80mm; 
+                  margin: 0; 
+                  padding: 8px;
+                  box-sizing: border-box;
+                  overflow-x: hidden;
+                }
+                .header { text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 10px; }
+                .section { margin-bottom: 12px; border-bottom: 1px solid #000; padding-bottom: 8px; }
+                .section-title { font-weight: bold; font-size: 12px; margin-bottom: 8px; text-align: center; background: #f0f0f0; padding: 3px; border-radius: 3px; }
+                .row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; }
+                .label { font-weight: bold; }
+                .value { text-align: right; font-weight: 500; }
+                .copy-info {
+                  text-align: center;
+                  font-size: 10px;
+                  color: #666;
+                  margin-top: 10px;
+                  padding: 5px;
+                  background: #f0f0f0;
+                  border-radius: 3px;
+                  font-weight: bold;
+                }
+                .page-break { page-break-after: always; }
+                .copy-label { 
+                  text-align: center; 
+                  font-size: 14px; 
+                  font-weight: bold; 
+                  margin: 15px 0; 
+                  padding: 8px; 
+                  background: #000; 
+                  color: #fff; 
+                  border-radius: 5px; 
+                }
+                .final-status {
+                  text-align: center;
+                  margin: 15px 0;
+                  padding: 10px;
+                  background: #4caf50;
+                  color: white;
+                  border-radius: 5px;
+                  font-weight: bold;
+                  font-size: 14px;
+                }
+                
+                @media print {
+                  body { 
+                    width: 80mm !important; 
+                    max-width: 80mm !important; 
+                    margin: 0 !important; 
+                    padding: 8px !important; 
+                    font-size: 12px !important;
+                  }
+                  @page { 
+                    size: 80mm auto; 
+                    margin: 0; 
+                  }
+                  .qr-code img, .barcode img { 
+                    display: block !important; 
+                  }
+                }
+              </style>
+            </head>
+            <body>
+              <div class="header">${fişBaşlığı}</div>
+              
+              <div class="final-status">
+                ✅ ÜRÜN İŞLEMİ TAMAMLANDI
+              </div>
+          
+          <div class="section">
+                <div class="section-title">FİŞ BİLGİLERİ</div>
+            <div class="row">
+                  <span class="label">Fiş No:</span>
+                  <span class="value">${printData.fisNo}</span>
+            </div>
+            <div class="row">
+                  <span class="label">Tarih:</span>
+                  <span class="value">${new Date(printData.tarih).toLocaleDateString('tr-TR')}</span>
+            </div>
+            <div class="row">
+                  <span class="label">Mal Kabulcu:</span>
+                  <span class="value">${printData.malKabulcuAdi}</span>
+            </div>
+          </div>
+          
+          <div class="section">
+            <div class="section-title">SATICI BİLGİLERİ</div>
+            <div class="row">
+                  <span class="label">Satıcı Tipi:</span>
+                  <span class="value">${printData.saticiTipi}</span>
+            </div>
+            <div class="row">
+                  <span class="label">Satıcı Adı:</span>
+                  <span class="value">${printData.saticiAdi}</span>
+            </div>
+          </div>
+          
+          <div class="section">
+            <div class="section-title">ÜRÜN BİLGİLERİ</div>
+            <div class="row">
+                  <span class="label">Ürün:</span>
+                  <span class="value">${printData.urunAdi}</span>
+            </div>
+            <div class="row">
+                  <span class="label">Kasa Sayısı:</span>
+                  <span class="value">${printData.kasaSayisi}</span>
+            </div>
+                ${printData.paletAdi ? `
+            <div class="row">
+                  <span class="label">Palet:</span>
+                  <span class="value">${printData.paletAdi} (${printData.paletSayisi})</span>
+            </div>
+            ` : ''}
+          </div>
+          
+          <div class="section">
+                <div class="section-title">KİLOGRAM BİLGİLERİ</div>
+            <div class="row">
+                  <span class="label">Brüt KG:</span>
+                  <span class="value">${printData.brutKg.toFixed(2)}</span>
+            </div>
+            <div class="row">
+                  <span class="label">Dara KG:</span>
+                  <span class="value">${printData.daraKg.toFixed(2)}</span>
+            </div>
+            <div class="row">
+                  <span class="label">Giriş KG:</span>
+                  <span class="value">${printData.girisKg.toFixed(2)}</span>
+            </div>
+            <div class="row">
+                  <span class="label">Çıkma Fire KG:</span>
+                  <span class="value">${printData.cikmaFireKg.toFixed(2)}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Net KG:</span>
+                  <span class="value">${printData.netKg.toFixed(2)}</span>
+            </div>
+          </div>
+          
+              ${printData.notlar ? `
+          <div class="section">
+            <div class="section-title">NOTLAR</div>
+                <div class="row">
+                  <span class="value">${printData.notlar}</span>
+                </div>
+          </div>
+          ` : ''}
+              
+              <div class="copy-info">
+                Bu fiş ürün işlemi tamamlandıktan sonra yazdırılmıştır
+              </div>
+              
+              <div class="copy-label">ORİJİNAL - SİSTEM İÇİN</div>
+              
+              <div class="qr-code">
+                <img src="${qrDataUrl}" alt="QR Code" style="width: 80px; height: 80px; display: block; margin: 10px auto;" />
+              </div>
+              
+              <div class="barcode">
+                <img src="${barcodeDataUrl}" alt="Barcode" style="width: 100%; height: 50px; display: block; margin: 10px auto;" />
+              </div>
+              
+              <div class="page-break"></div>
+              
+              <div class="header">${fişBaşlığı}</div>
+              
+              <div class="final-status">
+                ✅ ÜRÜN İŞLEMİ TAMAMLANDI
+              </div>
+          
+          <div class="section">
+                <div class="section-title">FİŞ BİLGİLERİ</div>
+            <div class="row">
+                  <span class="label">Fiş No:</span>
+                  <span class="value">${printData.fisNo}</span>
+            </div>
+            <div class="row">
+                  <span class="label">Tarih:</span>
+                  <span class="value">${new Date(printData.tarih).toLocaleDateString('tr-TR')}</span>
+            </div>
+            <div class="row">
+                  <span class="label">Mal Kabulcu:</span>
+                  <span class="value">${printData.malKabulcuAdi}</span>
+            </div>
+          </div>
+          
+          <div class="section">
+                <div class="section-title">SATICI BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Satıcı Tipi:</span>
+                  <span class="value">${printData.saticiTipi}</span>
+              </div>
+                <div class="row">
+                  <span class="label">Satıcı Adı:</span>
+                  <span class="value">${printData.saticiAdi}</span>
+              </div>
+            </div>
+              
+              <div class="section">
+                <div class="section-title">ÜRÜN BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Ürün:</span>
+                  <span class="value">${printData.urunAdi}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Kasa Sayısı:</span>
+                  <span class="value">${printData.kasaSayisi}</span>
+                </div>
+                ${printData.paletAdi ? `
+                <div class="row">
+                  <span class="label">Palet:</span>
+                  <span class="value">${printData.paletAdi} (${printData.paletSayisi})</span>
+                </div>
+                ` : ''}
+          </div>
+        
+              <div class="section">
+                <div class="section-title">KİLOGRAM BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Brüt KG:</span>
+                  <span class="value">${printData.brutKg.toFixed(2)}</span>
+          </div>
+                <div class="row">
+                  <span class="label">Dara KG:</span>
+                  <span class="value">${printData.daraKg.toFixed(2)}</span>
+          </div>
+                <div class="row">
+                  <span class="label">Giriş KG:</span>
+                  <span class="value">${printData.girisKg.toFixed(2)}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Çıkma Fire KG:</span>
+                  <span class="value">${printData.cikmaFireKg.toFixed(2)}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Net KG:</span>
+                  <span class="value">${printData.netKg.toFixed(2)}</span>
+                </div>
+              </div>
+              
+              ${printData.notlar ? `
+              <div class="section">
+                <div class="section-title">NOTLAR</div>
+                <div class="row">
+                  <span class="value">${printData.notlar}</span>
+                </div>
+              </div>
+              ` : ''}
+              
+              <div class="copy-info">
+                Bu fiş ürün işlemi tamamlandıktan sonra yazdırılmıştır
+              </div>
+              
+              <div class="copy-label">KOPYA - SATICI İÇİN</div>
+              
+              <div class="qr-code">
+                <img src="${qrDataUrl}" alt="QR Code" style="width: 80px; height: 80px; display: block; margin: 10px auto;" />
+              </div>
+              
+              <div class="barcode">
+                <img src="${barcodeDataUrl}" alt="Barcode" style="width: 100%; height: 50px; display: block; margin: 10px auto;" />
+        </div>
+        </body>
+      </html>
+    `)
+        
+      printWindow.document.close()
+        
+        // Yazdırma işlemini başlat
+      setTimeout(() => {
+        printWindow.print()
+          printWindow.close()
+          
+          toast({
+            title: "Son Fiş Yazdırıldı",
+            description: "Son durum fişi başarıyla yazdırıldı",
+            variant: "success",
+          })
+        }, 500)
+      }
+    } catch (error) {
+      console.error('Son fiş yazdırma hatası:', error)
+      toast({
+        title: "Hata",
+        description: "Son fiş yazdırılırken hata oluştu",
         variant: "destructive",
       })
     }
@@ -2546,13 +2870,28 @@ export default function YeniMalKabul() {
               </div>
             </div>
 
-            {/* Yazdırma Butonu */}
-            <div className="flex justify-center">
-              <Button onClick={handlePrint} className="px-8">
+            {/* Yazdırma Butonları */}
+            <div className="flex justify-center gap-4">
+              <Button onClick={handlePrint} className="px-6">
                 <Printer className="mr-2 h-4 w-4" />
-                2 Adet Fiş Yazdır
+                İlk Kayıt Fişi
+              </Button>
+              <Button 
+                onClick={handlePrintFinalReceipt} 
+                className="px-6"
+                variant="secondary"
+                disabled={!receiptData?.cikmaFireKg || parseFloat(receiptData?.cikmaFireKg) <= 0}
+              >
+                <Printer className="mr-2 h-4 w-4" />
+                Son Durum Fişi
               </Button>
             </div>
+            
+            {(!receiptData?.cikmaFireKg || parseFloat(receiptData?.cikmaFireKg) <= 0) && (
+              <div className="mt-2 text-center text-sm text-muted-foreground">
+                Son durum fişi için çıkma/fire KG bilgisi gerekli
+              </div>
+            )}
 
             <div className="mt-4 text-center">
               <Button 
