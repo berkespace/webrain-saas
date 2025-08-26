@@ -89,7 +89,8 @@ export default function YeniMalKabul() {
     brutKg: '',
     daraKg: '', // Manuel giriş
     girisKg: '',
-    cikmaFireKg: '',
+    cikmaKg: '',
+    fireKg: '',
     netKg: '',
     notlar: '',
     // Eski alanlar (geriye uyumluluk için)
@@ -184,7 +185,8 @@ export default function YeniMalKabul() {
           brutKg: data.brutKg,
           daraKg: data.daraKg,
           girisKg: data.girisKg,
-          cikmaFireKg: data.fireKg,
+          cikmaKg: data.cikmaKg || '',
+          fireKg: data.fireKg || '',
           notlar: data.notlar
         }))
         
@@ -736,7 +738,8 @@ export default function YeniMalKabul() {
       brutKg: '',
       daraKg: '',
       girisKg: '',
-      cikmaFireKg: '',
+      cikmaKg: '',
+      fireKg: '',
       netKg: '',
       notlar: ''
     })
@@ -973,14 +976,14 @@ export default function YeniMalKabul() {
     })
   }
 
-  const handleCikmaFireChange = (cikmaFireKg: string) => {
-    setFormData(prev => ({ ...prev, cikmaFireKg }))
-    if (formData.girisKg) {
-      const girisKg = parseFloat(formData.girisKg) || 0
-      const cikmaFireKgNum = parseFloat(cikmaFireKg) || 0
-      const netKg = girisKg - cikmaFireKgNum
-      setFormData(prev => ({ ...prev, netKg: netKg.toString() }))
-    }
+  const handleCikmaKgChange = (cikmaKg: string) => {
+    setFormData(prev => ({ ...prev, cikmaKg }))
+    calculateNetKg()
+  }
+
+  const handleFireKgChange = (fireKg: string) => {
+    setFormData(prev => ({ ...prev, fireKg }))
+    calculateNetKg()
   }
 
   const calculateGirisKg = () => {
@@ -992,8 +995,9 @@ export default function YeniMalKabul() {
 
   const calculateNetKg = () => {
     const girisKg = parseFloat(formData.girisKg) || 0
-    const cikmaFire = parseFloat(formData.cikmaFireKg) || 0
-    const netKg = girisKg - cikmaFire
+    const cikmaKg = parseFloat(formData.cikmaKg) || 0
+    const fireKg = parseFloat(formData.fireKg) || 0
+    const netKg = girisKg - cikmaKg - fireKg
     setFormData(prev => ({ ...prev, netKg: netKg.toString() }))
   }
 
@@ -1090,7 +1094,8 @@ export default function YeniMalKabul() {
           brutKg: formData.brutKg,
           daraKg: formData.daraKg,
           girisKg: formData.girisKg,
-          cikmaFireKg: formData.cikmaFireKg,
+          cikmaKg: formData.cikmaKg,
+          fireKg: formData.fireKg,
           netKg: formData.netKg,
 
           notlar: formData.notlar
@@ -1110,7 +1115,8 @@ export default function YeniMalKabul() {
           brutKg: parseFloat(formData.brutKg) || 0,
           daraKg: parseFloat(formData.daraKg) || 0,
           girisKg: parseFloat(formData.girisKg) || 0,
-          cikmaFireKg: parseFloat(formData.cikmaFireKg) || 0, // Çıkma/Fire KG eklendi
+          cikmaKg: parseFloat(formData.cikmaKg) || 0,
+          fireKg: parseFloat(formData.fireKg) || 0,
           ambalajAdi: 'Kasa', // Sabit ambalaj adı
           kasaSayisi: parseInt(formData.kasaSayisi) || 0,
           paletAdi: ambalajlar.find(a => a.id === formData.paletId)?.ad,
@@ -1201,7 +1207,8 @@ export default function YeniMalKabul() {
         brutKg: parseFloat(receiptData.brutKg) || 0,
         daraKg: parseFloat(receiptData.daraKg) || 0,
         girisKg: parseFloat(receiptData.girisKg) || 0,
-        cikmaFireKg: parseFloat(receiptData.cikmaFireKg) || 0,
+        cikmaKg: parseFloat(receiptData.cikmaKg) || 0,
+        fireKg: parseFloat(receiptData.fireKg) || 0,
         netKg: parseFloat(receiptData.netKg) || 0,
         ambalajAdi: receiptData.ambalajAdi || 'Kasa',
         kasaSayisi: parseInt(receiptData.kasaSayisi) || 0,
@@ -1368,10 +1375,16 @@ export default function YeniMalKabul() {
                   <span class="label">Giriş KG:</span>
                   <span class="value">${printData.girisKg.toFixed(2)}</span>
               </div>
-                ${printData.cikmaFireKg > 0 ? `
+                ${printData.cikmaKg > 0 ? `
               <div class="row">
-                  <span class="label">Çıkma Fire KG:</span>
-                  <span class="value">${printData.cikmaFireKg.toFixed(2)}</span>
+                  <span class="label">Çıkma KG:</span>
+                  <span class="value">${printData.cikmaKg.toFixed(2)}</span>
+              </div>
+                ` : ''}
+                ${printData.fireKg > 0 ? `
+              <div class="row">
+                  <span class="label">Fire KG:</span>
+                  <span class="value">${printData.fireKg.toFixed(2)}</span>
               </div>
                 ` : ''}
                 ${printData.netKg > 0 ? `
@@ -1469,10 +1482,16 @@ export default function YeniMalKabul() {
                   <span class="label">Giriş KG:</span>
                   <span class="value">${printData.girisKg.toFixed(2)}</span>
                 </div>
-                ${printData.cikmaFireKg > 0 ? `
+                ${printData.cikmaKg > 0 ? `
                 <div class="row">
-                  <span class="label">Çıkma Fire KG:</span>
-                  <span class="value">${printData.cikmaFireKg.toFixed(2)}</span>
+                  <span class="label">Çıkma KG:</span>
+                  <span class="value">${printData.cikmaKg.toFixed(2)}</span>
+                </div>
+                ` : ''}
+                ${printData.fireKg > 0 ? `
+                <div class="row">
+                  <span class="label">Fire KG:</span>
+                  <span class="value">${printData.fireKg.toFixed(2)}</span>
                 </div>
                 ` : ''}
                 ${printData.netKg > 0 ? `
@@ -1557,7 +1576,8 @@ export default function YeniMalKabul() {
         brutKg: parseFloat(receiptData.brutKg) || 0,
         daraKg: parseFloat(receiptData.daraKg) || 0,
         girisKg: parseFloat(receiptData.girisKg) || 0,
-        cikmaFireKg: parseFloat(receiptData.cikmaFireKg) || 0,
+        cikmaKg: parseFloat(receiptData.cikmaKg) || 0,
+        fireKg: parseFloat(receiptData.fireKg) || 0,
         netKg: parseFloat(receiptData.netKg) || 0,
         ambalajAdi: receiptData.ambalajAdi || 'Kasa',
         kasaSayisi: parseInt(receiptData.kasaSayisi) || 0,
@@ -1738,10 +1758,18 @@ export default function YeniMalKabul() {
                   <span class="label">Giriş KG:</span>
                   <span class="value">${printData.girisKg.toFixed(2)}</span>
             </div>
+            ${printData.cikmaKg > 0 ? `
             <div class="row">
-                  <span class="label">Çıkma Fire KG:</span>
-                  <span class="value">${printData.cikmaFireKg.toFixed(2)}</span>
+                  <span class="label">Çıkma KG:</span>
+                  <span class="value">${printData.cikmaKg.toFixed(2)}</span>
                 </div>
+            ` : ''}
+            ${printData.fireKg > 0 ? `
+            <div class="row">
+                  <span class="label">Fire KG:</span>
+                  <span class="value">${printData.fireKg.toFixed(2)}</span>
+                </div>
+            ` : ''}
                 <div class="row">
                   <span class="label">Net KG:</span>
                   <span class="value">${printData.netKg.toFixed(2)}</span>
@@ -1839,10 +1867,18 @@ export default function YeniMalKabul() {
                   <span class="label">Giriş KG:</span>
                   <span class="value">${printData.girisKg.toFixed(2)}</span>
                 </div>
+                ${printData.cikmaKg > 0 ? `
                 <div class="row">
-                  <span class="label">Çıkma Fire KG:</span>
-                  <span class="value">${printData.cikmaFireKg.toFixed(2)}</span>
+                  <span class="label">Çıkma KG:</span>
+                  <span class="value">${printData.cikmaKg.toFixed(2)}</span>
                 </div>
+                ` : ''}
+                ${printData.fireKg > 0 ? `
+                <div class="row">
+                  <span class="label">Fire KG:</span>
+                  <span class="value">${printData.fireKg.toFixed(2)}</span>
+                </div>
+                ` : ''}
                 <div class="row">
                   <span class="label">Net KG:</span>
                   <span class="value">${printData.netKg.toFixed(2)}</span>
@@ -2079,7 +2115,8 @@ export default function YeniMalKabul() {
       brutKg: '',
       daraKg: '',
       girisKg: '',
-      cikmaFireKg: '',
+      cikmaKg: '',
+      fireKg: '',
       netKg: '',
       notlar: '',
       saticiTipi: '',
@@ -2686,17 +2723,29 @@ export default function YeniMalKabul() {
                       />
 
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="cikmaFireKg">Çıkma/Fire KG</Label>
-                      <Input
-                        id="cikmaFireKg"
-                        type="number"
-                        step="0.01"
-                        value={formData.cikmaFireKg}
-                        onChange={(e) => setFormData({...formData, cikmaFireKg: e.target.value})}
-                        placeholder="0.00"
-                      />
-
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="cikmaKg">Çıkma KG</Label>
+                        <Input
+                          id="cikmaKg"
+                          type="number"
+                          step="0.01"
+                          value={formData.cikmaKg}
+                          onChange={(e) => setFormData({...formData, cikmaKg: e.target.value})}
+                          placeholder="0.00"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="fireKg">Fire KG</Label>
+                        <Input
+                          id="fireKg"
+                          type="number"
+                          step="0.01"
+                          value={formData.fireKg}
+                          onChange={(e) => setFormData({...formData, fireKg: e.target.value})}
+                          placeholder="0.00"
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -2880,16 +2929,16 @@ export default function YeniMalKabul() {
                 onClick={handlePrintFinalReceipt} 
                 className="px-6"
                 variant="secondary"
-                disabled={!receiptData?.cikmaFireKg || parseFloat(receiptData?.cikmaFireKg) <= 0}
+                disabled={!receiptData?.cikmaKg || parseFloat(receiptData?.cikmaKg) <= 0}
               >
                 <Printer className="mr-2 h-4 w-4" />
                 Son Durum Fişi
               </Button>
             </div>
             
-            {(!receiptData?.cikmaFireKg || parseFloat(receiptData?.cikmaFireKg) <= 0) && (
+            {(!receiptData?.cikmaKg || parseFloat(receiptData?.cikmaKg) <= 0) && (
               <div className="mt-2 text-center text-sm text-muted-foreground">
-                Son durum fişi için çıkma/fire KG bilgisi gerekli
+                Son durum fişi için çıkma KG bilgisi gerekli
               </div>
             )}
 
