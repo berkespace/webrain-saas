@@ -228,14 +228,6 @@ export default function MalKabulTest() {
         const existingRows = data.records || []
         
         const convertedRows = existingRows.map((record: any, index: number) => {
-          // Debug: İlk kaydın tüm alanlarını logla
-          if (index === 0) {
-            console.log('🔍 İlk kayıt tüm alanları:', Object.keys(record))
-            console.log('🔍 İlk kayıt cikmaKg:', record.cikmaKg)
-            console.log('🔍 İlk kayıt cikmaFireKg:', record.cikmaFireKg)
-            console.log('🔍 İlk kayıt fireKg:', record.fireKg)
-          }
-          
           return {
             id: `existing-${record.id}`,
             dbId: record.id, // Gerçek veritabanı ID'si
@@ -252,7 +244,7 @@ export default function MalKabulTest() {
             daraKg: record.daraKg?.toString() || '',
             girisKg: record.girisKg?.toString() || '',
             fireKg: record.cikmaFireKg?.toString() || '',
-            cikmaKg: record.cikmaKg?.toString() || '0',
+            cikmaKg: record.cikmaFireKg?.toString() || '0',
             netKg: record.netKg?.toString() || '',
             notlar: record.notlar || '',
             urunDurumu: record.status === 'TAMAMLANDI' ? 'NETLENDI' : 'BEKLEMEDE', // Default Beklemede
