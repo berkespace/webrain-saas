@@ -81,7 +81,7 @@ interface MalKabulRecord {
   toplamFiyat?: number
   status: 'FATURA_BEKLIYOR' | 'FATURALANDI' | 'TAMAMLANDI' | 'IPTAL'
   notlar?: string
-  malKabulcu: {
+  users: {
     id: string
     firstName: string
     lastName: string
@@ -587,7 +587,7 @@ export default function MalKabulDashboard() {
                     <p><strong>Fatura No:</strong> {selectedRecord.fisNo}</p>
                     <p><strong>Tarih:</strong> {selectedRecord.tarih}</p>
                     <p><strong>Satıcı:</strong> {getSaticiAdi(selectedRecord)}</p>
-                    <p><strong>Ürün:</strong> {selectedRecord.urun.ad}</p>
+                    <p><strong>Ürün:</strong> {selectedRecord.urunler?.ad || 'Ürün bulunamadı'}</p>
                     <p><strong>Kasa Sayısı:</strong> {selectedRecord.kasaSayisi.toLocaleString()}</p>
                     <p><strong>Brüt KG:</strong> {selectedRecord.brutKg.toLocaleString()}</p>
                     <p><strong>Dara KG:</strong> {selectedRecord.daraKg.toLocaleString()}</p>
@@ -598,7 +598,7 @@ export default function MalKabulDashboard() {
                     <p><strong>Toplam Fiyat:</strong> {selectedRecord.toplamFiyat ? selectedRecord.toplamFiyat.toLocaleString() : '-'}</p>
                     <p><strong>Durum:</strong> <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedRecord.status)}`}>{getStatusLabel(selectedRecord.status)}</span></p>
                     <p><strong>Notlar:</strong> {selectedRecord.notlar || '-'}</p>
-                    <p><strong>Oluşturan:</strong> {selectedRecord.malKabulcu.firstName} {selectedRecord.malKabulcu.lastName}</p>
+                    <p><strong>Oluşturan:</strong> {selectedRecord.users?.firstName} {selectedRecord.users?.lastName || 'Kullanıcı bulunamadı'}</p>
                     <p><strong>Oluşturma Tarihi:</strong> {new Date(selectedRecord.createdAt).toLocaleDateString()}</p>
                     <p><strong>Güncellenme Tarihi:</strong> {new Date(selectedRecord.updatedAt).toLocaleDateString()}</p>
                   </div>
