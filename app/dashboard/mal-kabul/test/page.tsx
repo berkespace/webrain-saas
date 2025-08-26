@@ -244,7 +244,7 @@ export default function MalKabulTest() {
             daraKg: record.daraKg?.toString() || '',
             girisKg: record.girisKg?.toString() || '',
             fireKg: record.cikmaFireKg?.toString() || '',
-            cikmaKg: '0', // Mevcut kayıtlarda bu alan yok
+            cikmaKg: record.cikmaKg?.toString() || '0',
             netKg: record.netKg?.toString() || '',
             notlar: record.notlar || '',
             urunDurumu: record.status === 'TAMAMLANDI' ? 'NETLENDI' : 'BEKLEMEDE', // Default Beklemede
@@ -501,6 +501,7 @@ export default function MalKabulTest() {
                 brutKg: parseFloat(row.brutKg) || 0,
                 daraKg: parseFloat(row.daraKg) || 0,
                 girisKg: parseFloat(row.girisKg) || 0,
+                cikmaKg: parseFloat(row.cikmaKg) || 0,
                 cikmaFireKg: parseFloat(row.fireKg) || 0,
                 netKg: parseFloat(row.netKg) || 0,
                 notlar: row.notlar,
@@ -528,6 +529,7 @@ export default function MalKabulTest() {
                 brutKg: row.brutKg,
                 daraKg: row.daraKg,
                 girisKg: row.girisKg,
+                cikmaKg: row.cikmaKg,
                 cikmaFireKg: row.fireKg,
                 netKg: row.netKg,
                 notlar: row.notlar
