@@ -324,7 +324,10 @@ export default function MalKabulDashboard() {
           console.log('malKabulRecords state:', malKabulRecords)
         console.log('filteredData:', filteredData)
         console.log('İlk kayıt örneği:', malKabulRecords[0])
+        console.log('İlk kayıt tüm alanları:', Object.keys(malKabulRecords[0] || {}))
         console.log('İlk kayıt urunDurumu:', malKabulRecords[0]?.urunDurumu)
+        console.log('İlk kayıt status:', malKabulRecords[0]?.status)
+        console.log('İlk kayıt durum:', malKabulRecords[0]?.durum)
 
   return (
     <div className="p-6">
