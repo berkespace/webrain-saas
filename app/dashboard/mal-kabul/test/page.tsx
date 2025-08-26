@@ -228,6 +228,14 @@ export default function MalKabulTest() {
         const existingRows = data.records || []
         
         const convertedRows = existingRows.map((record: any, index: number) => {
+          // Debug: İlk kaydın tüm alanlarını logla
+          if (index === 0) {
+            console.log('🔍 İlk kayıt tüm alanları:', Object.keys(record))
+            console.log('🔍 İlk kayıt cikmaKg:', record.cikmaKg)
+            console.log('🔍 İlk kayıt cikmaFireKg:', record.cikmaFireKg)
+            console.log('🔍 İlk kayıt fireKg:', record.fireKg)
+          }
+          
           return {
             id: `existing-${record.id}`,
             dbId: record.id, // Gerçek veritabanı ID'si
@@ -235,7 +243,7 @@ export default function MalKabulTest() {
             tarih: record.tarih,
             saticiTipi: record.saticiTipi, // API'den gelen değeri kullan
             komisyoncuId: record.komisyoncuId || '',
-            ureticiId: record.ureticiId || '',
+            ureticiId: record.ureticId || '',
             mustahsilId: record.mustahsilId || '',
             ozelFirmaId: record.ozelFirmaId || '',
             urunId: record.urunId,
