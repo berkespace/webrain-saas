@@ -79,7 +79,7 @@ interface MalKabulRecord {
   netKg: number
   birimFiyat?: number
   toplamFiyat?: number
-  urunDurumu: 'BEKLEMEDE' | 'NETLENDI' | 'IPTAL'
+  status: string
   notlar?: string
   users: {
     id: string
@@ -97,7 +97,7 @@ export default function MalKabulDashboard() {
   const [malKabulRecords, setMalKabulRecords] = useState<MalKabulRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
-  const [filterUrunDurumu, setFilterUrunDurumu] = useState('all')
+  const [filterStatus, setFilterStatus] = useState('all')
   const [filterSaticiTipi, setFilterSaticiTipi] = useState('all')
   const [selectedRecord, setSelectedRecord] = useState<MalKabulRecord | null>(null)
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false)
@@ -118,7 +118,7 @@ export default function MalKabulDashboard() {
       setLoading(true)
       const params = new URLSearchParams()
       if (searchTerm) params.append('search', searchTerm)
-      if (filterUrunDurumu !== 'all') params.append('urunDurumu', filterUrunDurumu)
+      if (filterStatus !== 'all') params.append('status', filterStatus)
       if (filterSaticiTipi !== 'all') params.append('saticiTipi', filterSaticiTipi)
 
       console.log('API URL:', `/api/mal-kabul?${params.toString()}`)
@@ -147,7 +147,7 @@ export default function MalKabulDashboard() {
     if (status === 'authenticated') {
       fetchMalKabulRecords()
     }
-  }, [searchTerm, filterUrunDurumu, filterSaticiTipi])
+  }, [searchTerm, filterStatus, filterSaticiTipi])
 
   const handleDelete = async (recordId: string) => {
     if (confirm('Bu mal kabul kaydını silmek istediğinizden emin misiniz?')) {
@@ -226,11 +226,11 @@ export default function MalKabulDashboard() {
     }
   }
 
-  const getUrunDurumuColor = (urunDurumu: string) => {
-    switch (urunDurumu) {
-      case 'BEKLEMEDE':
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'FATURA_BEKLIYOR':
         return 'bg-yellow-100 text-yellow-800'
-      case 'NETLENDI':
+      case 'TAMAMLANDI':
         return 'bg-green-100 text-green-800'
       case 'IPTAL':
         return 'bg-red-100 text-red-800'
@@ -239,16 +239,16 @@ export default function MalKabulDashboard() {
     }
   }
 
-  const getUrunDurumuLabel = (urunDurumu: string) => {
-    switch (urunDurumu) {
-      case 'BEKLEMEDE':
-        return 'Beklemede'
-      case 'NETLENDI':
-        return 'Netlendi'
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'FATURA_BEKLIYOR':
+        return 'Fatura Bekliyor'
+      case 'TAMAMLANDI':
+        return 'Tamamlandı'
       case 'IPTAL':
         return 'İptal'
       default:
-        return urunDurumu
+        return status
     }
   }
 
@@ -315,19 +315,17 @@ export default function MalKabulDashboard() {
       item.urunler.ad.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.fisNo.toLowerCase().includes(searchTerm)
 
-    const matchesUrunDurumu = filterUrunDurumu === 'all' || item.urunDurumu === filterUrunDurumu
+    const matchesStatus = filterStatus === 'all' || item.status === filterStatus
     const matchesSaticiTipi = filterSaticiTipi === 'all' || item.saticiTipi === filterSaticiTipi
 
-    return matchesSearch && matchesUrunDurumu && matchesSaticiTipi
+    return matchesSearch && matchesStatus && matchesSaticiTipi
   })
 
           console.log('malKabulRecords state:', malKabulRecords)
         console.log('filteredData:', filteredData)
         console.log('İlk kayıt örneği:', malKabulRecords[0])
         console.log('İlk kayıt tüm alanları:', Object.keys(malKabulRecords[0] || {}))
-        console.log('İlk kayıt urunDurumu:', malKabulRecords[0]?.urunDurumu)
         console.log('İlk kayıt status:', malKabulRecords[0]?.status)
-        console.log('İlk kayıt durum:', malKabulRecords[0]?.durum)
 
   return (
     <div className="p-6">
@@ -371,7 +369,7 @@ export default function MalKabulDashboard() {
                 <div>
                   <p className="text-sm text-muted-foreground">Bekleyen</p>
                   <p className="text-2xl font-bold text-orange-500">
-                    {malKabulRecords.filter(item => item.urunDurumu === 'BEKLEMEDE').length}
+                    {malKabulRecords.filter(item => item.status === 'FATURA_BEKLIYOR').length}
                   </p>
                 </div>
                 <Clock className="h-8 w-8 text-orange-500" />
@@ -385,7 +383,7 @@ export default function MalKabulDashboard() {
                 <div>
                   <p className="text-sm text-muted-foreground">Tamamlandı</p>
                   <p className="text-2xl font-bold text-green-500">
-                    {malKabulRecords.filter(item => item.urunDurumu === 'NETLENDI').length}
+                    {malKabulRecords.filter(item => item.status === 'TAMAMLANDI').length}
                   </p>
                 </div>
                 <CheckCircle className="h-8 w-8 text-green-500" />
@@ -425,26 +423,26 @@ export default function MalKabulDashboard() {
               </div>
               <div className="flex gap-2">
                 <Button
-                  variant={filterUrunDurumu === 'all' ? 'default' : 'outline'}
-                  onClick={() => setFilterUrunDurumu('all')}
+                  variant={filterStatus === 'all' ? 'default' : 'outline'}
+                  onClick={() => setFilterStatus('all')}
                 >
                   Tümü
                 </Button>
                 <Button
-                  variant={filterUrunDurumu === 'BEKLEMEDE' ? 'default' : 'outline'}
-                  onClick={() => setFilterUrunDurumu('BEKLEMEDE')}
+                  variant={filterStatus === 'FATURA_BEKLIYOR' ? 'default' : 'outline'}
+                  onClick={() => setFilterStatus('FATURA_BEKLIYOR')}
                 >
-                  Beklemede
+                  Fatura Bekliyor
                 </Button>
                 <Button
-                  variant={filterUrunDurumu === 'NETLENDI' ? 'default' : 'outline'}
-                  onClick={() => setFilterUrunDurumu('NETLENDI')}
+                  variant={filterStatus === 'TAMAMLANDI' ? 'default' : 'outline'}
+                  onClick={() => setFilterStatus('TAMAMLANDI')}
                 >
-                  Netlendi
+                  Tamamlandı
                 </Button>
                 <Button
-                  variant={filterUrunDurumu === 'IPTAL' ? 'default' : 'outline'}
-                  onClick={() => setFilterUrunDurumu('IPTAL')}
+                  variant={filterStatus === 'IPTAL' ? 'default' : 'outline'}
+                  onClick={() => setFilterStatus('IPTAL')}
                 >
                   İptal
                 </Button>
@@ -537,9 +535,9 @@ export default function MalKabulDashboard() {
                           <td className="py-3 px-2 text-right">{item.girisKg.toLocaleString()}</td>
                           <td className="py-3 px-2 text-right">{item.cikmaFireKg.toLocaleString()}</td>
                           <td className="py-3 px-2">
-                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getUrunDurumuColor(item.urunDurumu)}`}>
-                              {getUrunDurumuLabel(item.urunDurumu)}
-                            </span>
+                                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
+                  {getStatusLabel(item.status)}
+                </span>
                           </td>
                           <td className="py-3 px-2 text-right font-medium">
                             {item.netKg ? item.netKg.toLocaleString() : '-'}
@@ -591,7 +589,7 @@ export default function MalKabulDashboard() {
                     <p><strong>Net KG:</strong> {selectedRecord.netKg.toLocaleString()}</p>
                     <p><strong>Birim Fiyat:</strong> {selectedRecord.birimFiyat ? selectedRecord.birimFiyat.toLocaleString() : '-'}</p>
                     <p><strong>Toplam Fiyat:</strong> {selectedRecord.toplamFiyat ? selectedRecord.toplamFiyat.toLocaleString() : '-'}</p>
-                    <p><strong>Durum:</strong> <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getUrunDurumuColor(selectedRecord.urunDurumu)}`}>{getUrunDurumuLabel(selectedRecord.urunDurumu)}</span></p>
+                    <p><strong>Durum:</strong> <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedRecord.status)}`}>{getStatusLabel(selectedRecord.status)}</span></p>
                     <p><strong>Notlar:</strong> {selectedRecord.notlar || '-'}</p>
                     <p><strong>Oluşturan:</strong> {selectedRecord.users?.firstName} {selectedRecord.users?.lastName || 'Kullanıcı bulunamadı'}</p>
                     <p><strong>Oluşturma Tarihi:</strong> {new Date(selectedRecord.createdAt).toLocaleDateString()}</p>
