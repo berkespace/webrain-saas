@@ -321,8 +321,10 @@ export default function MalKabulDashboard() {
     return matchesSearch && matchesUrunDurumu && matchesSaticiTipi
   })
 
-  console.log('malKabulRecords state:', malKabulRecords)
-  console.log('filteredData:', filteredData)
+          console.log('malKabulRecords state:', malKabulRecords)
+        console.log('filteredData:', filteredData)
+        console.log('İlk kayıt örneği:', malKabulRecords[0])
+        console.log('İlk kayıt urunDurumu:', malKabulRecords[0]?.urunDurumu)
 
   return (
     <div className="p-6">
