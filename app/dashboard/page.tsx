@@ -47,7 +47,8 @@ interface DashboardStats {
   pendingRecords: number
   completedRecords: number
   todayRecords: number
-  totalKg: number
+  totalGirisKg: number
+  totalNetKg: number
   totalValue: number
   monthlyGrowth: number
   weeklyGrowth: number
@@ -102,7 +103,8 @@ export default function DashboardPage() {
     pendingRecords: 0,
     completedRecords: 0,
     todayRecords: 0,
-    totalKg: 0,
+    totalGirisKg: 0,
+    totalNetKg: 0,
     totalValue: 0,
     monthlyGrowth: 0,
     weeklyGrowth: 0
@@ -150,7 +152,8 @@ export default function DashboardPage() {
         const lastMonthRecords = records.filter((r: any) => new Date(r.tarih) >= lastMonth)
         const lastWeekRecords = records.filter((r: any) => new Date(r.tarih) >= lastWeek)
         
-        const totalKg = records.reduce((sum: number, r: any) => sum + (r.netKg || 0), 0)
+        const totalGirisKg = records.reduce((sum: number, r: any) => sum + (r.girisKg || 0), 0)
+        const totalNetKg = records.reduce((sum: number, r: any) => sum + (r.netKg || 0), 0)
         const totalValue = records.reduce((sum: number, r: any) => sum + (r.toplamFiyat || 0), 0)
         
         setStats({
@@ -158,7 +161,8 @@ export default function DashboardPage() {
           pendingRecords: records.filter((r: any) => r.status === 'FATURA_BEKLIYOR').length,
           completedRecords: records.filter((r: any) => r.status === 'TAMAMLANDI').length,
           todayRecords: todayRecords.length,
-          totalKg: Math.round(totalKg),
+          totalGirisKg: Math.round(totalGirisKg),
+          totalNetKg: Math.round(totalNetKg),
           totalValue: Math.round(totalValue),
           monthlyGrowth: lastMonthRecords.length > 0 ? ((todayRecords.length - lastMonthRecords.length) / lastMonthRecords.length) * 100 : 0,
           weeklyGrowth: lastWeekRecords.length > 0 ? ((todayRecords.length - lastWeekRecords.length) / lastWeekRecords.length) * 100 : 0
@@ -476,12 +480,12 @@ export default function DashboardPage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Toplam KG</CardTitle>
+            <CardTitle className="text-sm font-medium">Giriş KG</CardTitle>
             <Scale className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalKg.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">Toplam ağırlık</p>
+            <div className="text-2xl font-bold">{stats.totalGirisKg.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">Toplam giriş ağırlığı</p>
           </CardContent>
         </Card>
 
@@ -915,12 +919,12 @@ export default function DashboardPage() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Toplam KG</CardTitle>
+              <CardTitle className="text-sm font-medium">Net KG</CardTitle>
             <Scale className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.totalKg.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">Toplam ağırlık</p>
+              <div className="text-2xl font-bold">{stats.totalNetKg.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">Toplam net ağırlık</p>
             </CardContent>
           </Card>
 
@@ -1100,8 +1104,12 @@ export default function DashboardPage() {
                   <span className="text-sm font-medium text-orange-600">{stats.pendingRecords}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm">Toplam KG</span>
-                  <span className="text-sm font-medium">{stats.totalKg.toLocaleString()} kg</span>
+                  <span className="text-sm">Giriş KG</span>
+                  <span className="text-sm font-medium">{stats.totalGirisKg.toLocaleString()} kg</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm">Net KG</span>
+                  <span className="text-sm font-medium">{stats.totalNetKg.toLocaleString()} kg</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm">Toplam Değer</span>
