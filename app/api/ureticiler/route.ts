@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
         komisyoncuId: komisyoncuId || null
       },
       include: {
-        komisyoncu: {
+        komisyoncular: {
           select: {
             id: true,
             dukkanAdi: true,
