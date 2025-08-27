@@ -525,7 +525,7 @@ export default function MalKabulDashboard() {
                       <th className="text-left py-3 px-2 font-medium">ÇIKMA/FİRE</th>
                       <th className="text-left py-3 px-2 font-medium">DURUM</th>
                       <th className="text-left py-3 px-2 font-medium">NET KG/ADET</th>
-                      <th className="text-left py-3 px-2 font-medium">FİYAT</th>
+
                       <th className="text-left py-3 px-2 font-medium">FİŞ NO</th>
                       <th className="text-left py-3 px-2 font-medium">İŞLEMLER</th>
                     </tr>
@@ -533,7 +533,7 @@ export default function MalKabulDashboard() {
                   <tbody>
                     {filteredData.length === 0 ? (
                       <tr>
-                        <td colSpan={15} className="py-8 text-center text-muted-foreground">Kayıt bulunamadı.</td>
+                        <td colSpan={14} className="py-8 text-center text-muted-foreground">Kayıt bulunamadı.</td>
                       </tr>
                     ) : (
                       filteredData.map((item) => (
@@ -598,7 +598,7 @@ export default function MalKabulDashboard() {
                               : (item.netKg || 0).toLocaleString() + ' kg'
                             }
                           </td>
-                          <td className="py-3 px-2 text-right">{item.birimFiyat ? item.birimFiyat.toLocaleString() : '-'}</td>
+
                           <td className="py-3 px-2 font-medium">
                             <Link 
                               href={`/dashboard/mal-kabul/duzenle/${item.id}`}
