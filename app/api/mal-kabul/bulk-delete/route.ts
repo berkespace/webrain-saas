@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Geçerli id listesi gönderin" }, { status: 400 })
     }
 
-    await prisma.malKabulRecord.deleteMany({ where: { id: { in: ids } } })
+    await prisma.mal_kabul_records.deleteMany({ where: { id: { in: ids } } })
 
     return NextResponse.json({ message: "Seçili kayıtlar silindi" })
   } catch (error) {

@@ -519,7 +519,7 @@ export default function MalKabulDashboard() {
                       <th className="text-left py-3 px-2 font-medium">ÜRÜN</th>
                       <th className="text-left py-3 px-2 font-medium">KASA SAYISI</th>
                       <th className="text-left py-3 px-2 font-medium">BRÜT KG/ADET</th>
-                      <th className="text-left py-3 px-2 font-medium">DARA KG/ADET</th>
+                      <th className="text-left py-3 px-2 font-medium">DARA KG/KASA</th>
                       <th className="text-left py-3 px-2 font-medium">GİRİŞ KG/ADET</th>
                       <th className="text-left py-3 px-2 font-medium">ÇIKMA/FİRE</th>
                       <th className="text-left py-3 px-2 font-medium">DURUM</th>
@@ -555,7 +555,7 @@ export default function MalKabulDashboard() {
                           </td>
                           <td className="py-3 px-2 text-right">
                             {item.urunler.birim?.toLowerCase() === 'adet' 
-                              ? (item.paletSayisi || 0).toLocaleString() + ' palet'
+                              ? (item.kasaSayisi || 0).toLocaleString() + ' kasa'
                               : (item.daraKg || 0).toLocaleString() + ' kg'
                             }
                           </td>
