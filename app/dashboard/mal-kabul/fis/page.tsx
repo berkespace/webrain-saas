@@ -245,6 +245,8 @@ export default function MalKabulFisArsivi() {
       }
     } else if (record.saticiTipi === 'MUSTAHSIL') {
       return record.mustahsil ? `${record.mustahsil.ad} ${record.mustahsil.soyad}` : 'Bilinmeyen Müstahsil'
+    } else if (record.saticiTipi === 'URETICI') {
+      return record.uretici ? `${record.uretici.ad} ${record.uretici.soyad}` : 'Bilinmeyen Üretici'
     }
     return 'Bilinmeyen'
   }

@@ -166,11 +166,36 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!brutKg) {
+    // Ürün birimini kontrol et
+    const urun = await prisma.urunler.findUnique({
+      where: { id: urunId },
+      select: { birim: true }
+    })
+
+    if (!urun) {
       return NextResponse.json(
-        { error: "Brüt KG alanı zorunludur" },
+        { error: "Ürün bulunamadı" },
         { status: 400 }
       )
+    }
+
+    // Birime göre validasyon
+    if (urun.birim === 'ADET') {
+      // ADET birimi için validasyon
+      if (!adetSayisi || parseInt(adetSayisi) <= 0) {
+        return NextResponse.json(
+          { error: "Adet sayısı 0'dan büyük olmalıdır" },
+          { status: 400 }
+        )
+      }
+    } else {
+      // KG birimi için validasyon
+      if (!brutKg) {
+        return NextResponse.json(
+          { error: "Brüt KG alanı zorunludur" },
+          { status: 400 }
+        )
+      }
     }
 
     // Mal kabulcu kullanıcısını bul
@@ -201,6 +226,25 @@ export async function POST(request: NextRequest) {
     
     const fisNo = dateStr + (todayRecords + 1).toString().padStart(4, '0')
 
+    // Birime göre NET değerleri hesapla
+    let calculatedNetKg = 0
+    let calculatedNetAdet = 0
+    let calculatedStatus = 'FATURA_BEKLIYOR'
+
+    if (urun.birim === 'ADET') {
+      // ADET ürünler için
+      calculatedNetAdet = (parseInt(adetSayisi) || 0) - (parseFloat(cikmaKg) || 0) - (parseFloat(fireKg) || 0)
+      if (parseFloat(cikmaKg) > 0 || parseFloat(fireKg) > 0) {
+        calculatedStatus = 'NETLENDI'
+      }
+    } else {
+      // KG ürünler için
+      calculatedNetKg = (parseFloat(girisKg) || 0) - (parseFloat(cikmaKg) || 0) - (parseFloat(fireKg) || 0)
+      if (parseFloat(cikmaKg) > 0 || parseFloat(fireKg) > 0) {
+        calculatedStatus = 'NETLENDI'
+      }
+    }
+
     // Mal kabul kaydını oluştur
     const malKabulRecord = await prisma.mal_kabul_records.create({
       data: {
@@ -222,8 +266,9 @@ export async function POST(request: NextRequest) {
         cikmaKg: parseFloat(cikmaKg) || 0,
         fireKg: parseFloat(fireKg) || 0,
         cikmaFireKg: parseFloat(cikmaFireKg) || 0,
-        netKg: parseFloat(netKg) || 0,
-        netAdet: parseInt(netAdet) || 0,
+        netKg: calculatedNetKg,
+        netAdet: calculatedNetAdet,
+        status: calculatedStatus,
         miktar: parseFloat(girisKg) || 0,
         
         notlar: notlar || null,

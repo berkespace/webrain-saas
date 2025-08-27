@@ -194,6 +194,25 @@ export async function PUT(
       }
     }
 
+    // Birime göre NET değerleri hesapla
+    let calculatedNetKg = 0
+    let calculatedNetAdet = 0
+    let calculatedStatus = status || 'FATURA_BEKLIYOR'
+
+    if (urun.birim === 'ADET') {
+      // ADET ürünler için
+      calculatedNetAdet = (parseInt(adetSayisi) || 0) - (parseFloat(cikmaKg) || 0) - (parseFloat(fireKg) || 0)
+      if (parseFloat(cikmaKg) > 0 || parseFloat(fireKg) > 0) {
+        calculatedStatus = 'NETLENDI'
+      }
+    } else {
+      // KG ürünler için
+      calculatedNetKg = (parseFloat(girisKg) || 0) - (parseFloat(cikmaKg) || 0) - (parseFloat(fireKg) || 0)
+      if (parseFloat(cikmaKg) > 0 || parseFloat(fireKg) > 0) {
+        calculatedStatus = 'NETLENDI'
+      }
+    }
+
     // Mal kabul kaydını güncelle
     const updatedRecord = await prisma.mal_kabul_records.update({
       where: { id },
@@ -214,10 +233,10 @@ export async function PUT(
         cikmaKg: parseFloat(cikmaKg) || 0,
         fireKg: parseFloat(fireKg) || 0,
         cikmaFireKg: parseFloat(cikmaFireKg) || 0,
-        netKg: parseFloat(netKg) || 0,
-        netAdet: parseInt(netAdet) || 0,
+        netKg: calculatedNetKg,
+        netAdet: calculatedNetAdet,
 
-        status,
+        status: calculatedStatus,
         notlar: notlar || null,
         // Note: miktar is set to girisKg, as in original
         miktar: parseFloat(girisKg) || 0,
