@@ -182,6 +182,20 @@ export default function MalKabulTest() {
     }
   }
 
+  // SATICI tipini Türkçe olarak göstermek için
+  const getSaticiTipiLabel = (saticiTipi: string) => {
+    switch (saticiTipi) {
+      case 'KOMISYONCU':
+        return 'KOMİSYONCU'
+      case 'MUSTAHSIL':
+        return 'MÜSTAHSİL'
+      case 'OZEL_FIRMA':
+        return 'ÖZEL FİRMA'
+      default:
+        return saticiTipi
+    }
+  }
+
   // Data fetching
   useEffect(() => {
     if (status === 'authenticated') {
@@ -1831,10 +1845,10 @@ export default function MalKabulTest() {
                     className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-28 cursor-pointer hover:bg-gray-100"
                     onClick={() => handleSort('saticiTipi')}
                   >
-                    Satıcı Tipi {sortColumn === 'saticiTipi' && (sortDirection === 'asc' ? '↑' : '↓')}
+                    SATICI {sortColumn === 'saticiTipi' && (sortDirection === 'asc' ? '↑' : '↓')}
                   </th>
                   <th className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-36">
-                    Seçim
+                    SATICI ADI
                   </th>
                   <th className={`border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-36 ${rows.some(row => row.saticiTipi === 'KOMISYONCU') ? '' : 'hidden'}`}>
                     Üretici
@@ -1972,9 +1986,9 @@ export default function MalKabulTest() {
                           <SelectValue placeholder="Seç" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="OZEL_FIRMA">Özel Firma</SelectItem>
-                          <SelectItem value="MUSTAHSIL">Müstahsil</SelectItem>
-                          <SelectItem value="KOMISYONCU">Komisyoncu</SelectItem>
+                          <SelectItem value="OZEL_FIRMA">ÖZEL FİRMA</SelectItem>
+                          <SelectItem value="MUSTAHSIL">MÜSTAHSİL</SelectItem>
+                          <SelectItem value="KOMISYONCU">KOMİSYONCU</SelectItem>
                         </SelectContent>
                       </Select>
                     </td>

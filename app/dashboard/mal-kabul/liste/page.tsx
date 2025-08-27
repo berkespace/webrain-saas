@@ -38,7 +38,7 @@ interface MalKabulRecord {
   netAdet: number
   status: string
   users: { firstName: string; lastName: string }
-  komisyoncu?: { dukkanAdi: string }
+  komisyoncu?: { dukkanAdi: string; komisyonKodu: string }
   uretici?: { ad: string; soyad: string }
   ozelFirma?: { firmaAdi: string }
   ambalaj?: { ad: string }
@@ -102,9 +102,16 @@ export default function MalKabulListePage() {
   }
 
   const getSaticiAdi = (record: MalKabulRecord) => {
-    if (record.komisyoncu) return record.komisyoncu.dukkanAdi
-    if (record.uretici) return `${record.uretici.ad} ${record.uretici.soyad}`
-    if (record.ozelFirma) return record.ozelFirma.firmaAdi
+    if (record.saticiTipi === 'KOMISYONCU' && record.komisyoncu && record.uretici) {
+      // Komisyoncu olarak giriş yapılan ürünlerde: "Komisyon No - Üretici Adı" formatında
+      return `${record.komisyoncu.dukkanAdi} - ${record.uretici.ad} ${record.uretici.soyad}`
+    } else if (record.komisyoncu) {
+      return record.komisyoncu.dukkanAdi
+    } else if (record.uretici) {
+      return `${record.uretici.ad} ${record.uretici.soyad}`
+    } else if (record.ozelFirma) {
+      return record.ozelFirma.firmaAdi
+    }
     return 'Bilinmiyor'
   }
 
@@ -413,7 +420,22 @@ export default function MalKabulListePage() {
                   
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4 text-gray-500" />
-                    <span>{getSaticiAdi(record)}</span>
+                    <div className="flex flex-col">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline" className="text-xs">
+                          {record.saticiTipi === 'KOMISYONCU' ? 'KOMİSYONCU' : 
+                           record.saticiTipi === 'MUSTAHSIL' ? 'MÜSTAHSİL' : 
+                           record.saticiTipi === 'OZEL_FIRMA' ? 'ÖZEL FİRMA' : 
+                           record.saticiTipi}
+                        </Badge>
+                        <span className="text-sm font-medium">{getSaticiAdi(record)}</span>
+                      </div>
+                      {record.saticiTipi === 'KOMISYONCU' && record.komisyoncu && (
+                        <div className="text-xs text-gray-500">
+                          Komisyon No: {record.komisyoncu.komisyonKodu || 'N/A'}
+                        </div>
+                      )}
+                    </div>
                   </div>
                   
                   <div className="flex items-center gap-2">
