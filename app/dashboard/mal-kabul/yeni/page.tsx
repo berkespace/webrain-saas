@@ -1156,14 +1156,20 @@ export default function YeniMalKabul() {
           paletId: null, // Şimdilik null
           ambalajId: null, // Şimdilik null
           paletSayisi: '0',
-                      kasaSayisi: formData.kasaSayisi || '0',
-          brutKg: formData.brutKg,
-          daraKg: formData.daraKg,
-          girisKg: formData.girisKg,
-          cikmaKg: formData.cikmaKg,
-          fireKg: formData.fireKg,
-          netKg: formData.netKg,
-
+          kasaSayisi: formData.kasaSayisi || '0',
+          adetSayisi: formData.adetSayisi || '0',
+          brutKg: isAdetBased ? '0' : (formData.brutKg || '0'),
+          daraKg: isAdetBased ? '0' : (formData.daraKg || '0'),
+          girisKg: isAdetBased ? '0' : (formData.girisKg || '0'),
+          cikmaKg: isAdetBased ? '0' : (formData.cikmaKg || '0'),
+          fireKg: isAdetBased ? '0' : (formData.fireKg || '0'),
+          netKg: isAdetBased ? '0' : (formData.netKg || '0'),
+          netAdet: isAdetBased ? (() => {
+            const girisAdet = parseInt(formData.adetSayisi) || 0
+            const cikmaAdet = parseInt(formData.cikmaKg) || 0
+            const fireAdet = parseInt(formData.fireKg) || 0
+            return (girisAdet - cikmaAdet - fireAdet).toString()
+          })() : '0',
           notlar: formData.notlar
         }),
       })
