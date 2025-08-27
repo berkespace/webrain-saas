@@ -47,7 +47,8 @@ export async function GET(
           select: {
             id: true,
             ad: true,
-            kategori: true
+            kategori: true,
+            birim: true
           }
         },
         ambalajlar: {
@@ -113,11 +114,15 @@ export async function PUT(
       ambalajId,
       paletSayisi,
       kasaSayisi,
+      adetSayisi,
       brutKg,
       daraKg,
       girisKg,
+      cikmaKg,
+      fireKg,
       cikmaFireKg,
       netKg,
+      netAdet,
       status,
       notlar
     } = body
@@ -157,11 +162,36 @@ export async function PUT(
       )
     }
 
-    if (!brutKg) {
+    // Ürün birimini kontrol et
+    const urun = await prisma.urunler.findUnique({
+      where: { id: urunId },
+      select: { birim: true }
+    })
+
+    if (!urun) {
       return NextResponse.json(
-        { error: "Brüt KG alanı zorunludur" },
+        { error: "Ürün bulunamadı" },
         { status: 400 }
       )
+    }
+
+    // Birime göre validasyon
+    if (urun.birim === 'ADET') {
+      // ADET birimi için validasyon
+      if (!adetSayisi || parseInt(adetSayisi) <= 0) {
+        return NextResponse.json(
+          { error: "Adet sayısı 0'dan büyük olmalıdır" },
+          { status: 400 }
+        )
+      }
+    } else {
+      // KG birimi için validasyon
+      if (!brutKg) {
+        return NextResponse.json(
+          { error: "Brüt KG alanı zorunludur" },
+          { status: 400 }
+        )
+      }
     }
 
     // Mal kabul kaydını güncelle
@@ -177,11 +207,15 @@ export async function PUT(
         ambalajId: ambalajId || null,
         paletSayisi: parseInt(paletSayisi) || 0,
         kasaSayisi: parseInt(kasaSayisi) || 0,
+        adetSayisi: parseInt(adetSayisi) || 0,
         brutKg: parseFloat(brutKg) || 0,
         daraKg: parseFloat(daraKg) || 0,
         girisKg: parseFloat(girisKg) || 0,
+        cikmaKg: parseFloat(cikmaKg) || 0,
+        fireKg: parseFloat(fireKg) || 0,
         cikmaFireKg: parseFloat(cikmaFireKg) || 0,
         netKg: parseFloat(netKg) || 0,
+        netAdet: parseInt(netAdet) || 0,
 
         status,
         notlar: notlar || null,
@@ -222,7 +256,8 @@ export async function PUT(
           select: {
             id: true,
             ad: true,
-            kategori: true
+            kategori: true,
+            birim: true
           }
         },
         ambalajlar: {
@@ -266,7 +301,7 @@ export async function DELETE(
     if (!session?.user?.email) {
       return NextResponse.json(
         { error: "Oturum açmanız gerekiyor" },
-        { status: 401 }
+        { status: 500 }
       )
     }
 

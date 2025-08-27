@@ -155,17 +155,7 @@ export default function MalKabulDashboard() {
     }
   }, [searchTerm, filterStatus, filterSaticiTipi])
 
-  // Debug: İlk kayıt verilerini kontrol et
-  useEffect(() => {
-    if (malKabulRecords.length > 0) {
-      const firstRecord = malKabulRecords[0]
-      console.log('🔍 İlk kayıt tüm alanları:', Object.keys(firstRecord))
-      console.log('🔍 İlk kayıt cikmaKg:', firstRecord.cikmaKg)
-      console.log('🔍 İlk kayıt fireKg:', firstRecord.fireKg)
-      console.log('🔍 İlk kayıt cikmaFireKg:', firstRecord.cikmaFireKg)
-      console.log('🔍 İlk kayıt tüm değerler:', firstRecord)
-    }
-  }, [malKabulRecords])
+
 
   const handleDelete = async (recordId: string) => {
     if (confirm('Bu mal kabul kaydını silmek istediğinizden emin misiniz?')) {

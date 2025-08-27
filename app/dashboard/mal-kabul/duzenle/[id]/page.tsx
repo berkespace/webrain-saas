@@ -17,7 +17,7 @@ interface MalKabulRecord {
   id: string
   fisNo: string
   tarih: string
-  saticiTipi: 'OZEL_FIRMA' | 'KOMISYONCU' | 'MUSTAHSIL'
+  saticiTipi: 'OZEL_FIRMA' | 'KOMISYONCU' | 'MUSTAHSIL' | 'URETICI'
   komisyoncuId?: string
   ureticiId?: string
   ozelFirmaId?: string
@@ -27,11 +27,15 @@ interface MalKabulRecord {
   ambalajId?: string
   paletSayisi: number
   kasaSayisi: number
+  adetSayisi: number
   brutKg: number
   daraKg: number
   girisKg: number
+  cikmaKg: number
+  fireKg: number
   cikmaFireKg: number
   netKg: number
+  netAdet: number
   status: 'FATURA_BEKLIYOR' | 'FATURALANDI' | 'NETLENDI' | 'TAMAMLANDI' | 'IPTAL'
   notlar?: string
   komisyoncu?: {
@@ -59,6 +63,7 @@ interface MalKabulRecord {
     id: string
     ad: string
     kategori: string
+    birim: string
   }
   ambalaj?: {
     id: string

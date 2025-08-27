@@ -234,7 +234,8 @@ export async function POST(request: NextRequest) {
           select: {
             id: true,
             dukkanAdi: true,
-            sehir: true
+            sehir: true,
+            komisyonNo: true
           }
         },
         ureticiler: {
@@ -263,7 +264,8 @@ export async function POST(request: NextRequest) {
           select: {
             id: true,
             ad: true,
-            kategori: true
+            kategori: true,
+            birim: true
           }
         },
         ambalajlar: {
