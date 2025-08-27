@@ -467,7 +467,14 @@ export default function MalKabulListePage() {
                 </div>
                 
                 {/* Ürün birimine göre detay bilgileri */}
-                {record.urunler.birim?.toLowerCase() === 'adet' ? (
+                {(() => {
+                  const isAdetBased = record.urunler.birim?.toLowerCase() === 'adet'
+                  console.log(`🔍 ${record.urunler.ad} için birim kontrolü:`, {
+                    birim: record.urunler.birim,
+                    isAdetBased: isAdetBased
+                  })
+                  return isAdetBased
+                })() ? (
                   <div className="mt-3 p-3 bg-blue-50 rounded-lg">
                     <div className="text-sm font-medium text-blue-700 mb-2">Adet Bilgileri:</div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
