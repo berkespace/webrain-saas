@@ -1675,10 +1675,11 @@ export default function YeniMalKabul() {
               </div>
               
               <div style="text-align: center; margin: 15px 0; padding: 10px; background: #ffeb3b; border: 2px solid #f57f17; border-radius: 5px;">
-                <div style="font-size: 14px; font-weight: bold; color: #8d2f10; line-height: 1.4;">
+                
+              <div class="section-title" style="font-size: 14px; font-weight: bold; color: #8d2f10; line-height: 1.4;">
                   ⚠️ ÖNEMLİ UYARI ⚠️
                 </div>
-                <div style="font-size: 13px; font-weight: bold; color: #5d1f0a; margin-top: 5px;">
+                <div class="section-title" style="font-size: 13px; font-weight: bold; color: #5d1f0a; margin-top: 5px;">
                   Bu fişi tekrar geldiğinizde getirmeniz kolaylık sağlayacaktır!
                 </div>
               </div>

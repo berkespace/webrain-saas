@@ -33,11 +33,15 @@ interface MalKabulRecord {
   mustahsilId?: string
   urunId: string
   kasaSayisi: number
+  adetSayisi: number
   brutKg: number
   daraKg: number
   girisKg: number
+  cikmaKg: number
+  fireKg: number
   cikmaFireKg?: number
   netKg?: number
+  netAdet?: number
   status: 'FATURA_BEKLIYOR' | 'FATURALANDI' | 'NETLENDI' | 'TAMAMLANDI' | 'IPTAL'
   notlar?: string
   komisyoncu?: {
@@ -65,6 +69,7 @@ interface MalKabulRecord {
     id: string
     ad: string
     kategori: string
+    birim: string
   }
   ambalaj?: {
     id: string
@@ -294,11 +299,16 @@ export default function MalKabulFisArsivi() {
         saticiTipi: record.saticiTipi,
         saticiAdi: getSaticiAdi(record),
         urunAdi: record.urunler.ad,
+        birim: record.urunler.birim,
         brutKg: record.brutKg,
         daraKg: record.daraKg,
         girisKg: record.girisKg,
+        cikmaKg: record.cikmaKg || 0,
+        fireKg: record.fireKg || 0,
         cikmaFireKg: record.cikmaFireKg || 0,
         netKg: record.netKg || 0,
+        adetSayisi: record.adetSayisi || 0,
+        netAdet: record.netAdet || 0,
         ambalajAdi: record.ambalaj?.ad,
         kasaSayisi: record.kasaSayisi,
         paletAdi: record.palet?.ad,
@@ -503,7 +513,35 @@ export default function MalKabulFisArsivi() {
               </div>
               
               <div class="section">
-                <div class="section-title">AĞIRLIK BİLGİLERİ</div>
+                <div class="section-title">${receiptData.birim?.toLowerCase() === 'adet' ? 'ADET BİLGİLERİ' : 'AĞIRLIK BİLGİLERİ'}</div>
+                ${receiptData.birim?.toLowerCase() === 'adet' ? `
+                <div class="row">
+                  <span class="label">Kasa Sayısı:</span>
+                  <span class="value">${receiptData.kasaSayisi} kasa</span>
+                </div>
+                <div class="row">
+                  <span class="label">Adet Sayısı:</span>
+                  <span class="value">${receiptData.adetSayisi} adet</span>
+                </div>
+                <div class="row">
+                  <span class="label">Giriş Adet:</span>
+                  <span class="value">${receiptData.adetSayisi} adet</span>
+                </div>
+                ${type === 'SON_FIS' ? `
+                <div class="row">
+                  <span class="label">Çıkma Adet:</span>
+                  <span class="value">${receiptData.cikmaKg} adet</span>
+                </div>
+                <div class="row">
+                  <span class="label">Fire Adet:</span>
+                  <span class="value">${receiptData.fireKg} adet</span>
+                </div>
+                <div class="row">
+                  <span class="label">Net Adet:</span>
+                  <span class="value">${receiptData.netAdet} adet</span>
+                </div>
+                ` : ''}
+                ` : `
                 <div class="row">
                   <span class="label">Brüt KG:</span>
                   <span class="value">${receiptData.brutKg.toFixed(2)} kg</span>
@@ -526,6 +564,7 @@ export default function MalKabulFisArsivi() {
                   <span class="value">${receiptData.netKg.toFixed(2)} kg</span>
                 </div>
                 ` : ''}
+                `}
               </div>
               
               ${receiptData.notlar ? `
