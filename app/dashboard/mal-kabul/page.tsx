@@ -79,6 +79,7 @@ interface MalKabulRecord {
   daraKg: number
   girisKg: number
   cikmaKg: number
+  fireKg: number
   cikmaFireKg: number
   netKg: number
   netAdet: number
@@ -522,7 +523,8 @@ export default function MalKabulDashboard() {
                       <th className="text-left py-3 px-2 font-medium">BRÜT KG/ADET</th>
                       <th className="text-left py-3 px-2 font-medium">DARA KG/KASA</th>
                       <th className="text-left py-3 px-2 font-medium">GİRİŞ KG/ADET</th>
-                      <th className="text-left py-3 px-2 font-medium">ÇIKMA/FİRE</th>
+                      <th className="text-left py-3 px-2 font-medium">ÇIKMA KG/ADET</th>
+                      <th className="text-left py-3 px-2 font-medium">FİRE KG/ADET</th>
                       <th className="text-left py-3 px-2 font-medium">DURUM</th>
                       <th className="text-left py-3 px-2 font-medium">NET KG/ADET</th>
 
@@ -533,7 +535,7 @@ export default function MalKabulDashboard() {
                   <tbody>
                     {filteredData.length === 0 ? (
                       <tr>
-                        <td colSpan={14} className="py-8 text-center text-muted-foreground">Kayıt bulunamadı.</td>
+                        <td colSpan={15} className="py-8 text-center text-muted-foreground">Kayıt bulunamadı.</td>
                       </tr>
                     ) : (
                       filteredData.map((item) => (
@@ -584,7 +586,13 @@ export default function MalKabulDashboard() {
                           <td className="py-3 px-2 text-right">
                             {item.urunler.birim?.toLowerCase() === 'adet' 
                               ? (item.cikmaKg || 0).toLocaleString() + ' adet'
-                              : (item.cikmaFireKg || 0).toLocaleString() + ' kg'
+                              : (item.cikmaKg || 0).toLocaleString() + ' kg'
+                            }
+                          </td>
+                          <td className="py-3 px-2 text-right">
+                            {item.urunler.birim?.toLowerCase() === 'adet' 
+                              ? (item.fireKg || 0).toLocaleString() + ' adet'
+                              : (item.fireKg || 0).toLocaleString() + ' kg'
                             }
                           </td>
                           <td className="py-3 px-2">
