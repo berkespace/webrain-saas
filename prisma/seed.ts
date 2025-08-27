@@ -7,10 +7,11 @@ async function main() {
   // Admin kullanıcısı oluştur
   const hashedPassword = await bcrypt.hash('admin123', 12)
   
-  const adminUser = await prisma.user.upsert({
+  const adminUser = await prisma.users.upsert({
     where: { email: 'admin@webrain.com' },
     update: {},
     create: {
+      id: 'admin-user-001',
       firstName: 'Admin',
       lastName: 'User',
       email: 'admin@webrain.com',
@@ -24,6 +25,7 @@ async function main() {
   // Test kullanıcıları oluştur
   const testUsers = [
     {
+      id: 'mal-kabulcu-001',
       firstName: 'Mal',
       lastName: 'Kabulcü',
       email: 'mal@webrain.com',
@@ -31,6 +33,7 @@ async function main() {
       role: 'MAL_KABULCU' as const,
     },
     {
+      id: 'muhasebe-001',
       firstName: 'Muhasebe',
       lastName: 'Kullanıcı',
       email: 'muhasebe@webrain.com',
@@ -38,6 +41,7 @@ async function main() {
       role: 'MUHASEBE' as const,
     },
     {
+      id: 'satin-alma-001',
       firstName: 'Satın',
       lastName: 'Almacı',
       email: 'satin@webrain.com',
@@ -49,10 +53,11 @@ async function main() {
   for (const userData of testUsers) {
     const hashedPassword = await bcrypt.hash(userData.password, 12)
     
-    await prisma.user.upsert({
+    await prisma.users.upsert({
       where: { email: userData.email },
       update: {},
       create: {
+        id: userData.id,
         firstName: userData.firstName,
         lastName: userData.lastName,
         email: userData.email,

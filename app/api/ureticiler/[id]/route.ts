@@ -9,7 +9,7 @@ export async function GET(
   try {
     const { id } = await params
 
-    const uretici = await prisma.uretici.findUnique({
+    const uretici = await prisma.ureticiler.findUnique({
       where: { id },
       include: {
         komisyoncu: {
@@ -63,7 +63,7 @@ export async function PUT(
     const { ad, soyad, tcNo, dogumTarihi, iletisim, sehir, cinsiyet, durum, komisyoncuId } = body
 
     // Üreticinin var olup olmadığını kontrol et
-    const existingUretici = await prisma.uretici.findUnique({
+    const existingUretici = await prisma.ureticiler.findUnique({
       where: { id }
     })
 
@@ -84,7 +84,7 @@ export async function PUT(
 
     // T.C. No kontrolü (eğer girilmişse ve değişmişse)
     if (tcNo && tcNo !== existingUretici.tcNo) {
-      const duplicateUretici = await prisma.uretici.findFirst({
+      const duplicateUretici = await prisma.ureticiler.findFirst({
         where: { 
           tcNo,
           id: { not: id }
@@ -100,7 +100,7 @@ export async function PUT(
 
     // Komisyoncu kontrolü (eğer seçilmişse)
     if (komisyoncuId) {
-      const komisyoncu = await prisma.komisyoncu.findUnique({
+      const komisyoncu = await prisma.komisyoncular.findUnique({
         where: { id: komisyoncuId }
       })
       if (!komisyoncu) {
@@ -111,7 +111,7 @@ export async function PUT(
       }
     }
 
-    const updatedUretici = await prisma.uretici.update({
+    const updatedUretici = await prisma.ureticiler.update({
       where: { id },
       data: {
         ad,
@@ -156,7 +156,7 @@ export async function DELETE(
     const { id } = await params
 
     // Üreticinin var olup olmadığını kontrol et
-    const existingUretici = await prisma.uretici.findUnique({
+    const existingUretici = await prisma.ureticiler.findUnique({
       where: { id },
       include: {
         malKabulRecords: {
@@ -180,7 +180,7 @@ export async function DELETE(
       )
     }
 
-    await prisma.uretici.delete({
+    await prisma.ureticiler.delete({
       where: { id }
     })
 

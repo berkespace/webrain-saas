@@ -2724,16 +2724,16 @@ export default function YeniMalKabul() {
 
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
+                    <div className="space-y-2">
                         <Label htmlFor="cikmaKg">Çıkma KG</Label>
-                        <Input
+                      <Input
                           id="cikmaKg"
-                          type="number"
-                          step="0.01"
+                        type="number"
+                        step="0.01"
                           value={formData.cikmaKg}
                           onChange={(e) => setFormData({...formData, cikmaKg: e.target.value})}
-                          placeholder="0.00"
-                        />
+                        placeholder="0.00"
+                      />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="fireKg">Fire KG</Label>

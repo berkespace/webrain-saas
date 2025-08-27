@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
 
 
 
-    const uretici = await prisma.uretici.create({
+    const uretici = await prisma.ureticiler.create({
       data: {
         ad,
         soyad,

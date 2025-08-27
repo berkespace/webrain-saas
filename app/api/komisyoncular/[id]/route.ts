@@ -81,7 +81,7 @@ export async function DELETE(
   try {
     const { id } = await params
     // Komisyoncuya bağlı üreticileri kontrol et
-    const ureticiCount = await prisma.uretici.count({
+    const ureticiCount = await prisma.ureticiler.count({
       where: { komisyoncuId: id }
     })
 
