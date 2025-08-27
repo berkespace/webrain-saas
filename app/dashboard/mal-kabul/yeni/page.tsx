@@ -1184,13 +1184,26 @@ export default function YeniMalKabul() {
           saticiTipi: result.malKabulRecord.saticiTipi, // Use the actual record saticiTipi
           saticiAdi: getSaticiAdi(result.malKabulRecord),
           urunAdi: urunler.find(u => u.id === formData.urunId)?.ad || '',
-          brutKg: parseFloat(formData.brutKg) || 0,
-          daraKg: parseFloat(formData.daraKg) || 0,
-          girisKg: parseFloat(formData.girisKg) || 0,
+          // Birime göre veri hazırlama
+          isAdetBased: isAdetBased,
+          // KG alanları
+          brutKg: isAdetBased ? 0 : (parseFloat(formData.brutKg) || 0),
+          daraKg: isAdetBased ? 0 : (parseFloat(formData.daraKg) || 0),
+          girisKg: isAdetBased ? 0 : (parseFloat(formData.girisKg) || 0),
           cikmaKg: parseFloat(formData.cikmaKg) || 0,
           fireKg: parseFloat(formData.fireKg) || 0,
-          ambalajAdi: 'Kasa', // Sabit ambalaj adı
+          netKg: isAdetBased ? 0 : (parseFloat(formData.netKg) || 0),
+          // Adet alanları
           kasaSayisi: parseInt(formData.kasaSayisi) || 0,
+          adetSayisi: parseInt(formData.adetSayisi) || 0,
+          netAdet: isAdetBased ? (() => {
+            const girisAdet = parseInt(formData.adetSayisi) || 0
+            const cikmaAdet = parseInt(formData.cikmaKg) || 0
+            const fireAdet = parseInt(formData.fireKg) || 0
+            return girisAdet - cikmaAdet - fireAdet
+          })() : 0,
+          // Diğer alanlar
+          ambalajAdi: 'Kasa', // Sabit ambalaj adı
           paletAdi: ambalajlar.find(a => a.id === formData.paletId)?.ad,
           paletSayisi: parseInt(formData.paletSayisi) || 0,
           notlar: formData.notlar,
@@ -3025,18 +3038,60 @@ export default function YeniMalKabul() {
                   <span className="font-medium text-foreground"><strong>Ürün:</strong></span>
                   <span className="text-foreground">{receiptData.urunAdi}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="font-medium text-foreground"><strong>Brüt KG:</strong></span>
-                  <span className="text-foreground">{receiptData.brutKg} kg</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium text-foreground"><strong>Net KG:</strong></span>
-                  <span className="text-foreground">{receiptData.girisKg} kg</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-medium text-foreground"><strong>Kasa Sayısı:</strong></span>
-                  <span className="text-foreground">{receiptData.kasaSayisi} adet</span>
-                </div>
+                
+                {receiptData.isAdetBased ? (
+                  // ADET birimi için adet bilgileri
+                  <>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Kasa Sayısı:</strong></span>
+                      <span className="text-foreground">{receiptData.kasaSayisi} adet</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Adet Sayısı:</strong></span>
+                      <span className="text-foreground">{receiptData.adetSayisi} adet</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Çıkma Adet:</strong></span>
+                      <span className="text-foreground">{receiptData.cikmaKg || 0} adet</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Fire Adet:</strong></span>
+                      <span className="text-foreground">{receiptData.fireKg || 0} adet</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Net Adet:</strong></span>
+                      <span className="text-foreground">{receiptData.netAdet || 0} adet</span>
+                    </div>
+                  </>
+                ) : (
+                  // KG birimi için ağırlık bilgileri
+                  <>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Brüt KG:</strong></span>
+                      <span className="text-foreground">{receiptData.brutKg} kg</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Giriş KG:</strong></span>
+                      <span className="text-foreground">{receiptData.girisKg} kg</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Çıkma KG:</strong></span>
+                      <span className="text-foreground">{receiptData.cikmaKg || 0} kg</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Fire KG:</strong></span>
+                      <span className="text-foreground">{receiptData.fireKg || 0} kg</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Net KG:</strong></span>
+                      <span className="text-foreground">{receiptData.netKg || 0} kg</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Kasa Sayısı:</strong></span>
+                      <span className="text-foreground">{receiptData.kasaSayisi} adet</span>
+                    </div>
+                  </>
+                )}
                 {receiptData.paletAdi && (
                   <div className="flex justify-between">
                     <span className="font-medium text-foreground"><strong>Palet:</strong></span>
