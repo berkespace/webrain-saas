@@ -707,6 +707,10 @@ export default function YeniMalKabul() {
 
   // Ürün seçimi
   const handleUrunSelect = (urun: any) => {
+    console.log('🔍 handleUrunSelect çağrıldı:', urun)
+    console.log('🔍 Ürün birimi:', urun.birim)
+    console.log('🔍 Birim tipi:', typeof urun.birim)
+    
     setFormData(prev => ({
       ...prev,
       urunKodu: urun.kod,
@@ -715,7 +719,11 @@ export default function YeniMalKabul() {
     
     // Ürün birimini kontrol et ve form alanlarını ayarla
     setSelectedUrun(urun)
-    if (urun.birim?.toLowerCase() === 'adet') {
+    const birimKontrol = urun.birim?.toLowerCase() === 'adet'
+    console.log('🔍 Birim kontrol sonucu:', birimKontrol)
+    
+    if (birimKontrol) {
+      console.log('✅ ADET birimi tespit edildi, isAdetBased = true yapılıyor')
       setIsAdetBased(true)
       // ADET birimi için KG alanlarını temizle
       setFormData(prev => ({
@@ -730,6 +738,7 @@ export default function YeniMalKabul() {
         netKg: ''
       }))
     } else {
+      console.log('❌ KG birimi tespit edildi, isAdetBased = false yapılıyor')
       setIsAdetBased(false)
       // KG birimi için adet alanlarını temizle
       setFormData(prev => ({
