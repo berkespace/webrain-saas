@@ -128,9 +128,7 @@ export default function YeniMalKabul() {
   
   // Yeni: Hızlı kod sistemi için state'ler
   const [cariSuggestions, setCariSuggestions] = useState<any[]>([])
-  const [urunSuggestions, setUrunSuggestions] = useState<any[]>([])
   const [showCariSuggestions, setShowCariSuggestions] = useState(false)
-  const [showUrunSuggestions, setShowUrunSuggestions] = useState(false)
 
   // Template sistemi için state'ler
   const [templates, setTemplates] = useState<any[]>([])
@@ -510,9 +508,7 @@ export default function YeniMalKabul() {
         urunId: item.id
       }))
       
-      // Ürün seçildiğinde önerileri gizle
-      setShowUrunSuggestions(false)
-      setUrunSuggestions([])
+
       
       toast({
         title: "Ürün Seçildi",
@@ -683,33 +679,7 @@ export default function YeniMalKabul() {
     })
   }
 
-  // Hızlı ürün kodu sistemi
-  const handleUrunKoduChange = (value: string) => {
-    setFormData(prev => ({ ...prev, urunKodu: value }))
-    
-    if (value.length >= 2) {
-      const suggestions: any[] = urunler.map(urun => {
-        // Ürün stok kodunu kullan, yoksa URN ile başlayan kod oluştur
-        const urunKodu = urun.stokKodu || `URN${urun.id.slice(-3)}`
-        
-        return {
-          id: urun.id,
-          kod: urunKodu,
-          ad: urun.ad,
-          data: urun
-        }
-      }).filter(urun => 
-        urun.kod.toLowerCase().includes(value.toLowerCase()) ||
-        urun.ad.toLowerCase().includes(value.toLowerCase())
-      )
-      
-      setUrunSuggestions(suggestions)
-      setShowUrunSuggestions(suggestions.length > 0)
-    } else {
-      setShowUrunSuggestions(false)
-      setUrunSuggestions([])
-    }
-  }
+
 
   // Ürün seçimi
   const handleUrunSelect = (urun: any) => {
@@ -756,8 +726,7 @@ export default function YeniMalKabul() {
       }))
     }
     
-    setShowUrunSuggestions(false)
-    setUrunSuggestions([])
+
     
     toast({
       title: "Ürün Seçildi",
@@ -2758,35 +2727,7 @@ export default function YeniMalKabul() {
                   <CardDescription>Ürün, ambalaj ve miktar bilgileri</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="urunKodu">Ürün Kodu *</Label>
-                    <div className="relative">
-                      <Input
-                        id="urunKodu"
-                        placeholder="URN001, URN002... veya ürün adı yazın"
-                        value={formData.urunKodu}
-                        onChange={(e) => handleUrunKoduChange(e.target.value)}
-                        className="pr-10"
-                      />
-                      {showUrunSuggestions && (
-                        <div className="absolute z-50 w-full mt-1 bg-background border border-border rounded-md shadow-lg max-h-60 overflow-auto">
-                          {urunSuggestions.map((urun: any) => (
-                            <div
-                              key={urun.id}
-                              className="px-3 py-2 hover:bg-muted cursor-pointer border-b border-border last:border-b-0"
-                              onClick={() => handleUrunSelect(urun)}
-                            >
-                              <div className="font-medium">{urun.kod}</div>
-                              <div className="text-sm text-muted-foreground">{urun.ad}</div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      URN001, URN002... veya ürün adı yazarak arama yapabilirsiniz
-                    </div>
-                  </div>
+
 
                   {/* Ürün Dropdown Seçimi - HeroUI Autocomplete */}
                   <div className="space-y-2">
