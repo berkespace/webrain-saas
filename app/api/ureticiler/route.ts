@@ -83,6 +83,7 @@ export async function POST(request: NextRequest) {
 
     const uretici = await prisma.ureticiler.create({
       data: {
+        id: `uretici-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         ad,
         soyad,
         tcNo: tcNo || null,
