@@ -573,7 +573,7 @@ export default function MalKabulDashboard() {
                           </td>
                           <td className="py-3 px-2 text-right">
                             {item.urunler.birim?.toLowerCase() === 'adet' 
-                              ? (item.kasaSayisi || 0).toLocaleString() + ' kasa'
+                              ? '0'
                               : (item.daraKg || 0).toLocaleString() + ' kg'
                             }
                           </td>
