@@ -12,14 +12,14 @@ export async function GET(
     const uretici = await prisma.ureticiler.findUnique({
       where: { id },
       include: {
-        komisyoncu: {
+        komisyoncular: {
           select: {
             id: true,
             dukkanAdi: true,
             sehir: true
           }
         },
-        malKabulRecords: {
+        mal_kabul_records: {
           select: {
             id: true,
             fisNo: true,
@@ -124,15 +124,15 @@ export async function PUT(
         durum: durum || 'AKTIF',
         komisyoncuId: komisyoncuId || null
       },
-      include: {
-        komisyoncu: {
-          select: {
-            id: true,
-            dukkanAdi: true,
-            sehir: true
+              include: {
+          komisyoncular: {
+            select: {
+              id: true,
+              dukkanAdi: true,
+              sehir: true
+            }
           }
         }
-      }
     })
 
     return NextResponse.json(
@@ -159,7 +159,7 @@ export async function DELETE(
     const existingUretici = await prisma.ureticiler.findUnique({
       where: { id },
       include: {
-        malKabulRecords: {
+        mal_kabul_records: {
           select: { id: true }
         }
       }
@@ -173,7 +173,7 @@ export async function DELETE(
     }
 
     // Üreticinin mal kabul kayıtları varsa silmeyi engelle
-    if (existingUretici.malKabulRecords.length > 0) {
+    if (existingUretici.mal_kabul_records.length > 0) {
       return NextResponse.json(
         { error: "Bu üreticinin mal kabul kayıtları bulunduğu için silinemez" },
         { status: 400 }
