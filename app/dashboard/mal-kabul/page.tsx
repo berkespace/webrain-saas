@@ -193,22 +193,15 @@ export default function MalKabulDashboard() {
   }
 
   const getSaticiAdi = (record: MalKabulRecord) => {
-    // Debug log ekleyelim
-    console.log('🔍 getSaticiAdi çağrıldı:', record.saticiTipi)
-    console.log('🔍 Komisyoncu verisi:', record.komisyoncular)
-    console.log('🔍 Üretici verisi:', record.ureticiler)
-    
     switch (record.saticiTipi) {
       case 'OZEL_FIRMA':
         return record.ozel_firmalar?.firmaAdi || 'Bilinmiyor'
       case 'KOMISYONCU':
         if (record.komisyoncular && record.ureticiler) {
           // Komisyoncu olarak giriş yapılan ürünlerde: "Komisyon No - Üretici Adı" formatında
-          console.log('🔍 Komisyoncu + Üretici:', record.komisyoncular.komisyonNo, record.ureticiler.ad, record.ureticiler.soyad)
           return `${record.komisyoncular.komisyonNo} - ${record.ureticiler.ad} ${record.ureticiler.soyad}`
         } else if (record.komisyoncular) {
           // Sadece komisyoncu varsa
-          console.log('🔍 Sadece Komisyoncu:', record.komisyoncular.komisyonNo)
           return `${record.komisyoncular.komisyonNo} (Üretici Seçilmedi)`
         }
         return 'Bilinmiyor'
