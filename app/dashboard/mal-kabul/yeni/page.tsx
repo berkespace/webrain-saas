@@ -2736,6 +2736,12 @@ export default function YeniMalKabul() {
                         }
                       }}
                       onInputChange={(value) => setUrunSearchTerm(value)}
+                      classNames={{
+                        base: "w-full",
+                        listbox: "bg-background border border-border rounded-md shadow-lg max-h-60",
+                        listboxWrapper: "max-h-60",
+                        popoverContent: "bg-background border border-border rounded-md shadow-lg"
+                      }}
                     >
                       {(urun) => (
                         <AutocompleteItem key={urun.id} textValue={urun.ad}>
