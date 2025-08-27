@@ -666,7 +666,11 @@ export default function YeniMalKabul() {
       cariKodu: cari.kod,
       cariId: cari.id,
       cariTipi: cari.tip,
-      saticiTipi: cari.tip // saticiTipi'ni de set et
+      saticiTipi: cari.tip, // saticiTipi'ni de set et
+      // Cari tipine göre ilgili ID'yi set et
+      komisyoncuId: cari.tip === 'KOMISYONCU' ? cari.id : '',
+      mustahsilId: cari.tip === 'MUSTAHSIL' ? cari.id : '',
+      ozelFirmaId: cari.tip === 'OZEL_FIRMA' ? cari.id : ''
     }))
     setShowCariSuggestions(false)
     setCariSuggestions([])
@@ -1149,10 +1153,10 @@ export default function YeniMalKabul() {
         },
         body: JSON.stringify({
           saticiTipi: formData.saticiTipi,
-          komisyoncuId: formData.saticiTipi === 'KOMISYONCU' ? formData.cariId : null,
+          komisyoncuId: formData.saticiTipi === 'KOMISYONCU' ? formData.komisyoncuId : null,
           ureticiId: formData.saticiTipi === 'KOMISYONCU' ? formData.ureticiId : null,
-          mustahsilId: formData.saticiTipi === 'MUSTAHSIL' ? formData.cariId : null,
-          ozelFirmaId: formData.saticiTipi === 'OZEL_FIRMA' ? formData.cariId : null,
+          mustahsilId: formData.saticiTipi === 'MUSTAHSIL' ? formData.mustahsilId : null,
+          ozelFirmaId: formData.saticiTipi === 'OZEL_FIRMA' ? formData.ozelFirmaId : null,
           urunId: formData.urunId,
           paletId: null, // Şimdilik null
           ambalajId: null, // Şimdilik null
