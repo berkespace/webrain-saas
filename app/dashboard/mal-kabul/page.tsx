@@ -516,7 +516,7 @@ export default function MalKabulDashboard() {
                       <th className="py-3 px-2"><input type="checkbox" checked={selectedIds.size === filteredData.length && filteredData.length > 0} onChange={toggleSelectAll} /></th>
                       <th className="text-left py-3 px-2 font-medium">TARİH</th>
                       <th className="text-left py-3 px-2 font-medium">SATICI</th>
-                      <th className="text-left py-3 px-2 font-medium">ÜNVAN</th>
+                      <th className="text-left py-3 px-2 font-medium">SATICI BİLGİSİ</th>
                       <th className="text-left py-3 px-2 font-medium">ÜRÜN</th>
                       <th className="text-left py-3 px-2 font-medium">KASA SAYISI</th>
                       <th className="text-left py-3 px-2 font-medium">BRÜT KG/ADET</th>
