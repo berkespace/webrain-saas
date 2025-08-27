@@ -2177,6 +2177,8 @@ export default function YeniMalKabul() {
       ozelFirmaId: record.ozelFirmaId || '',
       urunId: record.urunId || '',
       kasaSayisi: record.kasaSayisi || '',
+      adetSayisi: record.adetSayisi || '',
+      netAdet: record.netAdet || '',
       notlar: record.notlar || ''
     })
     
@@ -2292,12 +2294,14 @@ export default function YeniMalKabul() {
       ambalajId: '',
       paletSayisi: '',
       kasaSayisi: '',
+      adetSayisi: '',
       brutKg: '',
       daraKg: '',
       girisKg: '',
       cikmaKg: '',
       fireKg: '',
       netKg: '',
+      netAdet: '',
       notlar: '',
       saticiTipi: '',
       komisyoncuId: '',
