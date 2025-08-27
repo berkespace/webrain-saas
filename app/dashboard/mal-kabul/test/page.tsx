@@ -235,6 +235,13 @@ export default function MalKabulTest() {
             console.log('🔍 İlk kayıt cikmaFireKg:', record.cikmaFireKg)
             console.log('🔍 İlk kayıt fireKg:', record.fireKg)
             console.log('🔍 İlk kayıt tüm değerler:', record)
+            
+            // Tüm alanları tek tek kontrol et
+            Object.entries(record).forEach(([key, value]) => {
+              if (key.toLowerCase().includes('cikma') || key.toLowerCase().includes('kg') || key.toLowerCase().includes('fire')) {
+                console.log(`🔍 Alan: ${key} = ${value}`)
+              }
+            })
           }
           
           return {
@@ -253,7 +260,7 @@ export default function MalKabulTest() {
             daraKg: record.daraKg?.toString() || '',
             girisKg: record.girisKg?.toString() || '',
             fireKg: record.cikmaFireKg?.toString() || '',
-            cikmaKg: record.cikmaFireKg?.toString() || '0',
+            cikmaKg: record.cikmaFireKg?.toString() || '0', // cikmaFireKg = Çıkma KG (kullanıcı tarafından belirlenen)
             netKg: record.netKg?.toString() || '',
             notlar: record.notlar || '',
             urunDurumu: record.status === 'TAMAMLANDI' ? 'NETLENDI' : 'BEKLEMEDE', // Default Beklemede
