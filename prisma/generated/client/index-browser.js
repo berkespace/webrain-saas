@@ -184,6 +184,8 @@ exports.Prisma.Mal_kabul_recordsScalarFieldEnum = {
   brutKg: 'brutKg',
   daraKg: 'daraKg',
   girisKg: 'girisKg',
+  cikmaKg: 'cikmaKg',
+  fireKg: 'fireKg',
   cikmaFireKg: 'cikmaFireKg',
   netKg: 'netKg'
 };

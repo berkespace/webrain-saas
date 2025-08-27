@@ -266,8 +266,8 @@ export default function MalKabulTest() {
             brutKg: record.brutKg?.toString() || '',
             daraKg: record.daraKg?.toString() || '',
             girisKg: record.girisKg?.toString() || '',
-            fireKg: record.fireKg?.toString() || '', // fireKg alanını kullan
-            cikmaKg: record.cikmaKg?.toString() || '0', // cikmaKg alanını kullan
+            fireKg: record.fireKg?.toString() || '', // fireKg = Ekstradan kesilen fire miktarı
+            cikmaKg: record.cikmaKg?.toString() || '0', // cikmaKg = Ana çıkma miktarı
             netKg: record.netKg?.toString() || '',
             notlar: record.notlar || '',
             urunDurumu: record.status === 'TAMAMLANDI' ? 'NETLENDI' : 'BEKLEMEDE', // Default Beklemede

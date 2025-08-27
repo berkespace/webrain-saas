@@ -5602,6 +5602,8 @@ export namespace Prisma {
     brutKg: number | null
     daraKg: number | null
     girisKg: number | null
+    cikmaKg: number | null
+    fireKg: number | null
     cikmaFireKg: number | null
     netKg: number | null
   }
@@ -5615,6 +5617,8 @@ export namespace Prisma {
     brutKg: number | null
     daraKg: number | null
     girisKg: number | null
+    cikmaKg: number | null
+    fireKg: number | null
     cikmaFireKg: number | null
     netKg: number | null
   }
@@ -5644,6 +5648,8 @@ export namespace Prisma {
     brutKg: number | null
     daraKg: number | null
     girisKg: number | null
+    cikmaKg: number | null
+    fireKg: number | null
     cikmaFireKg: number | null
     netKg: number | null
   }
@@ -5673,6 +5679,8 @@ export namespace Prisma {
     brutKg: number | null
     daraKg: number | null
     girisKg: number | null
+    cikmaKg: number | null
+    fireKg: number | null
     cikmaFireKg: number | null
     netKg: number | null
   }
@@ -5702,6 +5710,8 @@ export namespace Prisma {
     brutKg: number
     daraKg: number
     girisKg: number
+    cikmaKg: number
+    fireKg: number
     cikmaFireKg: number
     netKg: number
     _all: number
@@ -5717,6 +5727,8 @@ export namespace Prisma {
     brutKg?: true
     daraKg?: true
     girisKg?: true
+    cikmaKg?: true
+    fireKg?: true
     cikmaFireKg?: true
     netKg?: true
   }
@@ -5730,6 +5742,8 @@ export namespace Prisma {
     brutKg?: true
     daraKg?: true
     girisKg?: true
+    cikmaKg?: true
+    fireKg?: true
     cikmaFireKg?: true
     netKg?: true
   }
@@ -5759,6 +5773,8 @@ export namespace Prisma {
     brutKg?: true
     daraKg?: true
     girisKg?: true
+    cikmaKg?: true
+    fireKg?: true
     cikmaFireKg?: true
     netKg?: true
   }
@@ -5788,6 +5804,8 @@ export namespace Prisma {
     brutKg?: true
     daraKg?: true
     girisKg?: true
+    cikmaKg?: true
+    fireKg?: true
     cikmaFireKg?: true
     netKg?: true
   }
@@ -5817,6 +5835,8 @@ export namespace Prisma {
     brutKg?: true
     daraKg?: true
     girisKg?: true
+    cikmaKg?: true
+    fireKg?: true
     cikmaFireKg?: true
     netKg?: true
     _all?: true
@@ -5933,6 +5953,8 @@ export namespace Prisma {
     brutKg: number | null
     daraKg: number | null
     girisKg: number | null
+    cikmaKg: number | null
+    fireKg: number | null
     cikmaFireKg: number | null
     netKg: number | null
     _count: Mal_kabul_recordsCountAggregateOutputType | null
@@ -5981,6 +6003,8 @@ export namespace Prisma {
     brutKg?: boolean
     daraKg?: boolean
     girisKg?: boolean
+    cikmaKg?: boolean
+    fireKg?: boolean
     cikmaFireKg?: boolean
     netKg?: boolean
     users?: boolean | usersDefaultArgs<ExtArgs>
@@ -6018,6 +6042,8 @@ export namespace Prisma {
     brutKg?: boolean
     daraKg?: boolean
     girisKg?: boolean
+    cikmaKg?: boolean
+    fireKg?: boolean
     cikmaFireKg?: boolean
     netKg?: boolean
     users?: boolean | usersDefaultArgs<ExtArgs>
@@ -6055,6 +6081,8 @@ export namespace Prisma {
     brutKg?: boolean
     daraKg?: boolean
     girisKg?: boolean
+    cikmaKg?: boolean
+    fireKg?: boolean
     cikmaFireKg?: boolean
     netKg?: boolean
     users?: boolean | usersDefaultArgs<ExtArgs>
@@ -6092,11 +6120,13 @@ export namespace Prisma {
     brutKg?: boolean
     daraKg?: boolean
     girisKg?: boolean
+    cikmaKg?: boolean
+    fireKg?: boolean
     cikmaFireKg?: boolean
     netKg?: boolean
   }
 
-  export type mal_kabul_recordsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tarih" | "miktar" | "birimFiyat" | "toplamFiyat" | "status" | "notlar" | "malKabulcuId" | "komisyoncuId" | "ureticiId" | "urunId" | "faturaId" | "createdAt" | "updatedAt" | "fisNo" | "mustahsilId" | "ozelFirmaId" | "saticiTipi" | "ambalajId" | "paletSayisi" | "kasaSayisi" | "brutKg" | "daraKg" | "girisKg" | "cikmaFireKg" | "netKg", ExtArgs["result"]["mal_kabul_records"]>
+  export type mal_kabul_recordsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tarih" | "miktar" | "birimFiyat" | "toplamFiyat" | "status" | "notlar" | "malKabulcuId" | "komisyoncuId" | "ureticiId" | "urunId" | "faturaId" | "createdAt" | "updatedAt" | "fisNo" | "mustahsilId" | "ozelFirmaId" | "saticiTipi" | "ambalajId" | "paletSayisi" | "kasaSayisi" | "brutKg" | "daraKg" | "girisKg" | "cikmaKg" | "fireKg" | "cikmaFireKg" | "netKg", ExtArgs["result"]["mal_kabul_records"]>
   export type mal_kabul_recordsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | usersDefaultArgs<ExtArgs>
     komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
@@ -6165,6 +6195,8 @@ export namespace Prisma {
       brutKg: number | null
       daraKg: number | null
       girisKg: number | null
+      cikmaKg: number | null
+      fireKg: number | null
       cikmaFireKg: number | null
       netKg: number | null
     }, ExtArgs["result"]["mal_kabul_records"]>
@@ -6622,6 +6654,8 @@ export namespace Prisma {
     readonly brutKg: FieldRef<"mal_kabul_records", 'Float'>
     readonly daraKg: FieldRef<"mal_kabul_records", 'Float'>
     readonly girisKg: FieldRef<"mal_kabul_records", 'Float'>
+    readonly cikmaKg: FieldRef<"mal_kabul_records", 'Float'>
+    readonly fireKg: FieldRef<"mal_kabul_records", 'Float'>
     readonly cikmaFireKg: FieldRef<"mal_kabul_records", 'Float'>
     readonly netKg: FieldRef<"mal_kabul_records", 'Float'>
   }
@@ -14249,6 +14283,8 @@ export namespace Prisma {
     brutKg: 'brutKg',
     daraKg: 'daraKg',
     girisKg: 'girisKg',
+    cikmaKg: 'cikmaKg',
+    fireKg: 'fireKg',
     cikmaFireKg: 'cikmaFireKg',
     netKg: 'netKg'
   };
@@ -14730,6 +14766,8 @@ export namespace Prisma {
     brutKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     daraKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     girisKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    cikmaKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    fireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     cikmaFireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     netKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     users?: XOR<UsersScalarRelationFilter, usersWhereInput>
@@ -14767,6 +14805,8 @@ export namespace Prisma {
     brutKg?: SortOrderInput | SortOrder
     daraKg?: SortOrderInput | SortOrder
     girisKg?: SortOrderInput | SortOrder
+    cikmaKg?: SortOrderInput | SortOrder
+    fireKg?: SortOrderInput | SortOrder
     cikmaFireKg?: SortOrderInput | SortOrder
     netKg?: SortOrderInput | SortOrder
     users?: usersOrderByWithRelationInput
@@ -14807,6 +14847,8 @@ export namespace Prisma {
     brutKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     daraKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     girisKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    cikmaKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    fireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     cikmaFireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     netKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     users?: XOR<UsersScalarRelationFilter, usersWhereInput>
@@ -14844,6 +14886,8 @@ export namespace Prisma {
     brutKg?: SortOrderInput | SortOrder
     daraKg?: SortOrderInput | SortOrder
     girisKg?: SortOrderInput | SortOrder
+    cikmaKg?: SortOrderInput | SortOrder
+    fireKg?: SortOrderInput | SortOrder
     cikmaFireKg?: SortOrderInput | SortOrder
     netKg?: SortOrderInput | SortOrder
     _count?: mal_kabul_recordsCountOrderByAggregateInput
@@ -14881,6 +14925,8 @@ export namespace Prisma {
     brutKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     daraKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     girisKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
+    cikmaKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
+    fireKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     cikmaFireKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     netKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
   }
@@ -15735,6 +15781,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
@@ -15772,6 +15820,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
   }
@@ -15793,6 +15843,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
@@ -15830,6 +15882,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -15859,6 +15913,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
   }
@@ -15880,6 +15936,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -15909,6 +15967,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -16951,6 +17011,8 @@ export namespace Prisma {
     brutKg?: SortOrder
     daraKg?: SortOrder
     girisKg?: SortOrder
+    cikmaKg?: SortOrder
+    fireKg?: SortOrder
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
   }
@@ -16964,6 +17026,8 @@ export namespace Prisma {
     brutKg?: SortOrder
     daraKg?: SortOrder
     girisKg?: SortOrder
+    cikmaKg?: SortOrder
+    fireKg?: SortOrder
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
   }
@@ -16993,6 +17057,8 @@ export namespace Prisma {
     brutKg?: SortOrder
     daraKg?: SortOrder
     girisKg?: SortOrder
+    cikmaKg?: SortOrder
+    fireKg?: SortOrder
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
   }
@@ -17022,6 +17088,8 @@ export namespace Prisma {
     brutKg?: SortOrder
     daraKg?: SortOrder
     girisKg?: SortOrder
+    cikmaKg?: SortOrder
+    fireKg?: SortOrder
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
   }
@@ -17035,6 +17103,8 @@ export namespace Prisma {
     brutKg?: SortOrder
     daraKg?: SortOrder
     girisKg?: SortOrder
+    cikmaKg?: SortOrder
+    fireKg?: SortOrder
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
   }
@@ -18213,6 +18283,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
@@ -18248,6 +18320,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
   }
@@ -18306,6 +18380,8 @@ export namespace Prisma {
     brutKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     daraKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     girisKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    cikmaKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    fireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     cikmaFireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     netKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
   }
@@ -18327,6 +18403,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
@@ -18362,6 +18440,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
   }
@@ -18473,6 +18553,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
@@ -18508,6 +18590,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
   }
@@ -19197,6 +19281,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
@@ -19232,6 +19318,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
   }
@@ -19279,6 +19367,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
@@ -19314,6 +19404,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
   }
@@ -19361,6 +19453,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
@@ -19396,6 +19490,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
   }
@@ -19519,6 +19615,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
@@ -19554,6 +19652,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
   }
@@ -19601,6 +19701,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
@@ -19636,6 +19738,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
   }
@@ -19761,6 +19865,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
   }
@@ -19782,6 +19888,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
@@ -19817,6 +19925,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -19845,6 +19955,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -19873,6 +19985,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
   }
@@ -19894,6 +20008,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
@@ -19929,6 +20045,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -19957,6 +20075,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -19985,6 +20105,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
   }
@@ -20020,6 +20142,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
@@ -20055,6 +20179,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -20083,6 +20209,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -20155,6 +20283,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
   }
@@ -20176,6 +20306,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
@@ -20211,6 +20343,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -20239,6 +20373,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -20267,6 +20403,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
   }
@@ -20288,6 +20426,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
@@ -20323,6 +20463,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -20351,6 +20493,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -20379,6 +20523,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
   }
@@ -20400,6 +20546,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
@@ -20435,6 +20583,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -20463,6 +20613,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -20491,6 +20643,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
   }
@@ -20512,6 +20666,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
@@ -20547,6 +20703,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -20575,6 +20733,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -20603,6 +20763,8 @@ export namespace Prisma {
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
   }
@@ -20637,6 +20799,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -20672,6 +20836,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }
@@ -20700,6 +20866,8 @@ export namespace Prisma {
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
   }

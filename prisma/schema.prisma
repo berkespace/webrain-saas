@@ -83,7 +83,9 @@ model mal_kabul_records {
   brutKg       Float?    @default(0) @db.Real
   daraKg       Float?    @default(0) @db.Real
   girisKg      Float?    @default(0) @db.Real
-  cikmaFireKg  Float?    @default(0) @db.Real
+  cikmaKg      Float?    @default(0) @db.Real  // Ana çıkma miktarı
+  fireKg       Float?    @default(0) @db.Real  // Ekstradan kesilen fire miktarı
+  cikmaFireKg  Float?    @default(0) @db.Real  // Eski alan (geriye uyumluluk için)
   netKg        Float?    @default(0) @db.Real
   
   // Relations
