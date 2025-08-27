@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
     const malKabulRecords = await prisma.mal_kabul_records.findMany({
       where,
       include: {
-        komisyoncular: { select: { id: true, dukkanAdi: true, sehir: true } },
+        komisyoncular: { select: { id: true, dukkanAdi: true, komisyonKodu: true, sehir: true } },
         ureticiler: { select: { id: true, ad: true, soyad: true, sehir: true } },
         ozel_firmalar: { select: { id: true, firmaAdi: true, sehir: true } },
         mustahsil: { select: { id: true, ad: true, soyad: true } },

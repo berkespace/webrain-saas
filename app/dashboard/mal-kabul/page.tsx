@@ -41,6 +41,7 @@ interface MalKabulRecord {
   komisyoncular?: {
     id: string
     dukkanAdi: string
+    komisyonKodu: string
     sehir: string
   }
   ureticiler?: {
@@ -198,10 +199,10 @@ export default function MalKabulDashboard() {
       case 'KOMISYONCU':
         if (record.komisyoncular && record.ureticiler) {
           // Komisyoncu olarak giriş yapılan ürünlerde: "Komisyon No - Üretici Adı" formatında
-          return `${record.komisyoncular.dukkanAdi} - ${record.ureticiler.ad} ${record.ureticiler.soyad}`
+          return `${record.komisyoncular.komisyonKodu} - ${record.ureticiler.ad} ${record.ureticiler.soyad}`
         } else if (record.komisyoncular) {
           // Sadece komisyoncu varsa
-          return `${record.komisyoncular.dukkanAdi} (Üretici Seçilmedi)`
+          return `${record.komisyoncular.komisyonKodu} (Üretici Seçilmedi)`
         }
         return 'Bilinmiyor'
       case 'MUSTAHSIL':
