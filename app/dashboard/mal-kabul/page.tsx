@@ -545,7 +545,22 @@ export default function MalKabulDashboard() {
                               {getSaticiTipiLabel(item.saticiTipi)}
                             </span>
                           </td>
-                          <td className="py-3 px-2 font-medium">{getSaticiAdi(item)}</td>
+                          <td className="py-3 px-2 font-medium">
+                            {item.saticiTipi === 'KOMISYONCU' && item.komisyoncular ? (
+                              <div className="relative group">
+                                <span className="cursor-pointer hover:text-primary transition-colors">
+                                  {getSaticiAdi(item)}
+                                </span>
+                                <div className="absolute bottom-full left-0 mb-2 px-3 py-2 bg-popover text-popover-foreground text-sm rounded-md border shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
+                                  <div className="font-medium">Dükkan: {item.komisyoncular.dukkanAdi}</div>
+                                  <div className="text-xs text-muted-foreground">Şehir: {item.komisyoncular.sehir}</div>
+                                  <div className="absolute top-full left-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-popover"></div>
+                                </div>
+                              </div>
+                            ) : (
+                              getSaticiAdi(item)
+                            )}
+                          </td>
                           <td className="py-3 px-2">{item.urunler.ad}</td>
                           <td className="py-3 px-2 text-right">{item.kasaSayisi.toLocaleString()}</td>
                           <td className="py-3 px-2 text-right">
