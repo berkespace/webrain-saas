@@ -8,7 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const komisyoncu = await prisma.komisyoncu.findUnique({
+    const komisyoncu = await prisma.komisyoncular.findUnique({
       where: { id },
       include: {
         ureticiler: true
@@ -50,7 +50,7 @@ export async function PUT(
       )
     }
 
-    const komisyoncu = await prisma.komisyoncu.update({
+    const komisyoncu = await prisma.komisyoncular.update({
       where: { id },
       data: {
         dukkanAdi,
@@ -96,7 +96,7 @@ export async function DELETE(
     }
 
     // Mal kabul kayıtlarını kontrol et
-    const malKabulCount = await prisma.malKabulRecord.count({
+    const malKabulCount = await prisma.mal_kabul_records.count({
       where: { komisyoncuId: id }
     })
 
@@ -110,7 +110,7 @@ export async function DELETE(
       )
     }
 
-    await prisma.komisyoncu.delete({
+    await prisma.komisyoncular.delete({
       where: { id }
     })
 

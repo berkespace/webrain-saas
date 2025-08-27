@@ -90,6 +90,7 @@ export async function POST(request: NextRequest) {
 
     const urun = await prisma.urunler.create({
       data: {
+        id: `urun-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         ad,
         stokKodu: nextStokKodu,
         kategori: kategori || null,

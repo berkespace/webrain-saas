@@ -5599,6 +5599,7 @@ export namespace Prisma {
     toplamFiyat: number | null
     paletSayisi: number | null
     kasaSayisi: number | null
+    adetSayisi: number | null
     brutKg: number | null
     daraKg: number | null
     girisKg: number | null
@@ -5606,6 +5607,7 @@ export namespace Prisma {
     fireKg: number | null
     cikmaFireKg: number | null
     netKg: number | null
+    netAdet: number | null
   }
 
   export type Mal_kabul_recordsSumAggregateOutputType = {
@@ -5614,6 +5616,7 @@ export namespace Prisma {
     toplamFiyat: number | null
     paletSayisi: number | null
     kasaSayisi: number | null
+    adetSayisi: number | null
     brutKg: number | null
     daraKg: number | null
     girisKg: number | null
@@ -5621,6 +5624,7 @@ export namespace Prisma {
     fireKg: number | null
     cikmaFireKg: number | null
     netKg: number | null
+    netAdet: number | null
   }
 
   export type Mal_kabul_recordsMinAggregateOutputType = {
@@ -5645,6 +5649,7 @@ export namespace Prisma {
     ambalajId: string | null
     paletSayisi: number | null
     kasaSayisi: number | null
+    adetSayisi: number | null
     brutKg: number | null
     daraKg: number | null
     girisKg: number | null
@@ -5652,6 +5657,7 @@ export namespace Prisma {
     fireKg: number | null
     cikmaFireKg: number | null
     netKg: number | null
+    netAdet: number | null
   }
 
   export type Mal_kabul_recordsMaxAggregateOutputType = {
@@ -5676,6 +5682,7 @@ export namespace Prisma {
     ambalajId: string | null
     paletSayisi: number | null
     kasaSayisi: number | null
+    adetSayisi: number | null
     brutKg: number | null
     daraKg: number | null
     girisKg: number | null
@@ -5683,6 +5690,7 @@ export namespace Prisma {
     fireKg: number | null
     cikmaFireKg: number | null
     netKg: number | null
+    netAdet: number | null
   }
 
   export type Mal_kabul_recordsCountAggregateOutputType = {
@@ -5707,6 +5715,7 @@ export namespace Prisma {
     ambalajId: number
     paletSayisi: number
     kasaSayisi: number
+    adetSayisi: number
     brutKg: number
     daraKg: number
     girisKg: number
@@ -5714,6 +5723,7 @@ export namespace Prisma {
     fireKg: number
     cikmaFireKg: number
     netKg: number
+    netAdet: number
     _all: number
   }
 
@@ -5724,6 +5734,7 @@ export namespace Prisma {
     toplamFiyat?: true
     paletSayisi?: true
     kasaSayisi?: true
+    adetSayisi?: true
     brutKg?: true
     daraKg?: true
     girisKg?: true
@@ -5731,6 +5742,7 @@ export namespace Prisma {
     fireKg?: true
     cikmaFireKg?: true
     netKg?: true
+    netAdet?: true
   }
 
   export type Mal_kabul_recordsSumAggregateInputType = {
@@ -5739,6 +5751,7 @@ export namespace Prisma {
     toplamFiyat?: true
     paletSayisi?: true
     kasaSayisi?: true
+    adetSayisi?: true
     brutKg?: true
     daraKg?: true
     girisKg?: true
@@ -5746,6 +5759,7 @@ export namespace Prisma {
     fireKg?: true
     cikmaFireKg?: true
     netKg?: true
+    netAdet?: true
   }
 
   export type Mal_kabul_recordsMinAggregateInputType = {
@@ -5770,6 +5784,7 @@ export namespace Prisma {
     ambalajId?: true
     paletSayisi?: true
     kasaSayisi?: true
+    adetSayisi?: true
     brutKg?: true
     daraKg?: true
     girisKg?: true
@@ -5777,6 +5792,7 @@ export namespace Prisma {
     fireKg?: true
     cikmaFireKg?: true
     netKg?: true
+    netAdet?: true
   }
 
   export type Mal_kabul_recordsMaxAggregateInputType = {
@@ -5801,6 +5817,7 @@ export namespace Prisma {
     ambalajId?: true
     paletSayisi?: true
     kasaSayisi?: true
+    adetSayisi?: true
     brutKg?: true
     daraKg?: true
     girisKg?: true
@@ -5808,6 +5825,7 @@ export namespace Prisma {
     fireKg?: true
     cikmaFireKg?: true
     netKg?: true
+    netAdet?: true
   }
 
   export type Mal_kabul_recordsCountAggregateInputType = {
@@ -5832,6 +5850,7 @@ export namespace Prisma {
     ambalajId?: true
     paletSayisi?: true
     kasaSayisi?: true
+    adetSayisi?: true
     brutKg?: true
     daraKg?: true
     girisKg?: true
@@ -5839,6 +5858,7 @@ export namespace Prisma {
     fireKg?: true
     cikmaFireKg?: true
     netKg?: true
+    netAdet?: true
     _all?: true
   }
 
@@ -5950,6 +5970,7 @@ export namespace Prisma {
     ambalajId: string | null
     paletSayisi: number | null
     kasaSayisi: number | null
+    adetSayisi: number | null
     brutKg: number | null
     daraKg: number | null
     girisKg: number | null
@@ -5957,6 +5978,7 @@ export namespace Prisma {
     fireKg: number | null
     cikmaFireKg: number | null
     netKg: number | null
+    netAdet: number | null
     _count: Mal_kabul_recordsCountAggregateOutputType | null
     _avg: Mal_kabul_recordsAvgAggregateOutputType | null
     _sum: Mal_kabul_recordsSumAggregateOutputType | null
@@ -6000,6 +6022,7 @@ export namespace Prisma {
     ambalajId?: boolean
     paletSayisi?: boolean
     kasaSayisi?: boolean
+    adetSayisi?: boolean
     brutKg?: boolean
     daraKg?: boolean
     girisKg?: boolean
@@ -6007,6 +6030,7 @@ export namespace Prisma {
     fireKg?: boolean
     cikmaFireKg?: boolean
     netKg?: boolean
+    netAdet?: boolean
     users?: boolean | usersDefaultArgs<ExtArgs>
     komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     ureticiler?: boolean | mal_kabul_records$ureticilerArgs<ExtArgs>
@@ -6039,6 +6063,7 @@ export namespace Prisma {
     ambalajId?: boolean
     paletSayisi?: boolean
     kasaSayisi?: boolean
+    adetSayisi?: boolean
     brutKg?: boolean
     daraKg?: boolean
     girisKg?: boolean
@@ -6046,6 +6071,7 @@ export namespace Prisma {
     fireKg?: boolean
     cikmaFireKg?: boolean
     netKg?: boolean
+    netAdet?: boolean
     users?: boolean | usersDefaultArgs<ExtArgs>
     komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     ureticiler?: boolean | mal_kabul_records$ureticilerArgs<ExtArgs>
@@ -6078,6 +6104,7 @@ export namespace Prisma {
     ambalajId?: boolean
     paletSayisi?: boolean
     kasaSayisi?: boolean
+    adetSayisi?: boolean
     brutKg?: boolean
     daraKg?: boolean
     girisKg?: boolean
@@ -6085,6 +6112,7 @@ export namespace Prisma {
     fireKg?: boolean
     cikmaFireKg?: boolean
     netKg?: boolean
+    netAdet?: boolean
     users?: boolean | usersDefaultArgs<ExtArgs>
     komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     ureticiler?: boolean | mal_kabul_records$ureticilerArgs<ExtArgs>
@@ -6117,6 +6145,7 @@ export namespace Prisma {
     ambalajId?: boolean
     paletSayisi?: boolean
     kasaSayisi?: boolean
+    adetSayisi?: boolean
     brutKg?: boolean
     daraKg?: boolean
     girisKg?: boolean
@@ -6124,9 +6153,10 @@ export namespace Prisma {
     fireKg?: boolean
     cikmaFireKg?: boolean
     netKg?: boolean
+    netAdet?: boolean
   }
 
-  export type mal_kabul_recordsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tarih" | "miktar" | "birimFiyat" | "toplamFiyat" | "status" | "notlar" | "malKabulcuId" | "komisyoncuId" | "ureticiId" | "urunId" | "faturaId" | "createdAt" | "updatedAt" | "fisNo" | "mustahsilId" | "ozelFirmaId" | "saticiTipi" | "ambalajId" | "paletSayisi" | "kasaSayisi" | "brutKg" | "daraKg" | "girisKg" | "cikmaKg" | "fireKg" | "cikmaFireKg" | "netKg", ExtArgs["result"]["mal_kabul_records"]>
+  export type mal_kabul_recordsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tarih" | "miktar" | "birimFiyat" | "toplamFiyat" | "status" | "notlar" | "malKabulcuId" | "komisyoncuId" | "ureticiId" | "urunId" | "faturaId" | "createdAt" | "updatedAt" | "fisNo" | "mustahsilId" | "ozelFirmaId" | "saticiTipi" | "ambalajId" | "paletSayisi" | "kasaSayisi" | "adetSayisi" | "brutKg" | "daraKg" | "girisKg" | "cikmaKg" | "fireKg" | "cikmaFireKg" | "netKg" | "netAdet", ExtArgs["result"]["mal_kabul_records"]>
   export type mal_kabul_recordsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | usersDefaultArgs<ExtArgs>
     komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
@@ -6192,6 +6222,7 @@ export namespace Prisma {
       ambalajId: string | null
       paletSayisi: number | null
       kasaSayisi: number | null
+      adetSayisi: number | null
       brutKg: number | null
       daraKg: number | null
       girisKg: number | null
@@ -6199,6 +6230,7 @@ export namespace Prisma {
       fireKg: number | null
       cikmaFireKg: number | null
       netKg: number | null
+      netAdet: number | null
     }, ExtArgs["result"]["mal_kabul_records"]>
     composites: {}
   }
@@ -6651,6 +6683,7 @@ export namespace Prisma {
     readonly ambalajId: FieldRef<"mal_kabul_records", 'String'>
     readonly paletSayisi: FieldRef<"mal_kabul_records", 'Int'>
     readonly kasaSayisi: FieldRef<"mal_kabul_records", 'Int'>
+    readonly adetSayisi: FieldRef<"mal_kabul_records", 'Int'>
     readonly brutKg: FieldRef<"mal_kabul_records", 'Float'>
     readonly daraKg: FieldRef<"mal_kabul_records", 'Float'>
     readonly girisKg: FieldRef<"mal_kabul_records", 'Float'>
@@ -6658,6 +6691,7 @@ export namespace Prisma {
     readonly fireKg: FieldRef<"mal_kabul_records", 'Float'>
     readonly cikmaFireKg: FieldRef<"mal_kabul_records", 'Float'>
     readonly netKg: FieldRef<"mal_kabul_records", 'Float'>
+    readonly netAdet: FieldRef<"mal_kabul_records", 'Int'>
   }
     
 
@@ -14280,13 +14314,15 @@ export namespace Prisma {
     ambalajId: 'ambalajId',
     paletSayisi: 'paletSayisi',
     kasaSayisi: 'kasaSayisi',
+    adetSayisi: 'adetSayisi',
     brutKg: 'brutKg',
     daraKg: 'daraKg',
     girisKg: 'girisKg',
     cikmaKg: 'cikmaKg',
     fireKg: 'fireKg',
     cikmaFireKg: 'cikmaFireKg',
-    netKg: 'netKg'
+    netKg: 'netKg',
+    netAdet: 'netAdet'
   };
 
   export type Mal_kabul_recordsScalarFieldEnum = (typeof Mal_kabul_recordsScalarFieldEnum)[keyof typeof Mal_kabul_recordsScalarFieldEnum]
@@ -14763,6 +14799,7 @@ export namespace Prisma {
     ambalajId?: StringNullableFilter<"mal_kabul_records"> | string | null
     paletSayisi?: IntNullableFilter<"mal_kabul_records"> | number | null
     kasaSayisi?: IntNullableFilter<"mal_kabul_records"> | number | null
+    adetSayisi?: IntNullableFilter<"mal_kabul_records"> | number | null
     brutKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     daraKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     girisKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
@@ -14770,6 +14807,7 @@ export namespace Prisma {
     fireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     cikmaFireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     netKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    netAdet?: IntNullableFilter<"mal_kabul_records"> | number | null
     users?: XOR<UsersScalarRelationFilter, usersWhereInput>
     komisyoncular?: XOR<KomisyoncularNullableScalarRelationFilter, komisyoncularWhereInput> | null
     ureticiler?: XOR<UreticilerNullableScalarRelationFilter, ureticilerWhereInput> | null
@@ -14802,6 +14840,7 @@ export namespace Prisma {
     ambalajId?: SortOrderInput | SortOrder
     paletSayisi?: SortOrderInput | SortOrder
     kasaSayisi?: SortOrderInput | SortOrder
+    adetSayisi?: SortOrderInput | SortOrder
     brutKg?: SortOrderInput | SortOrder
     daraKg?: SortOrderInput | SortOrder
     girisKg?: SortOrderInput | SortOrder
@@ -14809,6 +14848,7 @@ export namespace Prisma {
     fireKg?: SortOrderInput | SortOrder
     cikmaFireKg?: SortOrderInput | SortOrder
     netKg?: SortOrderInput | SortOrder
+    netAdet?: SortOrderInput | SortOrder
     users?: usersOrderByWithRelationInput
     komisyoncular?: komisyoncularOrderByWithRelationInput
     ureticiler?: ureticilerOrderByWithRelationInput
@@ -14844,6 +14884,7 @@ export namespace Prisma {
     ambalajId?: StringNullableFilter<"mal_kabul_records"> | string | null
     paletSayisi?: IntNullableFilter<"mal_kabul_records"> | number | null
     kasaSayisi?: IntNullableFilter<"mal_kabul_records"> | number | null
+    adetSayisi?: IntNullableFilter<"mal_kabul_records"> | number | null
     brutKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     daraKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     girisKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
@@ -14851,6 +14892,7 @@ export namespace Prisma {
     fireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     cikmaFireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     netKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    netAdet?: IntNullableFilter<"mal_kabul_records"> | number | null
     users?: XOR<UsersScalarRelationFilter, usersWhereInput>
     komisyoncular?: XOR<KomisyoncularNullableScalarRelationFilter, komisyoncularWhereInput> | null
     ureticiler?: XOR<UreticilerNullableScalarRelationFilter, ureticilerWhereInput> | null
@@ -14883,6 +14925,7 @@ export namespace Prisma {
     ambalajId?: SortOrderInput | SortOrder
     paletSayisi?: SortOrderInput | SortOrder
     kasaSayisi?: SortOrderInput | SortOrder
+    adetSayisi?: SortOrderInput | SortOrder
     brutKg?: SortOrderInput | SortOrder
     daraKg?: SortOrderInput | SortOrder
     girisKg?: SortOrderInput | SortOrder
@@ -14890,6 +14933,7 @@ export namespace Prisma {
     fireKg?: SortOrderInput | SortOrder
     cikmaFireKg?: SortOrderInput | SortOrder
     netKg?: SortOrderInput | SortOrder
+    netAdet?: SortOrderInput | SortOrder
     _count?: mal_kabul_recordsCountOrderByAggregateInput
     _avg?: mal_kabul_recordsAvgOrderByAggregateInput
     _max?: mal_kabul_recordsMaxOrderByAggregateInput
@@ -14922,6 +14966,7 @@ export namespace Prisma {
     ambalajId?: StringNullableWithAggregatesFilter<"mal_kabul_records"> | string | null
     paletSayisi?: IntNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     kasaSayisi?: IntNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
+    adetSayisi?: IntNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     brutKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     daraKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     girisKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
@@ -14929,6 +14974,7 @@ export namespace Prisma {
     fireKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     cikmaFireKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     netKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
+    netAdet?: IntNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
   }
 
   export type mustahsilWhereInput = {
@@ -15778,6 +15824,7 @@ export namespace Prisma {
     saticiTipi?: string
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -15785,6 +15832,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -15817,6 +15865,7 @@ export namespace Prisma {
     ambalajId?: string | null
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -15824,6 +15873,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
   }
 
   export type mal_kabul_recordsUpdateInput = {
@@ -15840,6 +15890,7 @@ export namespace Prisma {
     saticiTipi?: StringFieldUpdateOperationsInput | string
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -15847,6 +15898,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -15879,6 +15931,7 @@ export namespace Prisma {
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -15886,6 +15939,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsCreateManyInput = {
@@ -15910,6 +15964,7 @@ export namespace Prisma {
     ambalajId?: string | null
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -15917,6 +15972,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
   }
 
   export type mal_kabul_recordsUpdateManyMutationInput = {
@@ -15933,6 +15989,7 @@ export namespace Prisma {
     saticiTipi?: StringFieldUpdateOperationsInput | string
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -15940,6 +15997,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyInput = {
@@ -15964,6 +16022,7 @@ export namespace Prisma {
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -15971,6 +16030,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type mustahsilCreateInput = {
@@ -17008,6 +17068,7 @@ export namespace Prisma {
     ambalajId?: SortOrder
     paletSayisi?: SortOrder
     kasaSayisi?: SortOrder
+    adetSayisi?: SortOrder
     brutKg?: SortOrder
     daraKg?: SortOrder
     girisKg?: SortOrder
@@ -17015,6 +17076,7 @@ export namespace Prisma {
     fireKg?: SortOrder
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
+    netAdet?: SortOrder
   }
 
   export type mal_kabul_recordsAvgOrderByAggregateInput = {
@@ -17023,6 +17085,7 @@ export namespace Prisma {
     toplamFiyat?: SortOrder
     paletSayisi?: SortOrder
     kasaSayisi?: SortOrder
+    adetSayisi?: SortOrder
     brutKg?: SortOrder
     daraKg?: SortOrder
     girisKg?: SortOrder
@@ -17030,6 +17093,7 @@ export namespace Prisma {
     fireKg?: SortOrder
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
+    netAdet?: SortOrder
   }
 
   export type mal_kabul_recordsMaxOrderByAggregateInput = {
@@ -17054,6 +17118,7 @@ export namespace Prisma {
     ambalajId?: SortOrder
     paletSayisi?: SortOrder
     kasaSayisi?: SortOrder
+    adetSayisi?: SortOrder
     brutKg?: SortOrder
     daraKg?: SortOrder
     girisKg?: SortOrder
@@ -17061,6 +17126,7 @@ export namespace Prisma {
     fireKg?: SortOrder
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
+    netAdet?: SortOrder
   }
 
   export type mal_kabul_recordsMinOrderByAggregateInput = {
@@ -17085,6 +17151,7 @@ export namespace Prisma {
     ambalajId?: SortOrder
     paletSayisi?: SortOrder
     kasaSayisi?: SortOrder
+    adetSayisi?: SortOrder
     brutKg?: SortOrder
     daraKg?: SortOrder
     girisKg?: SortOrder
@@ -17092,6 +17159,7 @@ export namespace Prisma {
     fireKg?: SortOrder
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
+    netAdet?: SortOrder
   }
 
   export type mal_kabul_recordsSumOrderByAggregateInput = {
@@ -17100,6 +17168,7 @@ export namespace Prisma {
     toplamFiyat?: SortOrder
     paletSayisi?: SortOrder
     kasaSayisi?: SortOrder
+    adetSayisi?: SortOrder
     brutKg?: SortOrder
     daraKg?: SortOrder
     girisKg?: SortOrder
@@ -17107,6 +17176,7 @@ export namespace Prisma {
     fireKg?: SortOrder
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
+    netAdet?: SortOrder
   }
 
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -18280,6 +18350,7 @@ export namespace Prisma {
     saticiTipi?: string
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -18287,6 +18358,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -18317,6 +18389,7 @@ export namespace Prisma {
     saticiTipi?: string
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -18324,6 +18397,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutAmbalajlarInput = {
@@ -18377,6 +18451,7 @@ export namespace Prisma {
     ambalajId?: StringNullableFilter<"mal_kabul_records"> | string | null
     paletSayisi?: IntNullableFilter<"mal_kabul_records"> | number | null
     kasaSayisi?: IntNullableFilter<"mal_kabul_records"> | number | null
+    adetSayisi?: IntNullableFilter<"mal_kabul_records"> | number | null
     brutKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     daraKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     girisKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
@@ -18384,6 +18459,7 @@ export namespace Prisma {
     fireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     cikmaFireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     netKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    netAdet?: IntNullableFilter<"mal_kabul_records"> | number | null
   }
 
   export type mal_kabul_recordsCreateWithoutFaturalarInput = {
@@ -18400,6 +18476,7 @@ export namespace Prisma {
     saticiTipi?: string
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -18407,6 +18484,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -18437,6 +18515,7 @@ export namespace Prisma {
     ambalajId?: string | null
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -18444,6 +18523,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutFaturalarInput = {
@@ -18550,6 +18630,7 @@ export namespace Prisma {
     saticiTipi?: string
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -18557,6 +18638,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
     urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -18587,6 +18669,7 @@ export namespace Prisma {
     ambalajId?: string | null
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -18594,6 +18677,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutKomisyoncularInput = {
@@ -19278,6 +19362,7 @@ export namespace Prisma {
     saticiTipi?: string
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -19285,6 +19370,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -19315,6 +19401,7 @@ export namespace Prisma {
     ambalajId?: string | null
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -19322,6 +19409,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutMustahsilInput = {
@@ -19364,6 +19452,7 @@ export namespace Prisma {
     saticiTipi?: string
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -19371,6 +19460,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -19401,6 +19491,7 @@ export namespace Prisma {
     ambalajId?: string | null
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -19408,6 +19499,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutOzel_firmalarInput = {
@@ -19450,6 +19542,7 @@ export namespace Prisma {
     saticiTipi?: string
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -19457,6 +19550,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -19487,6 +19581,7 @@ export namespace Prisma {
     ambalajId?: string | null
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -19494,6 +19589,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutUreticilerInput = {
@@ -19612,6 +19708,7 @@ export namespace Prisma {
     saticiTipi?: string
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -19619,6 +19716,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -19649,6 +19747,7 @@ export namespace Prisma {
     ambalajId?: string | null
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -19656,6 +19755,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutUrunlerInput = {
@@ -19698,6 +19798,7 @@ export namespace Prisma {
     saticiTipi?: string
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -19705,6 +19806,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
     urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -19735,6 +19837,7 @@ export namespace Prisma {
     ambalajId?: string | null
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -19742,6 +19845,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutUsersInput = {
@@ -19862,6 +19966,7 @@ export namespace Prisma {
     saticiTipi?: string
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -19869,6 +19974,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
   }
 
   export type mal_kabul_recordsUpdateWithoutAmbalajlarInput = {
@@ -19885,6 +19991,7 @@ export namespace Prisma {
     saticiTipi?: StringFieldUpdateOperationsInput | string
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -19892,6 +19999,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -19922,6 +20030,7 @@ export namespace Prisma {
     saticiTipi?: StringFieldUpdateOperationsInput | string
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -19929,6 +20038,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutAmbalajlarInput = {
@@ -19952,6 +20062,7 @@ export namespace Prisma {
     saticiTipi?: StringFieldUpdateOperationsInput | string
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -19959,6 +20070,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsCreateManyFaturalarInput = {
@@ -19982,6 +20094,7 @@ export namespace Prisma {
     ambalajId?: string | null
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -19989,6 +20102,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
   }
 
   export type mal_kabul_recordsUpdateWithoutFaturalarInput = {
@@ -20005,6 +20119,7 @@ export namespace Prisma {
     saticiTipi?: StringFieldUpdateOperationsInput | string
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20012,6 +20127,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -20042,6 +20158,7 @@ export namespace Prisma {
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20049,6 +20166,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutFaturalarInput = {
@@ -20072,6 +20190,7 @@ export namespace Prisma {
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20079,6 +20198,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsCreateManyKomisyoncularInput = {
@@ -20102,6 +20222,7 @@ export namespace Prisma {
     ambalajId?: string | null
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -20109,6 +20230,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
   }
 
   export type ureticilerCreateManyKomisyoncularInput = {
@@ -20139,6 +20261,7 @@ export namespace Prisma {
     saticiTipi?: StringFieldUpdateOperationsInput | string
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20146,6 +20269,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
     urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
@@ -20176,6 +20300,7 @@ export namespace Prisma {
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20183,6 +20308,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutKomisyoncularInput = {
@@ -20206,6 +20332,7 @@ export namespace Prisma {
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20213,6 +20340,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type ureticilerUpdateWithoutKomisyoncularInput = {
@@ -20280,6 +20408,7 @@ export namespace Prisma {
     ambalajId?: string | null
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -20287,6 +20416,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
   }
 
   export type mal_kabul_recordsUpdateWithoutMustahsilInput = {
@@ -20303,6 +20433,7 @@ export namespace Prisma {
     saticiTipi?: StringFieldUpdateOperationsInput | string
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20310,6 +20441,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -20340,6 +20472,7 @@ export namespace Prisma {
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20347,6 +20480,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutMustahsilInput = {
@@ -20370,6 +20504,7 @@ export namespace Prisma {
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20377,6 +20512,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsCreateManyOzel_firmalarInput = {
@@ -20400,6 +20536,7 @@ export namespace Prisma {
     ambalajId?: string | null
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -20407,6 +20544,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
   }
 
   export type mal_kabul_recordsUpdateWithoutOzel_firmalarInput = {
@@ -20423,6 +20561,7 @@ export namespace Prisma {
     saticiTipi?: StringFieldUpdateOperationsInput | string
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20430,6 +20569,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -20460,6 +20600,7 @@ export namespace Prisma {
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20467,6 +20608,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutOzel_firmalarInput = {
@@ -20490,6 +20632,7 @@ export namespace Prisma {
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20497,6 +20640,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsCreateManyUreticilerInput = {
@@ -20520,6 +20664,7 @@ export namespace Prisma {
     ambalajId?: string | null
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -20527,6 +20672,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
   }
 
   export type mal_kabul_recordsUpdateWithoutUreticilerInput = {
@@ -20543,6 +20689,7 @@ export namespace Prisma {
     saticiTipi?: StringFieldUpdateOperationsInput | string
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20550,6 +20697,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
@@ -20580,6 +20728,7 @@ export namespace Prisma {
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20587,6 +20736,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutUreticilerInput = {
@@ -20610,6 +20760,7 @@ export namespace Prisma {
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20617,6 +20768,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsCreateManyUrunlerInput = {
@@ -20640,6 +20792,7 @@ export namespace Prisma {
     ambalajId?: string | null
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -20647,6 +20800,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
   }
 
   export type mal_kabul_recordsUpdateWithoutUrunlerInput = {
@@ -20663,6 +20817,7 @@ export namespace Prisma {
     saticiTipi?: StringFieldUpdateOperationsInput | string
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20670,6 +20825,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -20700,6 +20856,7 @@ export namespace Prisma {
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20707,6 +20864,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutUrunlerInput = {
@@ -20730,6 +20888,7 @@ export namespace Prisma {
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20737,6 +20896,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsCreateManyUsersInput = {
@@ -20760,6 +20920,7 @@ export namespace Prisma {
     ambalajId?: string | null
     paletSayisi?: number | null
     kasaSayisi?: number | null
+    adetSayisi?: number | null
     brutKg?: number | null
     daraKg?: number | null
     girisKg?: number | null
@@ -20767,6 +20928,7 @@ export namespace Prisma {
     fireKg?: number | null
     cikmaFireKg?: number | null
     netKg?: number | null
+    netAdet?: number | null
   }
 
   export type faturalarCreateManyUsersInput = {
@@ -20796,6 +20958,7 @@ export namespace Prisma {
     saticiTipi?: StringFieldUpdateOperationsInput | string
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20803,6 +20966,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
     urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
@@ -20833,6 +20997,7 @@ export namespace Prisma {
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20840,6 +21005,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutUsersInput = {
@@ -20863,6 +21029,7 @@ export namespace Prisma {
     ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
     paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
     brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
     daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
     girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -20870,6 +21037,7 @@ export namespace Prisma {
     fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type faturalarUpdateWithoutUsersInput = {

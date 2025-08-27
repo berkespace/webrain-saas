@@ -181,13 +181,15 @@ exports.Prisma.Mal_kabul_recordsScalarFieldEnum = {
   ambalajId: 'ambalajId',
   paletSayisi: 'paletSayisi',
   kasaSayisi: 'kasaSayisi',
+  adetSayisi: 'adetSayisi',
   brutKg: 'brutKg',
   daraKg: 'daraKg',
   girisKg: 'girisKg',
   cikmaKg: 'cikmaKg',
   fireKg: 'fireKg',
   cikmaFireKg: 'cikmaFireKg',
-  netKg: 'netKg'
+  netKg: 'netKg',
+  netAdet: 'netAdet'
 };
 
 exports.Prisma.MustahsilScalarFieldEnum = {

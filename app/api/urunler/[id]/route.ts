@@ -4,12 +4,12 @@ import { prisma } from "@/lib/prisma"
 // GET - Tekil ürün getir
 export async function GET(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { params } = await context.params
+  const { id } = await params
   try {
-    const urun = await prisma.urun.findUnique({
-      where: { id: params.id }
+    const urun = await prisma.urunler.findUnique({
+      where: { id }
     })
 
     if (!urun) {
@@ -32,9 +32,9 @@ export async function GET(
 // PUT - Ürün güncelle
 export async function PUT(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { params } = await context.params
+  const { id } = await params
   try {
     const body = await request.json()
     const { ad, kategori, birim, durum } = body
@@ -47,8 +47,8 @@ export async function PUT(
       )
     }
 
-    const urun = await prisma.urun.update({
-      where: { id: params.id },
+    const urun = await prisma.urunler.update({
+      where: { id },
       data: {
         ad,
         kategori: kategori || null,
@@ -70,13 +70,13 @@ export async function PUT(
 // DELETE - Ürün sil
 export async function DELETE(
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { params } = await context.params
+  const { id } = await params
   try {
     // Ürünün mal kabul kayıtlarında kullanılıp kullanılmadığını kontrol et
-    const malKabulCount = await prisma.malKabulRecord.count({
-      where: { urunId: params.id }
+    const malKabulCount = await prisma.mal_kabul_records.count({
+      where: { urunId: id }
     })
 
     if (malKabulCount > 0) {
@@ -86,8 +86,8 @@ export async function DELETE(
       )
     }
 
-    await prisma.urun.delete({
-      where: { id: params.id }
+    await prisma.urunler.delete({
+      where: { id }
     })
 
     return NextResponse.json(

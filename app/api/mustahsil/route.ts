@@ -45,6 +45,7 @@ export async function POST(request: NextRequest) {
     // Yeni müstahsil oluştur
     const newMustahsil = await prisma.mustahsil.create({
       data: {
+        id: `mustahsil-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         ad,
         soyad,
         tcKimlikNo,

@@ -70,6 +70,15 @@ interface Ambalaj {
   durum: 'AKTIF' | 'PASIF'
 }
 
+interface Urun {
+  id: string
+  ad: string
+  stokKodu: string
+  birim: string
+  kategori?: string
+  durum: 'AKTIF' | 'PASIF'
+}
+
 
 
 export default function YeniMalKabul() {
@@ -86,12 +95,14 @@ export default function YeniMalKabul() {
     ambalajId: '',
     paletSayisi: '',
     kasaSayisi: '',
+    adetSayisi: '', // ADET birimi için
     brutKg: '',
     daraKg: '', // Manuel giriş
     girisKg: '',
     cikmaKg: '',
     fireKg: '',
     netKg: '',
+    netAdet: '', // ADET birimi için net adet
     notlar: '',
     // Eski alanlar (geriye uyumluluk için)
     saticiTipi: '',
@@ -100,6 +111,9 @@ export default function YeniMalKabul() {
     mustahsilId: '',
     ozelFirmaId: ''
   })
+
+  const [selectedUrun, setSelectedUrun] = useState<Urun | null>(null)
+  const [isAdetBased, setIsAdetBased] = useState(false)
   const [filteredUreticiler, setFilteredUreticiler] = useState<Uretici[]>([])
 
   const [ozelFirmalar, setOzelFirmalar] = useState<OzelFirma[]>([])

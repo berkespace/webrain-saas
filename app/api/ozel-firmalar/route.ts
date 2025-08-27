@@ -83,6 +83,7 @@ export async function POST(request: NextRequest) {
 
     const ozelFirma = await prisma.ozel_firmalar.create({
       data: {
+        id: `ozel-firma-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         firmaAdi,
         firmaNo: nextFirmaNo,
         vkn,

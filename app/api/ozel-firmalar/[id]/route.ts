@@ -9,10 +9,10 @@ export async function GET(
   try {
     const { id } = await params
 
-    const ozelFirma = await prisma.ozelFirma.findUnique({
+    const ozelFirma = await prisma.ozel_firmalar.findUnique({
       where: { id },
       include: {
-        malKabulRecords: {
+        mal_kabul_records: {
           select: {
             id: true,
             fisNo: true,
@@ -56,7 +56,7 @@ export async function PUT(
     const { firmaAdi, vkn, vergiDairesi, yetkiliAdi, yetkiliTelefon, sehir, adres, durum } = body
 
     // Özel firmanın var olup olmadığını kontrol et
-    const existingFirma = await prisma.ozelFirma.findUnique({
+    const existingFirma = await prisma.ozel_firmalar.findUnique({
       where: { id }
     })
 
@@ -77,7 +77,7 @@ export async function PUT(
 
     // VKN kontrolü (eğer girilmişse ve değişmişse)
     if (vkn && vkn !== existingFirma.vkn) {
-      const duplicateFirma = await prisma.ozelFirma.findFirst({
+      const duplicateFirma = await prisma.ozel_firmalar.findFirst({
         where: { 
           vkn,
           id: { not: id }
@@ -91,7 +91,7 @@ export async function PUT(
       }
     }
 
-    const updatedFirma = await prisma.ozelFirma.update({
+    const updatedFirma = await prisma.ozel_firmalar.update({
       where: { id },
       data: {
         firmaAdi,
@@ -126,10 +126,10 @@ export async function DELETE(
     const { id } = await params
 
     // Özel firmanın var olup olmadığını kontrol et
-    const existingFirma = await prisma.ozelFirma.findUnique({
+    const existingFirma = await prisma.ozel_firmalar.findUnique({
       where: { id },
       include: {
-        malKabulRecords: {
+        mal_kabul_records: {
           select: { id: true }
         }
       }
@@ -143,14 +143,14 @@ export async function DELETE(
     }
 
     // Özel firmanın mal kabul kayıtları varsa silmeyi engelle
-    if (existingFirma.malKabulRecords.length > 0) {
+    if (existingFirma.mal_kabul_records.length > 0) {
       return NextResponse.json(
         { error: "Bu özel firmanın mal kabul kayıtları bulunduğu için silinemez" },
         { status: 400 }
       )
     }
 
-    await prisma.ozelFirma.delete({
+    await prisma.ozel_firmalar.delete({
       where: { id }
     })
 
