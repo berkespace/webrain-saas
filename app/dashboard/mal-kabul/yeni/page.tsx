@@ -1378,41 +1378,83 @@ export default function YeniMalKabul() {
               <title>${fişBaşlığı} - ${printData.fisNo}</title>
             <style>
               body { 
-                font-family: monospace; 
-                font-size: 12px; 
+                font-family: 'Courier New', monospace; 
+                font-size: 10px; 
                 width: 80mm; 
                 max-width: 80mm; 
                 margin: 0; 
-                padding: 8px;
+                padding: 2px;
                 box-sizing: border-box;
                 overflow-x: hidden;
+                line-height: 1.2;
               }
-              .header { text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 10px; }
-              .section { margin-bottom: 12px; border-bottom: 1px solid #000; padding-bottom: 8px; }
-              .section-title { font-weight: bold; font-size: 12px; margin-bottom: 8px; text-align: center; background: #f0f0f0; padding: 3px; border-radius: 3px; }
-              .row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; }
-              .label { font-weight: bold; }
-              .value { text-align: right; font-weight: 500; }
+              .header { 
+                text-align: center; 
+                font-weight: bold; 
+                font-size: 14px; 
+                margin-bottom: 6px; 
+                border-bottom: 1px solid #000;
+                padding-bottom: 4px;
+              }
+              .section { 
+                margin-bottom: 6px; 
+                border-bottom: 1px solid #ccc; 
+                padding-bottom: 4px; 
+              }
+              .section-title { 
+                font-weight: bold; 
+                font-size: 11px; 
+                margin-bottom: 4px; 
+                text-align: center; 
+                background: #f0f0f0; 
+                padding: 2px; 
+                border-radius: 2px; 
+              }
+              .row { 
+                display: flex; 
+                justify-content: space-between; 
+                margin-bottom: 3px; 
+                font-size: 9px; 
+                font-weight: bold;
+              }
+              .label { 
+                font-weight: bold; 
+                min-width: 35mm;
+              }
+              .value { 
+                text-align: right; 
+                font-weight: bold; 
+                max-width: 40mm;
+                word-wrap: break-word;
+              }
               .copy-info {
                 text-align: center;
-                font-size: 10px;
+                font-size: 8px;
                 color: #666;
-                margin-top: 10px;
-                padding: 5px;
+                margin-top: 6px;
+                padding: 3px;
                 background: #f0f0f0;
-                border-radius: 3px;
+                border-radius: 2px;
                 font-weight: bold;
               }
               .page-break { page-break-after: always; }
               .copy-label { 
                 text-align: center; 
-                font-size: 14px; 
+                font-size: 12px; 
                 font-weight: bold; 
-                margin: 15px 0; 
-                padding: 8px; 
+                margin: 8px 0; 
+                padding: 4px; 
                 background: #000; 
                 color: #fff; 
-                border-radius: 5px; 
+                border-radius: 3px; 
+              }
+              .qr-code, .barcode {
+                text-align: center;
+                margin: 4px 0;
+              }
+              .qr-code img, .barcode img {
+                max-width: 60mm;
+                height: auto;
               }
               
               @media print {
@@ -1420,8 +1462,8 @@ export default function YeniMalKabul() {
                   width: 80mm !important; 
                   max-width: 80mm !important; 
                   margin: 0 !important; 
-                  padding: 8px !important; 
-                  font-size: 12px !important;
+                  padding: 2px !important; 
+                  font-size: 10px !important;
                 }
                 @page { 
                   size: 80mm auto; 
@@ -1429,6 +1471,7 @@ export default function YeniMalKabul() {
                 }
                 .qr-code img, .barcode img { 
                   display: block !important; 
+                  max-width: 60mm !important;
                 }
               }
             </style>
@@ -1747,51 +1790,93 @@ export default function YeniMalKabul() {
               <title>${fişBaşlığı} - ${printData.fisNo}</title>
               <style>
                 body { 
-                  font-family: monospace; 
-                  font-size: 12px; 
+                  font-family: 'Courier New', monospace; 
+                  font-size: 10px; 
                   width: 80mm; 
                   max-width: 80mm; 
                   margin: 0; 
-                  padding: 8px;
+                  padding: 2px;
                   box-sizing: border-box;
                   overflow-x: hidden;
+                  line-height: 1.2;
                 }
-                .header { text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 10px; }
-                .section { margin-bottom: 12px; border-bottom: 1px solid #000; padding-bottom: 8px; }
-                .section-title { font-weight: bold; font-size: 12px; margin-bottom: 8px; text-align: center; background: #f0f0f0; padding: 3px; border-radius: 3px; }
-                .row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; }
-                .label { font-weight: bold; }
-                .value { text-align: right; font-weight: 500; }
+                .header { 
+                  text-align: center; 
+                  font-weight: bold; 
+                  font-size: 14px; 
+                  margin-bottom: 6px; 
+                  border-bottom: 1px solid #000;
+                  padding-bottom: 4px;
+                }
+                .section { 
+                  margin-bottom: 6px; 
+                  border-bottom: 1px solid #ccc; 
+                  padding-bottom: 4px; 
+                }
+                .section-title { 
+                  font-weight: bold; 
+                  font-size: 11px; 
+                  margin-bottom: 4px; 
+                  text-align: center; 
+                  background: #f0f0f0; 
+                  padding: 2px; 
+                  border-radius: 2px; 
+                }
+                .row { 
+                  display: flex; 
+                  justify-content: space-between; 
+                  margin-bottom: 3px; 
+                  font-size: 9px; 
+                  font-weight: bold;
+                }
+                .label { 
+                  font-weight: bold; 
+                  min-width: 35mm;
+                }
+                .value { 
+                  text-align: right; 
+                  font-weight: bold; 
+                  max-width: 40mm;
+                  word-wrap: break-word;
+                }
                 .copy-info {
                   text-align: center;
-                  font-size: 10px;
+                  font-size: 8px;
                   color: #666;
-                  margin-top: 10px;
-                  padding: 5px;
+                  margin-top: 6px;
+                  padding: 3px;
                   background: #f0f0f0;
-                  border-radius: 3px;
+                  border-radius: 2px;
                   font-weight: bold;
                 }
                 .page-break { page-break-after: always; }
                 .copy-label { 
                   text-align: center; 
-                  font-size: 14px; 
+                  font-size: 12px; 
                   font-weight: bold; 
-                  margin: 15px 0; 
-                  padding: 8px; 
+                  margin: 8px 0; 
+                  padding: 4px; 
                   background: #000; 
                   color: #fff; 
-                  border-radius: 5px; 
+                  border-radius: 3px; 
                 }
                 .final-status {
                   text-align: center;
-                  margin: 15px 0;
-                  padding: 10px;
+                  margin: 8px 0;
+                  padding: 6px;
                   background: #4caf50;
                   color: white;
-                  border-radius: 5px;
+                  border-radius: 3px;
                   font-weight: bold;
-                  font-size: 14px;
+                  font-size: 12px;
+                }
+                .qr-code, .barcode {
+                  text-align: center;
+                  margin: 4px 0;
+                }
+                .qr-code img, .barcode img {
+                  max-width: 60mm;
+                  height: auto;
                 }
                 
                 @media print {
