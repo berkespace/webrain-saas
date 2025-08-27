@@ -1090,17 +1090,17 @@ export default function YeniMalKabul() {
     if (isAdetBased) {
       // ADET birimi için validasyon
       if (!formData.kasaSayisi || parseInt(formData.kasaSayisi) <= 0) {
-        toast({
-          title: "Hata",
+      toast({
+        title: "Hata",
           description: "Kasa sayısı 0'dan büyük olmalıdır",
-          variant: "destructive",
-        })
-        return
-      }
-      
+        variant: "destructive",
+      })
+      return
+    }
+    
       if (!formData.adetSayisi || parseInt(formData.adetSayisi) <= 0) {
-        toast({
-          title: "Hata",
+      toast({
+        title: "Hata",
           description: "Adet sayısı 0'dan büyük olmalıdır",
           variant: "destructive",
         })
@@ -1112,27 +1112,27 @@ export default function YeniMalKabul() {
         toast({
           title: "Hata",
           description: "Brüt KG alanı zorunludur",
-          variant: "destructive",
-        })
-        return
-      }
-      
+        variant: "destructive",
+      })
+      return
+    }
+    
       if (!formData.daraKg) {
-        toast({
-          title: "Hata",
+      toast({
+        title: "Hata",
           description: "Dara KG alanı zorunludur",
-          variant: "destructive",
-        })
-        return
-      }
-      
+        variant: "destructive",
+      })
+      return
+    }
+    
       if (!formData.girisKg) {
-        toast({
-          title: "Hata",
+      toast({
+        title: "Hata",
           description: "Giriş KG alanı zorunludur",
-          variant: "destructive",
-        })
-        return
+        variant: "destructive",
+      })
+      return
       }
     }
     
@@ -1156,7 +1156,7 @@ export default function YeniMalKabul() {
           paletId: null, // Şimdilik null
           ambalajId: null, // Şimdilik null
           paletSayisi: '0',
-          kasaSayisi: formData.kasaSayisi || '0',
+                      kasaSayisi: formData.kasaSayisi || '0',
           adetSayisi: formData.adetSayisi || '0',
           brutKg: isAdetBased ? '0' : (formData.brutKg || '0'),
           daraKg: isAdetBased ? '0' : (formData.daraKg || '0'),
@@ -1276,7 +1276,7 @@ export default function YeniMalKabul() {
   const getSaticiDetay = (data: any) => {
     if (data.saticiTipi === 'KOMISYONCU') {
       const komisyoncu = komisyoncular.find(k => k.id === data.komisyoncuId)
-      const uretici = ureticiler.find(u => u.id === data.ureticiId)
+      const uretici = filteredUreticiler.find((u: any) => u.id === data.ureticiId)
       return {
         komisyoncuAdi: komisyoncu?.dukkanAdi || '',
         ureticiAdi: uretici ? `${uretici.ad} ${uretici.soyad}` : '',
@@ -1287,7 +1287,7 @@ export default function YeniMalKabul() {
       return {
         komisyoncuAdi: '',
         ureticiAdi: selectedMustahsil ? `${selectedMustahsil.ad} ${selectedMustahsil.soyad}` : '',
-        sehir: selectedMustahsil?.sehir || ''
+        sehir: '' // mustahsil modelinde sehir alanı yok
       }
     } else if (data.saticiTipi === 'OZEL_FIRMA') {
       const ozelFirma = ozelFirmalar.find(f => f.id === data.ozelFirmaId)
@@ -1319,6 +1319,7 @@ export default function YeniMalKabul() {
     
     try {
       // Fiş verilerini hazırla
+      const saticiDetay = getSaticiDetay(receiptData)
       const printData = {
         fisNo: receiptData.fisNo || generateFisNo(),
         tarih: receiptData.tarih || new Date().toISOString(),
@@ -1336,7 +1337,10 @@ export default function YeniMalKabul() {
         paletAdi: receiptData.paletAdi || null,
         paletSayisi: parseInt(receiptData.paletSayisi) || 0,
         notlar: receiptData.notlar || '',
-        malKabulcuAdi: session?.user?.name || ''
+        malKabulcuAdi: session?.user?.name || '',
+        komisyoncuAdi: saticiDetay.komisyoncuAdi,
+        ureticiAdi: saticiDetay.ureticiAdi,
+        sehir: saticiDetay.sehir
       }
       
       // QR kod ve barkod resimlerini oluştur
@@ -1390,7 +1394,7 @@ export default function YeniMalKabul() {
                 min-height: 210mm;
               }
               .header { 
-                text-align: center; 
+                text-align: center;
                 font-weight: bold; 
                 font-size: 14px; 
                 margin-bottom: 4px; 
@@ -1415,7 +1419,7 @@ export default function YeniMalKabul() {
                 display: flex; 
                 justify-content: space-between; 
                 margin-bottom: 2px; 
-                font-size: 10px; 
+                font-size: 10px;
                 font-weight: bold;
                 align-items: center;
               }
@@ -1511,6 +1515,24 @@ export default function YeniMalKabul() {
                   <span class="label">Satıcı Adı:</span>
                   <span class="value">${printData.saticiAdi}</span>
               </div>
+              ${printData.komisyoncuAdi ? `
+              <div class="row">
+                  <span class="label">Komisyoncu:</span>
+                  <span class="value">${printData.komisyoncuAdi}</span>
+              </div>
+              ` : ''}
+              ${printData.ureticiAdi ? `
+              <div class="row">
+                  <span class="label">Üretici:</span>
+                  <span class="value">${printData.ureticiAdi}</span>
+              </div>
+              ` : ''}
+              ${printData.sehir ? `
+              <div class="row">
+                  <span class="label">Şehir:</span>
+                  <span class="value">${printData.sehir}</span>
+              </div>
+              ` : ''}
             </div>
             
             <div class="section">
@@ -1686,10 +1708,10 @@ export default function YeniMalKabul() {
               </div>
               
               <div style="text-align: center; margin: 15px 0; padding: 10px; background: #ffeb3b; border: 2px solid #f57f17; border-radius: 5px;">
-                <div style="font-size: 12px; font-weight: bold; color: #d84315; line-height: 1.4;">
+                <div style="font-size: 14px; font-weight: bold; color: #8d2f10; line-height: 1.4;">
                   ⚠️ ÖNEMLİ UYARI ⚠️
                 </div>
-                <div style="font-size: 11px; font-weight: bold; color: #bf360c; margin-top: 5px;">
+                <div style="font-size: 13px; font-weight: bold; color: #5d1f0a; margin-top: 5px;">
                   Bu fişi tekrar geldiğinizde getirmeniz kolaylık sağlayacaktır!
                 </div>
               </div>
@@ -1737,6 +1759,7 @@ export default function YeniMalKabul() {
     
     try {
       // Fiş verilerini hazırla
+      const saticiDetay = getSaticiDetay(receiptData)
       const printData = {
         fisNo: receiptData.fisNo || generateFisNo(),
         tarih: receiptData.tarih || new Date().toISOString(),
@@ -1754,7 +1777,10 @@ export default function YeniMalKabul() {
         paletAdi: receiptData.paletAdi || null,
         paletSayisi: parseInt(receiptData.paletSayisi) || 0,
         notlar: receiptData.notlar || '',
-        malKabulcuAdi: session?.user?.name || ''
+        malKabulcuAdi: session?.user?.name || '',
+        komisyoncuAdi: saticiDetay.komisyoncuAdi,
+        ureticiAdi: saticiDetay.ureticiAdi,
+        sehir: saticiDetay.sehir
       }
       
       // QR kod ve barkod resimlerini oluştur
@@ -1941,6 +1967,24 @@ export default function YeniMalKabul() {
                   <span class="label">Satıcı Adı:</span>
                   <span class="value">${printData.saticiAdi}</span>
             </div>
+            ${printData.komisyoncuAdi ? `
+            <div class="row">
+                  <span class="label">Komisyoncu:</span>
+                  <span class="value">${printData.komisyoncuAdi}</span>
+            </div>
+            ` : ''}
+            ${printData.ureticiAdi ? `
+            <div class="row">
+                  <span class="label">Üretici:</span>
+                  <span class="value">${printData.ureticiAdi}</span>
+            </div>
+            ` : ''}
+            ${printData.sehir ? `
+            <div class="row">
+                  <span class="label">Şehir:</span>
+                  <span class="value">${printData.sehir}</span>
+            </div>
+            ` : ''}
           </div>
           
           <div class="section">
@@ -2875,8 +2919,8 @@ export default function YeniMalKabul() {
                       </>
                     ) : (
                       <>
-                        <Scale className="h-5 w-5" />
-                        Ağırlık Bilgileri
+                    <Scale className="h-5 w-5" />
+                    Ağırlık Bilgileri
                       </>
                     )}
                   </CardTitle>
@@ -2959,77 +3003,77 @@ export default function YeniMalKabul() {
                   ) : (
                     // KG birimi için ağırlık alanları
                     <>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="brutKg">Brüt KG *</Label>
-                          <Input
-                            id="brutKg"
-                            type="number"
-                            step="0.01"
-                            value={formData.brutKg}
-                            onChange={(e) => {
-                              const brutKg = e.target.value
-                              const daraKg = parseFloat(formData.daraKg) || 0
-                              const girisKg = parseFloat(brutKg) - daraKg
-                              
-                              setFormData({
-                                ...formData, 
-                                brutKg: brutKg,
-                                girisKg: girisKg > 0 ? girisKg.toFixed(2) : '0'
-                              })
-                            }}
-                            placeholder="0.00"
-                            required
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="daraKg">Dara KG (Manuel) *</Label>
-                          <Input
-                            id="daraKg"
-                            type="number"
-                            step="0.01"
-                            value={formData.daraKg}
-                            onChange={(e) => {
-                              const daraKg = e.target.value
-                              const brutKg = parseFloat(formData.brutKg) || 0
-                              const girisKg = brutKg - parseFloat(daraKg)
-                              
-                              setFormData({
-                                ...formData, 
-                                daraKg: daraKg,
-                                girisKg: girisKg > 0 ? girisKg.toFixed(2) : '0'
-                              })
-                            }}
-                            placeholder="0.00"
-                            required
-                          />
-                        </div>
-                      </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="brutKg">Brüt KG *</Label>
+                      <Input
+                        id="brutKg"
+                        type="number"
+                        step="0.01"
+                        value={formData.brutKg}
+                        onChange={(e) => {
+                          const brutKg = e.target.value
+                          const daraKg = parseFloat(formData.daraKg) || 0
+                          const girisKg = parseFloat(brutKg) - daraKg
+                          
+                          setFormData({
+                            ...formData, 
+                            brutKg: brutKg,
+                            girisKg: girisKg > 0 ? girisKg.toFixed(2) : '0'
+                          })
+                        }}
+                        placeholder="0.00"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="daraKg">Dara KG (Manuel) *</Label>
+                      <Input
+                        id="daraKg"
+                        type="number"
+                        step="0.01"
+                        value={formData.daraKg}
+                        onChange={(e) => {
+                          const daraKg = e.target.value
+                          const brutKg = parseFloat(formData.brutKg) || 0
+                          const girisKg = brutKg - parseFloat(daraKg)
+                          
+                          setFormData({
+                            ...formData, 
+                            daraKg: daraKg,
+                            girisKg: girisKg > 0 ? girisKg.toFixed(2) : '0'
+                          })
+                        }}
+                        placeholder="0.00"
+                        required
+                      />
+                    </div>
+                  </div>
 
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="girisKg">Giriş KG (Otomatik) *</Label>
-                          <Input
-                            id="girisKg"
-                            type="number"
-                            step="0.01"
-                            value={formData.girisKg}
-                            placeholder="0.00"
-                            readOnly
-                            className="bg-muted"
-                          />
-                        </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="girisKg">Giriş KG (Otomatik) *</Label>
+                      <Input
+                        id="girisKg"
+                        type="number"
+                        step="0.01"
+                        value={formData.girisKg}
+                        placeholder="0.00"
+                        readOnly
+                        className="bg-muted"
+                      />
+                    </div>
                         <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-2">
+                    <div className="space-y-2">
                             <Label htmlFor="cikmaKg">Çıkma KG</Label>
-                            <Input
+                      <Input
                               id="cikmaKg"
-                              type="number"
-                              step="0.01"
+                        type="number"
+                        step="0.01"
                               value={formData.cikmaKg}
                               onChange={(e) => setFormData({...formData, cikmaKg: e.target.value})}
-                              placeholder="0.00"
-                            />
+                        placeholder="0.00"
+                      />
                           </div>
                           <div className="space-y-2">
                             <Label htmlFor="fireKg">Fire KG</Label>
@@ -3042,26 +3086,26 @@ export default function YeniMalKabul() {
                               placeholder="0.00"
                             />
                           </div>
-                        </div>
-                      </div>
+                    </div>
+                  </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="netKg">Net KG (Otomatik)</Label>
-                        <Input
-                          id="netKg"
-                          type="number"
-                          step="0.01"
-                          value={(() => {
-                            const girisKg = parseFloat(formData.girisKg) || 0
+                  <div className="space-y-2">
+                    <Label htmlFor="netKg">Net KG (Otomatik)</Label>
+                    <Input
+                      id="netKg"
+                      type="number"
+                      step="0.01"
+                      value={(() => {
+                        const girisKg = parseFloat(formData.girisKg) || 0
                             const cikmaKg = parseFloat(formData.cikmaKg) || 0
                             const fireKg = parseFloat(formData.fireKg) || 0
                             return (girisKg - cikmaKg - fireKg).toFixed(2)
-                          })()}
-                          placeholder="0.00"
-                          readOnly
-                          className="bg-muted"
-                        />
-                      </div>
+                      })()}
+                      placeholder="0.00"
+                      readOnly
+                      className="bg-muted"
+                    />
+                  </div>
                     </>
                   )}
                 </CardContent>
@@ -3216,14 +3260,14 @@ export default function YeniMalKabul() {
                 ) : (
                   // KG birimi için ağırlık bilgileri
                   <>
-                    <div className="flex justify-between">
-                      <span className="font-medium text-foreground"><strong>Brüt KG:</strong></span>
-                      <span className="text-foreground">{receiptData.brutKg} kg</span>
-                    </div>
-                    <div className="flex justify-between">
+                <div className="flex justify-between">
+                  <span className="font-medium text-foreground"><strong>Brüt KG:</strong></span>
+                  <span className="text-foreground">{receiptData.brutKg} kg</span>
+                </div>
+                <div className="flex justify-between">
                       <span className="font-medium text-foreground"><strong>Giriş KG:</strong></span>
-                      <span className="text-foreground">{receiptData.girisKg} kg</span>
-                    </div>
+                  <span className="text-foreground">{receiptData.girisKg} kg</span>
+                </div>
                     <div className="flex justify-between">
                       <span className="font-medium text-foreground"><strong>Çıkma KG:</strong></span>
                       <span className="text-foreground">{receiptData.cikmaKg || 0} kg</span>
@@ -3236,10 +3280,10 @@ export default function YeniMalKabul() {
                       <span className="font-medium text-foreground"><strong>Net KG:</strong></span>
                       <span className="text-foreground">{receiptData.netKg || 0} kg</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium text-foreground"><strong>Kasa Sayısı:</strong></span>
-                      <span className="text-foreground">{receiptData.kasaSayisi} adet</span>
-                    </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-foreground"><strong>Kasa Sayısı:</strong></span>
+                  <span className="text-foreground">{receiptData.kasaSayisi} adet</span>
+                </div>
                   </>
                 )}
                 {receiptData.paletAdi && (
