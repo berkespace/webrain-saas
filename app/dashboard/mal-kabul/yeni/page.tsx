@@ -712,12 +712,41 @@ export default function YeniMalKabul() {
       urunKodu: urun.kod,
       urunId: urun.id
     }))
+    
+    // Ürün birimini kontrol et ve form alanlarını ayarla
+    setSelectedUrun(urun)
+    if (urun.birim === 'ADET') {
+      setIsAdetBased(true)
+      // ADET birimi için KG alanlarını temizle
+      setFormData(prev => ({
+        ...prev,
+        urunKodu: urun.kod,
+        urunId: urun.id,
+        brutKg: '',
+        daraKg: '',
+        girisKg: '',
+        cikmaKg: '',
+        fireKg: '',
+        netKg: ''
+      }))
+    } else {
+      setIsAdetBased(false)
+      // KG birimi için adet alanlarını temizle
+      setFormData(prev => ({
+        ...prev,
+        urunKodu: urun.kod,
+        urunId: urun.id,
+        adetSayisi: '',
+        netAdet: ''
+      }))
+    }
+    
     setShowUrunSuggestions(false)
     setUrunSuggestions([])
     
     toast({
       title: "Ürün Seçildi",
-      description: `${urun.ad} seçildi`,
+      description: `${urun.ad} (${urun.birim}) seçildi`,
       variant: "success",
     })
   }
@@ -2669,105 +2698,188 @@ export default function YeniMalKabul() {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Scale className="h-5 w-5" />
-                    Ağırlık Bilgileri
+                    {isAdetBased ? (
+                      <>
+                        <Package className="h-5 w-5" />
+                        Adet Bilgileri
+                      </>
+                    ) : (
+                      <>
+                        <Scale className="h-5 w-5" />
+                        Ağırlık Bilgileri
+                      </>
+                    )}
                   </CardTitle>
-                  <CardDescription>Brüt, dara, giriş ve fire bilgileri</CardDescription>
+                  <CardDescription>
+                    {isAdetBased 
+                      ? "Kasa sayısı ve adet bilgileri" 
+                      : "Brüt, dara, giriş ve fire bilgileri"
+                    }
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="brutKg">Brüt KG *</Label>
-                      <Input
-                        id="brutKg"
-                        type="number"
-                        step="0.01"
-                        value={formData.brutKg}
-                        onChange={(e) => {
-                          const brutKg = e.target.value
-                          const daraKg = parseFloat(formData.daraKg) || 0
-                          const girisKg = parseFloat(brutKg) - daraKg
-                          
-                          setFormData({
-                            ...formData, 
-                            brutKg: brutKg,
-                            girisKg: girisKg > 0 ? girisKg.toFixed(2) : '0'
-                          })
-                        }}
-                        placeholder="0.00"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="daraKg">Dara KG (Manuel) *</Label>
-                      <Input
-                        id="daraKg"
-                        type="number"
-                        step="0.01"
-                        value={formData.daraKg}
-                        onChange={(e) => {
-                          const daraKg = e.target.value
-                          const brutKg = parseFloat(formData.brutKg) || 0
-                          const girisKg = brutKg - parseFloat(daraKg)
-                          
-                          setFormData({
-                            ...formData, 
-                            daraKg: daraKg,
-                            girisKg: girisKg > 0 ? girisKg.toFixed(2) : '0'
-                          })
-                        }}
-                        placeholder="0.00"
-                        required
-                      />
-
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="girisKg">Giriş KG (Otomatik) *</Label>
-                      <Input
-                        id="girisKg"
-                        type="number"
-                        step="0.01"
-                        value={formData.girisKg}
-                        placeholder="0.00"
-                        readOnly
-                        className="bg-muted"
-                      />
-
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="cikmaKg">Çıkma KG</Label>
-                      <Input
-                          id="cikmaKg"
-                        type="number"
-                        step="0.01"
-                          value={formData.cikmaKg}
-                          onChange={(e) => setFormData({...formData, cikmaKg: e.target.value})}
-                        placeholder="0.00"
-                      />
+                  {isAdetBased ? (
+                    // ADET birimi için adet alanları
+                    <>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="kasaSayisi">Kasa Sayısı *</Label>
+                          <Input
+                            id="kasaSayisi"
+                            type="number"
+                            value={formData.kasaSayisi}
+                            onChange={(e) => setFormData({...formData, kasaSayisi: e.target.value})}
+                            placeholder="0"
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="adetSayisi">Adet Sayısı *</Label>
+                          <Input
+                            id="adetSayisi"
+                            type="number"
+                            value={formData.adetSayisi}
+                            onChange={(e) => setFormData({...formData, adetSayisi: e.target.value})}
+                            placeholder="0"
+                            required
+                          />
+                        </div>
                       </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="cikmaAdet">Çıkma Adet</Label>
+                          <Input
+                            id="cikmaAdet"
+                            type="number"
+                            value={formData.cikmaKg || ''} // Geçici olarak cikmaKg alanını kullan
+                            onChange={(e) => setFormData({...formData, cikmaKg: e.target.value})}
+                            placeholder="0"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="fireAdet">Fire Adet</Label>
+                          <Input
+                            id="fireAdet"
+                            type="number"
+                            value={formData.fireKg || ''} // Geçici olarak fireKg alanını kullan
+                            onChange={(e) => setFormData({...formData, fireKg: e.target.value})}
+                            placeholder="0"
+                          />
+                        </div>
+                      </div>
+                      
                       <div className="space-y-2">
-                        <Label htmlFor="fireKg">Fire KG</Label>
+                        <Label htmlFor="netAdet">Net Adet (Otomatik)</Label>
                         <Input
-                          id="fireKg"
+                          id="netAdet"
                           type="number"
-                          step="0.01"
-                          value={formData.fireKg}
-                          onChange={(e) => setFormData({...formData, fireKg: e.target.value})}
-                          placeholder="0.00"
+                          value={(() => {
+                            const girisAdet = parseInt(formData.adetSayisi) || 0
+                            const cikmaAdet = parseInt(formData.cikmaKg) || 0
+                            const fireAdet = parseInt(formData.fireKg) || 0
+                            return (girisAdet - cikmaAdet - fireAdet).toString()
+                          })()}
+                          placeholder="0"
+                          readOnly
+                          className="bg-muted"
                         />
                       </div>
-                    </div>
-                  </div>
+                    </>
+                  ) : (
+                    // KG birimi için ağırlık alanları
+                    <>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="brutKg">Brüt KG *</Label>
+                          <Input
+                            id="brutKg"
+                            type="number"
+                            step="0.01"
+                            value={formData.brutKg}
+                            onChange={(e) => {
+                              const brutKg = e.target.value
+                              const daraKg = parseFloat(formData.daraKg) || 0
+                              const girisKg = parseFloat(brutKg) - daraKg
+                              
+                              setFormData({
+                                ...formData, 
+                                brutKg: brutKg,
+                                girisKg: girisKg > 0 ? girisKg.toFixed(2) : '0'
+                              })
+                            }}
+                            placeholder="0.00"
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="daraKg">Dara KG (Manuel) *</Label>
+                          <Input
+                            id="daraKg"
+                            type="number"
+                            step="0.01"
+                            value={formData.daraKg}
+                            onChange={(e) => {
+                              const daraKg = e.target.value
+                              const brutKg = parseFloat(formData.brutKg) || 0
+                              const girisKg = brutKg - parseFloat(daraKg)
+                              
+                              setFormData({
+                                ...formData, 
+                                daraKg: daraKg,
+                                girisKg: girisKg > 0 ? girisKg.toFixed(2) : '0'
+                              })
+                            }}
+                            placeholder="0.00"
+                            required
+                          />
+                        </div>
+                      </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="netKg">Net KG (Otomatik)</Label>
-                    <Input
-                      id="netKg"
-                      type="number"
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="girisKg">Giriş KG (Otomatik) *</Label>
+                          <Input
+                            id="girisKg"
+                            type="number"
+                            step="0.01"
+                            value={formData.girisKg}
+                            placeholder="0.00"
+                            readOnly
+                            className="bg-muted"
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="cikmaKg">Çıkma KG</Label>
+                            <Input
+                              id="cikmaKg"
+                              type="number"
+                              step="0.01"
+                              value={formData.cikmaKg}
+                              onChange={(e) => setFormData({...formData, cikmaKg: e.target.value})}
+                              placeholder="0.00"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="fireKg">Fire KG</Label>
+                            <Input
+                              id="fireKg"
+                              type="number"
+                              step="0.01"
+                              value={formData.fireKg}
+                              onChange={(e) => setFormData({...formData, fireKg: e.target.value})}
+                              placeholder="0.00"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="netKg">Net KG (Otomatik)</Label>
+                        <Input
+                          id="netKg"
+                          type="number"
                       step="0.01"
                       value={(() => {
                         const girisKg = parseFloat(formData.girisKg) || 0
