@@ -37,7 +37,7 @@ interface MalKabulRecord {
   id: string
   fisNo: string
   tarih: string
-  saticiTipi: 'OZEL_FIRMA' | 'KOMISYONCU' | 'MUSTAHSIL'
+  saticiTipi: 'OZEL_FIRMA' | 'KOMISYONCU' | 'MUSTAHSIL' | 'URETICI'
   komisyoncular?: {
     id: string
     dukkanAdi: string
@@ -63,6 +63,7 @@ interface MalKabulRecord {
     id: string
     ad: string
     kategori: string
+    birim: string
   }
   ambalaj?: {
     id: string
@@ -72,11 +73,14 @@ interface MalKabulRecord {
   }
   paletSayisi: number
   kasaSayisi: number
+  adetSayisi: number
   brutKg: number
   daraKg: number
   girisKg: number
+  cikmaKg: number
   cikmaFireKg: number
   netKg: number
+  netAdet: number
   birimFiyat?: number
   toplamFiyat?: number
   status: string
@@ -192,9 +196,18 @@ export default function MalKabulDashboard() {
       case 'OZEL_FIRMA':
         return record.ozel_firmalar?.firmaAdi || 'Bilinmiyor'
       case 'KOMISYONCU':
-        return record.komisyoncular?.dukkanAdi || 'Bilinmiyor'
+        if (record.komisyoncular && record.ureticiler) {
+          // Komisyoncu olarak giriş yapılan ürünlerde: "Komisyon No - Üretici Adı" formatında
+          return `${record.komisyoncular.dukkanAdi} - ${record.ureticiler.ad} ${record.ureticiler.soyad}`
+        } else if (record.komisyoncular) {
+          // Sadece komisyoncu varsa
+          return `${record.komisyoncular.dukkanAdi} (Üretici Seçilmedi)`
+        }
+        return 'Bilinmiyor'
       case 'MUSTAHSIL':
         return record.mustahsil ? `${record.mustahsil.ad} ${record.mustahsil.soyad}` : 'Bilinmiyor'
+      case 'URETICI':
+        return record.ureticiler ? `${record.ureticiler.ad} ${record.ureticiler.soyad}` : 'Bilinmiyor'
       default:
         return 'Bilinmiyor'
     }
@@ -208,6 +221,8 @@ export default function MalKabulDashboard() {
         return 'Komisyoncu'
       case 'MUSTAHSIL':
         return 'Müstahsil'
+      case 'URETICI':
+        return 'Üretici'
       default:
         return tipi
     }
@@ -221,6 +236,8 @@ export default function MalKabulDashboard() {
         return 'bg-green-100 text-green-800'
       case 'MUSTAHSIL':
         return 'bg-orange-100 text-orange-800'
+      case 'URETICI':
+        return 'bg-purple-100 text-purple-800'
       default:
         return 'bg-gray-100 text-gray-800'
     }
@@ -501,12 +518,12 @@ export default function MalKabulDashboard() {
                       <th className="text-left py-3 px-2 font-medium">ÜNVAN</th>
                       <th className="text-left py-3 px-2 font-medium">ÜRÜN</th>
                       <th className="text-left py-3 px-2 font-medium">KASA SAYISI</th>
-                      <th className="text-left py-3 px-2 font-medium">BRÜT KG</th>
-                      <th className="text-left py-3 px-2 font-medium">DARA</th>
-                      <th className="text-left py-3 px-2 font-medium">GİRİŞ KG</th>
+                      <th className="text-left py-3 px-2 font-medium">BRÜT KG/ADET</th>
+                      <th className="text-left py-3 px-2 font-medium">DARA KG/ADET</th>
+                      <th className="text-left py-3 px-2 font-medium">GİRİŞ KG/ADET</th>
                       <th className="text-left py-3 px-2 font-medium">ÇIKMA/FİRE</th>
                       <th className="text-left py-3 px-2 font-medium">DURUM</th>
-                      <th className="text-left py-3 px-2 font-medium">NET KG</th>
+                      <th className="text-left py-3 px-2 font-medium">NET KG/ADET</th>
                       <th className="text-left py-3 px-2 font-medium">FİYAT</th>
                       <th className="text-left py-3 px-2 font-medium">FİŞ NO</th>
                       <th className="text-left py-3 px-2 font-medium">İŞLEMLER</th>
@@ -530,17 +547,40 @@ export default function MalKabulDashboard() {
                           <td className="py-3 px-2 font-medium">{getSaticiAdi(item)}</td>
                           <td className="py-3 px-2">{item.urunler.ad}</td>
                           <td className="py-3 px-2 text-right">{item.kasaSayisi.toLocaleString()}</td>
-                          <td className="py-3 px-2 text-right">{item.brutKg.toLocaleString()}</td>
-                          <td className="py-3 px-2 text-right">{item.daraKg.toLocaleString()}</td>
-                          <td className="py-3 px-2 text-right">{item.girisKg.toLocaleString()}</td>
-                          <td className="py-3 px-2 text-right">{item.cikmaFireKg.toLocaleString()}</td>
+                          <td className="py-3 px-2 text-right">
+                            {item.urunler.birim?.toLowerCase() === 'adet' 
+                              ? (item.adetSayisi || 0).toLocaleString() + ' adet'
+                              : (item.brutKg || 0).toLocaleString() + ' kg'
+                            }
+                          </td>
+                          <td className="py-3 px-2 text-right">
+                            {item.urunler.birim?.toLowerCase() === 'adet' 
+                              ? (item.paletSayisi || 0).toLocaleString() + ' palet'
+                              : (item.daraKg || 0).toLocaleString() + ' kg'
+                            }
+                          </td>
+                          <td className="py-3 px-2 text-right">
+                            {item.urunler.birim?.toLowerCase() === 'adet' 
+                              ? (item.adetSayisi || 0).toLocaleString() + ' adet'
+                              : (item.girisKg || 0).toLocaleString() + ' kg'
+                            }
+                          </td>
+                          <td className="py-3 px-2 text-right">
+                            {item.urunler.birim?.toLowerCase() === 'adet' 
+                              ? (item.cikmaKg || 0).toLocaleString() + ' adet'
+                              : (item.cikmaFireKg || 0).toLocaleString() + ' kg'
+                            }
+                          </td>
                           <td className="py-3 px-2">
-                                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
-                  {getStatusLabel(item.status)}
-                </span>
+                            <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(item.status)}`}>
+                              {getStatusLabel(item.status)}
+                            </span>
                           </td>
                           <td className="py-3 px-2 text-right font-medium">
-                            {item.netKg ? item.netKg.toLocaleString() : '-'}
+                            {item.urunler.birim?.toLowerCase() === 'adet' 
+                              ? (item.netAdet || 0).toLocaleString() + ' adet'
+                              : (item.netKg || 0).toLocaleString() + ' kg'
+                            }
                           </td>
                           <td className="py-3 px-2 text-right">{item.birimFiyat ? item.birimFiyat.toLocaleString() : '-'}</td>
                           <td className="py-3 px-2 font-medium">{item.fisNo}</td>
