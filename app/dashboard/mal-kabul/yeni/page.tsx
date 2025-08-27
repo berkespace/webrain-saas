@@ -1178,11 +1178,16 @@ export default function YeniMalKabul() {
         const result = await response.json()
         
         // Fiş verilerini hazırla
+        const saticiDetay = getSaticiDetay(result.malKabulRecord)
         const receiptData = {
           fisNo: result.malKabulRecord.fisNo,
           tarih: result.malKabulRecord.tarih,
           saticiTipi: result.malKabulRecord.saticiTipi, // Use the actual record saticiTipi
           saticiAdi: getSaticiAdi(result.malKabulRecord),
+          // Satıcı detay bilgileri
+          komisyoncuAdi: saticiDetay.komisyoncuAdi,
+          ureticiAdi: saticiDetay.ureticiAdi,
+          sehir: saticiDetay.sehir,
           urunAdi: urunler.find(u => u.id === formData.urunId)?.ad || '',
           // Birime göre veri hazırlama
           isAdetBased: isAdetBased,
@@ -1266,6 +1271,37 @@ export default function YeniMalKabul() {
       return selectedMustahsil ? `${selectedMustahsil.ad} ${selectedMustahsil.soyad}` : ''
     }
     return ''
+  }
+
+  const getSaticiDetay = (data: any) => {
+    if (data.saticiTipi === 'KOMISYONCU') {
+      const komisyoncu = komisyoncular.find(k => k.id === data.komisyoncuId)
+      const uretici = ureticiler.find(u => u.id === data.ureticiId)
+      return {
+        komisyoncuAdi: komisyoncu?.dukkanAdi || '',
+        ureticiAdi: uretici ? `${uretici.ad} ${uretici.soyad}` : '',
+        sehir: komisyoncu?.sehir || uretici?.sehir || ''
+      }
+    } else if (data.saticiTipi === 'MUSTAHSIL') {
+      const selectedMustahsil = mustahsil.find(m => m.id === data.mustahsilId)
+      return {
+        komisyoncuAdi: '',
+        ureticiAdi: selectedMustahsil ? `${selectedMustahsil.ad} ${selectedMustahsil.soyad}` : '',
+        sehir: selectedMustahsil?.sehir || ''
+      }
+    } else if (data.saticiTipi === 'OZEL_FIRMA') {
+      const ozelFirma = ozelFirmalar.find(f => f.id === data.ozelFirmaId)
+      return {
+        komisyoncuAdi: '',
+        ureticiAdi: ozelFirma?.firmaAdi || '',
+        sehir: ozelFirma?.sehir || ''
+      }
+    }
+    return {
+      komisyoncuAdi: '',
+      ureticiAdi: '',
+      sehir: ''
+    }
   }
 
   // Fiş numarası oluşturma
@@ -3034,6 +3070,24 @@ export default function YeniMalKabul() {
                   <span className="font-medium text-foreground"><strong>Satıcı:</strong></span>
                   <span className="text-foreground">{receiptData.saticiAdi}</span>
                 </div>
+                {receiptData.komisyoncuAdi && (
+                  <div className="flex justify-between">
+                    <span className="font-medium text-foreground"><strong>Komisyoncu:</strong></span>
+                    <span className="text-foreground">{receiptData.komisyoncuAdi}</span>
+                  </div>
+                )}
+                {receiptData.ureticiAdi && (
+                  <div className="flex justify-between">
+                    <span className="font-medium text-foreground"><strong>Üretici:</strong></span>
+                    <span className="text-foreground">{receiptData.ureticiAdi}</span>
+                  </div>
+                )}
+                {receiptData.sehir && (
+                  <div className="flex justify-between">
+                    <span className="font-medium text-foreground"><strong>Şehir:</strong></span>
+                    <span className="text-foreground">{receiptData.sehir}</span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="font-medium text-foreground"><strong>Ürün:</strong></span>
                   <span className="text-foreground">{receiptData.urunAdi}</span>
