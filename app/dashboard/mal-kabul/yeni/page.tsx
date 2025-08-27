@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/select"
 import { useToast } from '@/components/ui/use-toast'
 import Link from 'next/link'
+import { Autocomplete, AutocompleteItem } from "@heroui/react"
 
 interface OzelFirma {
   id: string
@@ -2787,89 +2788,39 @@ export default function YeniMalKabul() {
                     </div>
                   </div>
 
-                  {/* Ürün Dropdown Seçimi */}
+                  {/* Ürün Dropdown Seçimi - HeroUI Autocomplete */}
                   <div className="space-y-2">
                     <Label htmlFor="urunId">Ürün Seçimi *</Label>
-                    <div className="relative">
-                      <Input
-                        placeholder="Ürün ara veya seç..."
-                        value={urunSearchTerm}
-                        onChange={(e) => setUrunSearchTerm(e.target.value)}
-                        onFocus={() => setShowUrunSuggestions(true)}
-                        className="pr-10"
-                      />
-                      <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setShowUrunSuggestions(!showUrunSuggestions)}
-                          className="h-6 w-6 p-0"
-                        >
-                          ▼
-                        </Button>
-                      </div>
-                    </div>
-                    
-                    {/* Arama Sonuçları */}
-                    {showUrunSuggestions && (
-                      <div className="absolute z-50 w-full mt-1 bg-background border border-border rounded-md shadow-lg max-h-48 overflow-auto">
-                        <div className="p-2 border-b border-border bg-muted/50">
-                          <div className="text-xs font-medium text-muted-foreground">
-                            {filteredUrunler.length} ürün bulundu
-                          </div>
-                        </div>
-                        
-                        {/* Kategori bazlı gruplandırma */}
-                        {Object.entries(
-                          filteredUrunler.reduce((acc, urun) => {
-                            const kategori = urun.kategori || 'Diğer'
-                            if (!acc[kategori]) acc[kategori] = []
-                            acc[kategori].push(urun)
-                            return acc
-                          }, {} as Record<string, typeof filteredUrunler>)
-                        ).map(([kategori, urunlerInKategori]) => (
-                          <div key={kategori}>
-                            <div className="px-2 py-1 text-xs font-semibold text-muted-foreground bg-muted">
-                              {kategori} ({urunlerInKategori.length})
+                    <Autocomplete
+                      className="w-full"
+                      defaultItems={urunler}
+                      label="Ürün seçin"
+                      placeholder="Ürün ara veya seç..."
+                      selectedKey={formData.urunId}
+                      onSelectionChange={(key) => {
+                        const selectedUrun = urunler.find(u => u.id === key)
+                        if (selectedUrun) {
+                          handleUrunSelect(selectedUrun)
+                        }
+                      }}
+                      onInputChange={(value) => setUrunSearchTerm(value)}
+                    >
+                      {(urun) => (
+                        <AutocompleteItem key={urun.id} textValue={urun.ad}>
+                          <div className="flex justify-between items-center w-full">
+                            <div className="min-w-0 flex-1">
+                              <div className="font-medium text-sm truncate">{urun.ad}</div>
+                              <div className="text-xs text-muted-foreground truncate">
+                                {urun.stokKodu || `URN${urun.id.slice(-3)}`}
+                              </div>
                             </div>
-                            {urunlerInKategori.slice(0, 5).map((urun) => (
-                              <div
-                                key={urun.id}
-                                className="px-2 py-1.5 hover:bg-muted cursor-pointer border-b border-border last:border-b-0"
-                                onClick={() => {
-                                  handleUrunSelect(urun)
-                                  setUrunSearchTerm(urun.ad)
-                                  setShowUrunSuggestions(false)
-                                }}
-                              >
-                                <div className="flex justify-between items-center">
-                                  <div className="min-w-0 flex-1">
-                                    <div className="font-medium text-sm truncate">{urun.ad}</div>
-                                    <div className="text-xs text-muted-foreground truncate">
-                                      {urun.stokKodu || `URN${urun.id.slice(-3)}`}
-                                    </div>
-                                  </div>
-                                  <div className="text-xs text-muted-foreground ml-2 flex-shrink-0">
-                                    {urun.birim}
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                            {urunlerInKategori.length > 5 && (
-                              <div className="px-2 py-1 text-xs text-muted-foreground bg-muted/30 text-center">
-                                +{urunlerInKategori.length - 5} ürün daha...
-                              </div>
-                            )}
+                            <div className="text-xs text-muted-foreground ml-2 flex-shrink-0">
+                              {urun.birim}
+                            </div>
                           </div>
-                        ))}
-                        
-                        {filteredUrunler.length === 0 && (
-                          <div className="p-2 text-center text-muted-foreground text-sm">
-                            Ürün bulunamadı
-                          </div>
-                        )}
-                      </div>
-                    )}
+                        </AutocompleteItem>
+                      )}
+                    </Autocomplete>
                     
                     <div className="text-xs text-muted-foreground">
                       Ürün adı, kodu veya kategori ile arama yapabilirsiniz
