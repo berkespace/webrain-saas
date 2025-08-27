@@ -40,6 +40,7 @@ interface MalKabulRecord {
   users: { firstName: string; lastName: string }
   komisyoncu?: { dukkanAdi: string; komisyonKodu: string }
   uretici?: { ad: string; soyad: string }
+  mustahsil?: { ad: string; soyad: string }
   ozelFirma?: { firmaAdi: string }
   ambalaj?: { ad: string }
   palet?: { ad: string }
@@ -74,6 +75,20 @@ export default function MalKabulListePage() {
         const data = await response.json()
         console.log('API Response:', data)
         console.log('Records:', data.records)
+        
+        // Debug: Ürün birimi kontrolü
+        if (data.records && data.records.length > 0) {
+          data.records.forEach((record: any, index: number) => {
+            console.log(`Record ${index}:`, {
+              id: record.id,
+              urunAdi: record.urunler?.ad,
+              urunBirim: record.urunler?.birim,
+              saticiTipi: record.saticiTipi,
+              isAdetBased: record.urunler?.birim?.toLowerCase() === 'adet'
+            })
+          })
+        }
+        
         setRecords(data.records || [])
       }
     } catch (error) {
@@ -105,6 +120,9 @@ export default function MalKabulListePage() {
     if (record.saticiTipi === 'KOMISYONCU' && record.komisyoncu && record.uretici) {
       // Komisyoncu olarak giriş yapılan ürünlerde: "Komisyon No - Üretici Adı" formatında
       return `${record.komisyoncu.dukkanAdi} - ${record.uretici.ad} ${record.uretici.soyad}`
+    } else if (record.saticiTipi === 'MUSTAHSIL' && record.mustahsil) {
+      // Müstahsil olarak giriş yapılan ürünlerde: "Ad Soyad" formatında
+      return `${record.mustahsil.ad} ${record.mustahsil.soyad}`
     } else if (record.komisyoncu) {
       return record.komisyoncu.dukkanAdi
     } else if (record.uretici) {

@@ -278,6 +278,12 @@ export default function MalKabulTest() {
             console.log('🔍 İlk kayıt cikmaFireKg:', record.cikmaFireKg)
             console.log('🔍 İlk kayıt fireKg:', record.fireKg)
             console.log('🔍 İlk kayıt tüm değerler:', record)
+            console.log('🔍 İlk kayıt ürün bilgileri:', {
+              urunId: record.urunId,
+              urunAdi: record.urunler?.ad,
+              urunBirim: record.urunler?.birim,
+              isAdetBased: record.urunler?.birim?.toLowerCase() === 'adet'
+            })
             
             // Tüm alanları tek tek kontrol et
             Object.entries(record).forEach(([key, value]) => {
@@ -305,13 +311,16 @@ export default function MalKabulTest() {
             mustahsilId: record.mustahsilId || '',
             ozelFirmaId: record.ozelFirmaId || '',
             urunId: record.urunId,
+            urunBirim: record.urunler?.birim || 'KG', // Ürün birimi eklendi
             kasaSayisi: record.kasaSayisi?.toString() || '',
+            adetSayisi: record.adetSayisi?.toString() || '', // ADET birimi için
             brutKg: record.brutKg?.toString() || '',
             daraKg: record.daraKg?.toString() || '',
             girisKg: record.girisKg?.toString() || '',
             fireKg: record.fireKg?.toString() || '', // fireKg = Ekstradan kesilen fire miktarı
             cikmaKg: record.cikmaKg?.toString() || '0', // cikmaKg = Ana çıkma miktarı
             netKg: record.netKg?.toString() || '',
+            netAdet: record.netAdet?.toString() || '', // ADET birimi için net adet
             notlar: record.notlar || '',
             urunDurumu: record.status === 'TAMAMLANDI' ? 'NETLENDI' : 'BEKLEMEDE', // Default Beklemede
             fisYazdirildi: true, // Mevcut kayıtlar zaten yazdırılmış
