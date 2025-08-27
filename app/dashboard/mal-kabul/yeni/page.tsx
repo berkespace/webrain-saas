@@ -1086,40 +1086,54 @@ export default function YeniMalKabul() {
       return
     }
     
-    if (!formData.brutKg) {
-      toast({
-        title: "Hata",
-        description: "Brüt KG alanı zorunludur",
-        variant: "destructive",
-      })
-      return
-    }
-    
-    if (!formData.daraKg) {
-      toast({
-        title: "Hata",
-        description: "Dara KG alanı zorunludur",
-        variant: "destructive",
-      })
-      return
-    }
-    
-    if (!formData.girisKg) {
-      toast({
-        title: "Hata",
-        description: "Giriş KG alanı zorunludur",
-        variant: "destructive",
-      })
-      return
-    }
-    
-    if (!formData.kasaSayisi || parseInt(formData.kasaSayisi) <= 0) {
-      toast({
-        title: "Hata",
-        description: "Kasa sayısı 0'dan büyük olmalıdır",
-        variant: "destructive",
-      })
-      return
+    // Birime göre validasyon
+    if (isAdetBased) {
+      // ADET birimi için validasyon
+      if (!formData.kasaSayisi || parseInt(formData.kasaSayisi) <= 0) {
+        toast({
+          title: "Hata",
+          description: "Kasa sayısı 0'dan büyük olmalıdır",
+          variant: "destructive",
+        })
+        return
+      }
+      
+      if (!formData.adetSayisi || parseInt(formData.adetSayisi) <= 0) {
+        toast({
+          title: "Hata",
+          description: "Adet sayısı 0'dan büyük olmalıdır",
+          variant: "destructive",
+        })
+        return
+      }
+    } else {
+      // KG birimi için validasyon
+      if (!formData.brutKg) {
+        toast({
+          title: "Hata",
+          description: "Brüt KG alanı zorunludur",
+          variant: "destructive",
+        })
+        return
+      }
+      
+      if (!formData.daraKg) {
+        toast({
+          title: "Hata",
+          description: "Dara KG alanı zorunludur",
+          variant: "destructive",
+        })
+        return
+      }
+      
+      if (!formData.girisKg) {
+        toast({
+          title: "Hata",
+          description: "Giriş KG alanı zorunludur",
+          variant: "destructive",
+        })
+        return
+      }
     }
     
 
