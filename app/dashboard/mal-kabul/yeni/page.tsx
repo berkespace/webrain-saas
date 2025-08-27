@@ -715,7 +715,7 @@ export default function YeniMalKabul() {
     
     // Ürün birimini kontrol et ve form alanlarını ayarla
     setSelectedUrun(urun)
-    if (urun.birim === 'ADET') {
+    if (urun.birim?.toLowerCase() === 'adet') {
       setIsAdetBased(true)
       // ADET birimi için KG alanlarını temizle
       setFormData(prev => ({
