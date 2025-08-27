@@ -2880,17 +2880,20 @@ export default function YeniMalKabul() {
                         <Input
                           id="netKg"
                           type="number"
-                      step="0.01"
-                      value={(() => {
-                        const girisKg = parseFloat(formData.girisKg) || 0
-                        return girisKg.toFixed(2)
-                      })()}
-                      placeholder="0.00"
-                      readOnly
-                      className="bg-muted"
-                    />
-
-                  </div>
+                          step="0.01"
+                          value={(() => {
+                            const girisKg = parseFloat(formData.girisKg) || 0
+                            const cikmaKg = parseFloat(formData.cikmaKg) || 0
+                            const fireKg = parseFloat(formData.fireKg) || 0
+                            return (girisKg - cikmaKg - fireKg).toFixed(2)
+                          })()}
+                          placeholder="0.00"
+                          readOnly
+                          className="bg-muted"
+                        />
+                      </div>
+                    </>
+                  )}
                 </CardContent>
               </Card>
 
