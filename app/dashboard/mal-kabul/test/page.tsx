@@ -228,7 +228,7 @@ export default function MalKabulTest() {
         const existingRows = data.records || []
         
         const convertedRows = existingRows.map((record: any, index: number) => {
-          // Debug: İlk kaydın tüm alanlarını ve değerlerini detaylı logla
+          // Debug: İlk kayıt detaylarını göster
           if (index === 0) {
             console.log('🔍 İlk kayıt tüm alanları:', Object.keys(record))
             console.log('🔍 İlk kayıt cikmaKg:', record.cikmaKg)
@@ -240,6 +240,13 @@ export default function MalKabulTest() {
             Object.entries(record).forEach(([key, value]) => {
               if (key.toLowerCase().includes('cikma') || key.toLowerCase().includes('kg') || key.toLowerCase().includes('fire')) {
                 console.log(`🔍 Alan: ${key} = ${value}`)
+              }
+            })
+            
+            // Özel olarak 10 değerini içeren alanları ara
+            Object.entries(record).forEach(([key, value]) => {
+              if (value === 10 || value === '10') {
+                console.log(`🚨 10 DEĞERİ BULUNDU! Alan: ${key} = ${value}`)
               }
             })
           }
@@ -259,8 +266,8 @@ export default function MalKabulTest() {
             brutKg: record.brutKg?.toString() || '',
             daraKg: record.daraKg?.toString() || '',
             girisKg: record.girisKg?.toString() || '',
-            fireKg: record.cikmaFireKg?.toString() || '',
-            cikmaKg: record.cikmaFireKg?.toString() || '0', // cikmaFireKg = Çıkma KG (kullanıcı tarafından belirlenen)
+            fireKg: record.fireKg?.toString() || '', // fireKg alanını kullan
+            cikmaKg: record.cikmaKg?.toString() || '0', // cikmaKg alanını kullan
             netKg: record.netKg?.toString() || '',
             notlar: record.notlar || '',
             urunDurumu: record.status === 'TAMAMLANDI' ? 'NETLENDI' : 'BEKLEMEDE', // Default Beklemede
