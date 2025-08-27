@@ -502,19 +502,11 @@ export default function YeniMalKabul() {
         variant: "success",
       })
     } else if (item.type === 'urun') {
-      setFormData(prev => ({
-        ...prev,
-        urunKodu: item.kod,
-        urunId: item.id
-      }))
-      
-
-      
-      toast({
-        title: "Ürün Seçildi",
-        description: `${item.ad} seçildi`,
-        variant: "success",
-      })
+      // Ürün seçildiğinde handleUrunSelect fonksiyonunu çağır
+      const selectedUrun = urunler.find(u => u.id === item.id)
+      if (selectedUrun) {
+        handleUrunSelect(selectedUrun)
+      }
     }
     
     setGlobalInput('')
@@ -2735,7 +2727,6 @@ export default function YeniMalKabul() {
                     <Autocomplete
                       className="w-full"
                       defaultItems={urunler}
-                      label="Ürün seçin"
                       placeholder="Ürün ara veya seç..."
                       selectedKey={formData.urunId}
                       onSelectionChange={(key) => {
