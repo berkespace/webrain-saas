@@ -1379,20 +1379,20 @@ export default function YeniMalKabul() {
             <style>
               body { 
                 font-family: 'Courier New', monospace; 
-                font-size: 9px; 
+                font-size: 11px; 
                 width: 80mm; 
                 max-width: 80mm; 
                 margin: 0; 
                 padding: 0;
                 box-sizing: border-box;
                 overflow-x: hidden;
-                line-height: 1.1;
+                line-height: 1.2;
                 min-height: 210mm;
               }
               .header { 
                 text-align: center; 
                 font-weight: bold; 
-                font-size: 12px; 
+                font-size: 14px; 
                 margin-bottom: 4px; 
                 border-bottom: 1px solid #000;
                 padding-bottom: 2px;
@@ -1404,7 +1404,7 @@ export default function YeniMalKabul() {
               }
               .section-title { 
                 font-weight: bold; 
-                font-size: 10px; 
+                font-size: 12px; 
                 margin-bottom: 3px; 
                 text-align: center; 
                 background: #f0f0f0; 
@@ -1415,7 +1415,7 @@ export default function YeniMalKabul() {
                 display: flex; 
                 justify-content: space-between; 
                 margin-bottom: 2px; 
-                font-size: 8px; 
+                font-size: 10px; 
                 font-weight: bold;
                 align-items: center;
               }
@@ -1434,7 +1434,7 @@ export default function YeniMalKabul() {
               }
               .copy-info {
                 text-align: center;
-                font-size: 7px;
+                font-size: 9px;
                 color: #666;
                 margin-top: 4px;
                 padding: 2px;
@@ -1445,7 +1445,7 @@ export default function YeniMalKabul() {
               .page-break { page-break-after: always; }
               .copy-label { 
                 text-align: center; 
-                font-size: 10px; 
+                font-size: 12px; 
                 font-weight: bold; 
                 margin: 4px 0; 
                 padding: 2px; 
@@ -1468,7 +1468,7 @@ export default function YeniMalKabul() {
                   max-width: 80mm !important; 
                   margin: 0 !important; 
                   padding: 0 !important; 
-                  font-size: 9px !important;
+                  font-size: 11px !important;
                   min-height: 210mm !important;
                 }
                 @page { 
@@ -1797,20 +1797,20 @@ export default function YeniMalKabul() {
               <style>
                 body { 
                   font-family: 'Courier New', monospace; 
-                  font-size: 9px; 
+                  font-size: 11px; 
                   width: 80mm; 
                   max-width: 80mm; 
                   margin: 0; 
                   padding: 0;
                   box-sizing: border-box;
                   overflow-x: hidden;
-                  line-height: 1.1;
+                  line-height: 1.2;
                   min-height: 210mm;
                 }
                 .header { 
                   text-align: center; 
                   font-weight: bold; 
-                  font-size: 12px; 
+                  font-size: 14px; 
                   margin-bottom: 4px; 
                   border-bottom: 1px solid #000;
                   padding-bottom: 2px;
@@ -1822,7 +1822,7 @@ export default function YeniMalKabul() {
                 }
                 .section-title { 
                   font-weight: bold; 
-                  font-size: 10px; 
+                  font-size: 12px; 
                   margin-bottom: 3px; 
                   text-align: center; 
                   background: #f0f0f0; 
@@ -1833,7 +1833,7 @@ export default function YeniMalKabul() {
                   display: flex; 
                   justify-content: space-between; 
                   margin-bottom: 2px; 
-                  font-size: 8px; 
+                  font-size: 10px; 
                   font-weight: bold;
                   align-items: center;
                 }
@@ -1852,7 +1852,7 @@ export default function YeniMalKabul() {
                 }
                 .copy-info {
                   text-align: center;
-                  font-size: 7px;
+                  font-size: 9px;
                   color: #666;
                   margin-top: 4px;
                   padding: 2px;
@@ -1863,7 +1863,7 @@ export default function YeniMalKabul() {
                 .page-break { page-break-after: always; }
                 .copy-label { 
                   text-align: center; 
-                  font-size: 10px; 
+                  font-size: 12px; 
                   font-weight: bold; 
                   margin: 4px 0; 
                   padding: 2px; 
@@ -1879,7 +1879,7 @@ export default function YeniMalKabul() {
                   color: white;
                   border-radius: 2px;
                   font-weight: bold;
-                  font-size: 10px;
+                  font-size: 12px;
                 }
                 .qr-code, .barcode {
                   text-align: center;
