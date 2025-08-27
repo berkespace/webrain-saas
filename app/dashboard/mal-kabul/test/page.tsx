@@ -42,13 +42,16 @@ interface MalKabulRow {
   mustahsilId: string
   ozelFirmaId: string
   urunId: string
+  urunBirim?: string // Ürün birimi eklendi
   kasaSayisi: string
+  adetSayisi?: string // ADET birimi için
   brutKg: string
   daraKg: string
   girisKg: string
   fireKg: string
   cikmaKg: string
   netKg: string
+  netAdet?: string // ADET birimi için net adet
   notlar: string
   urunDurumu: 'BEKLEMEDE' | 'NETLENDI' | 'IPTAL'
   fisYazdirildi: boolean
@@ -91,6 +94,7 @@ interface Urun {
   ad: string
   kategori?: string
   stokKodu: string
+  birim: string
 }
 
 export default function MalKabulTest() {
@@ -152,6 +156,31 @@ export default function MalKabulTest() {
   // Mevcut kayıtları yükleme
   const [existingRecords, setExistingRecords] = useState<MalKabulRow[]>([])
   const [showExistingRecords, setShowExistingRecords] = useState(false)
+
+  // Ürün birimine göre dinamik tablo başlıkları
+  const getDynamicTableHeaders = () => {
+    // Seçili satırın ürün birimini kontrol et
+    const selectedRow = rows.find(row => row.id === selectedRowId)
+    const isAdetBased = selectedRow?.urunBirim?.toLowerCase() === 'adet'
+    
+    if (isAdetBased) {
+      return [
+        { key: 'adetSayisi', label: 'Adet Sayısı', width: 'w-24' },
+        { key: 'cikmaKg', label: 'Çıkma Adet', width: 'w-24' },
+        { key: 'fireKg', label: 'Fire Adet', width: 'w-24' },
+        { key: 'netAdet', label: 'Net Adet', width: 'w-24' }
+      ]
+    } else {
+      return [
+        { key: 'brutKg', label: 'Brüt KG', width: 'w-20' },
+        { key: 'daraKg', label: 'Dara KG', width: 'w-20' },
+        { key: 'girisKg', label: 'Giriş KG', width: 'w-20' },
+        { key: 'fireKg', label: 'Fire KG', width: 'w-20' },
+        { key: 'cikmaKg', label: 'Çıkma KG', width: 'w-20' },
+        { key: 'netKg', label: 'Net KG', width: 'w-20' }
+      ]
+    }
+  }
 
   // Data fetching
   useEffect(() => {
@@ -1822,42 +1851,83 @@ export default function MalKabulTest() {
                   >
                     Kasa {sortColumn === 'kasaSayisi' && (sortDirection === 'asc' ? '↑' : '↓')}
                   </th>
-                  <th 
-                    className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-20 cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSort('brutKg')}
-                  >
-                    Brüt KG {sortColumn === 'brutKg' && (sortDirection === 'asc' ? '↑' : '↓')}
-                  </th>
-                  <th 
-                    className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-20 cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSort('daraKg')}
-                  >
-                    Dara KG {sortDirection === 'asc' ? '↑' : '↓'}
-                  </th>
-                  <th 
-                    className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-20 cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSort('girisKg')}
-                  >
-                    Giriş KG {sortColumn === 'girisKg' && (sortDirection === 'asc' ? '↑' : '↓')}
-                  </th>
-                  <th 
-                    className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-20 cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSort('fireKg')}
-                  >
-                    Fire KG {sortColumn === 'fireKg' && (sortDirection === 'asc' ? '↑' : '↓')}
-                  </th>
-                  <th 
-                    className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-20 cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSort('cikmaKg')}
-                  >
-                    Çıkma KG {sortColumn === 'cikmaKg' && (sortDirection === 'asc' ? '↑' : '↓')}
-                  </th>
-                  <th 
-                    className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-20 cursor-pointer hover:bg-gray-100"
-                    onClick={() => handleSort('netKg')}
-                  >
-                    Net KG {sortColumn === 'netKg' && (sortDirection === 'asc' ? '↑' : '↓')}
-                  </th>
+                  {/* Dinamik tablo başlıkları - Ürün birimine göre */}
+                  {(() => {
+                    const selectedRow = rows.find(row => row.id === selectedRowId)
+                    const isAdetBased = selectedRow?.urunBirim?.toLowerCase() === 'adet'
+                    
+                    if (isAdetBased) {
+                      return (
+                        <>
+                          <th 
+                            className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-24 cursor-pointer hover:bg-gray-100"
+                            onClick={() => handleSort('adetSayisi')}
+                          >
+                            Adet Sayısı {sortColumn === 'adetSayisi' && (sortDirection === 'asc' ? '↑' : '↓')}
+                          </th>
+                          <th 
+                            className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-24 cursor-pointer hover:bg-gray-100"
+                            onClick={() => handleSort('cikmaKg')}
+                          >
+                            Çıkma Adet {sortColumn === 'cikmaKg' && (sortDirection === 'asc' ? '↑' : '↓')}
+                          </th>
+                          <th 
+                            className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-24 cursor-pointer hover:bg-gray-100"
+                            onClick={() => handleSort('fireKg')}
+                          >
+                            Fire Adet {sortColumn === 'fireKg' && (sortDirection === 'asc' ? '↑' : '↓')}
+                          </th>
+                          <th 
+                            className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-24 cursor-pointer hover:bg-gray-100"
+                            onClick={() => handleSort('netAdet')}
+                          >
+                            Net Adet {sortColumn === 'netAdet' && (sortDirection === 'asc' ? '↑' : '↓')}
+                          </th>
+                        </>
+                      )
+                    } else {
+                      return (
+                        <>
+                          <th 
+                            className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-20 cursor-pointer hover:bg-gray-100"
+                            onClick={() => handleSort('brutKg')}
+                          >
+                            Brüt KG {sortColumn === 'brutKg' && (sortDirection === 'asc' ? '↑' : '↓')}
+                          </th>
+                          <th 
+                            className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-20 cursor-pointer hover:bg-gray-100"
+                            onClick={() => handleSort('daraKg')}
+                          >
+                            Dara KG {sortDirection === 'asc' ? '↑' : '↓'}
+                          </th>
+                          <th 
+                            className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-20 cursor-pointer hover:bg-gray-100"
+                            onClick={() => handleSort('girisKg')}
+                          >
+                            Giriş KG {sortColumn === 'girisKg' && (sortDirection === 'asc' ? '↑' : '↓')}
+                          </th>
+                          <th 
+                            className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-20 cursor-pointer hover:bg-gray-100"
+                            onClick={() => handleSort('fireKg')}
+                          >
+                            Fire KG {sortColumn === 'fireKg' && (sortDirection === 'asc' ? '↑' : '↓')}
+                          </th>
+                          <th 
+                            className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-20 cursor-pointer hover:bg-gray-100"
+                            onClick={() => handleSort('cikmaKg')}
+                          >
+                            Çıkma KG {sortColumn === 'cikmaKg' && (sortDirection === 'asc' ? '↑' : '↓')}
+                          </th>
+                          <th 
+                            className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-20 cursor-pointer hover:bg-gray-100"
+                            onClick={() => handleSort('netKg')}
+                          >
+                            Net KG {sortColumn === 'netKg' && (sortDirection === 'asc' ? '↑' : '↓')}
+                          </th>
+                        </>
+                      )
+                    }
+                  })()}
                   <th 
                     className="border border-gray-300 px-2 py-2 text-left font-medium text-gray-700 w-24 cursor-pointer hover:bg-gray-100"
                     onClick={() => handleSort('urunDurumu')}
@@ -1959,7 +2029,14 @@ export default function MalKabulTest() {
                     <td className="border border-gray-300 px-1 py-1">
                       <Select
                         value={row.urunId}
-                        onValueChange={(value) => updateCell(row.id, 'urunId', value)}
+                        onValueChange={(value) => {
+                          updateCell(row.id, 'urunId', value)
+                          // Ürün birimini güncelle
+                          const selectedUrun = urunler.find(u => u.id === value)
+                          if (selectedUrun) {
+                            updateCell(row.id, 'urunBirim', selectedUrun.birim || 'KG')
+                          }
+                        }}
                         disabled={isRowDisabled(row)}
                       >
                         <SelectTrigger className="h-7 text-xs border-0 p-1">
@@ -1968,7 +2045,7 @@ export default function MalKabulTest() {
                         <SelectContent>
                           {urunler.map((u) => (
                             <SelectItem key={u.id} value={u.id}>
-                              {u.ad}
+                              {u.ad} ({u.birim || 'KG'})
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -1987,85 +2064,153 @@ export default function MalKabulTest() {
                       />
                     </td>
 
-                    {/* Brüt KG */}
-                    <td className="border border-gray-300 px-1 py-1">
-                      <Input
-                        type="number"
-                        step="0.01"
-                        value={row.brutKg}
-                        onChange={(e) => updateCell(row.id, 'brutKg', e.target.value)}
-                        className="h-7 text-xs border-0 p-1"
-                        placeholder="0.00"
-                        disabled={isRowDisabled(row)}
-                      />
-                    </td>
+                    {/* Dinamik alanlar - Ürün birimine göre */}
+                    {(() => {
+                      const isAdetBased = row.urunBirim?.toLowerCase() === 'adet'
+                      
+                      if (isAdetBased) {
+                        return (
+                          <>
+                            {/* Adet Sayısı */}
+                            <td className="border border-gray-300 px-1 py-1">
+                              <Input
+                                type="number"
+                                value={row.adetSayisi || ''}
+                                onChange={(e) => updateCell(row.id, 'adetSayisi', e.target.value)}
+                                className="h-7 text-xs border-0 p-1"
+                                placeholder="0"
+                                disabled={isRowDisabled(row)}
+                              />
+                            </td>
 
-                    {/* Dara KG */}
-                    <td className="border border-gray-300 px-1 py-1">
-                      <Input
-                        type="number"
-                        step="0.01"
-                        value={row.daraKg}
-                        onChange={(e) => updateCell(row.id, 'daraKg', e.target.value)}
-                        className="h-7 text-xs border-0 p-1"
-                        placeholder="0.00"
-                        disabled={isRowDisabled(row)}
-                      />
-                    </td>
+                            {/* Çıkma Adet */}
+                            <td className="border border-gray-300 px-1 py-1">
+                              <Input
+                                type="number"
+                                value={row.cikmaKg || ''}
+                                onChange={(e) => updateCell(row.id, 'cikmaKg', e.target.value)}
+                                className="h-7 text-xs border-0 p-1"
+                                placeholder="0"
+                                disabled={isRowDisabled(row)}
+                              />
+                            </td>
 
-                    {/* Giriş KG */}
-                    <td className="border border-gray-300 px-1 py-1">
-                      <Input
-                        type="number"
-                        step="0.01"
-                        value={row.girisKg}
-                        onChange={(e) => updateCell(row.id, 'girisKg', e.target.value)}
-                        className="h-7 text-xs border-0 p-1 bg-gray-50"
-                        placeholder="0.00"
-                        readOnly
-                        disabled={isRowDisabled(row)}
-                      />
-                    </td>
+                            {/* Fire Adet */}
+                            <td className="border border-gray-300 px-1 py-1">
+                              <Input
+                                type="number"
+                                value={row.fireKg || ''}
+                                onChange={(e) => updateCell(row.id, 'fireKg', e.target.value)}
+                                className="h-7 text-xs border-0 p-1"
+                                placeholder="0"
+                                disabled={isRowDisabled(row)}
+                              />
+                            </td>
 
-                    {/* Fire KG */}
-                    <td className="border border-gray-300 px-1 py-1">
-                      <Input
-                        type="number"
-                        step="0.01"
-                        value={row.fireKg}
-                        onChange={(e) => updateCell(row.id, 'fireKg', e.target.value)}
-                        className="h-7 text-xs border-0 p-1"
-                        placeholder="0.00"
-                        disabled={isRowDisabled(row)}
-                      />
-                    </td>
+                            {/* Net Adet */}
+                            <td className="border border-gray-300 px-1 py-1">
+                              <Input
+                                type="number"
+                                value={(() => {
+                                  const girisAdet = parseInt(row.adetSayisi || '0')
+                                  const cikmaAdet = parseInt(row.cikmaKg || '0')
+                                  const fireAdet = parseInt(row.fireKg || '0')
+                                  return (girisAdet - cikmaAdet - fireAdet).toString()
+                                })()}
+                                className="h-7 text-xs border-0 p-1 bg-gray-50"
+                                placeholder="0"
+                                readOnly
+                                disabled={isRowDisabled(row)}
+                              />
+                            </td>
+                          </>
+                        )
+                      } else {
+                        return (
+                          <>
+                            {/* Brüt KG */}
+                            <td className="border border-gray-300 px-1 py-1">
+                              <Input
+                                type="number"
+                                step="0.01"
+                                value={row.brutKg}
+                                onChange={(e) => updateCell(row.id, 'brutKg', e.target.value)}
+                                className="h-7 text-xs border-0 p-1"
+                                placeholder="0.00"
+                                disabled={isRowDisabled(row)}
+                              />
+                            </td>
 
-                    {/* Çıkma KG */}
-                    <td className="border border-gray-300 px-1 py-1">
-                      <Input
-                        type="number"
-                        step="0.01"
-                        value={row.cikmaKg}
-                        onChange={(e) => updateCell(row.id, 'cikmaKg', e.target.value)}
-                        className="h-7 text-xs border-0 p-1"
-                        placeholder="0.00"
-                        disabled={isRowDisabled(row)}
-                      />
-                    </td>
+                            {/* Dara KG */}
+                            <td className="border border-gray-300 px-1 py-1">
+                              <Input
+                                type="number"
+                                step="0.01"
+                                value={row.daraKg}
+                                onChange={(e) => updateCell(row.id, 'daraKg', e.target.value)}
+                                className="h-7 text-xs border-0 p-1"
+                                placeholder="0.00"
+                                disabled={isRowDisabled(row)}
+                              />
+                            </td>
 
-                    {/* Net KG */}
-                    <td className="border border-gray-300 px-1 py-1">
-                      <Input
-                        type="number"
-                        step="0.01"
-                        value={row.netKg}
-                        onChange={(e) => updateCell(row.id, 'netKg', e.target.value)}
-                        className="h-7 text-xs border-0 p-1 bg-gray-50"
-                        placeholder="0.00"
-                        readOnly
-                        disabled={isRowDisabled(row)}
-                      />
-                    </td>
+                            {/* Giriş KG */}
+                            <td className="border border-gray-300 px-1 py-1">
+                              <Input
+                                type="number"
+                                step="0.01"
+                                value={row.girisKg}
+                                onChange={(e) => updateCell(row.id, 'girisKg', e.target.value)}
+                                className="h-7 text-xs border-0 p-1 bg-gray-50"
+                                placeholder="0.00"
+                                readOnly
+                                disabled={isRowDisabled(row)}
+                              />
+                            </td>
+
+                            {/* Fire KG */}
+                            <td className="border border-gray-300 px-1 py-1">
+                              <Input
+                                type="number"
+                                step="0.01"
+                                value={row.fireKg}
+                                onChange={(e) => updateCell(row.id, 'fireKg', e.target.value)}
+                                className="h-7 text-xs border-0 p-1"
+                                placeholder="0.00"
+                                disabled={isRowDisabled(row)}
+                              />
+                            </td>
+
+                            {/* Çıkma KG */}
+                            <td className="border border-gray-300 px-1 py-1">
+                              <Input
+                                type="number"
+                                step="0.01"
+                                value={row.cikmaKg}
+                                onChange={(e) => updateCell(row.id, 'cikmaKg', e.target.value)}
+                                className="h-7 text-xs border-0 p-1"
+                                placeholder="0.00"
+                                disabled={isRowDisabled(row)}
+                              />
+                            </td>
+
+                            {/* Net KG */}
+                            <td className="border border-gray-300 px-1 py-1">
+                              <Input
+                                type="number"
+                                step="0.01"
+                                value={row.netKg}
+                                onChange={(e) => updateCell(row.id, 'netKg', e.target.value)}
+                                className="h-7 text-xs border-0 p-1 bg-gray-50"
+                                placeholder="0.00"
+                                readOnly
+                                disabled={isRowDisabled(row)}
+                              />
+                            </td>
+                          </>
+                        )
+                      }
+                    })()}
 
                     {/* Ürün Durumu */}
                     <td className="border border-gray-300 px-1 py-1">

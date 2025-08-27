@@ -28,9 +28,14 @@ interface MalKabulRecord {
   fisNo: string
   tarih: string
   saticiTipi: string
-  urunler: { ad: string }
+  urunler: { ad: string; birim: string }
   brutKg: number
   girisKg: number
+  cikmaKg: number
+  fireKg: number
+  netKg: number
+  adetSayisi: number
+  netAdet: number
   status: string
   users: { firstName: string; lastName: string }
   komisyoncu?: { dukkanAdi: string }
@@ -401,6 +406,9 @@ export default function MalKabulListePage() {
                   <div className="flex items-center gap-2">
                     <Package className="h-4 w-4 text-gray-500" />
                     <span className="font-medium">{record.urunler.ad}</span>
+                    <Badge variant="outline" className="text-xs">
+                      {record.urunler.birim}
+                    </Badge>
                   </div>
                   
                   <div className="flex items-center gap-2">
@@ -410,9 +418,60 @@ export default function MalKabulListePage() {
                   
                   <div className="flex items-center gap-2">
                     <Scale className="h-4 w-4 text-gray-500" />
-                    <span>{record.girisKg.toFixed(2)} kg</span>
+                    {record.urunler.birim?.toLowerCase() === 'adet' ? (
+                      <span>{record.adetSayisi || 0} adet</span>
+                    ) : (
+                      <span>{record.girisKg.toFixed(2)} kg</span>
+                    )}
                   </div>
                 </div>
+                
+                {/* Ürün birimine göre detay bilgileri */}
+                {record.urunler.birim?.toLowerCase() === 'adet' ? (
+                  <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                    <div className="text-sm font-medium text-blue-700 mb-2">Adet Bilgileri:</div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div>
+                        <span className="text-gray-600">Kasa:</span>
+                        <span className="ml-2 font-medium">{record.kasaSayisi || 0}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-600">Giriş:</span>
+                        <span className="ml-2 font-medium">{record.adetSayisi || 0} adet</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-600">Çıkma:</span>
+                        <span className="ml-2 font-medium">{record.cikmaKg || 0} adet</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-600">Net:</span>
+                        <span className="ml-2 font-medium">{record.netAdet || 0} adet</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mt-3 p-3 bg-green-50 rounded-lg">
+                    <div className="text-sm font-medium text-green-700 mb-2">Kilogram Bilgileri:</div>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div>
+                        <span className="text-gray-600">Brüt:</span>
+                        <span className="ml-2 font-medium">{record.brutKg?.toFixed(2) || '0.00'} kg</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-600">Giriş:</span>
+                        <span className="ml-2 font-medium">{record.girisKg?.toFixed(2) || '0.00'} kg</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-600">Çıkma:</span>
+                        <span className="ml-2 font-medium">{record.cikmaKg?.toFixed(2) || '0.00'} kg</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-600">Net:</span>
+                        <span className="ml-2 font-medium">{record.netKg?.toFixed(2) || '0.00'} kg</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 
                 {record.notlar && (
                   <div className="mt-3 p-3 bg-gray-50 rounded-lg">
