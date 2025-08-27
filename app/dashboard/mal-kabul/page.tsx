@@ -599,7 +599,15 @@ export default function MalKabulDashboard() {
                             }
                           </td>
                           <td className="py-3 px-2 text-right">{item.birimFiyat ? item.birimFiyat.toLocaleString() : '-'}</td>
-                          <td className="py-3 px-2 font-medium">{item.fisNo}</td>
+                          <td className="py-3 px-2 font-medium">
+                            <Link 
+                              href={`/dashboard/mal-kabul/duzenle/${item.id}`}
+                              className="text-primary hover:text-primary/80 hover:underline cursor-pointer transition-colors"
+                              title="Düzenlemek için tıklayın"
+                            >
+                              {item.fisNo}
+                            </Link>
+                          </td>
                           <td className="py-3 px-2">
                             <div className="flex items-center gap-1">
                               <Button variant="ghost" size="sm" onClick={() => handleView(item)}>
