@@ -123,6 +123,9 @@ export default function MalKabulListePage() {
     } else if (record.saticiTipi === 'MUSTAHSIL' && record.mustahsil) {
       // Müstahsil olarak giriş yapılan ürünlerde: "Ad Soyad" formatında
       return `${record.mustahsil.ad} ${record.mustahsil.soyad}`
+    } else if (record.saticiTipi === 'KOMISYONCU' && record.komisyoncu) {
+      // Sadece komisyoncu varsa
+      return `${record.komisyoncu.dukkanAdi} (Üretici Seçilmedi)`
     } else if (record.komisyoncu) {
       return record.komisyoncu.dukkanAdi
     } else if (record.uretici) {
@@ -444,6 +447,7 @@ export default function MalKabulListePage() {
                           {record.saticiTipi === 'KOMISYONCU' ? 'KOMİSYONCU' : 
                            record.saticiTipi === 'MUSTAHSIL' ? 'MÜSTAHSİL' : 
                            record.saticiTipi === 'OZEL_FIRMA' ? 'ÖZEL FİRMA' : 
+                           record.saticiTipi === 'URETICI' ? 'ÜRETİCİ' : 
                            record.saticiTipi}
                         </Badge>
                         <span className="text-sm font-medium">{getSaticiAdi(record)}</span>
