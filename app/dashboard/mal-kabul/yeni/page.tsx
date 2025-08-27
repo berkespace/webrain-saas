@@ -2623,11 +2623,7 @@ export default function YeniMalKabul() {
                                 key={urun.id}
                                 className="px-2 py-1.5 hover:bg-muted cursor-pointer border-b border-border last:border-b-0"
                                 onClick={() => {
-                                  setFormData({
-                                    ...formData,
-                                    urunId: urun.id,
-                                    urunKodu: urun.stokKodu || `URN${urun.id.slice(-3)}`
-                                  })
+                                  handleUrunSelect(urun)
                                   setUrunSearchTerm(urun.ad)
                                   setShowUrunSuggestions(false)
                                 }}
