@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
         ureticiler: { select: { id: true, ad: true, soyad: true, sehir: true } },
         ozel_firmalar: { select: { id: true, firmaAdi: true, sehir: true } },
         mustahsil: { select: { id: true, ad: true, soyad: true } },
-        urunler: { select: { id: true, ad: true, kategori: true } },
+        urunler: { select: { id: true, ad: true, kategori: true, birim: true } },
         ambalajlar: { select: { id: true, ad: true, tipi: true, daraKg: true } },
         users: { select: { id: true, firstName: true, lastName: true } }
       },
