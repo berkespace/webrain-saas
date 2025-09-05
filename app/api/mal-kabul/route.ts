@@ -253,15 +253,28 @@ export async function POST(request: NextRequest) {
     // Fiş numarası oluştur (HNR + 4 haneli sıra no)
     console.log('🔢 Fiş numarası oluşturuluyor...')
     
-    const todayRecords = await prisma.mal_kabul_records.count({
+    // Mevcut HNR kayıtlarını getir ve en yüksek numarayı bul
+    const existingRecords = await prisma.mal_kabul_records.findMany({
       where: {
         fisNo: {
           startsWith: 'HNR'
         }
+      },
+      select: {
+        fisNo: true
       }
     })
     
-    const fisNo = 'HNR' + (todayRecords + 1).toString().padStart(4, '0')
+    // En yüksek numarayı bul
+    let maxNumber = 0
+    existingRecords.forEach(record => {
+      const number = parseInt(record.fisNo.replace('HNR', ''))
+      if (!isNaN(number) && number > maxNumber) {
+        maxNumber = number
+      }
+    })
+    
+    const fisNo = 'HNR' + (maxNumber + 1).toString().padStart(4, '0')
     console.log('✅ Fiş numarası oluşturuldu:', fisNo)
 
     // Birime göre NET değerleri hesapla
