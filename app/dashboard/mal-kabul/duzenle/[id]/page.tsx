@@ -489,13 +489,20 @@ export default function MalKabulDuzenle() {
         paletSayisi: 0,
         notlar: formData.notlar || '',
         malKabulcuAdi: (() => {
-          console.log('Record malKabulcu debug:', {
-            name: record.malKabulcu?.name,
-            firstName: record.malKabulcu?.firstName,
-            lastName: record.malKabulcu?.lastName,
-            fullMalKabulcu: record.malKabulcu
+          // Önce session verilerini kontrol et, sonra record verilerini
+          const sessionName = session?.user?.name;
+          const recordName = record.malKabulcu?.name;
+          const recordFullName = `${record.malKabulcu?.firstName || ''} ${record.malKabulcu?.lastName || ''}`.trim();
+          
+          console.log('MalKabulcu debug:', {
+            sessionName,
+            recordName,
+            recordFullName,
+            fullRecord: record.malKabulcu,
+            fullSession: session?.user
           });
-          return record.malKabulcu?.name || `${record.malKabulcu?.firstName || ''} ${record.malKabulcu?.lastName || ''}`.trim() || 'Mal Kabulcu';
+          
+          return sessionName || recordName || recordFullName || 'Mal Kabulcu';
         })()
       }
       
@@ -936,12 +943,24 @@ export default function MalKabulDuzenle() {
     if (formData.saticiTipi === 'OZEL_FIRMA') {
       return ozelFirmalar.find(f => f.id === formData.ozelFirmaId)?.firmaAdi || ''
     } else if (formData.saticiTipi === 'KOMISYONCU') {
-      const komisyoncu = komisyoncular.find(k => k.id === formData.komisyoncuId)
-      const uretici = ureticiler.find(u => u.id === formData.ureticiId)
+      // Önce formData'dan kontrol et, sonra record'dan al
+      const komisyoncuId = formData.komisyoncuId || record?.komisyoncuId;
+      const ureticiId = formData.ureticiId || record?.ureticiId;
+      
+      const komisyoncu = komisyoncular.find(k => k.id === komisyoncuId) || record?.komisyoncu;
+      const uretici = ureticiler.find(u => u.id === ureticiId) || record?.uretici;
+      
+      console.log('Komisyoncu debug:', {
+        komisyoncuId,
+        ureticiId,
+        komisyoncu,
+        uretici
+      });
+      
       if (komisyoncu && uretici) {
         return `${komisyoncu.dukkanAdi} - ${uretici.ad} ${uretici.soyad}`
       }
-      return komisyoncu?.dukkanAdi || ''
+      return komisyoncu?.dukkanAdi || 'Bilinmeyen Komisyoncu'
     } else if (formData.saticiTipi === 'MUSTAHSIL') {
       console.log('Looking for mustahsil with ID:', formData.mustahsilId)
       console.log('Available mustahsil:', mustahsil)
@@ -1785,13 +1804,20 @@ export default function MalKabulDuzenle() {
                   paletSayisi: record.paletSayisi,
                   notlar: formData.notlar,
                   malKabulcuAdi: (() => {
-          console.log('Record malKabulcu debug:', {
-            name: record.malKabulcu?.name,
-            firstName: record.malKabulcu?.firstName,
-            lastName: record.malKabulcu?.lastName,
-            fullMalKabulcu: record.malKabulcu
+          // Önce session verilerini kontrol et, sonra record verilerini
+          const sessionName = session?.user?.name;
+          const recordName = record.malKabulcu?.name;
+          const recordFullName = `${record.malKabulcu?.firstName || ''} ${record.malKabulcu?.lastName || ''}`.trim();
+          
+          console.log('MalKabulcu debug:', {
+            sessionName,
+            recordName,
+            recordFullName,
+            fullRecord: record.malKabulcu,
+            fullSession: session?.user
           });
-          return record.malKabulcu?.name || `${record.malKabulcu?.firstName || ''} ${record.malKabulcu?.lastName || ''}`.trim() || 'Mal Kabulcu';
+          
+          return sessionName || recordName || recordFullName || 'Mal Kabulcu';
         })()
                 }
                 
