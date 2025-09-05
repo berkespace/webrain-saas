@@ -48,6 +48,14 @@ async function main() {
       password: 'satin123',
       role: 'SATIN_ALMACI' as const,
     },
+    {
+      id: 'satin-alma-002',
+      firstName: 'Satın',
+      lastName: 'Almacı',
+      email: 'satinalma@webrain.com',
+      password: 'satinalma123',
+      role: 'SATIN_ALMACI' as const,
+    },
   ]
 
   for (const userData of testUsers) {
