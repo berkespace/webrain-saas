@@ -416,6 +416,11 @@ export function Sidebar() {
               icon: <CreditCard className="h-4 w-4" />
             },
             {
+              title: 'Satın Alım Faturaları',
+              href: '/dashboard/muhasebe/satin-alim-faturalari',
+              icon: <FileText className="h-4 w-4" />
+            },
+            {
               title: 'Genel Ürün Tablosu',
               href: '/dashboard/muhasebe/genel-urun-tablosu',
               icon: <FileText className="h-4 w-4" />
