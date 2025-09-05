@@ -279,7 +279,7 @@ export default function FaturaBekleyenUrunler() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto pl-4 pt-4">
             <table className="w-full">
               <thead>
                 <tr className="border-b">
