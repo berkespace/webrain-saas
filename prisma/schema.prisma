@@ -96,6 +96,16 @@ model mal_kabul_records {
   netKg        Float?    @default(0) @db.Real
   netAdet      Int?      @default(0)  // ADET birimi için net adet (girisAdet - cikmaAdet - fireAdet)
   
+  // Fiyat ve evrak bilgileri
+  kdvOrani              Float?    @default(0) @db.Real
+  belediyeRusumOrani   Float?    @default(0) @db.Real
+  kdvHesapla           Boolean   @default(false)
+  belediyeRusumHesapla Boolean   @default(false)
+  evraklar             String[]  @default([])  // Yüklenen evrak dosya yolları
+  fiyatGirildi         Boolean   @default(false)
+  fiyatGirenKullanici  String?
+  fiyatGirilmeTarihi   DateTime? @db.Timestamp(6)
+  
   // Relations
   users        users     @relation(fields: [malKabulcuId], references: [id])
   komisyoncular komisyoncular? @relation(fields: [komisyoncuId], references: [id])

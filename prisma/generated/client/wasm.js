@@ -189,7 +189,15 @@ exports.Prisma.Mal_kabul_recordsScalarFieldEnum = {
   fireKg: 'fireKg',
   cikmaFireKg: 'cikmaFireKg',
   netKg: 'netKg',
-  netAdet: 'netAdet'
+  netAdet: 'netAdet',
+  kdvOrani: 'kdvOrani',
+  belediyeRusumOrani: 'belediyeRusumOrani',
+  kdvHesapla: 'kdvHesapla',
+  belediyeRusumHesapla: 'belediyeRusumHesapla',
+  evraklar: 'evraklar',
+  fiyatGirildi: 'fiyatGirildi',
+  fiyatGirenKullanici: 'fiyatGirenKullanici',
+  fiyatGirilmeTarihi: 'fiyatGirilmeTarihi'
 };
 
 exports.Prisma.MustahsilScalarFieldEnum = {

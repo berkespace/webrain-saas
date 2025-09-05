@@ -1,11 +1,21 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { 
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 import { 
   Package, 
   Search, 
@@ -23,9 +33,16 @@ import {
   ArrowUp,
   ArrowDown,
   FileSpreadsheet,
-  FileText as PdfIcon
+  FileText as PdfIcon,
+  Upload,
+  Camera,
+  FileImage,
+  Calculator,
+  Save,
+  X
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useToast } from '@/components/ui/use-toast'
 
 interface MalKabulRecord {
   id: string
@@ -88,10 +105,146 @@ export default function FaturaBekleyenUrunler() {
   const [sortBy, setSortBy] = useState<'komisyonNo' | 'tarih' | 'fisNo'>('komisyonNo')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
   const [exportLoading, setExportLoading] = useState(false)
+  
+  // Evrak yükleme ve fiyat girişi için state'ler
+  const [selectedRecord, setSelectedRecord] = useState<MalKabulRecord | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [alisFiyati, setAlisFiyati] = useState('')
+  const [kdvOrani, setKdvOrani] = useState(1)
+  const [belediyeRusumOrani, setBelediyeRusumOrani] = useState(1)
+  const [kdvHesapla, setKdvHesapla] = useState(false)
+  const [belediyeRusumHesapla, setBelediyeRusumHesapla] = useState(false)
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
+  const [previewImages, setPreviewImages] = useState<string[]>([])
+  const [notlar, setNotlar] = useState('')
+  const [saving, setSaving] = useState(false)
+  
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const cameraInputRef = useRef<HTMLInputElement>(null)
+  const { toast } = useToast()
 
   useEffect(() => {
     fetchRecords()
   }, [])
+
+  // Evrak yükleme fonksiyonları
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || [])
+    const validFiles = files.filter(file => 
+      file.type.startsWith('image/') || 
+      file.type === 'application/pdf' ||
+      file.type === 'application/msword' ||
+      file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    )
+    
+    if (validFiles.length !== files.length) {
+      toast({
+        title: "Geçersiz dosya türü",
+        description: "Sadece resim, PDF ve Word dosyaları yüklenebilir.",
+        variant: "destructive"
+      })
+    }
+    
+    setUploadedFiles(prev => [...prev, ...validFiles])
+    
+    // Resimler için preview oluştur
+    validFiles.forEach(file => {
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          setPreviewImages(prev => [...prev, e.target?.result as string])
+        }
+        reader.readAsDataURL(file)
+      }
+    })
+  }
+
+  const handleCameraCapture = () => {
+    cameraInputRef.current?.click()
+  }
+
+  const removeFile = (index: number) => {
+    setUploadedFiles(prev => prev.filter((_, i) => i !== index))
+    setPreviewImages(prev => prev.filter((_, i) => i !== index))
+  }
+
+  // Fiyat hesaplama fonksiyonları
+  const calculateTotalPrice = () => {
+    const basePrice = parseFloat(alisFiyati) || 0
+    let total = basePrice
+    
+    if (kdvHesapla) {
+      total += (basePrice * kdvOrani) / 100
+    }
+    
+    if (belediyeRusumHesapla) {
+      total += (basePrice * belediyeRusumOrani) / 100
+    }
+    
+    return total
+  }
+
+  const openModal = (record: MalKabulRecord) => {
+    setSelectedRecord(record)
+    setAlisFiyati(record.birimFiyat?.toString() || '')
+    setIsModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+    setSelectedRecord(null)
+    setAlisFiyati('')
+    setKdvHesapla(false)
+    setBelediyeRusumHesapla(false)
+    setUploadedFiles([])
+    setPreviewImages([])
+    setNotlar('')
+  }
+
+  const saveRecord = async () => {
+    if (!selectedRecord) return
+    
+    setSaving(true)
+    try {
+      const formData = new FormData()
+      formData.append('recordId', selectedRecord.id)
+      formData.append('alisFiyati', alisFiyati)
+      formData.append('kdvOrani', kdvOrani.toString())
+      formData.append('belediyeRusumOrani', belediyeRusumOrani.toString())
+      formData.append('kdvHesapla', kdvHesapla.toString())
+      formData.append('belediyeRusumHesapla', belediyeRusumHesapla.toString())
+      formData.append('notlar', notlar)
+      
+      // Dosyaları ekle
+      uploadedFiles.forEach((file, index) => {
+        formData.append(`file_${index}`, file)
+      })
+      
+      const response = await fetch('/api/mal-kabul/update-pricing', {
+        method: 'POST',
+        body: formData
+      })
+      
+      if (response.ok) {
+        toast({
+          title: "Başarılı",
+          description: "Fiyat bilgileri ve evraklar kaydedildi.",
+        })
+        closeModal()
+        fetchRecords() // Listeyi yenile
+      } else {
+        throw new Error('Kaydetme hatası')
+      }
+    } catch (error) {
+      toast({
+        title: "Hata",
+        description: "Fiyat bilgileri kaydedilemedi.",
+        variant: "destructive"
+      })
+    } finally {
+      setSaving(false)
+    }
+  }
 
   const fetchRecords = async () => {
     try {
@@ -684,10 +837,18 @@ export default function FaturaBekleyenUrunler() {
                     </td>
                     <td className="p-3">
                       <div className="flex gap-1">
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => openModal(record)}
+                          title="Fiyat Girişi ve Evrak Yükleme"
+                        >
+                          <Calculator className="h-3 w-3" />
+                        </Button>
+                        <Button variant="outline" size="sm" title="Görüntüle">
                           <Eye className="h-3 w-3" />
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" title="İndir">
                           <FileText className="h-3 w-3" />
                         </Button>
                       </div>
@@ -709,6 +870,222 @@ export default function FaturaBekleyenUrunler() {
           )}
         </CardContent>
       </Card>
+
+      {/* Fiyat Girişi ve Evrak Yükleme Modal */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Calculator className="h-5 w-5" />
+              Fiyat Girişi ve Evrak Yükleme
+            </DialogTitle>
+            <DialogDescription>
+              {selectedRecord?.fisNo} - {selectedRecord?.urunler.ad} için fiyat bilgilerini girin ve evrakları yükleyin.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Sol Kolon - Fiyat Bilgileri */}
+            <div className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Fiyat Bilgileri</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="alisFiyati">Alış Fiyatı (₺)</Label>
+                    <Input
+                      id="alisFiyati"
+                      type="number"
+                      step="0.01"
+                      value={alisFiyati}
+                      onChange={(e) => setAlisFiyati(e.target.value)}
+                      placeholder="0.00"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="kdvOrani">KDV Oranı (%)</Label>
+                    <Input
+                      id="kdvOrani"
+                      type="number"
+                      step="0.1"
+                      value={kdvOrani}
+                      onChange={(e) => setKdvOrani(parseFloat(e.target.value) || 0)}
+                      placeholder="1"
+                    />
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="kdvHesapla"
+                        checked={kdvHesapla}
+                        onChange={(e) => setKdvHesapla(e.target.checked)}
+                      />
+                      <Label htmlFor="kdvHesapla">KDV'yi fiyata ekle</Label>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="belediyeRusumOrani">Belediye Rüsum Oranı (%)</Label>
+                    <Input
+                      id="belediyeRusumOrani"
+                      type="number"
+                      step="0.1"
+                      value={belediyeRusumOrani}
+                      onChange={(e) => setBelediyeRusumOrani(parseFloat(e.target.value) || 0)}
+                      placeholder="1"
+                    />
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="checkbox"
+                        id="belediyeRusumHesapla"
+                        checked={belediyeRusumHesapla}
+                        onChange={(e) => setBelediyeRusumHesapla(e.target.checked)}
+                      />
+                      <Label htmlFor="belediyeRusumHesapla">Belediye Rüsum'unu fiyata ekle</Label>
+                    </div>
+                  </div>
+
+                  <div className="p-4 bg-muted rounded-lg">
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span>Alış Fiyatı:</span>
+                        <span className="font-medium">₺{parseFloat(alisFiyati || '0').toFixed(2)}</span>
+                      </div>
+                      {kdvHesapla && (
+                        <div className="flex justify-between text-sm text-muted-foreground">
+                          <span>KDV (%{kdvOrani}):</span>
+                          <span>₺{((parseFloat(alisFiyati || '0') * kdvOrani) / 100).toFixed(2)}</span>
+                        </div>
+                      )}
+                      {belediyeRusumHesapla && (
+                        <div className="flex justify-between text-sm text-muted-foreground">
+                          <span>Belediye Rüsum (%{belediyeRusumOrani}):</span>
+                          <span>₺{((parseFloat(alisFiyati || '0') * belediyeRusumOrani) / 100).toFixed(2)}</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between border-t pt-2 font-bold text-lg">
+                        <span>Toplam:</span>
+                        <span className="text-green-600">₺{calculateTotalPrice().toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="notlar">Notlar</Label>
+                    <Textarea
+                      id="notlar"
+                      value={notlar}
+                      onChange={(e) => setNotlar(e.target.value)}
+                      placeholder="Fiyat ve evrak ile ilgili notlar..."
+                      rows={3}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Sağ Kolon - Evrak Yükleme */}
+            <div className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Evrak Yükleme</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="flex-1"
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      Dosya Seç
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={handleCameraCapture}
+                      className="flex-1"
+                    >
+                      <Camera className="h-4 w-4 mr-2" />
+                      Kamera
+                    </Button>
+                  </div>
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    accept="image/*,.pdf,.doc,.docx"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                  <input
+                    ref={cameraInputRef}
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+
+                  {uploadedFiles.length > 0 && (
+                    <div className="space-y-2">
+                      <Label>Yüklenen Dosyalar ({uploadedFiles.length})</Label>
+                      <div className="space-y-2 max-h-40 overflow-y-auto">
+                        {uploadedFiles.map((file, index) => (
+                          <div key={index} className="flex items-center justify-between p-2 border rounded">
+                            <div className="flex items-center gap-2">
+                              <FileImage className="h-4 w-4" />
+                              <span className="text-sm truncate">{file.name}</span>
+                              <span className="text-xs text-muted-foreground">
+                                ({(file.size / 1024 / 1024).toFixed(2)} MB)
+                              </span>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeFile(index)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {previewImages.length > 0 && (
+                    <div className="space-y-2">
+                      <Label>Resim Önizlemeleri</Label>
+                      <div className="grid grid-cols-2 gap-2">
+                        {previewImages.map((src, index) => (
+                          <div key={index} className="relative">
+                            <img
+                              src={src}
+                              alt={`Preview ${index}`}
+                              className="w-full h-24 object-cover rounded border"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2 pt-4 border-t">
+            <Button variant="outline" onClick={closeModal}>
+              İptal
+            </Button>
+            <Button onClick={saveRecord} disabled={saving || !alisFiyati}>
+              <Save className="h-4 w-4 mr-2" />
+              {saving ? 'Kaydediliyor...' : 'Kaydet'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -5621,6 +5621,8 @@ export namespace Prisma {
     cikmaFireKg: number | null
     netKg: number | null
     netAdet: number | null
+    kdvOrani: number | null
+    belediyeRusumOrani: number | null
   }
 
   export type Mal_kabul_recordsSumAggregateOutputType = {
@@ -5638,6 +5640,8 @@ export namespace Prisma {
     cikmaFireKg: number | null
     netKg: number | null
     netAdet: number | null
+    kdvOrani: number | null
+    belediyeRusumOrani: number | null
   }
 
   export type Mal_kabul_recordsMinAggregateOutputType = {
@@ -5671,6 +5675,13 @@ export namespace Prisma {
     cikmaFireKg: number | null
     netKg: number | null
     netAdet: number | null
+    kdvOrani: number | null
+    belediyeRusumOrani: number | null
+    kdvHesapla: boolean | null
+    belediyeRusumHesapla: boolean | null
+    fiyatGirildi: boolean | null
+    fiyatGirenKullanici: string | null
+    fiyatGirilmeTarihi: Date | null
   }
 
   export type Mal_kabul_recordsMaxAggregateOutputType = {
@@ -5704,6 +5715,13 @@ export namespace Prisma {
     cikmaFireKg: number | null
     netKg: number | null
     netAdet: number | null
+    kdvOrani: number | null
+    belediyeRusumOrani: number | null
+    kdvHesapla: boolean | null
+    belediyeRusumHesapla: boolean | null
+    fiyatGirildi: boolean | null
+    fiyatGirenKullanici: string | null
+    fiyatGirilmeTarihi: Date | null
   }
 
   export type Mal_kabul_recordsCountAggregateOutputType = {
@@ -5737,6 +5755,14 @@ export namespace Prisma {
     cikmaFireKg: number
     netKg: number
     netAdet: number
+    kdvOrani: number
+    belediyeRusumOrani: number
+    kdvHesapla: number
+    belediyeRusumHesapla: number
+    evraklar: number
+    fiyatGirildi: number
+    fiyatGirenKullanici: number
+    fiyatGirilmeTarihi: number
     _all: number
   }
 
@@ -5756,6 +5782,8 @@ export namespace Prisma {
     cikmaFireKg?: true
     netKg?: true
     netAdet?: true
+    kdvOrani?: true
+    belediyeRusumOrani?: true
   }
 
   export type Mal_kabul_recordsSumAggregateInputType = {
@@ -5773,6 +5801,8 @@ export namespace Prisma {
     cikmaFireKg?: true
     netKg?: true
     netAdet?: true
+    kdvOrani?: true
+    belediyeRusumOrani?: true
   }
 
   export type Mal_kabul_recordsMinAggregateInputType = {
@@ -5806,6 +5836,13 @@ export namespace Prisma {
     cikmaFireKg?: true
     netKg?: true
     netAdet?: true
+    kdvOrani?: true
+    belediyeRusumOrani?: true
+    kdvHesapla?: true
+    belediyeRusumHesapla?: true
+    fiyatGirildi?: true
+    fiyatGirenKullanici?: true
+    fiyatGirilmeTarihi?: true
   }
 
   export type Mal_kabul_recordsMaxAggregateInputType = {
@@ -5839,6 +5876,13 @@ export namespace Prisma {
     cikmaFireKg?: true
     netKg?: true
     netAdet?: true
+    kdvOrani?: true
+    belediyeRusumOrani?: true
+    kdvHesapla?: true
+    belediyeRusumHesapla?: true
+    fiyatGirildi?: true
+    fiyatGirenKullanici?: true
+    fiyatGirilmeTarihi?: true
   }
 
   export type Mal_kabul_recordsCountAggregateInputType = {
@@ -5872,6 +5916,14 @@ export namespace Prisma {
     cikmaFireKg?: true
     netKg?: true
     netAdet?: true
+    kdvOrani?: true
+    belediyeRusumOrani?: true
+    kdvHesapla?: true
+    belediyeRusumHesapla?: true
+    evraklar?: true
+    fiyatGirildi?: true
+    fiyatGirenKullanici?: true
+    fiyatGirilmeTarihi?: true
     _all?: true
   }
 
@@ -5992,6 +6044,14 @@ export namespace Prisma {
     cikmaFireKg: number | null
     netKg: number | null
     netAdet: number | null
+    kdvOrani: number | null
+    belediyeRusumOrani: number | null
+    kdvHesapla: boolean
+    belediyeRusumHesapla: boolean
+    evraklar: string[]
+    fiyatGirildi: boolean
+    fiyatGirenKullanici: string | null
+    fiyatGirilmeTarihi: Date | null
     _count: Mal_kabul_recordsCountAggregateOutputType | null
     _avg: Mal_kabul_recordsAvgAggregateOutputType | null
     _sum: Mal_kabul_recordsSumAggregateOutputType | null
@@ -6044,6 +6104,14 @@ export namespace Prisma {
     cikmaFireKg?: boolean
     netKg?: boolean
     netAdet?: boolean
+    kdvOrani?: boolean
+    belediyeRusumOrani?: boolean
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: boolean
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: boolean
+    fiyatGirilmeTarihi?: boolean
     users?: boolean | usersDefaultArgs<ExtArgs>
     komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     ureticiler?: boolean | mal_kabul_records$ureticilerArgs<ExtArgs>
@@ -6085,6 +6153,14 @@ export namespace Prisma {
     cikmaFireKg?: boolean
     netKg?: boolean
     netAdet?: boolean
+    kdvOrani?: boolean
+    belediyeRusumOrani?: boolean
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: boolean
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: boolean
+    fiyatGirilmeTarihi?: boolean
     users?: boolean | usersDefaultArgs<ExtArgs>
     komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     ureticiler?: boolean | mal_kabul_records$ureticilerArgs<ExtArgs>
@@ -6126,6 +6202,14 @@ export namespace Prisma {
     cikmaFireKg?: boolean
     netKg?: boolean
     netAdet?: boolean
+    kdvOrani?: boolean
+    belediyeRusumOrani?: boolean
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: boolean
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: boolean
+    fiyatGirilmeTarihi?: boolean
     users?: boolean | usersDefaultArgs<ExtArgs>
     komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     ureticiler?: boolean | mal_kabul_records$ureticilerArgs<ExtArgs>
@@ -6167,9 +6251,17 @@ export namespace Prisma {
     cikmaFireKg?: boolean
     netKg?: boolean
     netAdet?: boolean
+    kdvOrani?: boolean
+    belediyeRusumOrani?: boolean
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: boolean
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: boolean
+    fiyatGirilmeTarihi?: boolean
   }
 
-  export type mal_kabul_recordsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tarih" | "miktar" | "birimFiyat" | "toplamFiyat" | "status" | "notlar" | "malKabulcuId" | "komisyoncuId" | "ureticiId" | "urunId" | "faturaId" | "createdAt" | "updatedAt" | "fisNo" | "mustahsilId" | "ozelFirmaId" | "saticiTipi" | "ambalajId" | "paletSayisi" | "kasaSayisi" | "adetSayisi" | "brutKg" | "daraKg" | "girisKg" | "cikmaKg" | "fireKg" | "cikmaFireKg" | "netKg" | "netAdet", ExtArgs["result"]["mal_kabul_records"]>
+  export type mal_kabul_recordsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tarih" | "miktar" | "birimFiyat" | "toplamFiyat" | "status" | "notlar" | "malKabulcuId" | "komisyoncuId" | "ureticiId" | "urunId" | "faturaId" | "createdAt" | "updatedAt" | "fisNo" | "mustahsilId" | "ozelFirmaId" | "saticiTipi" | "ambalajId" | "paletSayisi" | "kasaSayisi" | "adetSayisi" | "brutKg" | "daraKg" | "girisKg" | "cikmaKg" | "fireKg" | "cikmaFireKg" | "netKg" | "netAdet" | "kdvOrani" | "belediyeRusumOrani" | "kdvHesapla" | "belediyeRusumHesapla" | "evraklar" | "fiyatGirildi" | "fiyatGirenKullanici" | "fiyatGirilmeTarihi", ExtArgs["result"]["mal_kabul_records"]>
   export type mal_kabul_recordsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | usersDefaultArgs<ExtArgs>
     komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
@@ -6244,6 +6336,14 @@ export namespace Prisma {
       cikmaFireKg: number | null
       netKg: number | null
       netAdet: number | null
+      kdvOrani: number | null
+      belediyeRusumOrani: number | null
+      kdvHesapla: boolean
+      belediyeRusumHesapla: boolean
+      evraklar: string[]
+      fiyatGirildi: boolean
+      fiyatGirenKullanici: string | null
+      fiyatGirilmeTarihi: Date | null
     }, ExtArgs["result"]["mal_kabul_records"]>
     composites: {}
   }
@@ -6705,6 +6805,14 @@ export namespace Prisma {
     readonly cikmaFireKg: FieldRef<"mal_kabul_records", 'Float'>
     readonly netKg: FieldRef<"mal_kabul_records", 'Float'>
     readonly netAdet: FieldRef<"mal_kabul_records", 'Int'>
+    readonly kdvOrani: FieldRef<"mal_kabul_records", 'Float'>
+    readonly belediyeRusumOrani: FieldRef<"mal_kabul_records", 'Float'>
+    readonly kdvHesapla: FieldRef<"mal_kabul_records", 'Boolean'>
+    readonly belediyeRusumHesapla: FieldRef<"mal_kabul_records", 'Boolean'>
+    readonly evraklar: FieldRef<"mal_kabul_records", 'String[]'>
+    readonly fiyatGirildi: FieldRef<"mal_kabul_records", 'Boolean'>
+    readonly fiyatGirenKullanici: FieldRef<"mal_kabul_records", 'String'>
+    readonly fiyatGirilmeTarihi: FieldRef<"mal_kabul_records", 'DateTime'>
   }
     
 
@@ -14335,7 +14443,15 @@ export namespace Prisma {
     fireKg: 'fireKg',
     cikmaFireKg: 'cikmaFireKg',
     netKg: 'netKg',
-    netAdet: 'netAdet'
+    netAdet: 'netAdet',
+    kdvOrani: 'kdvOrani',
+    belediyeRusumOrani: 'belediyeRusumOrani',
+    kdvHesapla: 'kdvHesapla',
+    belediyeRusumHesapla: 'belediyeRusumHesapla',
+    evraklar: 'evraklar',
+    fiyatGirildi: 'fiyatGirildi',
+    fiyatGirenKullanici: 'fiyatGirenKullanici',
+    fiyatGirilmeTarihi: 'fiyatGirilmeTarihi'
   };
 
   export type Mal_kabul_recordsScalarFieldEnum = (typeof Mal_kabul_recordsScalarFieldEnum)[keyof typeof Mal_kabul_recordsScalarFieldEnum]
@@ -14545,6 +14661,13 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
   /**
    * Deep Input Types
@@ -14835,6 +14958,14 @@ export namespace Prisma {
     cikmaFireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     netKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     netAdet?: IntNullableFilter<"mal_kabul_records"> | number | null
+    kdvOrani?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    belediyeRusumOrani?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    kdvHesapla?: BoolFilter<"mal_kabul_records"> | boolean
+    belediyeRusumHesapla?: BoolFilter<"mal_kabul_records"> | boolean
+    evraklar?: StringNullableListFilter<"mal_kabul_records">
+    fiyatGirildi?: BoolFilter<"mal_kabul_records"> | boolean
+    fiyatGirenKullanici?: StringNullableFilter<"mal_kabul_records"> | string | null
+    fiyatGirilmeTarihi?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
     users?: XOR<UsersScalarRelationFilter, usersWhereInput>
     komisyoncular?: XOR<KomisyoncularNullableScalarRelationFilter, komisyoncularWhereInput> | null
     ureticiler?: XOR<UreticilerNullableScalarRelationFilter, ureticilerWhereInput> | null
@@ -14876,6 +15007,14 @@ export namespace Prisma {
     cikmaFireKg?: SortOrderInput | SortOrder
     netKg?: SortOrderInput | SortOrder
     netAdet?: SortOrderInput | SortOrder
+    kdvOrani?: SortOrderInput | SortOrder
+    belediyeRusumOrani?: SortOrderInput | SortOrder
+    kdvHesapla?: SortOrder
+    belediyeRusumHesapla?: SortOrder
+    evraklar?: SortOrder
+    fiyatGirildi?: SortOrder
+    fiyatGirenKullanici?: SortOrderInput | SortOrder
+    fiyatGirilmeTarihi?: SortOrderInput | SortOrder
     users?: usersOrderByWithRelationInput
     komisyoncular?: komisyoncularOrderByWithRelationInput
     ureticiler?: ureticilerOrderByWithRelationInput
@@ -14920,6 +15059,14 @@ export namespace Prisma {
     cikmaFireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     netKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     netAdet?: IntNullableFilter<"mal_kabul_records"> | number | null
+    kdvOrani?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    belediyeRusumOrani?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    kdvHesapla?: BoolFilter<"mal_kabul_records"> | boolean
+    belediyeRusumHesapla?: BoolFilter<"mal_kabul_records"> | boolean
+    evraklar?: StringNullableListFilter<"mal_kabul_records">
+    fiyatGirildi?: BoolFilter<"mal_kabul_records"> | boolean
+    fiyatGirenKullanici?: StringNullableFilter<"mal_kabul_records"> | string | null
+    fiyatGirilmeTarihi?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
     users?: XOR<UsersScalarRelationFilter, usersWhereInput>
     komisyoncular?: XOR<KomisyoncularNullableScalarRelationFilter, komisyoncularWhereInput> | null
     ureticiler?: XOR<UreticilerNullableScalarRelationFilter, ureticilerWhereInput> | null
@@ -14961,6 +15108,14 @@ export namespace Prisma {
     cikmaFireKg?: SortOrderInput | SortOrder
     netKg?: SortOrderInput | SortOrder
     netAdet?: SortOrderInput | SortOrder
+    kdvOrani?: SortOrderInput | SortOrder
+    belediyeRusumOrani?: SortOrderInput | SortOrder
+    kdvHesapla?: SortOrder
+    belediyeRusumHesapla?: SortOrder
+    evraklar?: SortOrder
+    fiyatGirildi?: SortOrder
+    fiyatGirenKullanici?: SortOrderInput | SortOrder
+    fiyatGirilmeTarihi?: SortOrderInput | SortOrder
     _count?: mal_kabul_recordsCountOrderByAggregateInput
     _avg?: mal_kabul_recordsAvgOrderByAggregateInput
     _max?: mal_kabul_recordsMaxOrderByAggregateInput
@@ -15002,6 +15157,14 @@ export namespace Prisma {
     cikmaFireKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     netKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     netAdet?: IntNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
+    kdvOrani?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
+    belediyeRusumOrani?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
+    kdvHesapla?: BoolWithAggregatesFilter<"mal_kabul_records"> | boolean
+    belediyeRusumHesapla?: BoolWithAggregatesFilter<"mal_kabul_records"> | boolean
+    evraklar?: StringNullableListFilter<"mal_kabul_records">
+    fiyatGirildi?: BoolWithAggregatesFilter<"mal_kabul_records"> | boolean
+    fiyatGirenKullanici?: StringNullableWithAggregatesFilter<"mal_kabul_records"> | string | null
+    fiyatGirilmeTarihi?: DateTimeNullableWithAggregatesFilter<"mal_kabul_records"> | Date | string | null
   }
 
   export type mustahsilWhereInput = {
@@ -15860,6 +16023,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -15901,6 +16072,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
   }
 
   export type mal_kabul_recordsUpdateInput = {
@@ -15926,6 +16105,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -15967,6 +16154,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mal_kabul_recordsCreateManyInput = {
@@ -16000,6 +16195,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
   }
 
   export type mal_kabul_recordsUpdateManyMutationInput = {
@@ -16025,6 +16228,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyInput = {
@@ -16058,6 +16269,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mustahsilCreateInput = {
@@ -17045,6 +17264,19 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
   export type KomisyoncularNullableScalarRelationFilter = {
     is?: komisyoncularWhereInput | null
     isNot?: komisyoncularWhereInput | null
@@ -17111,6 +17343,14 @@ export namespace Prisma {
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
     netAdet?: SortOrder
+    kdvOrani?: SortOrder
+    belediyeRusumOrani?: SortOrder
+    kdvHesapla?: SortOrder
+    belediyeRusumHesapla?: SortOrder
+    evraklar?: SortOrder
+    fiyatGirildi?: SortOrder
+    fiyatGirenKullanici?: SortOrder
+    fiyatGirilmeTarihi?: SortOrder
   }
 
   export type mal_kabul_recordsAvgOrderByAggregateInput = {
@@ -17128,6 +17368,8 @@ export namespace Prisma {
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
     netAdet?: SortOrder
+    kdvOrani?: SortOrder
+    belediyeRusumOrani?: SortOrder
   }
 
   export type mal_kabul_recordsMaxOrderByAggregateInput = {
@@ -17161,6 +17403,13 @@ export namespace Prisma {
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
     netAdet?: SortOrder
+    kdvOrani?: SortOrder
+    belediyeRusumOrani?: SortOrder
+    kdvHesapla?: SortOrder
+    belediyeRusumHesapla?: SortOrder
+    fiyatGirildi?: SortOrder
+    fiyatGirenKullanici?: SortOrder
+    fiyatGirilmeTarihi?: SortOrder
   }
 
   export type mal_kabul_recordsMinOrderByAggregateInput = {
@@ -17194,6 +17443,13 @@ export namespace Prisma {
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
     netAdet?: SortOrder
+    kdvOrani?: SortOrder
+    belediyeRusumOrani?: SortOrder
+    kdvHesapla?: SortOrder
+    belediyeRusumHesapla?: SortOrder
+    fiyatGirildi?: SortOrder
+    fiyatGirenKullanici?: SortOrder
+    fiyatGirilmeTarihi?: SortOrder
   }
 
   export type mal_kabul_recordsSumOrderByAggregateInput = {
@@ -17211,6 +17467,8 @@ export namespace Prisma {
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
     netAdet?: SortOrder
+    kdvOrani?: SortOrder
+    belediyeRusumOrani?: SortOrder
   }
 
   export type EnumMalKabulStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -17237,6 +17495,14 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
@@ -17772,6 +18038,10 @@ export namespace Prisma {
     deleteMany?: ureticilerScalarWhereInput | ureticilerScalarWhereInput[]
   }
 
+  export type mal_kabul_recordsCreateevraklarInput = {
+    set: string[]
+  }
+
   export type usersCreateNestedOneWithoutMal_kabul_recordsInput = {
     create?: XOR<usersCreateWithoutMal_kabul_recordsInput, usersUncheckedCreateWithoutMal_kabul_recordsInput>
     connectOrCreate?: usersCreateOrConnectWithoutMal_kabul_recordsInput
@@ -17830,6 +18100,15 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type mal_kabul_recordsUpdateevraklarInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput = {
@@ -18350,6 +18629,11 @@ export namespace Prisma {
     not?: NestedEnumMalKabulStatusFilter<$PrismaModel> | $Enums.MalKabulStatus
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedEnumMalKabulStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.MalKabulStatus | EnumMalKabulStatusFieldRefInput<$PrismaModel>
     in?: $Enums.MalKabulStatus[] | ListEnumMalKabulStatusFieldRefInput<$PrismaModel>
@@ -18374,6 +18658,14 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -18424,6 +18716,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -18463,6 +18763,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutAmbalajlarInput = {
@@ -18525,6 +18833,14 @@ export namespace Prisma {
     cikmaFireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     netKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     netAdet?: IntNullableFilter<"mal_kabul_records"> | number | null
+    kdvOrani?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    belediyeRusumOrani?: FloatNullableFilter<"mal_kabul_records"> | number | null
+    kdvHesapla?: BoolFilter<"mal_kabul_records"> | boolean
+    belediyeRusumHesapla?: BoolFilter<"mal_kabul_records"> | boolean
+    evraklar?: StringNullableListFilter<"mal_kabul_records">
+    fiyatGirildi?: BoolFilter<"mal_kabul_records"> | boolean
+    fiyatGirenKullanici?: StringNullableFilter<"mal_kabul_records"> | string | null
+    fiyatGirilmeTarihi?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
   }
 
   export type mal_kabul_recordsCreateWithoutFaturalarInput = {
@@ -18550,6 +18866,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -18589,6 +18913,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutFaturalarInput = {
@@ -18704,6 +19036,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
     urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -18743,6 +19083,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutKomisyoncularInput = {
@@ -19436,6 +19784,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -19475,6 +19831,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutMustahsilInput = {
@@ -19526,6 +19890,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -19565,6 +19937,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutOzel_firmalarInput = {
@@ -19616,6 +19996,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -19655,6 +20043,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutUreticilerInput = {
@@ -19782,6 +20178,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -19821,6 +20225,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutUrunlerInput = {
@@ -19872,6 +20284,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
     urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -19911,6 +20331,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutUsersInput = {
@@ -20040,6 +20468,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
   }
 
   export type mal_kabul_recordsUpdateWithoutAmbalajlarInput = {
@@ -20065,6 +20501,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -20104,6 +20548,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutAmbalajlarInput = {
@@ -20136,6 +20588,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mal_kabul_recordsCreateManyFaturalarInput = {
@@ -20168,6 +20628,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
   }
 
   export type mal_kabul_recordsUpdateWithoutFaturalarInput = {
@@ -20193,6 +20661,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -20232,6 +20708,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutFaturalarInput = {
@@ -20264,6 +20748,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mal_kabul_recordsCreateManyKomisyoncularInput = {
@@ -20296,6 +20788,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
   }
 
   export type ureticilerCreateManyKomisyoncularInput = {
@@ -20335,6 +20835,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
     urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
@@ -20374,6 +20882,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutKomisyoncularInput = {
@@ -20406,6 +20922,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ureticilerUpdateWithoutKomisyoncularInput = {
@@ -20482,6 +21006,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
   }
 
   export type mal_kabul_recordsUpdateWithoutMustahsilInput = {
@@ -20507,6 +21039,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -20546,6 +21086,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutMustahsilInput = {
@@ -20578,6 +21126,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mal_kabul_recordsCreateManyOzel_firmalarInput = {
@@ -20610,6 +21166,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
   }
 
   export type mal_kabul_recordsUpdateWithoutOzel_firmalarInput = {
@@ -20635,6 +21199,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -20674,6 +21246,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutOzel_firmalarInput = {
@@ -20706,6 +21286,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mal_kabul_recordsCreateManyUreticilerInput = {
@@ -20738,6 +21326,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
   }
 
   export type mal_kabul_recordsUpdateWithoutUreticilerInput = {
@@ -20763,6 +21359,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
@@ -20802,6 +21406,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutUreticilerInput = {
@@ -20834,6 +21446,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mal_kabul_recordsCreateManyUrunlerInput = {
@@ -20866,6 +21486,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
   }
 
   export type mal_kabul_recordsUpdateWithoutUrunlerInput = {
@@ -20891,6 +21519,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -20930,6 +21566,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutUrunlerInput = {
@@ -20962,6 +21606,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mal_kabul_recordsCreateManyUsersInput = {
@@ -20994,6 +21646,14 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
   }
 
   export type faturalarCreateManyUsersInput = {
@@ -21032,6 +21692,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
     urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
@@ -21071,6 +21739,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutUsersInput = {
@@ -21103,6 +21779,14 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type faturalarUpdateWithoutUsersInput = {
