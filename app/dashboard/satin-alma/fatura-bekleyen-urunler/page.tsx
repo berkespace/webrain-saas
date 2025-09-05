@@ -203,21 +203,37 @@ export default function FaturaBekleyenUrunler() {
       ? (selectedRecord.netKg || 0) 
       : (selectedRecord.netAdet || 0)
     
+    console.log('=== HESAPLAMA BAŞLIYOR ===')
     console.log('Hesaplama - Base Price:', basePrice)
     console.log('Hesaplama - Net Miktar:', netMiktar)
-    console.log('Hesaplama - Ürün Birimi:', selectedRecord.urunler.birim)
+    console.log('Hesaplama - Ürün Birimi:', selectedRecord.urunler?.birim)
     console.log('Hesaplama - Net KG:', selectedRecord.netKg)
     console.log('Hesaplama - Net Adet:', selectedRecord.netAdet)
+    console.log('Hesaplama - Selected Record:', selectedRecord)
+    console.log('Hesaplama - Ürün Objesi:', selectedRecord.urunler)
+    console.log('=== HESAPLAMA BİTTİ ===')
     
     // KDV hariç tutar: Net Miktar * Alış Fiyatı
     return netMiktar * basePrice
   }
 
   const openModal = (record: MalKabulRecord) => {
+    console.log('=== MODAL AÇILIYOR ===')
     console.log('Selected record:', record)
+    console.log('Record ID:', record.id)
+    console.log('Record FisNo:', record.fisNo)
     console.log('Net KG:', record.netKg)
     console.log('Net Adet:', record.netAdet)
-    console.log('Ürün birimi:', record.urunler.birim)
+    console.log('Ürün birimi:', record.urunler?.birim)
+    console.log('Ürün adı:', record.urunler?.ad)
+    console.log('Ürün ID:', record.urunler?.id)
+    console.log('Giriş KG:', record.girisKg)
+    console.log('Giriş Adet:', record.girisAdet)
+    console.log('Çıkma KG:', record.cikmaKg)
+    console.log('Çıkma Adet:', record.cikmaAdet)
+    console.log('Fire KG:', record.fireKg)
+    console.log('Fire Adet:', record.fireAdet)
+    console.log('=== MODAL AÇILDI ===')
     setSelectedRecord(record)
     setAlisFiyati(record.birimFiyat?.toString() || '')
     setIsModalOpen(true)

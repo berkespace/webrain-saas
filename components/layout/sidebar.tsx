@@ -775,7 +775,7 @@ export function Sidebar() {
     const isCategoryHeader = item.href === '#'
 
     return (
-      <div key={item.href}>
+      <div key={item.title}>
         <div className="flex items-center">
           {isCategoryHeader ? (
             <div className="flex-1">
