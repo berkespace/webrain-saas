@@ -766,7 +766,7 @@ export function Sidebar() {
                 onClick={() => toggleExpanded(item.title)}
                 className={cn(
                   "w-full justify-start h-11 px-3 py-2",
-                  "text-sm font-semibold text-foreground uppercase tracking-wide",
+                  "text-sm font-semibold text-foreground tracking-wide",
                   "border-b-2 border-primary/20 mb-3 hover:bg-primary/5",
                   "transition-all duration-200"
                 )}
