@@ -1456,6 +1456,24 @@ export default function YeniMalKabul() {
                 max-width: 55mm;
                 height: auto;
               }
+              .logo {
+                text-align: center;
+                margin-bottom: 8px;
+              }
+              .logo img {
+                max-width: 60mm;
+                height: auto;
+              }
+              .thank-you {
+                text-align: center;
+                font-size: 12px;
+                font-weight: bold;
+                margin-top: 15px;
+                padding: 8px;
+                background: #f0f0f0;
+                border-radius: 3px;
+                border: 2px solid #333;
+              }
               
               @media print {
                 body { 
@@ -1478,6 +1496,9 @@ export default function YeniMalKabul() {
             </style>
           </head>
           <body>
+              <div class="logo">
+                <img src="/logo-dark.png" alt="Webrain Logo" />
+              </div>
               <div class="header">${fişBaşlığı}</div>
             
             <div class="section">
@@ -1636,6 +1657,9 @@ export default function YeniMalKabul() {
               
               <div class="page-break"></div>
               
+              <div class="logo">
+                <img src="/logo-dark.png" alt="Webrain Logo" />
+              </div>
               <div class="header">${fişBaşlığı}</div>
             
             <div class="section">
@@ -1781,6 +1805,10 @@ export default function YeniMalKabul() {
               
               <div class="barcode">
                 <img src="${barcodeDataUrl}" alt="Barcode" style="width: 100%; height: 50px; display: block; margin: 10px auto;" />
+              </div>
+              
+              <div class="thank-you">
+                Bizi tercih ettiğiniz için teşekkür ederiz!
               </div>
             </body>
           </html>
