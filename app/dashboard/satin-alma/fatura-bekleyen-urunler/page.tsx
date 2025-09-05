@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { 
   Package, 
   Search, 
@@ -17,7 +18,12 @@ import {
   TrendingUp,
   AlertCircle,
   FileText,
-  CheckCircle
+  CheckCircle,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+  FileSpreadsheet,
+  FileText as PdfIcon
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -79,6 +85,9 @@ export default function FaturaBekleyenUrunler() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [saticiTipiFilter, setSaticiTipiFilter] = useState<string>('ALL')
+  const [sortBy, setSortBy] = useState<'komisyonNo' | 'tarih' | 'fisNo'>('komisyonNo')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+  const [exportLoading, setExportLoading] = useState(false)
 
   useEffect(() => {
     fetchRecords()
@@ -132,10 +141,205 @@ export default function FaturaBekleyenUrunler() {
     return matchesSearch && matchesSaticiTipi
   })
 
+  // Sıralama fonksiyonu
+  const sortedRecords = [...filteredRecords].sort((a, b) => {
+    let aValue: string | number = ''
+    let bValue: string | number = ''
+    
+    switch (sortBy) {
+      case 'komisyonNo':
+        aValue = a.komisyoncular?.komisyonNo || ''
+        bValue = b.komisyoncular?.komisyonNo || ''
+        // Komisyon No'larını sayısal olarak karşılaştır
+        const aNum = parseInt(aValue.toString()) || 0
+        const bNum = parseInt(bValue.toString()) || 0
+        return sortOrder === 'asc' ? aNum - bNum : bNum - aNum
+      case 'tarih':
+        aValue = new Date(a.tarih).getTime()
+        bValue = new Date(b.tarih).getTime()
+        return sortOrder === 'asc' ? aValue - bValue : bValue - aValue
+      case 'fisNo':
+        aValue = a.fisNo
+        bValue = b.fisNo
+        return sortOrder === 'asc' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue)
+      default:
+        return 0
+    }
+  })
+
   const totalRecords = filteredRecords.length
   const totalValue = filteredRecords.reduce((sum, record) => sum + (record.toplamFiyat || 0), 0)
   const totalWeight = filteredRecords.reduce((sum, record) => sum + (record.netKg || 0), 0)
   const totalQuantity = filteredRecords.reduce((sum, record) => sum + (record.netAdet || 0), 0)
+
+  // Export fonksiyonları
+  const exportToExcel = async () => {
+    setExportLoading(true)
+    try {
+      const data = sortedRecords.map(record => ({
+        'Fiş No': record.fisNo,
+        'Tarih': new Date(record.tarih).toLocaleDateString('tr-TR'),
+        'Ürün': record.urunler.ad,
+        'Kategori': record.urunler.kategori,
+        'Birim': record.urunler.birim,
+        'Satıcı': getSaticiAdi(record),
+        'Komisyon No': record.komisyoncular?.komisyonNo || '-',
+        'Mal Kabulcu': `${record.users.firstName} ${record.users.lastName}`,
+        'Giriş KG': record.girisKg || 0,
+        'Dara KG': record.daraKg || 0,
+        'Çıkma KG': record.cikmaKg || 0,
+        'Fire KG': record.fireKg || 0,
+        'Net KG': record.netKg || 0,
+        'Giriş Adet': record.adetSayisi || 0,
+        'Çıkma Adet': record.cikmaAdet || 0,
+        'Fire Adet': record.fireAdet || 0,
+        'Net Adet': record.netAdet || 0,
+        'Birim Fiyat': record.birimFiyat || 0,
+        'Toplam': record.toplamFiyat || 0,
+        'Durum': record.status,
+        'Notlar': record.notlar || ''
+      }))
+
+      // CSV formatında indirme
+      const csvContent = [
+        Object.keys(data[0]).join(','),
+        ...data.map(row => Object.values(row).map(val => `"${val}"`).join(','))
+      ].join('\n')
+
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+      const link = document.createElement('a')
+      const url = URL.createObjectURL(blob)
+      link.setAttribute('href', url)
+      link.setAttribute('download', `fatura-bekleyen-urunler-${new Date().toISOString().split('T')[0]}.csv`)
+      link.style.visibility = 'hidden'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } catch (error) {
+      console.error('Excel export hatası:', error)
+    } finally {
+      setExportLoading(false)
+    }
+  }
+
+  const exportToPDF = async () => {
+    setExportLoading(true)
+    try {
+      // PDF için HTML template oluştur
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>Fatura Bekleyen Ürünler</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { text-align: center; margin-bottom: 30px; }
+            .header h1 { color: #2563eb; margin-bottom: 10px; }
+            .summary { display: flex; justify-content: space-around; margin-bottom: 30px; }
+            .summary-item { text-align: center; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+            .summary-item h3 { margin: 0; color: #2563eb; }
+            .summary-item p { margin: 5px 0; color: #666; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 12px; }
+            th { background-color: #f5f5f5; font-weight: bold; }
+            .net-values { background-color: #e8f5e8; font-weight: bold; }
+            .footer { margin-top: 30px; text-align: center; color: #666; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>Fatura Bekleyen Ürünler Raporu</h1>
+            <p>Tarih: ${new Date().toLocaleDateString('tr-TR')}</p>
+          </div>
+          
+          <div class="summary">
+            <div class="summary-item">
+              <h3>${totalRecords}</h3>
+              <p>Toplam Kayıt</p>
+            </div>
+            <div class="summary-item">
+              <h3>₺${totalValue.toLocaleString('tr-TR')}</h3>
+              <p>Toplam Değer</p>
+            </div>
+            <div class="summary-item">
+              <h3>${totalWeight.toFixed(2)} kg</h3>
+              <p>Toplam Ağırlık</p>
+            </div>
+            <div class="summary-item">
+              <h3>${totalQuantity}</h3>
+              <p>Toplam Adet</p>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Fiş No</th>
+                <th>Tarih</th>
+                <th>Ürün</th>
+                <th>Satıcı</th>
+                <th>Komisyon No</th>
+                <th>Mal Kabulcu</th>
+                <th>Giriş KG</th>
+                <th>Dara KG</th>
+                <th>Çıkma KG</th>
+                <th>Fire KG</th>
+                <th class="net-values">Net KG</th>
+                <th>Giriş Adet</th>
+                <th>Çıkma Adet</th>
+                <th>Fire Adet</th>
+                <th class="net-values">Net Adet</th>
+                <th>Birim Fiyat</th>
+                <th>Toplam</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${sortedRecords.map(record => `
+                <tr>
+                  <td>${record.fisNo}</td>
+                  <td>${new Date(record.tarih).toLocaleDateString('tr-TR')}</td>
+                  <td>${record.urunler.ad}</td>
+                  <td>${getSaticiAdi(record)}</td>
+                  <td>${record.komisyoncular?.komisyonNo || '-'}</td>
+                  <td>${record.users.firstName} ${record.users.lastName}</td>
+                  <td>${record.girisKg || 0}</td>
+                  <td>${record.daraKg || 0}</td>
+                  <td>${record.cikmaKg || 0}</td>
+                  <td>${record.fireKg || 0}</td>
+                  <td class="net-values">${record.netKg || 0}</td>
+                  <td>${record.adetSayisi || 0}</td>
+                  <td>${record.cikmaAdet || 0}</td>
+                  <td>${record.fireAdet || 0}</td>
+                  <td class="net-values">${record.netAdet || 0}</td>
+                  <td>₺${record.birimFiyat || 0}</td>
+                  <td>₺${record.toplamFiyat || 0}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+          
+          <div class="footer">
+            <p>Bu rapor ${new Date().toLocaleString('tr-TR')} tarihinde oluşturulmuştur.</p>
+          </div>
+        </body>
+        </html>
+      `
+
+      const printWindow = window.open('', '_blank')
+      if (printWindow) {
+        printWindow.document.write(htmlContent)
+        printWindow.document.close()
+        printWindow.focus()
+        printWindow.print()
+        printWindow.close()
+      }
+    } catch (error) {
+      console.error('PDF export hatası:', error)
+    } finally {
+      setExportLoading(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -159,9 +363,23 @@ export default function FaturaBekleyenUrunler() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
-            Excel İndir
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={exportToExcel}
+            disabled={exportLoading || sortedRecords.length === 0}
+          >
+            <FileSpreadsheet className="h-4 w-4 mr-2" />
+            {exportLoading ? 'İndiriliyor...' : 'Excel İndir'}
+          </Button>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={exportToPDF}
+            disabled={exportLoading || sortedRecords.length === 0}
+          >
+            <PdfIcon className="h-4 w-4 mr-2" />
+            {exportLoading ? 'Hazırlanıyor...' : 'PDF Yazdır'}
           </Button>
           <Button size="sm">
             <FileText className="h-4 w-4 mr-2" />
@@ -236,7 +454,7 @@ export default function FaturaBekleyenUrunler() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Arama</label>
               <div className="relative">
@@ -252,16 +470,55 @@ export default function FaturaBekleyenUrunler() {
 
             <div className="space-y-2">
               <label className="text-sm font-medium">Satıcı Tipi</label>
-              <select
-                value={saticiTipiFilter}
-                onChange={(e) => setSaticiTipiFilter(e.target.value)}
-                className="w-full p-2 border border-input bg-background rounded-md"
-              >
-                <option value="ALL">Tümü</option>
-                <option value="KOMISYONCU">Komisyoncu</option>
-                <option value="OZEL_FIRMA">Özel Firma</option>
-                <option value="MUSTAHSIL">Müstahsil</option>
-              </select>
+              <Select value={saticiTipiFilter} onValueChange={setSaticiTipiFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Satıcı tipi seçin" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="ALL">Tümü</SelectItem>
+                  <SelectItem value="KOMISYONCU">Sadece Komisyoncular</SelectItem>
+                  <SelectItem value="OZEL_FIRMA">Özel Firma</SelectItem>
+                  <SelectItem value="MUSTAHSIL">Müstahsil</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Sıralama</label>
+              <Select value={sortBy} onValueChange={(value: 'komisyonNo' | 'tarih' | 'fisNo') => setSortBy(value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Sıralama kriteri" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="komisyonNo">Komisyon No</SelectItem>
+                  <SelectItem value="tarih">Tarih</SelectItem>
+                  <SelectItem value="fisNo">Fiş No</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Sıralama Yönü</label>
+              <div className="flex gap-2">
+                <Button
+                  variant={sortOrder === 'asc' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSortOrder('asc')}
+                  className="flex-1"
+                >
+                  <ArrowUp className="h-4 w-4 mr-1" />
+                  Küçükten Büyüğe
+                </Button>
+                <Button
+                  variant={sortOrder === 'desc' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setSortOrder('desc')}
+                  className="flex-1"
+                >
+                  <ArrowDown className="h-4 w-4 mr-1" />
+                  Büyükten Küçüğe
+                </Button>
+              </div>
             </div>
           </div>
         </CardContent>
@@ -275,7 +532,12 @@ export default function FaturaBekleyenUrunler() {
             Fatura Bekleyen Ürünler
           </CardTitle>
           <CardDescription>
-            {filteredRecords.length} netlenen kayıt gösteriliyor
+            {sortedRecords.length} netlenen kayıt gösteriliyor
+            {sortBy === 'komisyonNo' && (
+              <span className="ml-2 text-blue-600">
+                • Komisyon No'ya göre {sortOrder === 'asc' ? 'küçükten büyüğe' : 'büyükten küçüğe'} sıralandı
+              </span>
+            )}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -287,6 +549,7 @@ export default function FaturaBekleyenUrunler() {
                   <th className="text-left p-3 font-medium">Tarih</th>
                   <th className="text-left p-3 font-medium">Ürün</th>
                   <th className="text-left p-3 font-medium">Satıcı</th>
+                  <th className="text-left p-3 font-medium">Komisyon No</th>
                   <th className="text-left p-3 font-medium">Mal Kabulcu</th>
                   <th className="text-left p-3 font-medium">Ağırlık Bilgileri</th>
                   <th className="text-left p-3 font-medium">Adet Bilgileri</th>
@@ -296,7 +559,7 @@ export default function FaturaBekleyenUrunler() {
                 </tr>
               </thead>
               <tbody>
-                {filteredRecords.map((record) => (
+                {sortedRecords.map((record) => (
                   <tr key={record.id} className="border-b hover:bg-muted/50">
                     <td className="p-3">
                       <div className="font-mono text-sm">{record.fisNo}</div>
@@ -323,6 +586,11 @@ export default function FaturaBekleyenUrunler() {
                         <div className="text-sm text-muted-foreground">
                           {record.saticiTipi}
                         </div>
+                      </div>
+                    </td>
+                    <td className="p-3">
+                      <div className="font-mono text-sm">
+                        {record.komisyoncular?.komisyonNo || '-'}
                       </div>
                     </td>
                     <td className="p-3">
@@ -414,7 +682,7 @@ export default function FaturaBekleyenUrunler() {
             </table>
           </div>
 
-          {filteredRecords.length === 0 && (
+          {sortedRecords.length === 0 && (
             <div className="text-center py-8">
               <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
               <h3 className="text-lg font-medium mb-2">Fatura bekleyen ürün bulunamadı</h3>
