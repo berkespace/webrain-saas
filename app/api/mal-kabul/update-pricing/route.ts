@@ -26,6 +26,12 @@ export async function POST(request: NextRequest) {
     const kdvHesapla = formData.get('kdvHesapla') === 'true'
     const belediyeRusumHesapla = formData.get('belediyeRusumHesapla') === 'true'
     const notlar = formData.get('notlar') as string
+    
+    // Manuel fatura bilgileri
+    const faturaYontemi = formData.get('faturaYontemi') as string
+    const faturaSeriNo = formData.get('faturaSeriNo') as string
+    const faturaTarihi = formData.get('faturaTarihi') as string
+    const faturaAciklamasi = formData.get('faturaAciklamasi') as string
 
     // Önce kaydı al ki Net KG/Adet bilgisine erişelim
     const record = await prisma.mal_kabul_records.findUnique({
@@ -125,7 +131,12 @@ export async function POST(request: NextRequest) {
         evraklar: uploadedFiles.length > 0 ? uploadedFiles : undefined,
         fiyatGirildi: true,
         fiyatGirenKullanici: session.user.id,
-        fiyatGirilmeTarihi: new Date()
+        fiyatGirilmeTarihi: new Date(),
+        faturaYontemi: faturaYontemi,
+        faturaSeriNo: faturaSeriNo || null,
+        faturaTarihi: faturaTarihi ? new Date(faturaTarihi) : null,
+        faturaAciklamasi: faturaAciklamasi || null,
+        onayDurumu: faturaYontemi === 'MANUEL' ? 'BEKLEMEDE' : 'ONAYLANDI'
       }
     })
 

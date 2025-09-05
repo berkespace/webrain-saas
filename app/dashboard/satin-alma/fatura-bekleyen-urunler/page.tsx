@@ -119,6 +119,12 @@ export default function FaturaBekleyenUrunler() {
   const [notlar, setNotlar] = useState('')
   const [saving, setSaving] = useState(false)
   
+  // Manuel fatura bilgileri için state'ler
+  const [faturaYontemi, setFaturaYontemi] = useState<'EVRAK' | 'MANUEL'>('EVRAK')
+  const [faturaSeriNo, setFaturaSeriNo] = useState('')
+  const [faturaTarihi, setFaturaTarihi] = useState('')
+  const [faturaAciklamasi, setFaturaAciklamasi] = useState('')
+  
   const fileInputRef = useRef<HTMLInputElement>(null)
   const cameraInputRef = useRef<HTMLInputElement>(null)
   const { toast } = useToast()
@@ -231,6 +237,10 @@ export default function FaturaBekleyenUrunler() {
     setUploadedFiles([])
     setPreviewImages([])
     setNotlar('')
+    setFaturaYontemi('EVRAK')
+    setFaturaSeriNo('')
+    setFaturaTarihi('')
+    setFaturaAciklamasi('')
   }
 
   const saveRecord = async () => {
@@ -246,6 +256,10 @@ export default function FaturaBekleyenUrunler() {
       formData.append('kdvHesapla', kdvHesapla.toString())
       formData.append('belediyeRusumHesapla', belediyeRusumHesapla.toString())
       formData.append('notlar', notlar)
+      formData.append('faturaYontemi', faturaYontemi)
+      formData.append('faturaSeriNo', faturaSeriNo)
+      formData.append('faturaTarihi', faturaTarihi)
+      formData.append('faturaAciklamasi', faturaAciklamasi)
       
       // Dosyaları ekle
       uploadedFiles.forEach((file, index) => {
@@ -1035,9 +1049,45 @@ export default function FaturaBekleyenUrunler() {
             <div className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Evrak Yükleme</CardTitle>
+                  <CardTitle className="text-lg">Fatura Yöntemi</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Fatura Girişi Yöntemi</Label>
+                    <div className="flex gap-4">
+                      <label className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          name="faturaYontemi"
+                          value="EVRAK"
+                          checked={faturaYontemi === 'EVRAK'}
+                          onChange={(e) => setFaturaYontemi(e.target.value as 'EVRAK')}
+                          className="text-primary"
+                        />
+                        <span>Evrak Yükleme</span>
+                      </label>
+                      <label className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          name="faturaYontemi"
+                          value="MANUEL"
+                          checked={faturaYontemi === 'MANUEL'}
+                          onChange={(e) => setFaturaYontemi(e.target.value as 'MANUEL')}
+                          className="text-primary"
+                        />
+                        <span>Manuel Bilgi Girişi</span>
+                      </label>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {faturaYontemi === 'EVRAK' ? (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Evrak Yükleme</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
@@ -1118,6 +1168,54 @@ export default function FaturaBekleyenUrunler() {
                   )}
                 </CardContent>
               </Card>
+              ) : (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Manuel Fatura Bilgileri</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="faturaSeriNo">Fatura Seri No</Label>
+                      <Input
+                        id="faturaSeriNo"
+                        value={faturaSeriNo}
+                        onChange={(e) => setFaturaSeriNo(e.target.value)}
+                        placeholder="Örn: FTR2024001234"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="faturaTarihi">Fatura Tarihi</Label>
+                      <Input
+                        id="faturaTarihi"
+                        type="date"
+                        value={faturaTarihi}
+                        onChange={(e) => setFaturaTarihi(e.target.value)}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="faturaAciklamasi">Fatura Açıklaması</Label>
+                      <Textarea
+                        id="faturaAciklamasi"
+                        value={faturaAciklamasi}
+                        onChange={(e) => setFaturaAciklamasi(e.target.value)}
+                        placeholder="Fatura ile ilgili ek açıklama..."
+                        rows={3}
+                      />
+                    </div>
+                    
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                      <div className="flex items-start gap-2">
+                        <div className="text-yellow-600 mt-0.5">⚠️</div>
+                        <div className="text-sm text-yellow-800">
+                          <strong>Bilgi:</strong> Manuel girilen fatura bilgileri muhasebeci onayına gönderilecektir.
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </div>
 

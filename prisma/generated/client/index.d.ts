@@ -7001,6 +7001,14 @@ export namespace Prisma {
     fiyatGirildi: boolean | null
     fiyatGirenKullanici: string | null
     fiyatGirilmeTarihi: Date | null
+    faturaYontemi: string | null
+    faturaSeriNo: string | null
+    faturaTarihi: Date | null
+    faturaAciklamasi: string | null
+    onayDurumu: string | null
+    onaylayanKullanici: string | null
+    onayTarihi: Date | null
+    redDetayi: string | null
   }
 
   export type Mal_kabul_recordsMaxAggregateOutputType = {
@@ -7042,6 +7050,14 @@ export namespace Prisma {
     fiyatGirildi: boolean | null
     fiyatGirenKullanici: string | null
     fiyatGirilmeTarihi: Date | null
+    faturaYontemi: string | null
+    faturaSeriNo: string | null
+    faturaTarihi: Date | null
+    faturaAciklamasi: string | null
+    onayDurumu: string | null
+    onaylayanKullanici: string | null
+    onayTarihi: Date | null
+    redDetayi: string | null
   }
 
   export type Mal_kabul_recordsCountAggregateOutputType = {
@@ -7084,6 +7100,14 @@ export namespace Prisma {
     fiyatGirildi: number
     fiyatGirenKullanici: number
     fiyatGirilmeTarihi: number
+    faturaYontemi: number
+    faturaSeriNo: number
+    faturaTarihi: number
+    faturaAciklamasi: number
+    onayDurumu: number
+    onaylayanKullanici: number
+    onayTarihi: number
+    redDetayi: number
     _all: number
   }
 
@@ -7167,6 +7191,14 @@ export namespace Prisma {
     fiyatGirildi?: true
     fiyatGirenKullanici?: true
     fiyatGirilmeTarihi?: true
+    faturaYontemi?: true
+    faturaSeriNo?: true
+    faturaTarihi?: true
+    faturaAciklamasi?: true
+    onayDurumu?: true
+    onaylayanKullanici?: true
+    onayTarihi?: true
+    redDetayi?: true
   }
 
   export type Mal_kabul_recordsMaxAggregateInputType = {
@@ -7208,6 +7240,14 @@ export namespace Prisma {
     fiyatGirildi?: true
     fiyatGirenKullanici?: true
     fiyatGirilmeTarihi?: true
+    faturaYontemi?: true
+    faturaSeriNo?: true
+    faturaTarihi?: true
+    faturaAciklamasi?: true
+    onayDurumu?: true
+    onaylayanKullanici?: true
+    onayTarihi?: true
+    redDetayi?: true
   }
 
   export type Mal_kabul_recordsCountAggregateInputType = {
@@ -7250,6 +7290,14 @@ export namespace Prisma {
     fiyatGirildi?: true
     fiyatGirenKullanici?: true
     fiyatGirilmeTarihi?: true
+    faturaYontemi?: true
+    faturaSeriNo?: true
+    faturaTarihi?: true
+    faturaAciklamasi?: true
+    onayDurumu?: true
+    onaylayanKullanici?: true
+    onayTarihi?: true
+    redDetayi?: true
     _all?: true
   }
 
@@ -7379,6 +7427,14 @@ export namespace Prisma {
     fiyatGirildi: boolean
     fiyatGirenKullanici: string | null
     fiyatGirilmeTarihi: Date | null
+    faturaYontemi: string | null
+    faturaSeriNo: string | null
+    faturaTarihi: Date | null
+    faturaAciklamasi: string | null
+    onayDurumu: string | null
+    onaylayanKullanici: string | null
+    onayTarihi: Date | null
+    redDetayi: string | null
     _count: Mal_kabul_recordsCountAggregateOutputType | null
     _avg: Mal_kabul_recordsAvgAggregateOutputType | null
     _sum: Mal_kabul_recordsSumAggregateOutputType | null
@@ -7440,6 +7496,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: boolean
     fiyatGirilmeTarihi?: boolean
+    faturaYontemi?: boolean
+    faturaSeriNo?: boolean
+    faturaTarihi?: boolean
+    faturaAciklamasi?: boolean
+    onayDurumu?: boolean
+    onaylayanKullanici?: boolean
+    onayTarihi?: boolean
+    redDetayi?: boolean
     users?: boolean | usersDefaultArgs<ExtArgs>
     komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     ureticiler?: boolean | mal_kabul_records$ureticilerArgs<ExtArgs>
@@ -7491,6 +7555,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: boolean
     fiyatGirilmeTarihi?: boolean
+    faturaYontemi?: boolean
+    faturaSeriNo?: boolean
+    faturaTarihi?: boolean
+    faturaAciklamasi?: boolean
+    onayDurumu?: boolean
+    onaylayanKullanici?: boolean
+    onayTarihi?: boolean
+    redDetayi?: boolean
     users?: boolean | usersDefaultArgs<ExtArgs>
     komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     ureticiler?: boolean | mal_kabul_records$ureticilerArgs<ExtArgs>
@@ -7541,6 +7613,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: boolean
     fiyatGirilmeTarihi?: boolean
+    faturaYontemi?: boolean
+    faturaSeriNo?: boolean
+    faturaTarihi?: boolean
+    faturaAciklamasi?: boolean
+    onayDurumu?: boolean
+    onaylayanKullanici?: boolean
+    onayTarihi?: boolean
+    redDetayi?: boolean
     users?: boolean | usersDefaultArgs<ExtArgs>
     komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
     ureticiler?: boolean | mal_kabul_records$ureticilerArgs<ExtArgs>
@@ -7591,9 +7671,17 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: boolean
     fiyatGirilmeTarihi?: boolean
+    faturaYontemi?: boolean
+    faturaSeriNo?: boolean
+    faturaTarihi?: boolean
+    faturaAciklamasi?: boolean
+    onayDurumu?: boolean
+    onaylayanKullanici?: boolean
+    onayTarihi?: boolean
+    redDetayi?: boolean
   }
 
-  export type mal_kabul_recordsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tarih" | "miktar" | "birimFiyat" | "toplamFiyat" | "status" | "notlar" | "malKabulcuId" | "komisyoncuId" | "ureticiId" | "urunId" | "faturaId" | "createdAt" | "updatedAt" | "fisNo" | "mustahsilId" | "ozelFirmaId" | "saticiTipi" | "ambalajId" | "paletSayisi" | "kasaSayisi" | "adetSayisi" | "brutKg" | "daraKg" | "girisKg" | "cikmaKg" | "fireKg" | "cikmaFireKg" | "netKg" | "netAdet" | "kdvHaricTutar" | "kdvOrani" | "belediyeRusumOrani" | "kdvHesapla" | "belediyeRusumHesapla" | "evraklar" | "fiyatGirildi" | "fiyatGirenKullanici" | "fiyatGirilmeTarihi", ExtArgs["result"]["mal_kabul_records"]>
+  export type mal_kabul_recordsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tarih" | "miktar" | "birimFiyat" | "toplamFiyat" | "status" | "notlar" | "malKabulcuId" | "komisyoncuId" | "ureticiId" | "urunId" | "faturaId" | "createdAt" | "updatedAt" | "fisNo" | "mustahsilId" | "ozelFirmaId" | "saticiTipi" | "ambalajId" | "paletSayisi" | "kasaSayisi" | "adetSayisi" | "brutKg" | "daraKg" | "girisKg" | "cikmaKg" | "fireKg" | "cikmaFireKg" | "netKg" | "netAdet" | "kdvHaricTutar" | "kdvOrani" | "belediyeRusumOrani" | "kdvHesapla" | "belediyeRusumHesapla" | "evraklar" | "fiyatGirildi" | "fiyatGirenKullanici" | "fiyatGirilmeTarihi" | "faturaYontemi" | "faturaSeriNo" | "faturaTarihi" | "faturaAciklamasi" | "onayDurumu" | "onaylayanKullanici" | "onayTarihi" | "redDetayi", ExtArgs["result"]["mal_kabul_records"]>
   export type mal_kabul_recordsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | usersDefaultArgs<ExtArgs>
     komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
@@ -7679,6 +7767,14 @@ export namespace Prisma {
       fiyatGirildi: boolean
       fiyatGirenKullanici: string | null
       fiyatGirilmeTarihi: Date | null
+      faturaYontemi: string | null
+      faturaSeriNo: string | null
+      faturaTarihi: Date | null
+      faturaAciklamasi: string | null
+      onayDurumu: string | null
+      onaylayanKullanici: string | null
+      onayTarihi: Date | null
+      redDetayi: string | null
     }, ExtArgs["result"]["mal_kabul_records"]>
     composites: {}
   }
@@ -8150,6 +8246,14 @@ export namespace Prisma {
     readonly fiyatGirildi: FieldRef<"mal_kabul_records", 'Boolean'>
     readonly fiyatGirenKullanici: FieldRef<"mal_kabul_records", 'String'>
     readonly fiyatGirilmeTarihi: FieldRef<"mal_kabul_records", 'DateTime'>
+    readonly faturaYontemi: FieldRef<"mal_kabul_records", 'String'>
+    readonly faturaSeriNo: FieldRef<"mal_kabul_records", 'String'>
+    readonly faturaTarihi: FieldRef<"mal_kabul_records", 'DateTime'>
+    readonly faturaAciklamasi: FieldRef<"mal_kabul_records", 'String'>
+    readonly onayDurumu: FieldRef<"mal_kabul_records", 'String'>
+    readonly onaylayanKullanici: FieldRef<"mal_kabul_records", 'String'>
+    readonly onayTarihi: FieldRef<"mal_kabul_records", 'DateTime'>
+    readonly redDetayi: FieldRef<"mal_kabul_records", 'String'>
   }
     
 
@@ -15828,7 +15932,15 @@ export namespace Prisma {
     evraklar: 'evraklar',
     fiyatGirildi: 'fiyatGirildi',
     fiyatGirenKullanici: 'fiyatGirenKullanici',
-    fiyatGirilmeTarihi: 'fiyatGirilmeTarihi'
+    fiyatGirilmeTarihi: 'fiyatGirilmeTarihi',
+    faturaYontemi: 'faturaYontemi',
+    faturaSeriNo: 'faturaSeriNo',
+    faturaTarihi: 'faturaTarihi',
+    faturaAciklamasi: 'faturaAciklamasi',
+    onayDurumu: 'onayDurumu',
+    onaylayanKullanici: 'onaylayanKullanici',
+    onayTarihi: 'onayTarihi',
+    redDetayi: 'redDetayi'
   };
 
   export type Mal_kabul_recordsScalarFieldEnum = (typeof Mal_kabul_recordsScalarFieldEnum)[keyof typeof Mal_kabul_recordsScalarFieldEnum]
@@ -16446,6 +16558,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFilter<"mal_kabul_records"> | boolean
     fiyatGirenKullanici?: StringNullableFilter<"mal_kabul_records"> | string | null
     fiyatGirilmeTarihi?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
+    faturaYontemi?: StringNullableFilter<"mal_kabul_records"> | string | null
+    faturaSeriNo?: StringNullableFilter<"mal_kabul_records"> | string | null
+    faturaTarihi?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
+    faturaAciklamasi?: StringNullableFilter<"mal_kabul_records"> | string | null
+    onayDurumu?: StringNullableFilter<"mal_kabul_records"> | string | null
+    onaylayanKullanici?: StringNullableFilter<"mal_kabul_records"> | string | null
+    onayTarihi?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
+    redDetayi?: StringNullableFilter<"mal_kabul_records"> | string | null
     users?: XOR<UsersScalarRelationFilter, usersWhereInput>
     komisyoncular?: XOR<KomisyoncularNullableScalarRelationFilter, komisyoncularWhereInput> | null
     ureticiler?: XOR<UreticilerNullableScalarRelationFilter, ureticilerWhereInput> | null
@@ -16497,6 +16617,14 @@ export namespace Prisma {
     fiyatGirildi?: SortOrder
     fiyatGirenKullanici?: SortOrderInput | SortOrder
     fiyatGirilmeTarihi?: SortOrderInput | SortOrder
+    faturaYontemi?: SortOrderInput | SortOrder
+    faturaSeriNo?: SortOrderInput | SortOrder
+    faturaTarihi?: SortOrderInput | SortOrder
+    faturaAciklamasi?: SortOrderInput | SortOrder
+    onayDurumu?: SortOrderInput | SortOrder
+    onaylayanKullanici?: SortOrderInput | SortOrder
+    onayTarihi?: SortOrderInput | SortOrder
+    redDetayi?: SortOrderInput | SortOrder
     users?: usersOrderByWithRelationInput
     komisyoncular?: komisyoncularOrderByWithRelationInput
     ureticiler?: ureticilerOrderByWithRelationInput
@@ -16551,6 +16679,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFilter<"mal_kabul_records"> | boolean
     fiyatGirenKullanici?: StringNullableFilter<"mal_kabul_records"> | string | null
     fiyatGirilmeTarihi?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
+    faturaYontemi?: StringNullableFilter<"mal_kabul_records"> | string | null
+    faturaSeriNo?: StringNullableFilter<"mal_kabul_records"> | string | null
+    faturaTarihi?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
+    faturaAciklamasi?: StringNullableFilter<"mal_kabul_records"> | string | null
+    onayDurumu?: StringNullableFilter<"mal_kabul_records"> | string | null
+    onaylayanKullanici?: StringNullableFilter<"mal_kabul_records"> | string | null
+    onayTarihi?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
+    redDetayi?: StringNullableFilter<"mal_kabul_records"> | string | null
     users?: XOR<UsersScalarRelationFilter, usersWhereInput>
     komisyoncular?: XOR<KomisyoncularNullableScalarRelationFilter, komisyoncularWhereInput> | null
     ureticiler?: XOR<UreticilerNullableScalarRelationFilter, ureticilerWhereInput> | null
@@ -16602,6 +16738,14 @@ export namespace Prisma {
     fiyatGirildi?: SortOrder
     fiyatGirenKullanici?: SortOrderInput | SortOrder
     fiyatGirilmeTarihi?: SortOrderInput | SortOrder
+    faturaYontemi?: SortOrderInput | SortOrder
+    faturaSeriNo?: SortOrderInput | SortOrder
+    faturaTarihi?: SortOrderInput | SortOrder
+    faturaAciklamasi?: SortOrderInput | SortOrder
+    onayDurumu?: SortOrderInput | SortOrder
+    onaylayanKullanici?: SortOrderInput | SortOrder
+    onayTarihi?: SortOrderInput | SortOrder
+    redDetayi?: SortOrderInput | SortOrder
     _count?: mal_kabul_recordsCountOrderByAggregateInput
     _avg?: mal_kabul_recordsAvgOrderByAggregateInput
     _max?: mal_kabul_recordsMaxOrderByAggregateInput
@@ -16652,6 +16796,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolWithAggregatesFilter<"mal_kabul_records"> | boolean
     fiyatGirenKullanici?: StringNullableWithAggregatesFilter<"mal_kabul_records"> | string | null
     fiyatGirilmeTarihi?: DateTimeNullableWithAggregatesFilter<"mal_kabul_records"> | Date | string | null
+    faturaYontemi?: StringNullableWithAggregatesFilter<"mal_kabul_records"> | string | null
+    faturaSeriNo?: StringNullableWithAggregatesFilter<"mal_kabul_records"> | string | null
+    faturaTarihi?: DateTimeNullableWithAggregatesFilter<"mal_kabul_records"> | Date | string | null
+    faturaAciklamasi?: StringNullableWithAggregatesFilter<"mal_kabul_records"> | string | null
+    onayDurumu?: StringNullableWithAggregatesFilter<"mal_kabul_records"> | string | null
+    onaylayanKullanici?: StringNullableWithAggregatesFilter<"mal_kabul_records"> | string | null
+    onayTarihi?: DateTimeNullableWithAggregatesFilter<"mal_kabul_records"> | Date | string | null
+    redDetayi?: StringNullableWithAggregatesFilter<"mal_kabul_records"> | string | null
   }
 
   export type mustahsilWhereInput = {
@@ -17637,6 +17789,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -17688,6 +17848,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     cari_hesaplar?: cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput
   }
 
@@ -17723,6 +17891,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -17774,6 +17950,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     cari_hesaplar?: cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput
   }
 
@@ -17817,6 +18001,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
   }
 
   export type mal_kabul_recordsUpdateManyMutationInput = {
@@ -17851,6 +18043,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyInput = {
@@ -17893,6 +18093,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type mustahsilCreateInput = {
@@ -19070,6 +19278,14 @@ export namespace Prisma {
     fiyatGirildi?: SortOrder
     fiyatGirenKullanici?: SortOrder
     fiyatGirilmeTarihi?: SortOrder
+    faturaYontemi?: SortOrder
+    faturaSeriNo?: SortOrder
+    faturaTarihi?: SortOrder
+    faturaAciklamasi?: SortOrder
+    onayDurumu?: SortOrder
+    onaylayanKullanici?: SortOrder
+    onayTarihi?: SortOrder
+    redDetayi?: SortOrder
   }
 
   export type mal_kabul_recordsAvgOrderByAggregateInput = {
@@ -19131,6 +19347,14 @@ export namespace Prisma {
     fiyatGirildi?: SortOrder
     fiyatGirenKullanici?: SortOrder
     fiyatGirilmeTarihi?: SortOrder
+    faturaYontemi?: SortOrder
+    faturaSeriNo?: SortOrder
+    faturaTarihi?: SortOrder
+    faturaAciklamasi?: SortOrder
+    onayDurumu?: SortOrder
+    onaylayanKullanici?: SortOrder
+    onayTarihi?: SortOrder
+    redDetayi?: SortOrder
   }
 
   export type mal_kabul_recordsMinOrderByAggregateInput = {
@@ -19172,6 +19396,14 @@ export namespace Prisma {
     fiyatGirildi?: SortOrder
     fiyatGirenKullanici?: SortOrder
     fiyatGirilmeTarihi?: SortOrder
+    faturaYontemi?: SortOrder
+    faturaSeriNo?: SortOrder
+    faturaTarihi?: SortOrder
+    faturaAciklamasi?: SortOrder
+    onayDurumu?: SortOrder
+    onaylayanKullanici?: SortOrder
+    onayTarihi?: SortOrder
+    redDetayi?: SortOrder
   }
 
   export type mal_kabul_recordsSumOrderByAggregateInput = {
@@ -20469,6 +20701,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -20518,6 +20758,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     cari_hesaplar?: cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput
   }
 
@@ -20590,6 +20838,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFilter<"mal_kabul_records"> | boolean
     fiyatGirenKullanici?: StringNullableFilter<"mal_kabul_records"> | string | null
     fiyatGirilmeTarihi?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
+    faturaYontemi?: StringNullableFilter<"mal_kabul_records"> | string | null
+    faturaSeriNo?: StringNullableFilter<"mal_kabul_records"> | string | null
+    faturaTarihi?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
+    faturaAciklamasi?: StringNullableFilter<"mal_kabul_records"> | string | null
+    onayDurumu?: StringNullableFilter<"mal_kabul_records"> | string | null
+    onaylayanKullanici?: StringNullableFilter<"mal_kabul_records"> | string | null
+    onayTarihi?: DateTimeNullableFilter<"mal_kabul_records"> | Date | string | null
+    redDetayi?: StringNullableFilter<"mal_kabul_records"> | string | null
   }
 
   export type mal_kabul_recordsCreateWithoutFaturalarInput = {
@@ -20624,6 +20880,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -20673,6 +20937,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     cari_hesaplar?: cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput
   }
 
@@ -20798,6 +21070,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -20848,6 +21128,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutCari_hesaplarInput = {
@@ -20898,6 +21186,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -20948,6 +21244,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type mal_kabul_recordsCreateWithoutKomisyoncularInput = {
@@ -20982,6 +21286,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
     urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -21031,6 +21343,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     cari_hesaplar?: cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput
   }
 
@@ -21814,6 +22134,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -21863,6 +22191,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     cari_hesaplar?: cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput
   }
 
@@ -21924,6 +22260,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -21973,6 +22317,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     cari_hesaplar?: cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput
   }
 
@@ -22034,6 +22386,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -22083,6 +22443,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     cari_hesaplar?: cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput
   }
 
@@ -22220,6 +22588,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     users: usersCreateNestedOneWithoutMal_kabul_recordsInput
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -22269,6 +22645,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     cari_hesaplar?: cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput
   }
 
@@ -22330,6 +22714,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
     ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
     urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
@@ -22379,6 +22771,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
     cari_hesaplar?: cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput
   }
 
@@ -22518,6 +22918,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
   }
 
   export type mal_kabul_recordsUpdateWithoutAmbalajlarInput = {
@@ -22552,6 +22960,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -22601,6 +23017,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     cari_hesaplar?: cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput
   }
 
@@ -22643,6 +23067,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type mal_kabul_recordsCreateManyFaturalarInput = {
@@ -22684,6 +23116,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
   }
 
   export type mal_kabul_recordsUpdateWithoutFaturalarInput = {
@@ -22718,6 +23158,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -22767,6 +23215,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     cari_hesaplar?: cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput
   }
 
@@ -22809,6 +23265,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type mal_kabul_recordsCreateManyKomisyoncularInput = {
@@ -22850,6 +23314,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
   }
 
   export type ureticilerCreateManyKomisyoncularInput = {
@@ -22898,6 +23370,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
     urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
@@ -22947,6 +23427,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     cari_hesaplar?: cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput
   }
 
@@ -22989,6 +23477,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ureticilerUpdateWithoutKomisyoncularInput = {
@@ -23074,6 +23570,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
   }
 
   export type mal_kabul_recordsUpdateWithoutMustahsilInput = {
@@ -23108,6 +23612,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -23157,6 +23669,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     cari_hesaplar?: cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput
   }
 
@@ -23199,6 +23719,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type mal_kabul_recordsCreateManyOzel_firmalarInput = {
@@ -23240,6 +23768,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
   }
 
   export type mal_kabul_recordsUpdateWithoutOzel_firmalarInput = {
@@ -23274,6 +23810,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -23323,6 +23867,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     cari_hesaplar?: cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput
   }
 
@@ -23365,6 +23917,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type mal_kabul_recordsCreateManyUreticilerInput = {
@@ -23406,6 +23966,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
   }
 
   export type mal_kabul_recordsUpdateWithoutUreticilerInput = {
@@ -23440,6 +24008,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
@@ -23489,6 +24065,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     cari_hesaplar?: cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput
   }
 
@@ -23531,6 +24115,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type mal_kabul_recordsCreateManyUrunlerInput = {
@@ -23572,6 +24164,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
   }
 
   export type mal_kabul_recordsUpdateWithoutUrunlerInput = {
@@ -23606,6 +24206,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
@@ -23655,6 +24263,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     cari_hesaplar?: cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput
   }
 
@@ -23697,6 +24313,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type mal_kabul_recordsCreateManyUsersInput = {
@@ -23738,6 +24362,14 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    faturaYontemi?: string | null
+    faturaSeriNo?: string | null
+    faturaTarihi?: Date | string | null
+    faturaAciklamasi?: string | null
+    onayDurumu?: string | null
+    onaylayanKullanici?: string | null
+    onayTarihi?: Date | string | null
+    redDetayi?: string | null
   }
 
   export type faturalarCreateManyUsersInput = {
@@ -23785,6 +24417,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
     ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
     urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
@@ -23834,6 +24474,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
     cari_hesaplar?: cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput
   }
 
@@ -23876,6 +24524,14 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaYontemi?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaSeriNo?: NullableStringFieldUpdateOperationsInput | string | null
+    faturaTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    faturaAciklamasi?: NullableStringFieldUpdateOperationsInput | string | null
+    onayDurumu?: NullableStringFieldUpdateOperationsInput | string | null
+    onaylayanKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    onayTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    redDetayi?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type faturalarUpdateWithoutUsersInput = {

@@ -215,7 +215,15 @@ exports.Prisma.Mal_kabul_recordsScalarFieldEnum = {
   evraklar: 'evraklar',
   fiyatGirildi: 'fiyatGirildi',
   fiyatGirenKullanici: 'fiyatGirenKullanici',
-  fiyatGirilmeTarihi: 'fiyatGirilmeTarihi'
+  fiyatGirilmeTarihi: 'fiyatGirilmeTarihi',
+  faturaYontemi: 'faturaYontemi',
+  faturaSeriNo: 'faturaSeriNo',
+  faturaTarihi: 'faturaTarihi',
+  faturaAciklamasi: 'faturaAciklamasi',
+  onayDurumu: 'onayDurumu',
+  onaylayanKullanici: 'onaylayanKullanici',
+  onayTarihi: 'onayTarihi',
+  redDetayi: 'redDetayi'
 };
 
 exports.Prisma.MustahsilScalarFieldEnum = {

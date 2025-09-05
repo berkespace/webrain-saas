@@ -127,6 +127,18 @@ model mal_kabul_records {
   fiyatGirenKullanici  String?
   fiyatGirilmeTarihi   DateTime? @db.Timestamp(6)
   
+  // Manuel fatura bilgileri
+  faturaYontemi        String?   @default("EVRAK")  // "EVRAK" veya "MANUEL"
+  faturaSeriNo         String?   // Manuel fatura seri numarası
+  faturaTarihi         DateTime? @db.Timestamp(6)   // Manuel fatura tarihi
+  faturaAciklamasi     String?   // Manuel fatura açıklaması
+  
+  // Onay sistemi
+  onayDurumu           String?   @default("BEKLEMEDE")  // "BEKLEMEDE", "ONAYLANDI", "REDDEDILDI"
+  onaylayanKullanici   String?   // Onaylayan muhasebeci kullanıcı ID'si
+  onayTarihi           DateTime? @db.Timestamp(6)     // Onay tarihi
+  redDetayi            String?   // Red nedeni
+  
   // Relations
   users        users     @relation(fields: [malKabulcuId], references: [id])
   komisyoncular komisyoncular? @relation(fields: [komisyoncuId], references: [id])
