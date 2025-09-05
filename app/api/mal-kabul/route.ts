@@ -288,34 +288,46 @@ export async function POST(request: NextRequest) {
       // ADET ürünler için
       calculatedGirisKg = parseInt(adetSayisi) || 0  // Adet ürünler için girisKg = adetSayisi
       calculatedMiktar = parseInt(adetSayisi) || 0   // Adet ürünler için miktar = adetSayisi
-      calculatedNetAdet = (parseInt(adetSayisi) || 0) - (parseFloat(cikmaKg) || 0) - (parseFloat(fireKg) || 0)
+      
+      // ADET ürünler için çıkma ve fire değerleri cikmaKg ve fireKg alanlarından alınır
+      // Çünkü frontend'de ADET ürünler için bu alanlar çıkma/fire adet olarak kullanılıyor
+      const cikmaAdet = parseFloat(cikmaKg) || 0
+      const fireAdet = parseFloat(fireKg) || 0
+      
+      calculatedNetAdet = (parseInt(adetSayisi) || 0) - cikmaAdet - fireAdet
       calculatedNetKg = 0  // ADET ürünler için netKg = 0
       
       console.log('🧮 ADET Hesaplama:', {
         adetSayisi: parseInt(adetSayisi) || 0,
-        cikmaKg: parseFloat(cikmaKg) || 0,
-        fireKg: parseFloat(fireKg) || 0,
-        calculatedNetAdet: calculatedNetAdet
+        cikmaAdet: cikmaAdet,
+        fireAdet: fireAdet,
+        calculatedNetAdet: calculatedNetAdet,
+        formula: `${parseInt(adetSayisi) || 0} - ${cikmaAdet} - ${fireAdet} = ${calculatedNetAdet}`
       })
       
-      if (parseFloat(cikmaKg) > 0 || parseFloat(fireKg) > 0) {
+      if (cikmaAdet > 0 || fireAdet > 0) {
         calculatedStatus = 'NETLENDI'
       }
     } else {
       // KG ürünler için
       calculatedGirisKg = parseFloat(girisKg) || 0
       calculatedMiktar = parseFloat(girisKg) || 0
-      calculatedNetKg = (parseFloat(girisKg) || 0) - (parseFloat(cikmaKg) || 0) - (parseFloat(fireKg) || 0)
+      
+      const cikmaKgValue = parseFloat(cikmaKg) || 0
+      const fireKgValue = parseFloat(fireKg) || 0
+      
+      calculatedNetKg = (parseFloat(girisKg) || 0) - cikmaKgValue - fireKgValue
       calculatedNetAdet = 0  // KG ürünler için netAdet = 0
       
       console.log('🧮 KG Hesaplama:', {
         girisKg: parseFloat(girisKg) || 0,
-        cikmaKg: parseFloat(cikmaKg) || 0,
-        fireKg: parseFloat(fireKg) || 0,
-        calculatedNetKg: calculatedNetKg
+        cikmaKg: cikmaKgValue,
+        fireKg: fireKgValue,
+        calculatedNetKg: calculatedNetKg,
+        formula: `${parseFloat(girisKg) || 0} - ${cikmaKgValue} - ${fireKgValue} = ${calculatedNetKg}`
       })
       
-      if (parseFloat(cikmaKg) > 0 || parseFloat(fireKg) > 0) {
+      if (cikmaKgValue > 0 || fireKgValue > 0) {
         calculatedStatus = 'NETLENDI'
       }
     }
