@@ -171,7 +171,7 @@ export default function GenelUrunTablosu() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="mt-10 ml-10 mr-10 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -312,7 +312,7 @@ export default function GenelUrunTablosu() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto pl-4 pt-4">
+          <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b">
