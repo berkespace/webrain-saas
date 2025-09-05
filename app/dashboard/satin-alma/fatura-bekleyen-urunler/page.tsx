@@ -286,10 +286,17 @@ export default function FaturaBekleyenUrunler() {
       const data = await response.json()
       
       if (response.ok) {
+        console.log('API Response:', data)
+        console.log('Records count:', data.records?.length)
+        
         // Sadece NETLENDI durumundaki kayıtları filtrele
-        const netlenenRecords = (data.records || []).filter((record: MalKabulRecord) => 
-          record.status === 'NETLENDI'
-        )
+        const netlenenRecords = (data.records || []).filter((record: MalKabulRecord) => {
+          console.log('Record status:', record.status, 'Record ID:', record.id)
+          console.log('Record urunler:', record.urunler)
+          return record.status === 'NETLENDI'
+        })
+        
+        console.log('Filtered records count:', netlenenRecords.length)
         setRecords(netlenenRecords)
       } else {
         console.error('Mal kabul kayıtları alınamadı:', data.error)
