@@ -361,8 +361,8 @@ export function Sidebar() {
               icon: <FileText className="h-4 w-4" />
             },
             {
-              title: 'Netlenen Ürün Tablosu',
-              href: '/dashboard/satin-alma/netlenen-urun-tablosu',
+              title: 'Fatura Bekleyen Ürünler',
+              href: '/dashboard/satin-alma/fatura-bekleyen-urunler',
               icon: <FileText className="h-4 w-4" />
             },
             {
@@ -466,8 +466,8 @@ export function Sidebar() {
               icon: <FileText className="h-4 w-4" />
             },
             {
-              title: 'Netlenen Ürün Tablosu',
-              href: '/dashboard/satin-alma/netlenen-urun-tablosu',
+              title: 'Fatura Bekleyen Ürünler',
+              href: '/dashboard/satin-alma/fatura-bekleyen-urunler',
               icon: <FileText className="h-4 w-4" />
             },
             {
@@ -659,8 +659,8 @@ export function Sidebar() {
               icon: <FileText className="h-4 w-4" />
             },
             {
-              title: 'Netlenen Ürün Tablosu',
-              href: '/dashboard/satin-alma/netlenen-urun-tablosu',
+              title: 'Fatura Bekleyen Ürünler',
+              href: '/dashboard/satin-alma/fatura-bekleyen-urunler',
               icon: <FileText className="h-4 w-4" />
             },
             {
