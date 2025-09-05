@@ -203,11 +203,21 @@ export default function FaturaBekleyenUrunler() {
       ? (selectedRecord.netKg || 0) 
       : (selectedRecord.netAdet || 0)
     
+    console.log('Hesaplama - Base Price:', basePrice)
+    console.log('Hesaplama - Net Miktar:', netMiktar)
+    console.log('Hesaplama - Ürün Birimi:', selectedRecord.urunler.birim)
+    console.log('Hesaplama - Net KG:', selectedRecord.netKg)
+    console.log('Hesaplama - Net Adet:', selectedRecord.netAdet)
+    
     // KDV hariç tutar: Net Miktar * Alış Fiyatı
     return netMiktar * basePrice
   }
 
   const openModal = (record: MalKabulRecord) => {
+    console.log('Selected record:', record)
+    console.log('Net KG:', record.netKg)
+    console.log('Net Adet:', record.netAdet)
+    console.log('Ürün birimi:', record.urunler.birim)
     setSelectedRecord(record)
     setAlisFiyati(record.birimFiyat?.toString() || '')
     setIsModalOpen(true)
