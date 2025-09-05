@@ -195,7 +195,7 @@ export async function PUT(
     })
 
     // Birime göre validasyon
-    if (urun.birim === 'ADET') {
+    if (urun.birim === 'ADET' || urun.birim === 'adet') {
       // ADET birimi için validasyon
       if (!adetSayisi || parseInt(adetSayisi) <= 0) {
         return NextResponse.json(
@@ -216,11 +216,11 @@ export async function PUT(
     // Birime göre NET değerleri hesapla
     let calculatedNetKg = 0
     let calculatedNetAdet = 0
-    let calculatedStatus = status || 'BEKLEMEDE'
+    let calculatedStatus = status || 'BEKLEMEDE'  // Kullanıcının seçtiği status'u kullan
     let calculatedGirisKg = 0
     let calculatedMiktar = 0
 
-    if (urun.birim === 'ADET') {
+    if (urun.birim === 'ADET' || urun.birim === 'adet') {
       // ADET ürünler için
       calculatedGirisKg = parseInt(adetSayisi) || 0  // Adet ürünler için girisKg = adetSayisi
       calculatedMiktar = parseInt(adetSayisi) || 0   // Adet ürünler için miktar = adetSayisi
@@ -238,25 +238,44 @@ export async function PUT(
         fireAdetValue,
         calculatedNetAdet,
         calculatedGirisKg,
-        calculatedMiktar
+        calculatedMiktar,
+        userSelectedStatus: status,
+        finalStatus: calculatedStatus
       })
       
-      // ADET ürünler için: Çıkma veya fire varsa NETLENDI, yoksa BEKLEMEDE
-      if (cikmaAdetValue > 0 || fireAdetValue > 0) {
-        calculatedStatus = 'NETLENDI'
-      } else {
-        calculatedStatus = 'BEKLEMEDE'
+      // ADET ürünler için: Eğer kullanıcı manuel olarak status seçmemişse otomatik hesapla
+      if (!status) {
+        if (cikmaAdetValue > 0 || fireAdetValue > 0) {
+          calculatedStatus = 'NETLENDI'
+        } else {
+          calculatedStatus = 'BEKLEMEDE'
+        }
       }
     } else {
       // KG ürünler için
       calculatedGirisKg = parseFloat(girisKg) || 0
       calculatedMiktar = parseFloat(girisKg) || 0
       calculatedNetKg = (parseFloat(girisKg) || 0) - (parseFloat(cikmaKg) || 0) - (parseFloat(fireKg) || 0)
-      // KG ürünler için: Çıkma veya fire varsa NETLENDI, yoksa BEKLEMEDE
-      if (parseFloat(cikmaKg) > 0 || parseFloat(fireKg) > 0) {
-        calculatedStatus = 'NETLENDI'
-      } else {
-        calculatedStatus = 'BEKLEMEDE'
+      
+      // Debug: KG hesaplamalarını logla
+      console.log('KG hesaplamaları:', {
+        girisKg: parseFloat(girisKg) || 0,
+        cikmaKg: parseFloat(cikmaKg) || 0,
+        fireKg: parseFloat(fireKg) || 0,
+        calculatedNetKg,
+        calculatedGirisKg,
+        calculatedMiktar,
+        userSelectedStatus: status,
+        finalStatus: calculatedStatus
+      })
+      
+      // KG ürünler için: Eğer kullanıcı manuel olarak status seçmemişse otomatik hesapla
+      if (!status) {
+        if (parseFloat(cikmaKg) > 0 || parseFloat(fireKg) > 0) {
+          calculatedStatus = 'NETLENDI'
+        } else {
+          calculatedStatus = 'BEKLEMEDE'
+        }
       }
     }
 
@@ -264,11 +283,13 @@ export async function PUT(
     console.log('Güncellenecek veriler:', {
       id,
       urunBirim: urun.birim,
-      cikmaKg: urun.birim === 'ADET' ? (parseFloat(cikmaAdet) || 0) : (parseFloat(cikmaKg) || 0),
-      fireKg: urun.birim === 'ADET' ? (parseFloat(fireAdet) || 0) : (parseFloat(fireKg) || 0),
+      cikmaKg: (urun.birim === 'ADET' || urun.birim === 'adet') ? (parseFloat(cikmaAdet) || 0) : (parseFloat(cikmaKg) || 0),
+      fireKg: (urun.birim === 'ADET' || urun.birim === 'adet') ? (parseFloat(fireAdet) || 0) : (parseFloat(fireKg) || 0),
       netAdet: calculatedNetAdet,
+      netKg: calculatedNetKg,
       calculatedGirisKg,
-      calculatedMiktar
+      calculatedMiktar,
+      finalStatus: calculatedStatus
     })
 
     // Mal kabul kaydını güncelle
@@ -288,8 +309,8 @@ export async function PUT(
         brutKg: parseFloat(brutKg) || 0,
         daraKg: parseFloat(daraKg) || 0,
         girisKg: calculatedGirisKg,
-        cikmaKg: urun.birim === 'ADET' ? (parseFloat(cikmaAdet) || 0) : (parseFloat(cikmaKg) || 0),
-        fireKg: urun.birim === 'ADET' ? (parseFloat(fireAdet) || 0) : (parseFloat(fireKg) || 0),
+        cikmaKg: (urun.birim === 'ADET' || urun.birim === 'adet') ? (parseFloat(cikmaAdet) || 0) : (parseFloat(cikmaKg) || 0),
+        fireKg: (urun.birim === 'ADET' || urun.birim === 'adet') ? (parseFloat(fireAdet) || 0) : (parseFloat(fireKg) || 0),
         cikmaFireKg: parseFloat(cikmaFireKg) || 0,
         netKg: calculatedNetKg,
         netAdet: calculatedNetAdet,
