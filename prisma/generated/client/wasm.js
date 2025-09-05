@@ -145,6 +145,23 @@ exports.Prisma.FaturalarScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.Cari_hesaplarScalarFieldEnum = {
+  id: 'id',
+  saticiTipi: 'saticiTipi',
+  saticiId: 'saticiId',
+  saticiAdi: 'saticiAdi',
+  alisTarihi: 'alisTarihi',
+  fisNo: 'fisNo',
+  malKabulRecordId: 'malKabulRecordId',
+  toplamAlisMiktari: 'toplamAlisMiktari',
+  birimFiyat: 'birimFiyat',
+  kdvHaricTutar: 'kdvHaricTutar',
+  herseyDahilTutar: 'herseyDahilTutar',
+  cariBakiyesi: 'cariBakiyesi',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.KomisyoncularScalarFieldEnum = {
   id: 'id',
   createdAt: 'createdAt',
@@ -190,6 +207,7 @@ exports.Prisma.Mal_kabul_recordsScalarFieldEnum = {
   cikmaFireKg: 'cikmaFireKg',
   netKg: 'netKg',
   netAdet: 'netAdet',
+  kdvHaricTutar: 'kdvHaricTutar',
   kdvOrani: 'kdvOrani',
   belediyeRusumOrani: 'belediyeRusumOrani',
   kdvHesapla: 'kdvHesapla',
@@ -313,6 +331,7 @@ exports.MalKabulStatus = exports.$Enums.MalKabulStatus = {
 exports.Prisma.ModelName = {
   ambalajlar: 'ambalajlar',
   faturalar: 'faturalar',
+  cari_hesaplar: 'cari_hesaplar',
   komisyoncular: 'komisyoncular',
   mal_kabul_records: 'mal_kabul_records',
   mustahsil: 'mustahsil',

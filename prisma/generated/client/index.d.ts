@@ -24,6 +24,11 @@ export type ambalajlar = $Result.DefaultSelection<Prisma.$ambalajlarPayload>
  */
 export type faturalar = $Result.DefaultSelection<Prisma.$faturalarPayload>
 /**
+ * Model cari_hesaplar
+ * 
+ */
+export type cari_hesaplar = $Result.DefaultSelection<Prisma.$cari_hesaplarPayload>
+/**
  * Model komisyoncular
  * 
  */
@@ -305,6 +310,16 @@ export class PrismaClient<
     * ```
     */
   get faturalar(): Prisma.faturalarDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.cari_hesaplar`: Exposes CRUD operations for the **cari_hesaplar** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Cari_hesaplars
+    * const cari_hesaplars = await prisma.cari_hesaplar.findMany()
+    * ```
+    */
+  get cari_hesaplar(): Prisma.cari_hesaplarDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.komisyoncular`: Exposes CRUD operations for the **komisyoncular** model.
@@ -827,6 +842,7 @@ export namespace Prisma {
   export const ModelName: {
     ambalajlar: 'ambalajlar',
     faturalar: 'faturalar',
+    cari_hesaplar: 'cari_hesaplar',
     komisyoncular: 'komisyoncular',
     mal_kabul_records: 'mal_kabul_records',
     mustahsil: 'mustahsil',
@@ -853,7 +869,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "ambalajlar" | "faturalar" | "komisyoncular" | "mal_kabul_records" | "mustahsil" | "ozel_firmalar" | "ureticiler" | "urunler" | "users" | "malKabulRecords"
+      modelProps: "ambalajlar" | "faturalar" | "cari_hesaplar" | "komisyoncular" | "mal_kabul_records" | "mustahsil" | "ozel_firmalar" | "ureticiler" | "urunler" | "users" | "malKabulRecords"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1002,6 +1018,80 @@ export namespace Prisma {
           count: {
             args: Prisma.faturalarCountArgs<ExtArgs>
             result: $Utils.Optional<FaturalarCountAggregateOutputType> | number
+          }
+        }
+      }
+      cari_hesaplar: {
+        payload: Prisma.$cari_hesaplarPayload<ExtArgs>
+        fields: Prisma.cari_hesaplarFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.cari_hesaplarFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cari_hesaplarPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.cari_hesaplarFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cari_hesaplarPayload>
+          }
+          findFirst: {
+            args: Prisma.cari_hesaplarFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cari_hesaplarPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.cari_hesaplarFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cari_hesaplarPayload>
+          }
+          findMany: {
+            args: Prisma.cari_hesaplarFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cari_hesaplarPayload>[]
+          }
+          create: {
+            args: Prisma.cari_hesaplarCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cari_hesaplarPayload>
+          }
+          createMany: {
+            args: Prisma.cari_hesaplarCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.cari_hesaplarCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cari_hesaplarPayload>[]
+          }
+          delete: {
+            args: Prisma.cari_hesaplarDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cari_hesaplarPayload>
+          }
+          update: {
+            args: Prisma.cari_hesaplarUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cari_hesaplarPayload>
+          }
+          deleteMany: {
+            args: Prisma.cari_hesaplarDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.cari_hesaplarUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.cari_hesaplarUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cari_hesaplarPayload>[]
+          }
+          upsert: {
+            args: Prisma.cari_hesaplarUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$cari_hesaplarPayload>
+          }
+          aggregate: {
+            args: Prisma.Cari_hesaplarAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateCari_hesaplar>
+          }
+          groupBy: {
+            args: Prisma.cari_hesaplarGroupByArgs<ExtArgs>
+            result: $Utils.Optional<Cari_hesaplarGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.cari_hesaplarCountArgs<ExtArgs>
+            result: $Utils.Optional<Cari_hesaplarCountAggregateOutputType> | number
           }
         }
       }
@@ -1691,6 +1781,7 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     ambalajlar?: ambalajlarOmit
     faturalar?: faturalarOmit
+    cari_hesaplar?: cari_hesaplarOmit
     komisyoncular?: komisyoncularOmit
     mal_kabul_records?: mal_kabul_recordsOmit
     mustahsil?: mustahsilOmit
@@ -4419,6 +4510,1231 @@ export namespace Prisma {
 
 
   /**
+   * Model cari_hesaplar
+   */
+
+  export type AggregateCari_hesaplar = {
+    _count: Cari_hesaplarCountAggregateOutputType | null
+    _avg: Cari_hesaplarAvgAggregateOutputType | null
+    _sum: Cari_hesaplarSumAggregateOutputType | null
+    _min: Cari_hesaplarMinAggregateOutputType | null
+    _max: Cari_hesaplarMaxAggregateOutputType | null
+  }
+
+  export type Cari_hesaplarAvgAggregateOutputType = {
+    toplamAlisMiktari: number | null
+    birimFiyat: number | null
+    kdvHaricTutar: number | null
+    herseyDahilTutar: number | null
+    cariBakiyesi: number | null
+  }
+
+  export type Cari_hesaplarSumAggregateOutputType = {
+    toplamAlisMiktari: number | null
+    birimFiyat: number | null
+    kdvHaricTutar: number | null
+    herseyDahilTutar: number | null
+    cariBakiyesi: number | null
+  }
+
+  export type Cari_hesaplarMinAggregateOutputType = {
+    id: string | null
+    saticiTipi: string | null
+    saticiId: string | null
+    saticiAdi: string | null
+    alisTarihi: Date | null
+    fisNo: string | null
+    malKabulRecordId: string | null
+    toplamAlisMiktari: number | null
+    birimFiyat: number | null
+    kdvHaricTutar: number | null
+    herseyDahilTutar: number | null
+    cariBakiyesi: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type Cari_hesaplarMaxAggregateOutputType = {
+    id: string | null
+    saticiTipi: string | null
+    saticiId: string | null
+    saticiAdi: string | null
+    alisTarihi: Date | null
+    fisNo: string | null
+    malKabulRecordId: string | null
+    toplamAlisMiktari: number | null
+    birimFiyat: number | null
+    kdvHaricTutar: number | null
+    herseyDahilTutar: number | null
+    cariBakiyesi: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type Cari_hesaplarCountAggregateOutputType = {
+    id: number
+    saticiTipi: number
+    saticiId: number
+    saticiAdi: number
+    alisTarihi: number
+    fisNo: number
+    malKabulRecordId: number
+    toplamAlisMiktari: number
+    birimFiyat: number
+    kdvHaricTutar: number
+    herseyDahilTutar: number
+    cariBakiyesi: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type Cari_hesaplarAvgAggregateInputType = {
+    toplamAlisMiktari?: true
+    birimFiyat?: true
+    kdvHaricTutar?: true
+    herseyDahilTutar?: true
+    cariBakiyesi?: true
+  }
+
+  export type Cari_hesaplarSumAggregateInputType = {
+    toplamAlisMiktari?: true
+    birimFiyat?: true
+    kdvHaricTutar?: true
+    herseyDahilTutar?: true
+    cariBakiyesi?: true
+  }
+
+  export type Cari_hesaplarMinAggregateInputType = {
+    id?: true
+    saticiTipi?: true
+    saticiId?: true
+    saticiAdi?: true
+    alisTarihi?: true
+    fisNo?: true
+    malKabulRecordId?: true
+    toplamAlisMiktari?: true
+    birimFiyat?: true
+    kdvHaricTutar?: true
+    herseyDahilTutar?: true
+    cariBakiyesi?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type Cari_hesaplarMaxAggregateInputType = {
+    id?: true
+    saticiTipi?: true
+    saticiId?: true
+    saticiAdi?: true
+    alisTarihi?: true
+    fisNo?: true
+    malKabulRecordId?: true
+    toplamAlisMiktari?: true
+    birimFiyat?: true
+    kdvHaricTutar?: true
+    herseyDahilTutar?: true
+    cariBakiyesi?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type Cari_hesaplarCountAggregateInputType = {
+    id?: true
+    saticiTipi?: true
+    saticiId?: true
+    saticiAdi?: true
+    alisTarihi?: true
+    fisNo?: true
+    malKabulRecordId?: true
+    toplamAlisMiktari?: true
+    birimFiyat?: true
+    kdvHaricTutar?: true
+    herseyDahilTutar?: true
+    cariBakiyesi?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type Cari_hesaplarAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which cari_hesaplar to aggregate.
+     */
+    where?: cari_hesaplarWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of cari_hesaplars to fetch.
+     */
+    orderBy?: cari_hesaplarOrderByWithRelationInput | cari_hesaplarOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: cari_hesaplarWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` cari_hesaplars from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` cari_hesaplars.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned cari_hesaplars
+    **/
+    _count?: true | Cari_hesaplarCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Cari_hesaplarAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Cari_hesaplarSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Cari_hesaplarMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Cari_hesaplarMaxAggregateInputType
+  }
+
+  export type GetCari_hesaplarAggregateType<T extends Cari_hesaplarAggregateArgs> = {
+        [P in keyof T & keyof AggregateCari_hesaplar]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateCari_hesaplar[P]>
+      : GetScalarType<T[P], AggregateCari_hesaplar[P]>
+  }
+
+
+
+
+  export type cari_hesaplarGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: cari_hesaplarWhereInput
+    orderBy?: cari_hesaplarOrderByWithAggregationInput | cari_hesaplarOrderByWithAggregationInput[]
+    by: Cari_hesaplarScalarFieldEnum[] | Cari_hesaplarScalarFieldEnum
+    having?: cari_hesaplarScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Cari_hesaplarCountAggregateInputType | true
+    _avg?: Cari_hesaplarAvgAggregateInputType
+    _sum?: Cari_hesaplarSumAggregateInputType
+    _min?: Cari_hesaplarMinAggregateInputType
+    _max?: Cari_hesaplarMaxAggregateInputType
+  }
+
+  export type Cari_hesaplarGroupByOutputType = {
+    id: string
+    saticiTipi: string
+    saticiId: string
+    saticiAdi: string
+    alisTarihi: Date
+    fisNo: string
+    malKabulRecordId: string
+    toplamAlisMiktari: number
+    birimFiyat: number
+    kdvHaricTutar: number
+    herseyDahilTutar: number
+    cariBakiyesi: number
+    createdAt: Date | null
+    updatedAt: Date | null
+    _count: Cari_hesaplarCountAggregateOutputType | null
+    _avg: Cari_hesaplarAvgAggregateOutputType | null
+    _sum: Cari_hesaplarSumAggregateOutputType | null
+    _min: Cari_hesaplarMinAggregateOutputType | null
+    _max: Cari_hesaplarMaxAggregateOutputType | null
+  }
+
+  type GetCari_hesaplarGroupByPayload<T extends cari_hesaplarGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<Cari_hesaplarGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Cari_hesaplarGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Cari_hesaplarGroupByOutputType[P]>
+            : GetScalarType<T[P], Cari_hesaplarGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type cari_hesaplarSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    saticiTipi?: boolean
+    saticiId?: boolean
+    saticiAdi?: boolean
+    alisTarihi?: boolean
+    fisNo?: boolean
+    malKabulRecordId?: boolean
+    toplamAlisMiktari?: boolean
+    birimFiyat?: boolean
+    kdvHaricTutar?: boolean
+    herseyDahilTutar?: boolean
+    cariBakiyesi?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    malKabulRecord?: boolean | mal_kabul_recordsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cari_hesaplar"]>
+
+  export type cari_hesaplarSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    saticiTipi?: boolean
+    saticiId?: boolean
+    saticiAdi?: boolean
+    alisTarihi?: boolean
+    fisNo?: boolean
+    malKabulRecordId?: boolean
+    toplamAlisMiktari?: boolean
+    birimFiyat?: boolean
+    kdvHaricTutar?: boolean
+    herseyDahilTutar?: boolean
+    cariBakiyesi?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    malKabulRecord?: boolean | mal_kabul_recordsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cari_hesaplar"]>
+
+  export type cari_hesaplarSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    saticiTipi?: boolean
+    saticiId?: boolean
+    saticiAdi?: boolean
+    alisTarihi?: boolean
+    fisNo?: boolean
+    malKabulRecordId?: boolean
+    toplamAlisMiktari?: boolean
+    birimFiyat?: boolean
+    kdvHaricTutar?: boolean
+    herseyDahilTutar?: boolean
+    cariBakiyesi?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    malKabulRecord?: boolean | mal_kabul_recordsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["cari_hesaplar"]>
+
+  export type cari_hesaplarSelectScalar = {
+    id?: boolean
+    saticiTipi?: boolean
+    saticiId?: boolean
+    saticiAdi?: boolean
+    alisTarihi?: boolean
+    fisNo?: boolean
+    malKabulRecordId?: boolean
+    toplamAlisMiktari?: boolean
+    birimFiyat?: boolean
+    kdvHaricTutar?: boolean
+    herseyDahilTutar?: boolean
+    cariBakiyesi?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type cari_hesaplarOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "saticiTipi" | "saticiId" | "saticiAdi" | "alisTarihi" | "fisNo" | "malKabulRecordId" | "toplamAlisMiktari" | "birimFiyat" | "kdvHaricTutar" | "herseyDahilTutar" | "cariBakiyesi" | "createdAt" | "updatedAt", ExtArgs["result"]["cari_hesaplar"]>
+  export type cari_hesaplarInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    malKabulRecord?: boolean | mal_kabul_recordsDefaultArgs<ExtArgs>
+  }
+  export type cari_hesaplarIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    malKabulRecord?: boolean | mal_kabul_recordsDefaultArgs<ExtArgs>
+  }
+  export type cari_hesaplarIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    malKabulRecord?: boolean | mal_kabul_recordsDefaultArgs<ExtArgs>
+  }
+
+  export type $cari_hesaplarPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "cari_hesaplar"
+    objects: {
+      malKabulRecord: Prisma.$mal_kabul_recordsPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      saticiTipi: string
+      saticiId: string
+      saticiAdi: string
+      alisTarihi: Date
+      fisNo: string
+      malKabulRecordId: string
+      toplamAlisMiktari: number
+      birimFiyat: number
+      kdvHaricTutar: number
+      herseyDahilTutar: number
+      cariBakiyesi: number
+      createdAt: Date | null
+      updatedAt: Date | null
+    }, ExtArgs["result"]["cari_hesaplar"]>
+    composites: {}
+  }
+
+  type cari_hesaplarGetPayload<S extends boolean | null | undefined | cari_hesaplarDefaultArgs> = $Result.GetResult<Prisma.$cari_hesaplarPayload, S>
+
+  type cari_hesaplarCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<cari_hesaplarFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: Cari_hesaplarCountAggregateInputType | true
+    }
+
+  export interface cari_hesaplarDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['cari_hesaplar'], meta: { name: 'cari_hesaplar' } }
+    /**
+     * Find zero or one Cari_hesaplar that matches the filter.
+     * @param {cari_hesaplarFindUniqueArgs} args - Arguments to find a Cari_hesaplar
+     * @example
+     * // Get one Cari_hesaplar
+     * const cari_hesaplar = await prisma.cari_hesaplar.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends cari_hesaplarFindUniqueArgs>(args: SelectSubset<T, cari_hesaplarFindUniqueArgs<ExtArgs>>): Prisma__cari_hesaplarClient<$Result.GetResult<Prisma.$cari_hesaplarPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Cari_hesaplar that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {cari_hesaplarFindUniqueOrThrowArgs} args - Arguments to find a Cari_hesaplar
+     * @example
+     * // Get one Cari_hesaplar
+     * const cari_hesaplar = await prisma.cari_hesaplar.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends cari_hesaplarFindUniqueOrThrowArgs>(args: SelectSubset<T, cari_hesaplarFindUniqueOrThrowArgs<ExtArgs>>): Prisma__cari_hesaplarClient<$Result.GetResult<Prisma.$cari_hesaplarPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Cari_hesaplar that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cari_hesaplarFindFirstArgs} args - Arguments to find a Cari_hesaplar
+     * @example
+     * // Get one Cari_hesaplar
+     * const cari_hesaplar = await prisma.cari_hesaplar.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends cari_hesaplarFindFirstArgs>(args?: SelectSubset<T, cari_hesaplarFindFirstArgs<ExtArgs>>): Prisma__cari_hesaplarClient<$Result.GetResult<Prisma.$cari_hesaplarPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Cari_hesaplar that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cari_hesaplarFindFirstOrThrowArgs} args - Arguments to find a Cari_hesaplar
+     * @example
+     * // Get one Cari_hesaplar
+     * const cari_hesaplar = await prisma.cari_hesaplar.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends cari_hesaplarFindFirstOrThrowArgs>(args?: SelectSubset<T, cari_hesaplarFindFirstOrThrowArgs<ExtArgs>>): Prisma__cari_hesaplarClient<$Result.GetResult<Prisma.$cari_hesaplarPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Cari_hesaplars that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cari_hesaplarFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Cari_hesaplars
+     * const cari_hesaplars = await prisma.cari_hesaplar.findMany()
+     * 
+     * // Get first 10 Cari_hesaplars
+     * const cari_hesaplars = await prisma.cari_hesaplar.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const cari_hesaplarWithIdOnly = await prisma.cari_hesaplar.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends cari_hesaplarFindManyArgs>(args?: SelectSubset<T, cari_hesaplarFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$cari_hesaplarPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Cari_hesaplar.
+     * @param {cari_hesaplarCreateArgs} args - Arguments to create a Cari_hesaplar.
+     * @example
+     * // Create one Cari_hesaplar
+     * const Cari_hesaplar = await prisma.cari_hesaplar.create({
+     *   data: {
+     *     // ... data to create a Cari_hesaplar
+     *   }
+     * })
+     * 
+     */
+    create<T extends cari_hesaplarCreateArgs>(args: SelectSubset<T, cari_hesaplarCreateArgs<ExtArgs>>): Prisma__cari_hesaplarClient<$Result.GetResult<Prisma.$cari_hesaplarPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Cari_hesaplars.
+     * @param {cari_hesaplarCreateManyArgs} args - Arguments to create many Cari_hesaplars.
+     * @example
+     * // Create many Cari_hesaplars
+     * const cari_hesaplar = await prisma.cari_hesaplar.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends cari_hesaplarCreateManyArgs>(args?: SelectSubset<T, cari_hesaplarCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Cari_hesaplars and returns the data saved in the database.
+     * @param {cari_hesaplarCreateManyAndReturnArgs} args - Arguments to create many Cari_hesaplars.
+     * @example
+     * // Create many Cari_hesaplars
+     * const cari_hesaplar = await prisma.cari_hesaplar.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Cari_hesaplars and only return the `id`
+     * const cari_hesaplarWithIdOnly = await prisma.cari_hesaplar.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends cari_hesaplarCreateManyAndReturnArgs>(args?: SelectSubset<T, cari_hesaplarCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$cari_hesaplarPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Cari_hesaplar.
+     * @param {cari_hesaplarDeleteArgs} args - Arguments to delete one Cari_hesaplar.
+     * @example
+     * // Delete one Cari_hesaplar
+     * const Cari_hesaplar = await prisma.cari_hesaplar.delete({
+     *   where: {
+     *     // ... filter to delete one Cari_hesaplar
+     *   }
+     * })
+     * 
+     */
+    delete<T extends cari_hesaplarDeleteArgs>(args: SelectSubset<T, cari_hesaplarDeleteArgs<ExtArgs>>): Prisma__cari_hesaplarClient<$Result.GetResult<Prisma.$cari_hesaplarPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Cari_hesaplar.
+     * @param {cari_hesaplarUpdateArgs} args - Arguments to update one Cari_hesaplar.
+     * @example
+     * // Update one Cari_hesaplar
+     * const cari_hesaplar = await prisma.cari_hesaplar.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends cari_hesaplarUpdateArgs>(args: SelectSubset<T, cari_hesaplarUpdateArgs<ExtArgs>>): Prisma__cari_hesaplarClient<$Result.GetResult<Prisma.$cari_hesaplarPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Cari_hesaplars.
+     * @param {cari_hesaplarDeleteManyArgs} args - Arguments to filter Cari_hesaplars to delete.
+     * @example
+     * // Delete a few Cari_hesaplars
+     * const { count } = await prisma.cari_hesaplar.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends cari_hesaplarDeleteManyArgs>(args?: SelectSubset<T, cari_hesaplarDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Cari_hesaplars.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cari_hesaplarUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Cari_hesaplars
+     * const cari_hesaplar = await prisma.cari_hesaplar.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends cari_hesaplarUpdateManyArgs>(args: SelectSubset<T, cari_hesaplarUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Cari_hesaplars and returns the data updated in the database.
+     * @param {cari_hesaplarUpdateManyAndReturnArgs} args - Arguments to update many Cari_hesaplars.
+     * @example
+     * // Update many Cari_hesaplars
+     * const cari_hesaplar = await prisma.cari_hesaplar.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Cari_hesaplars and only return the `id`
+     * const cari_hesaplarWithIdOnly = await prisma.cari_hesaplar.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends cari_hesaplarUpdateManyAndReturnArgs>(args: SelectSubset<T, cari_hesaplarUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$cari_hesaplarPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Cari_hesaplar.
+     * @param {cari_hesaplarUpsertArgs} args - Arguments to update or create a Cari_hesaplar.
+     * @example
+     * // Update or create a Cari_hesaplar
+     * const cari_hesaplar = await prisma.cari_hesaplar.upsert({
+     *   create: {
+     *     // ... data to create a Cari_hesaplar
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Cari_hesaplar we want to update
+     *   }
+     * })
+     */
+    upsert<T extends cari_hesaplarUpsertArgs>(args: SelectSubset<T, cari_hesaplarUpsertArgs<ExtArgs>>): Prisma__cari_hesaplarClient<$Result.GetResult<Prisma.$cari_hesaplarPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Cari_hesaplars.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cari_hesaplarCountArgs} args - Arguments to filter Cari_hesaplars to count.
+     * @example
+     * // Count the number of Cari_hesaplars
+     * const count = await prisma.cari_hesaplar.count({
+     *   where: {
+     *     // ... the filter for the Cari_hesaplars we want to count
+     *   }
+     * })
+    **/
+    count<T extends cari_hesaplarCountArgs>(
+      args?: Subset<T, cari_hesaplarCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Cari_hesaplarCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Cari_hesaplar.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Cari_hesaplarAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Cari_hesaplarAggregateArgs>(args: Subset<T, Cari_hesaplarAggregateArgs>): Prisma.PrismaPromise<GetCari_hesaplarAggregateType<T>>
+
+    /**
+     * Group by Cari_hesaplar.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {cari_hesaplarGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends cari_hesaplarGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: cari_hesaplarGroupByArgs['orderBy'] }
+        : { orderBy?: cari_hesaplarGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, cari_hesaplarGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCari_hesaplarGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the cari_hesaplar model
+   */
+  readonly fields: cari_hesaplarFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for cari_hesaplar.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__cari_hesaplarClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    malKabulRecord<T extends mal_kabul_recordsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, mal_kabul_recordsDefaultArgs<ExtArgs>>): Prisma__mal_kabul_recordsClient<$Result.GetResult<Prisma.$mal_kabul_recordsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the cari_hesaplar model
+   */
+  interface cari_hesaplarFieldRefs {
+    readonly id: FieldRef<"cari_hesaplar", 'String'>
+    readonly saticiTipi: FieldRef<"cari_hesaplar", 'String'>
+    readonly saticiId: FieldRef<"cari_hesaplar", 'String'>
+    readonly saticiAdi: FieldRef<"cari_hesaplar", 'String'>
+    readonly alisTarihi: FieldRef<"cari_hesaplar", 'DateTime'>
+    readonly fisNo: FieldRef<"cari_hesaplar", 'String'>
+    readonly malKabulRecordId: FieldRef<"cari_hesaplar", 'String'>
+    readonly toplamAlisMiktari: FieldRef<"cari_hesaplar", 'Float'>
+    readonly birimFiyat: FieldRef<"cari_hesaplar", 'Float'>
+    readonly kdvHaricTutar: FieldRef<"cari_hesaplar", 'Float'>
+    readonly herseyDahilTutar: FieldRef<"cari_hesaplar", 'Float'>
+    readonly cariBakiyesi: FieldRef<"cari_hesaplar", 'Float'>
+    readonly createdAt: FieldRef<"cari_hesaplar", 'DateTime'>
+    readonly updatedAt: FieldRef<"cari_hesaplar", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * cari_hesaplar findUnique
+   */
+  export type cari_hesaplarFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cari_hesaplar
+     */
+    select?: cari_hesaplarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cari_hesaplar
+     */
+    omit?: cari_hesaplarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cari_hesaplarInclude<ExtArgs> | null
+    /**
+     * Filter, which cari_hesaplar to fetch.
+     */
+    where: cari_hesaplarWhereUniqueInput
+  }
+
+  /**
+   * cari_hesaplar findUniqueOrThrow
+   */
+  export type cari_hesaplarFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cari_hesaplar
+     */
+    select?: cari_hesaplarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cari_hesaplar
+     */
+    omit?: cari_hesaplarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cari_hesaplarInclude<ExtArgs> | null
+    /**
+     * Filter, which cari_hesaplar to fetch.
+     */
+    where: cari_hesaplarWhereUniqueInput
+  }
+
+  /**
+   * cari_hesaplar findFirst
+   */
+  export type cari_hesaplarFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cari_hesaplar
+     */
+    select?: cari_hesaplarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cari_hesaplar
+     */
+    omit?: cari_hesaplarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cari_hesaplarInclude<ExtArgs> | null
+    /**
+     * Filter, which cari_hesaplar to fetch.
+     */
+    where?: cari_hesaplarWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of cari_hesaplars to fetch.
+     */
+    orderBy?: cari_hesaplarOrderByWithRelationInput | cari_hesaplarOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for cari_hesaplars.
+     */
+    cursor?: cari_hesaplarWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` cari_hesaplars from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` cari_hesaplars.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of cari_hesaplars.
+     */
+    distinct?: Cari_hesaplarScalarFieldEnum | Cari_hesaplarScalarFieldEnum[]
+  }
+
+  /**
+   * cari_hesaplar findFirstOrThrow
+   */
+  export type cari_hesaplarFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cari_hesaplar
+     */
+    select?: cari_hesaplarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cari_hesaplar
+     */
+    omit?: cari_hesaplarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cari_hesaplarInclude<ExtArgs> | null
+    /**
+     * Filter, which cari_hesaplar to fetch.
+     */
+    where?: cari_hesaplarWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of cari_hesaplars to fetch.
+     */
+    orderBy?: cari_hesaplarOrderByWithRelationInput | cari_hesaplarOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for cari_hesaplars.
+     */
+    cursor?: cari_hesaplarWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` cari_hesaplars from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` cari_hesaplars.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of cari_hesaplars.
+     */
+    distinct?: Cari_hesaplarScalarFieldEnum | Cari_hesaplarScalarFieldEnum[]
+  }
+
+  /**
+   * cari_hesaplar findMany
+   */
+  export type cari_hesaplarFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cari_hesaplar
+     */
+    select?: cari_hesaplarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cari_hesaplar
+     */
+    omit?: cari_hesaplarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cari_hesaplarInclude<ExtArgs> | null
+    /**
+     * Filter, which cari_hesaplars to fetch.
+     */
+    where?: cari_hesaplarWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of cari_hesaplars to fetch.
+     */
+    orderBy?: cari_hesaplarOrderByWithRelationInput | cari_hesaplarOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing cari_hesaplars.
+     */
+    cursor?: cari_hesaplarWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` cari_hesaplars from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` cari_hesaplars.
+     */
+    skip?: number
+    distinct?: Cari_hesaplarScalarFieldEnum | Cari_hesaplarScalarFieldEnum[]
+  }
+
+  /**
+   * cari_hesaplar create
+   */
+  export type cari_hesaplarCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cari_hesaplar
+     */
+    select?: cari_hesaplarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cari_hesaplar
+     */
+    omit?: cari_hesaplarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cari_hesaplarInclude<ExtArgs> | null
+    /**
+     * The data needed to create a cari_hesaplar.
+     */
+    data: XOR<cari_hesaplarCreateInput, cari_hesaplarUncheckedCreateInput>
+  }
+
+  /**
+   * cari_hesaplar createMany
+   */
+  export type cari_hesaplarCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many cari_hesaplars.
+     */
+    data: cari_hesaplarCreateManyInput | cari_hesaplarCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * cari_hesaplar createManyAndReturn
+   */
+  export type cari_hesaplarCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cari_hesaplar
+     */
+    select?: cari_hesaplarSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the cari_hesaplar
+     */
+    omit?: cari_hesaplarOmit<ExtArgs> | null
+    /**
+     * The data used to create many cari_hesaplars.
+     */
+    data: cari_hesaplarCreateManyInput | cari_hesaplarCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cari_hesaplarIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * cari_hesaplar update
+   */
+  export type cari_hesaplarUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cari_hesaplar
+     */
+    select?: cari_hesaplarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cari_hesaplar
+     */
+    omit?: cari_hesaplarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cari_hesaplarInclude<ExtArgs> | null
+    /**
+     * The data needed to update a cari_hesaplar.
+     */
+    data: XOR<cari_hesaplarUpdateInput, cari_hesaplarUncheckedUpdateInput>
+    /**
+     * Choose, which cari_hesaplar to update.
+     */
+    where: cari_hesaplarWhereUniqueInput
+  }
+
+  /**
+   * cari_hesaplar updateMany
+   */
+  export type cari_hesaplarUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update cari_hesaplars.
+     */
+    data: XOR<cari_hesaplarUpdateManyMutationInput, cari_hesaplarUncheckedUpdateManyInput>
+    /**
+     * Filter which cari_hesaplars to update
+     */
+    where?: cari_hesaplarWhereInput
+    /**
+     * Limit how many cari_hesaplars to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * cari_hesaplar updateManyAndReturn
+   */
+  export type cari_hesaplarUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cari_hesaplar
+     */
+    select?: cari_hesaplarSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the cari_hesaplar
+     */
+    omit?: cari_hesaplarOmit<ExtArgs> | null
+    /**
+     * The data used to update cari_hesaplars.
+     */
+    data: XOR<cari_hesaplarUpdateManyMutationInput, cari_hesaplarUncheckedUpdateManyInput>
+    /**
+     * Filter which cari_hesaplars to update
+     */
+    where?: cari_hesaplarWhereInput
+    /**
+     * Limit how many cari_hesaplars to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cari_hesaplarIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * cari_hesaplar upsert
+   */
+  export type cari_hesaplarUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cari_hesaplar
+     */
+    select?: cari_hesaplarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cari_hesaplar
+     */
+    omit?: cari_hesaplarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cari_hesaplarInclude<ExtArgs> | null
+    /**
+     * The filter to search for the cari_hesaplar to update in case it exists.
+     */
+    where: cari_hesaplarWhereUniqueInput
+    /**
+     * In case the cari_hesaplar found by the `where` argument doesn't exist, create a new cari_hesaplar with this data.
+     */
+    create: XOR<cari_hesaplarCreateInput, cari_hesaplarUncheckedCreateInput>
+    /**
+     * In case the cari_hesaplar was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<cari_hesaplarUpdateInput, cari_hesaplarUncheckedUpdateInput>
+  }
+
+  /**
+   * cari_hesaplar delete
+   */
+  export type cari_hesaplarDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cari_hesaplar
+     */
+    select?: cari_hesaplarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cari_hesaplar
+     */
+    omit?: cari_hesaplarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cari_hesaplarInclude<ExtArgs> | null
+    /**
+     * Filter which cari_hesaplar to delete.
+     */
+    where: cari_hesaplarWhereUniqueInput
+  }
+
+  /**
+   * cari_hesaplar deleteMany
+   */
+  export type cari_hesaplarDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which cari_hesaplars to delete
+     */
+    where?: cari_hesaplarWhereInput
+    /**
+     * Limit how many cari_hesaplars to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * cari_hesaplar without action
+   */
+  export type cari_hesaplarDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cari_hesaplar
+     */
+    select?: cari_hesaplarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cari_hesaplar
+     */
+    omit?: cari_hesaplarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cari_hesaplarInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model komisyoncular
    */
 
@@ -5621,6 +6937,7 @@ export namespace Prisma {
     cikmaFireKg: number | null
     netKg: number | null
     netAdet: number | null
+    kdvHaricTutar: number | null
     kdvOrani: number | null
     belediyeRusumOrani: number | null
   }
@@ -5640,6 +6957,7 @@ export namespace Prisma {
     cikmaFireKg: number | null
     netKg: number | null
     netAdet: number | null
+    kdvHaricTutar: number | null
     kdvOrani: number | null
     belediyeRusumOrani: number | null
   }
@@ -5675,6 +6993,7 @@ export namespace Prisma {
     cikmaFireKg: number | null
     netKg: number | null
     netAdet: number | null
+    kdvHaricTutar: number | null
     kdvOrani: number | null
     belediyeRusumOrani: number | null
     kdvHesapla: boolean | null
@@ -5715,6 +7034,7 @@ export namespace Prisma {
     cikmaFireKg: number | null
     netKg: number | null
     netAdet: number | null
+    kdvHaricTutar: number | null
     kdvOrani: number | null
     belediyeRusumOrani: number | null
     kdvHesapla: boolean | null
@@ -5755,6 +7075,7 @@ export namespace Prisma {
     cikmaFireKg: number
     netKg: number
     netAdet: number
+    kdvHaricTutar: number
     kdvOrani: number
     belediyeRusumOrani: number
     kdvHesapla: number
@@ -5782,6 +7103,7 @@ export namespace Prisma {
     cikmaFireKg?: true
     netKg?: true
     netAdet?: true
+    kdvHaricTutar?: true
     kdvOrani?: true
     belediyeRusumOrani?: true
   }
@@ -5801,6 +7123,7 @@ export namespace Prisma {
     cikmaFireKg?: true
     netKg?: true
     netAdet?: true
+    kdvHaricTutar?: true
     kdvOrani?: true
     belediyeRusumOrani?: true
   }
@@ -5836,6 +7159,7 @@ export namespace Prisma {
     cikmaFireKg?: true
     netKg?: true
     netAdet?: true
+    kdvHaricTutar?: true
     kdvOrani?: true
     belediyeRusumOrani?: true
     kdvHesapla?: true
@@ -5876,6 +7200,7 @@ export namespace Prisma {
     cikmaFireKg?: true
     netKg?: true
     netAdet?: true
+    kdvHaricTutar?: true
     kdvOrani?: true
     belediyeRusumOrani?: true
     kdvHesapla?: true
@@ -5916,6 +7241,7 @@ export namespace Prisma {
     cikmaFireKg?: true
     netKg?: true
     netAdet?: true
+    kdvHaricTutar?: true
     kdvOrani?: true
     belediyeRusumOrani?: true
     kdvHesapla?: true
@@ -6044,6 +7370,7 @@ export namespace Prisma {
     cikmaFireKg: number | null
     netKg: number | null
     netAdet: number | null
+    kdvHaricTutar: number | null
     kdvOrani: number | null
     belediyeRusumOrani: number | null
     kdvHesapla: boolean
@@ -6104,6 +7431,7 @@ export namespace Prisma {
     cikmaFireKg?: boolean
     netKg?: boolean
     netAdet?: boolean
+    kdvHaricTutar?: boolean
     kdvOrani?: boolean
     belediyeRusumOrani?: boolean
     kdvHesapla?: boolean
@@ -6120,6 +7448,7 @@ export namespace Prisma {
     mustahsil?: boolean | mal_kabul_records$mustahsilArgs<ExtArgs>
     ozel_firmalar?: boolean | mal_kabul_records$ozel_firmalarArgs<ExtArgs>
     ambalajlar?: boolean | mal_kabul_records$ambalajlarArgs<ExtArgs>
+    cari_hesaplar?: boolean | mal_kabul_records$cari_hesaplarArgs<ExtArgs>
   }, ExtArgs["result"]["mal_kabul_records"]>
 
   export type mal_kabul_recordsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -6153,6 +7482,7 @@ export namespace Prisma {
     cikmaFireKg?: boolean
     netKg?: boolean
     netAdet?: boolean
+    kdvHaricTutar?: boolean
     kdvOrani?: boolean
     belediyeRusumOrani?: boolean
     kdvHesapla?: boolean
@@ -6202,6 +7532,7 @@ export namespace Prisma {
     cikmaFireKg?: boolean
     netKg?: boolean
     netAdet?: boolean
+    kdvHaricTutar?: boolean
     kdvOrani?: boolean
     belediyeRusumOrani?: boolean
     kdvHesapla?: boolean
@@ -6251,6 +7582,7 @@ export namespace Prisma {
     cikmaFireKg?: boolean
     netKg?: boolean
     netAdet?: boolean
+    kdvHaricTutar?: boolean
     kdvOrani?: boolean
     belediyeRusumOrani?: boolean
     kdvHesapla?: boolean
@@ -6261,7 +7593,7 @@ export namespace Prisma {
     fiyatGirilmeTarihi?: boolean
   }
 
-  export type mal_kabul_recordsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tarih" | "miktar" | "birimFiyat" | "toplamFiyat" | "status" | "notlar" | "malKabulcuId" | "komisyoncuId" | "ureticiId" | "urunId" | "faturaId" | "createdAt" | "updatedAt" | "fisNo" | "mustahsilId" | "ozelFirmaId" | "saticiTipi" | "ambalajId" | "paletSayisi" | "kasaSayisi" | "adetSayisi" | "brutKg" | "daraKg" | "girisKg" | "cikmaKg" | "fireKg" | "cikmaFireKg" | "netKg" | "netAdet" | "kdvOrani" | "belediyeRusumOrani" | "kdvHesapla" | "belediyeRusumHesapla" | "evraklar" | "fiyatGirildi" | "fiyatGirenKullanici" | "fiyatGirilmeTarihi", ExtArgs["result"]["mal_kabul_records"]>
+  export type mal_kabul_recordsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tarih" | "miktar" | "birimFiyat" | "toplamFiyat" | "status" | "notlar" | "malKabulcuId" | "komisyoncuId" | "ureticiId" | "urunId" | "faturaId" | "createdAt" | "updatedAt" | "fisNo" | "mustahsilId" | "ozelFirmaId" | "saticiTipi" | "ambalajId" | "paletSayisi" | "kasaSayisi" | "adetSayisi" | "brutKg" | "daraKg" | "girisKg" | "cikmaKg" | "fireKg" | "cikmaFireKg" | "netKg" | "netAdet" | "kdvHaricTutar" | "kdvOrani" | "belediyeRusumOrani" | "kdvHesapla" | "belediyeRusumHesapla" | "evraklar" | "fiyatGirildi" | "fiyatGirenKullanici" | "fiyatGirilmeTarihi", ExtArgs["result"]["mal_kabul_records"]>
   export type mal_kabul_recordsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | usersDefaultArgs<ExtArgs>
     komisyoncular?: boolean | mal_kabul_records$komisyoncularArgs<ExtArgs>
@@ -6271,6 +7603,7 @@ export namespace Prisma {
     mustahsil?: boolean | mal_kabul_records$mustahsilArgs<ExtArgs>
     ozel_firmalar?: boolean | mal_kabul_records$ozel_firmalarArgs<ExtArgs>
     ambalajlar?: boolean | mal_kabul_records$ambalajlarArgs<ExtArgs>
+    cari_hesaplar?: boolean | mal_kabul_records$cari_hesaplarArgs<ExtArgs>
   }
   export type mal_kabul_recordsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | usersDefaultArgs<ExtArgs>
@@ -6304,6 +7637,7 @@ export namespace Prisma {
       mustahsil: Prisma.$mustahsilPayload<ExtArgs> | null
       ozel_firmalar: Prisma.$ozel_firmalarPayload<ExtArgs> | null
       ambalajlar: Prisma.$ambalajlarPayload<ExtArgs> | null
+      cari_hesaplar: Prisma.$cari_hesaplarPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6336,6 +7670,7 @@ export namespace Prisma {
       cikmaFireKg: number | null
       netKg: number | null
       netAdet: number | null
+      kdvHaricTutar: number | null
       kdvOrani: number | null
       belediyeRusumOrani: number | null
       kdvHesapla: boolean
@@ -6746,6 +8081,7 @@ export namespace Prisma {
     mustahsil<T extends mal_kabul_records$mustahsilArgs<ExtArgs> = {}>(args?: Subset<T, mal_kabul_records$mustahsilArgs<ExtArgs>>): Prisma__mustahsilClient<$Result.GetResult<Prisma.$mustahsilPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     ozel_firmalar<T extends mal_kabul_records$ozel_firmalarArgs<ExtArgs> = {}>(args?: Subset<T, mal_kabul_records$ozel_firmalarArgs<ExtArgs>>): Prisma__ozel_firmalarClient<$Result.GetResult<Prisma.$ozel_firmalarPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     ambalajlar<T extends mal_kabul_records$ambalajlarArgs<ExtArgs> = {}>(args?: Subset<T, mal_kabul_records$ambalajlarArgs<ExtArgs>>): Prisma__ambalajlarClient<$Result.GetResult<Prisma.$ambalajlarPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    cari_hesaplar<T extends mal_kabul_records$cari_hesaplarArgs<ExtArgs> = {}>(args?: Subset<T, mal_kabul_records$cari_hesaplarArgs<ExtArgs>>): Prisma__cari_hesaplarClient<$Result.GetResult<Prisma.$cari_hesaplarPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6805,6 +8141,7 @@ export namespace Prisma {
     readonly cikmaFireKg: FieldRef<"mal_kabul_records", 'Float'>
     readonly netKg: FieldRef<"mal_kabul_records", 'Float'>
     readonly netAdet: FieldRef<"mal_kabul_records", 'Int'>
+    readonly kdvHaricTutar: FieldRef<"mal_kabul_records", 'Float'>
     readonly kdvOrani: FieldRef<"mal_kabul_records", 'Float'>
     readonly belediyeRusumOrani: FieldRef<"mal_kabul_records", 'Float'>
     readonly kdvHesapla: FieldRef<"mal_kabul_records", 'Boolean'>
@@ -7320,6 +8657,25 @@ export namespace Prisma {
      */
     include?: ambalajlarInclude<ExtArgs> | null
     where?: ambalajlarWhereInput
+  }
+
+  /**
+   * mal_kabul_records.cari_hesaplar
+   */
+  export type mal_kabul_records$cari_hesaplarArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the cari_hesaplar
+     */
+    select?: cari_hesaplarSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the cari_hesaplar
+     */
+    omit?: cari_hesaplarOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: cari_hesaplarInclude<ExtArgs> | null
+    where?: cari_hesaplarWhereInput
   }
 
   /**
@@ -14396,6 +15752,26 @@ export namespace Prisma {
   export type FaturalarScalarFieldEnum = (typeof FaturalarScalarFieldEnum)[keyof typeof FaturalarScalarFieldEnum]
 
 
+  export const Cari_hesaplarScalarFieldEnum: {
+    id: 'id',
+    saticiTipi: 'saticiTipi',
+    saticiId: 'saticiId',
+    saticiAdi: 'saticiAdi',
+    alisTarihi: 'alisTarihi',
+    fisNo: 'fisNo',
+    malKabulRecordId: 'malKabulRecordId',
+    toplamAlisMiktari: 'toplamAlisMiktari',
+    birimFiyat: 'birimFiyat',
+    kdvHaricTutar: 'kdvHaricTutar',
+    herseyDahilTutar: 'herseyDahilTutar',
+    cariBakiyesi: 'cariBakiyesi',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type Cari_hesaplarScalarFieldEnum = (typeof Cari_hesaplarScalarFieldEnum)[keyof typeof Cari_hesaplarScalarFieldEnum]
+
+
   export const KomisyoncularScalarFieldEnum: {
     id: 'id',
     createdAt: 'createdAt',
@@ -14444,6 +15820,7 @@ export namespace Prisma {
     cikmaFireKg: 'cikmaFireKg',
     netKg: 'netKg',
     netAdet: 'netAdet',
+    kdvHaricTutar: 'kdvHaricTutar',
     kdvOrani: 'kdvOrani',
     belediyeRusumOrani: 'belediyeRusumOrani',
     kdvHesapla: 'kdvHesapla',
@@ -14836,6 +16213,108 @@ export namespace Prisma {
     updatedAt?: DateTimeNullableWithAggregatesFilter<"faturalar"> | Date | string | null
   }
 
+  export type cari_hesaplarWhereInput = {
+    AND?: cari_hesaplarWhereInput | cari_hesaplarWhereInput[]
+    OR?: cari_hesaplarWhereInput[]
+    NOT?: cari_hesaplarWhereInput | cari_hesaplarWhereInput[]
+    id?: StringFilter<"cari_hesaplar"> | string
+    saticiTipi?: StringFilter<"cari_hesaplar"> | string
+    saticiId?: StringFilter<"cari_hesaplar"> | string
+    saticiAdi?: StringFilter<"cari_hesaplar"> | string
+    alisTarihi?: DateTimeFilter<"cari_hesaplar"> | Date | string
+    fisNo?: StringFilter<"cari_hesaplar"> | string
+    malKabulRecordId?: StringFilter<"cari_hesaplar"> | string
+    toplamAlisMiktari?: FloatFilter<"cari_hesaplar"> | number
+    birimFiyat?: FloatFilter<"cari_hesaplar"> | number
+    kdvHaricTutar?: FloatFilter<"cari_hesaplar"> | number
+    herseyDahilTutar?: FloatFilter<"cari_hesaplar"> | number
+    cariBakiyesi?: FloatFilter<"cari_hesaplar"> | number
+    createdAt?: DateTimeNullableFilter<"cari_hesaplar"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"cari_hesaplar"> | Date | string | null
+    malKabulRecord?: XOR<Mal_kabul_recordsScalarRelationFilter, mal_kabul_recordsWhereInput>
+  }
+
+  export type cari_hesaplarOrderByWithRelationInput = {
+    id?: SortOrder
+    saticiTipi?: SortOrder
+    saticiId?: SortOrder
+    saticiAdi?: SortOrder
+    alisTarihi?: SortOrder
+    fisNo?: SortOrder
+    malKabulRecordId?: SortOrder
+    toplamAlisMiktari?: SortOrder
+    birimFiyat?: SortOrder
+    kdvHaricTutar?: SortOrder
+    herseyDahilTutar?: SortOrder
+    cariBakiyesi?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
+    malKabulRecord?: mal_kabul_recordsOrderByWithRelationInput
+  }
+
+  export type cari_hesaplarWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    malKabulRecordId?: string
+    AND?: cari_hesaplarWhereInput | cari_hesaplarWhereInput[]
+    OR?: cari_hesaplarWhereInput[]
+    NOT?: cari_hesaplarWhereInput | cari_hesaplarWhereInput[]
+    saticiTipi?: StringFilter<"cari_hesaplar"> | string
+    saticiId?: StringFilter<"cari_hesaplar"> | string
+    saticiAdi?: StringFilter<"cari_hesaplar"> | string
+    alisTarihi?: DateTimeFilter<"cari_hesaplar"> | Date | string
+    fisNo?: StringFilter<"cari_hesaplar"> | string
+    toplamAlisMiktari?: FloatFilter<"cari_hesaplar"> | number
+    birimFiyat?: FloatFilter<"cari_hesaplar"> | number
+    kdvHaricTutar?: FloatFilter<"cari_hesaplar"> | number
+    herseyDahilTutar?: FloatFilter<"cari_hesaplar"> | number
+    cariBakiyesi?: FloatFilter<"cari_hesaplar"> | number
+    createdAt?: DateTimeNullableFilter<"cari_hesaplar"> | Date | string | null
+    updatedAt?: DateTimeNullableFilter<"cari_hesaplar"> | Date | string | null
+    malKabulRecord?: XOR<Mal_kabul_recordsScalarRelationFilter, mal_kabul_recordsWhereInput>
+  }, "id" | "malKabulRecordId">
+
+  export type cari_hesaplarOrderByWithAggregationInput = {
+    id?: SortOrder
+    saticiTipi?: SortOrder
+    saticiId?: SortOrder
+    saticiAdi?: SortOrder
+    alisTarihi?: SortOrder
+    fisNo?: SortOrder
+    malKabulRecordId?: SortOrder
+    toplamAlisMiktari?: SortOrder
+    birimFiyat?: SortOrder
+    kdvHaricTutar?: SortOrder
+    herseyDahilTutar?: SortOrder
+    cariBakiyesi?: SortOrder
+    createdAt?: SortOrderInput | SortOrder
+    updatedAt?: SortOrderInput | SortOrder
+    _count?: cari_hesaplarCountOrderByAggregateInput
+    _avg?: cari_hesaplarAvgOrderByAggregateInput
+    _max?: cari_hesaplarMaxOrderByAggregateInput
+    _min?: cari_hesaplarMinOrderByAggregateInput
+    _sum?: cari_hesaplarSumOrderByAggregateInput
+  }
+
+  export type cari_hesaplarScalarWhereWithAggregatesInput = {
+    AND?: cari_hesaplarScalarWhereWithAggregatesInput | cari_hesaplarScalarWhereWithAggregatesInput[]
+    OR?: cari_hesaplarScalarWhereWithAggregatesInput[]
+    NOT?: cari_hesaplarScalarWhereWithAggregatesInput | cari_hesaplarScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"cari_hesaplar"> | string
+    saticiTipi?: StringWithAggregatesFilter<"cari_hesaplar"> | string
+    saticiId?: StringWithAggregatesFilter<"cari_hesaplar"> | string
+    saticiAdi?: StringWithAggregatesFilter<"cari_hesaplar"> | string
+    alisTarihi?: DateTimeWithAggregatesFilter<"cari_hesaplar"> | Date | string
+    fisNo?: StringWithAggregatesFilter<"cari_hesaplar"> | string
+    malKabulRecordId?: StringWithAggregatesFilter<"cari_hesaplar"> | string
+    toplamAlisMiktari?: FloatWithAggregatesFilter<"cari_hesaplar"> | number
+    birimFiyat?: FloatWithAggregatesFilter<"cari_hesaplar"> | number
+    kdvHaricTutar?: FloatWithAggregatesFilter<"cari_hesaplar"> | number
+    herseyDahilTutar?: FloatWithAggregatesFilter<"cari_hesaplar"> | number
+    cariBakiyesi?: FloatWithAggregatesFilter<"cari_hesaplar"> | number
+    createdAt?: DateTimeNullableWithAggregatesFilter<"cari_hesaplar"> | Date | string | null
+    updatedAt?: DateTimeNullableWithAggregatesFilter<"cari_hesaplar"> | Date | string | null
+  }
+
   export type komisyoncularWhereInput = {
     AND?: komisyoncularWhereInput | komisyoncularWhereInput[]
     OR?: komisyoncularWhereInput[]
@@ -14958,6 +16437,7 @@ export namespace Prisma {
     cikmaFireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     netKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     netAdet?: IntNullableFilter<"mal_kabul_records"> | number | null
+    kdvHaricTutar?: FloatNullableFilter<"mal_kabul_records"> | number | null
     kdvOrani?: FloatNullableFilter<"mal_kabul_records"> | number | null
     belediyeRusumOrani?: FloatNullableFilter<"mal_kabul_records"> | number | null
     kdvHesapla?: BoolFilter<"mal_kabul_records"> | boolean
@@ -14974,6 +16454,7 @@ export namespace Prisma {
     mustahsil?: XOR<MustahsilNullableScalarRelationFilter, mustahsilWhereInput> | null
     ozel_firmalar?: XOR<Ozel_firmalarNullableScalarRelationFilter, ozel_firmalarWhereInput> | null
     ambalajlar?: XOR<AmbalajlarNullableScalarRelationFilter, ambalajlarWhereInput> | null
+    cari_hesaplar?: XOR<Cari_hesaplarNullableScalarRelationFilter, cari_hesaplarWhereInput> | null
   }
 
   export type mal_kabul_recordsOrderByWithRelationInput = {
@@ -15007,6 +16488,7 @@ export namespace Prisma {
     cikmaFireKg?: SortOrderInput | SortOrder
     netKg?: SortOrderInput | SortOrder
     netAdet?: SortOrderInput | SortOrder
+    kdvHaricTutar?: SortOrderInput | SortOrder
     kdvOrani?: SortOrderInput | SortOrder
     belediyeRusumOrani?: SortOrderInput | SortOrder
     kdvHesapla?: SortOrder
@@ -15023,6 +16505,7 @@ export namespace Prisma {
     mustahsil?: mustahsilOrderByWithRelationInput
     ozel_firmalar?: ozel_firmalarOrderByWithRelationInput
     ambalajlar?: ambalajlarOrderByWithRelationInput
+    cari_hesaplar?: cari_hesaplarOrderByWithRelationInput
   }
 
   export type mal_kabul_recordsWhereUniqueInput = Prisma.AtLeast<{
@@ -15059,6 +16542,7 @@ export namespace Prisma {
     cikmaFireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     netKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     netAdet?: IntNullableFilter<"mal_kabul_records"> | number | null
+    kdvHaricTutar?: FloatNullableFilter<"mal_kabul_records"> | number | null
     kdvOrani?: FloatNullableFilter<"mal_kabul_records"> | number | null
     belediyeRusumOrani?: FloatNullableFilter<"mal_kabul_records"> | number | null
     kdvHesapla?: BoolFilter<"mal_kabul_records"> | boolean
@@ -15075,6 +16559,7 @@ export namespace Prisma {
     mustahsil?: XOR<MustahsilNullableScalarRelationFilter, mustahsilWhereInput> | null
     ozel_firmalar?: XOR<Ozel_firmalarNullableScalarRelationFilter, ozel_firmalarWhereInput> | null
     ambalajlar?: XOR<AmbalajlarNullableScalarRelationFilter, ambalajlarWhereInput> | null
+    cari_hesaplar?: XOR<Cari_hesaplarNullableScalarRelationFilter, cari_hesaplarWhereInput> | null
   }, "id" | "fisNo">
 
   export type mal_kabul_recordsOrderByWithAggregationInput = {
@@ -15108,6 +16593,7 @@ export namespace Prisma {
     cikmaFireKg?: SortOrderInput | SortOrder
     netKg?: SortOrderInput | SortOrder
     netAdet?: SortOrderInput | SortOrder
+    kdvHaricTutar?: SortOrderInput | SortOrder
     kdvOrani?: SortOrderInput | SortOrder
     belediyeRusumOrani?: SortOrderInput | SortOrder
     kdvHesapla?: SortOrder
@@ -15157,6 +16643,7 @@ export namespace Prisma {
     cikmaFireKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     netKg?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     netAdet?: IntNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
+    kdvHaricTutar?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     kdvOrani?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     belediyeRusumOrani?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     kdvHesapla?: BoolWithAggregatesFilter<"mal_kabul_records"> | boolean
@@ -15894,6 +17381,124 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type cari_hesaplarCreateInput = {
+    id: string
+    saticiTipi: string
+    saticiId: string
+    saticiAdi: string
+    alisTarihi: Date | string
+    fisNo: string
+    toplamAlisMiktari: number
+    birimFiyat: number
+    kdvHaricTutar: number
+    herseyDahilTutar: number
+    cariBakiyesi: number
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    malKabulRecord: mal_kabul_recordsCreateNestedOneWithoutCari_hesaplarInput
+  }
+
+  export type cari_hesaplarUncheckedCreateInput = {
+    id: string
+    saticiTipi: string
+    saticiId: string
+    saticiAdi: string
+    alisTarihi: Date | string
+    fisNo: string
+    malKabulRecordId: string
+    toplamAlisMiktari: number
+    birimFiyat: number
+    kdvHaricTutar: number
+    herseyDahilTutar: number
+    cariBakiyesi: number
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type cari_hesaplarUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    saticiId?: StringFieldUpdateOperationsInput | string
+    saticiAdi?: StringFieldUpdateOperationsInput | string
+    alisTarihi?: DateTimeFieldUpdateOperationsInput | Date | string
+    fisNo?: StringFieldUpdateOperationsInput | string
+    toplamAlisMiktari?: FloatFieldUpdateOperationsInput | number
+    birimFiyat?: FloatFieldUpdateOperationsInput | number
+    kdvHaricTutar?: FloatFieldUpdateOperationsInput | number
+    herseyDahilTutar?: FloatFieldUpdateOperationsInput | number
+    cariBakiyesi?: FloatFieldUpdateOperationsInput | number
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    malKabulRecord?: mal_kabul_recordsUpdateOneRequiredWithoutCari_hesaplarNestedInput
+  }
+
+  export type cari_hesaplarUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    saticiId?: StringFieldUpdateOperationsInput | string
+    saticiAdi?: StringFieldUpdateOperationsInput | string
+    alisTarihi?: DateTimeFieldUpdateOperationsInput | Date | string
+    fisNo?: StringFieldUpdateOperationsInput | string
+    malKabulRecordId?: StringFieldUpdateOperationsInput | string
+    toplamAlisMiktari?: FloatFieldUpdateOperationsInput | number
+    birimFiyat?: FloatFieldUpdateOperationsInput | number
+    kdvHaricTutar?: FloatFieldUpdateOperationsInput | number
+    herseyDahilTutar?: FloatFieldUpdateOperationsInput | number
+    cariBakiyesi?: FloatFieldUpdateOperationsInput | number
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type cari_hesaplarCreateManyInput = {
+    id: string
+    saticiTipi: string
+    saticiId: string
+    saticiAdi: string
+    alisTarihi: Date | string
+    fisNo: string
+    malKabulRecordId: string
+    toplamAlisMiktari: number
+    birimFiyat: number
+    kdvHaricTutar: number
+    herseyDahilTutar: number
+    cariBakiyesi: number
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type cari_hesaplarUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    saticiId?: StringFieldUpdateOperationsInput | string
+    saticiAdi?: StringFieldUpdateOperationsInput | string
+    alisTarihi?: DateTimeFieldUpdateOperationsInput | Date | string
+    fisNo?: StringFieldUpdateOperationsInput | string
+    toplamAlisMiktari?: FloatFieldUpdateOperationsInput | number
+    birimFiyat?: FloatFieldUpdateOperationsInput | number
+    kdvHaricTutar?: FloatFieldUpdateOperationsInput | number
+    herseyDahilTutar?: FloatFieldUpdateOperationsInput | number
+    cariBakiyesi?: FloatFieldUpdateOperationsInput | number
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type cari_hesaplarUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    saticiId?: StringFieldUpdateOperationsInput | string
+    saticiAdi?: StringFieldUpdateOperationsInput | string
+    alisTarihi?: DateTimeFieldUpdateOperationsInput | Date | string
+    fisNo?: StringFieldUpdateOperationsInput | string
+    malKabulRecordId?: StringFieldUpdateOperationsInput | string
+    toplamAlisMiktari?: FloatFieldUpdateOperationsInput | number
+    birimFiyat?: FloatFieldUpdateOperationsInput | number
+    kdvHaricTutar?: FloatFieldUpdateOperationsInput | number
+    herseyDahilTutar?: FloatFieldUpdateOperationsInput | number
+    cariBakiyesi?: FloatFieldUpdateOperationsInput | number
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type komisyoncularCreateInput = {
     id: string
     createdAt?: Date | string | null
@@ -16023,6 +17628,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -16039,6 +17645,7 @@ export namespace Prisma {
     mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
     ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
     ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
+    cari_hesaplar?: cari_hesaplarCreateNestedOneWithoutMalKabulRecordInput
   }
 
   export type mal_kabul_recordsUncheckedCreateInput = {
@@ -16072,6 +17679,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -16080,6 +17688,7 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    cari_hesaplar?: cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput
   }
 
   export type mal_kabul_recordsUpdateInput = {
@@ -16105,6 +17714,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -16121,6 +17731,7 @@ export namespace Prisma {
     mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
     ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
     ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
+    cari_hesaplar?: cari_hesaplarUpdateOneWithoutMalKabulRecordNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateInput = {
@@ -16154,6 +17765,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -16162,6 +17774,7 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cari_hesaplar?: cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput
   }
 
   export type mal_kabul_recordsCreateManyInput = {
@@ -16195,6 +17808,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -16228,6 +17842,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -16269,6 +17884,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -17194,6 +18810,103 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
+  export type DateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type Mal_kabul_recordsScalarRelationFilter = {
+    is?: mal_kabul_recordsWhereInput
+    isNot?: mal_kabul_recordsWhereInput
+  }
+
+  export type cari_hesaplarCountOrderByAggregateInput = {
+    id?: SortOrder
+    saticiTipi?: SortOrder
+    saticiId?: SortOrder
+    saticiAdi?: SortOrder
+    alisTarihi?: SortOrder
+    fisNo?: SortOrder
+    malKabulRecordId?: SortOrder
+    toplamAlisMiktari?: SortOrder
+    birimFiyat?: SortOrder
+    kdvHaricTutar?: SortOrder
+    herseyDahilTutar?: SortOrder
+    cariBakiyesi?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type cari_hesaplarAvgOrderByAggregateInput = {
+    toplamAlisMiktari?: SortOrder
+    birimFiyat?: SortOrder
+    kdvHaricTutar?: SortOrder
+    herseyDahilTutar?: SortOrder
+    cariBakiyesi?: SortOrder
+  }
+
+  export type cari_hesaplarMaxOrderByAggregateInput = {
+    id?: SortOrder
+    saticiTipi?: SortOrder
+    saticiId?: SortOrder
+    saticiAdi?: SortOrder
+    alisTarihi?: SortOrder
+    fisNo?: SortOrder
+    malKabulRecordId?: SortOrder
+    toplamAlisMiktari?: SortOrder
+    birimFiyat?: SortOrder
+    kdvHaricTutar?: SortOrder
+    herseyDahilTutar?: SortOrder
+    cariBakiyesi?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type cari_hesaplarMinOrderByAggregateInput = {
+    id?: SortOrder
+    saticiTipi?: SortOrder
+    saticiId?: SortOrder
+    saticiAdi?: SortOrder
+    alisTarihi?: SortOrder
+    fisNo?: SortOrder
+    malKabulRecordId?: SortOrder
+    toplamAlisMiktari?: SortOrder
+    birimFiyat?: SortOrder
+    kdvHaricTutar?: SortOrder
+    herseyDahilTutar?: SortOrder
+    cariBakiyesi?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type cari_hesaplarSumOrderByAggregateInput = {
+    toplamAlisMiktari?: SortOrder
+    birimFiyat?: SortOrder
+    kdvHaricTutar?: SortOrder
+    herseyDahilTutar?: SortOrder
+    cariBakiyesi?: SortOrder
+  }
+
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
   export type UreticilerListRelationFilter = {
     every?: ureticilerWhereInput
     some?: ureticilerWhereInput
@@ -17312,6 +19025,11 @@ export namespace Prisma {
     isNot?: ambalajlarWhereInput | null
   }
 
+  export type Cari_hesaplarNullableScalarRelationFilter = {
+    is?: cari_hesaplarWhereInput | null
+    isNot?: cari_hesaplarWhereInput | null
+  }
+
   export type mal_kabul_recordsCountOrderByAggregateInput = {
     id?: SortOrder
     tarih?: SortOrder
@@ -17343,6 +19061,7 @@ export namespace Prisma {
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
     netAdet?: SortOrder
+    kdvHaricTutar?: SortOrder
     kdvOrani?: SortOrder
     belediyeRusumOrani?: SortOrder
     kdvHesapla?: SortOrder
@@ -17368,6 +19087,7 @@ export namespace Prisma {
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
     netAdet?: SortOrder
+    kdvHaricTutar?: SortOrder
     kdvOrani?: SortOrder
     belediyeRusumOrani?: SortOrder
   }
@@ -17403,6 +19123,7 @@ export namespace Prisma {
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
     netAdet?: SortOrder
+    kdvHaricTutar?: SortOrder
     kdvOrani?: SortOrder
     belediyeRusumOrani?: SortOrder
     kdvHesapla?: SortOrder
@@ -17443,6 +19164,7 @@ export namespace Prisma {
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
     netAdet?: SortOrder
+    kdvHaricTutar?: SortOrder
     kdvOrani?: SortOrder
     belediyeRusumOrani?: SortOrder
     kdvHesapla?: SortOrder
@@ -17467,6 +19189,7 @@ export namespace Prisma {
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
     netAdet?: SortOrder
+    kdvHaricTutar?: SortOrder
     kdvOrani?: SortOrder
     belediyeRusumOrani?: SortOrder
   }
@@ -17503,17 +19226,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
-  }
-
-  export type DateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
   export type mustahsilCountOrderByAggregateInput = {
@@ -17565,20 +19277,6 @@ export namespace Prisma {
     durum?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
   export type ozel_firmalarCountOrderByAggregateInput = {
@@ -17954,6 +19652,24 @@ export namespace Prisma {
     deleteMany?: mal_kabul_recordsScalarWhereInput | mal_kabul_recordsScalarWhereInput[]
   }
 
+  export type mal_kabul_recordsCreateNestedOneWithoutCari_hesaplarInput = {
+    create?: XOR<mal_kabul_recordsCreateWithoutCari_hesaplarInput, mal_kabul_recordsUncheckedCreateWithoutCari_hesaplarInput>
+    connectOrCreate?: mal_kabul_recordsCreateOrConnectWithoutCari_hesaplarInput
+    connect?: mal_kabul_recordsWhereUniqueInput
+  }
+
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
+  }
+
+  export type mal_kabul_recordsUpdateOneRequiredWithoutCari_hesaplarNestedInput = {
+    create?: XOR<mal_kabul_recordsCreateWithoutCari_hesaplarInput, mal_kabul_recordsUncheckedCreateWithoutCari_hesaplarInput>
+    connectOrCreate?: mal_kabul_recordsCreateOrConnectWithoutCari_hesaplarInput
+    upsert?: mal_kabul_recordsUpsertWithoutCari_hesaplarInput
+    connect?: mal_kabul_recordsWhereUniqueInput
+    update?: XOR<XOR<mal_kabul_recordsUpdateToOneWithWhereWithoutCari_hesaplarInput, mal_kabul_recordsUpdateWithoutCari_hesaplarInput>, mal_kabul_recordsUncheckedUpdateWithoutCari_hesaplarInput>
+  }
+
   export type mal_kabul_recordsCreateNestedManyWithoutKomisyoncularInput = {
     create?: XOR<mal_kabul_recordsCreateWithoutKomisyoncularInput, mal_kabul_recordsUncheckedCreateWithoutKomisyoncularInput> | mal_kabul_recordsCreateWithoutKomisyoncularInput[] | mal_kabul_recordsUncheckedCreateWithoutKomisyoncularInput[]
     connectOrCreate?: mal_kabul_recordsCreateOrConnectWithoutKomisyoncularInput | mal_kabul_recordsCreateOrConnectWithoutKomisyoncularInput[]
@@ -18090,6 +19806,18 @@ export namespace Prisma {
     connect?: ambalajlarWhereUniqueInput
   }
 
+  export type cari_hesaplarCreateNestedOneWithoutMalKabulRecordInput = {
+    create?: XOR<cari_hesaplarCreateWithoutMalKabulRecordInput, cari_hesaplarUncheckedCreateWithoutMalKabulRecordInput>
+    connectOrCreate?: cari_hesaplarCreateOrConnectWithoutMalKabulRecordInput
+    connect?: cari_hesaplarWhereUniqueInput
+  }
+
+  export type cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput = {
+    create?: XOR<cari_hesaplarCreateWithoutMalKabulRecordInput, cari_hesaplarUncheckedCreateWithoutMalKabulRecordInput>
+    connectOrCreate?: cari_hesaplarCreateOrConnectWithoutMalKabulRecordInput
+    connect?: cari_hesaplarWhereUniqueInput
+  }
+
   export type EnumMalKabulStatusFieldUpdateOperationsInput = {
     set?: $Enums.MalKabulStatus
   }
@@ -18187,6 +19915,26 @@ export namespace Prisma {
     update?: XOR<XOR<ambalajlarUpdateToOneWithWhereWithoutMal_kabul_recordsInput, ambalajlarUpdateWithoutMal_kabul_recordsInput>, ambalajlarUncheckedUpdateWithoutMal_kabul_recordsInput>
   }
 
+  export type cari_hesaplarUpdateOneWithoutMalKabulRecordNestedInput = {
+    create?: XOR<cari_hesaplarCreateWithoutMalKabulRecordInput, cari_hesaplarUncheckedCreateWithoutMalKabulRecordInput>
+    connectOrCreate?: cari_hesaplarCreateOrConnectWithoutMalKabulRecordInput
+    upsert?: cari_hesaplarUpsertWithoutMalKabulRecordInput
+    disconnect?: cari_hesaplarWhereInput | boolean
+    delete?: cari_hesaplarWhereInput | boolean
+    connect?: cari_hesaplarWhereUniqueInput
+    update?: XOR<XOR<cari_hesaplarUpdateToOneWithWhereWithoutMalKabulRecordInput, cari_hesaplarUpdateWithoutMalKabulRecordInput>, cari_hesaplarUncheckedUpdateWithoutMalKabulRecordInput>
+  }
+
+  export type cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput = {
+    create?: XOR<cari_hesaplarCreateWithoutMalKabulRecordInput, cari_hesaplarUncheckedCreateWithoutMalKabulRecordInput>
+    connectOrCreate?: cari_hesaplarCreateOrConnectWithoutMalKabulRecordInput
+    upsert?: cari_hesaplarUpsertWithoutMalKabulRecordInput
+    disconnect?: cari_hesaplarWhereInput | boolean
+    delete?: cari_hesaplarWhereInput | boolean
+    connect?: cari_hesaplarWhereUniqueInput
+    update?: XOR<XOR<cari_hesaplarUpdateToOneWithWhereWithoutMalKabulRecordInput, cari_hesaplarUpdateWithoutMalKabulRecordInput>, cari_hesaplarUncheckedUpdateWithoutMalKabulRecordInput>
+  }
+
   export type mal_kabul_recordsCreateNestedManyWithoutMustahsilInput = {
     create?: XOR<mal_kabul_recordsCreateWithoutMustahsilInput, mal_kabul_recordsUncheckedCreateWithoutMustahsilInput> | mal_kabul_recordsCreateWithoutMustahsilInput[] | mal_kabul_recordsUncheckedCreateWithoutMustahsilInput[]
     connectOrCreate?: mal_kabul_recordsCreateOrConnectWithoutMustahsilInput | mal_kabul_recordsCreateOrConnectWithoutMustahsilInput[]
@@ -18199,10 +19947,6 @@ export namespace Prisma {
     connectOrCreate?: mal_kabul_recordsCreateOrConnectWithoutMustahsilInput | mal_kabul_recordsCreateOrConnectWithoutMustahsilInput[]
     createMany?: mal_kabul_recordsCreateManyMustahsilInputEnvelope
     connect?: mal_kabul_recordsWhereUniqueInput | mal_kabul_recordsWhereUniqueInput[]
-  }
-
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
   }
 
   export type mal_kabul_recordsUpdateManyWithoutMustahsilNestedInput = {
@@ -18622,6 +20366,31 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
+  export type NestedDateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
   export type NestedEnumMalKabulStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.MalKabulStatus | EnumMalKabulStatusFieldRefInput<$PrismaModel>
     in?: $Enums.MalKabulStatus[] | ListEnumMalKabulStatusFieldRefInput<$PrismaModel>
@@ -18668,31 +20437,6 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type NestedDateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
   export type mal_kabul_recordsCreateWithoutAmbalajlarInput = {
     id: string
     tarih?: Date | string | null
@@ -18716,6 +20460,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -18731,6 +20476,7 @@ export namespace Prisma {
     faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
     mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
     ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
+    cari_hesaplar?: cari_hesaplarCreateNestedOneWithoutMalKabulRecordInput
   }
 
   export type mal_kabul_recordsUncheckedCreateWithoutAmbalajlarInput = {
@@ -18763,6 +20509,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -18771,6 +20518,7 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    cari_hesaplar?: cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutAmbalajlarInput = {
@@ -18833,6 +20581,7 @@ export namespace Prisma {
     cikmaFireKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     netKg?: FloatNullableFilter<"mal_kabul_records"> | number | null
     netAdet?: IntNullableFilter<"mal_kabul_records"> | number | null
+    kdvHaricTutar?: FloatNullableFilter<"mal_kabul_records"> | number | null
     kdvOrani?: FloatNullableFilter<"mal_kabul_records"> | number | null
     belediyeRusumOrani?: FloatNullableFilter<"mal_kabul_records"> | number | null
     kdvHesapla?: BoolFilter<"mal_kabul_records"> | boolean
@@ -18866,6 +20615,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -18881,6 +20631,7 @@ export namespace Prisma {
     mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
     ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
     ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
+    cari_hesaplar?: cari_hesaplarCreateNestedOneWithoutMalKabulRecordInput
   }
 
   export type mal_kabul_recordsUncheckedCreateWithoutFaturalarInput = {
@@ -18913,6 +20664,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -18921,6 +20673,7 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    cari_hesaplar?: cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutFaturalarInput = {
@@ -19013,6 +20766,190 @@ export namespace Prisma {
     mal_kabul_records?: mal_kabul_recordsUncheckedUpdateManyWithoutUsersNestedInput
   }
 
+  export type mal_kabul_recordsCreateWithoutCari_hesaplarInput = {
+    id: string
+    tarih?: Date | string | null
+    miktar: number
+    birimFiyat?: number | null
+    toplamFiyat?: number | null
+    status?: $Enums.MalKabulStatus
+    notlar?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    fisNo: string
+    saticiTipi?: string
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    adetSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
+    netAdet?: number | null
+    kdvHaricTutar?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
+    users: usersCreateNestedOneWithoutMal_kabul_recordsInput
+    komisyoncular?: komisyoncularCreateNestedOneWithoutMal_kabul_recordsInput
+    ureticiler?: ureticilerCreateNestedOneWithoutMal_kabul_recordsInput
+    urunler: urunlerCreateNestedOneWithoutMal_kabul_recordsInput
+    faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
+    mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
+    ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
+    ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
+  }
+
+  export type mal_kabul_recordsUncheckedCreateWithoutCari_hesaplarInput = {
+    id: string
+    tarih?: Date | string | null
+    miktar: number
+    birimFiyat?: number | null
+    toplamFiyat?: number | null
+    status?: $Enums.MalKabulStatus
+    notlar?: string | null
+    malKabulcuId: string
+    komisyoncuId?: string | null
+    ureticiId?: string | null
+    urunId: string
+    faturaId?: string | null
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+    fisNo: string
+    mustahsilId?: string | null
+    ozelFirmaId?: string | null
+    saticiTipi?: string
+    ambalajId?: string | null
+    paletSayisi?: number | null
+    kasaSayisi?: number | null
+    adetSayisi?: number | null
+    brutKg?: number | null
+    daraKg?: number | null
+    girisKg?: number | null
+    cikmaKg?: number | null
+    fireKg?: number | null
+    cikmaFireKg?: number | null
+    netKg?: number | null
+    netAdet?: number | null
+    kdvHaricTutar?: number | null
+    kdvOrani?: number | null
+    belediyeRusumOrani?: number | null
+    kdvHesapla?: boolean
+    belediyeRusumHesapla?: boolean
+    evraklar?: mal_kabul_recordsCreateevraklarInput | string[]
+    fiyatGirildi?: boolean
+    fiyatGirenKullanici?: string | null
+    fiyatGirilmeTarihi?: Date | string | null
+  }
+
+  export type mal_kabul_recordsCreateOrConnectWithoutCari_hesaplarInput = {
+    where: mal_kabul_recordsWhereUniqueInput
+    create: XOR<mal_kabul_recordsCreateWithoutCari_hesaplarInput, mal_kabul_recordsUncheckedCreateWithoutCari_hesaplarInput>
+  }
+
+  export type mal_kabul_recordsUpsertWithoutCari_hesaplarInput = {
+    update: XOR<mal_kabul_recordsUpdateWithoutCari_hesaplarInput, mal_kabul_recordsUncheckedUpdateWithoutCari_hesaplarInput>
+    create: XOR<mal_kabul_recordsCreateWithoutCari_hesaplarInput, mal_kabul_recordsUncheckedCreateWithoutCari_hesaplarInput>
+    where?: mal_kabul_recordsWhereInput
+  }
+
+  export type mal_kabul_recordsUpdateToOneWithWhereWithoutCari_hesaplarInput = {
+    where?: mal_kabul_recordsWhereInput
+    data: XOR<mal_kabul_recordsUpdateWithoutCari_hesaplarInput, mal_kabul_recordsUncheckedUpdateWithoutCari_hesaplarInput>
+  }
+
+  export type mal_kabul_recordsUpdateWithoutCari_hesaplarInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    miktar?: FloatFieldUpdateOperationsInput | number
+    birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
+    toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
+    notlar?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fisNo?: StringFieldUpdateOperationsInput | string
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    users?: usersUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
+    komisyoncular?: komisyoncularUpdateOneWithoutMal_kabul_recordsNestedInput
+    ureticiler?: ureticilerUpdateOneWithoutMal_kabul_recordsNestedInput
+    urunler?: urunlerUpdateOneRequiredWithoutMal_kabul_recordsNestedInput
+    faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
+    ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
+  }
+
+  export type mal_kabul_recordsUncheckedUpdateWithoutCari_hesaplarInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    tarih?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    miktar?: FloatFieldUpdateOperationsInput | number
+    birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
+    toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
+    notlar?: NullableStringFieldUpdateOperationsInput | string | null
+    malKabulcuId?: StringFieldUpdateOperationsInput | string
+    komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
+    ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
+    urunId?: StringFieldUpdateOperationsInput | string
+    faturaId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fisNo?: StringFieldUpdateOperationsInput | string
+    mustahsilId?: NullableStringFieldUpdateOperationsInput | string | null
+    ozelFirmaId?: NullableStringFieldUpdateOperationsInput | string | null
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    ambalajId?: NullableStringFieldUpdateOperationsInput | string | null
+    paletSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    kasaSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    adetSayisi?: NullableIntFieldUpdateOperationsInput | number | null
+    brutKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    daraKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    girisKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    fireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netKg?: NullableFloatFieldUpdateOperationsInput | number | null
+    netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
+    kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
+    belediyeRusumHesapla?: BoolFieldUpdateOperationsInput | boolean
+    evraklar?: mal_kabul_recordsUpdateevraklarInput | string[]
+    fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
+    fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
+    fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type mal_kabul_recordsCreateWithoutKomisyoncularInput = {
     id: string
     tarih?: Date | string | null
@@ -19036,6 +20973,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -19051,6 +20989,7 @@ export namespace Prisma {
     mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
     ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
     ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
+    cari_hesaplar?: cari_hesaplarCreateNestedOneWithoutMalKabulRecordInput
   }
 
   export type mal_kabul_recordsUncheckedCreateWithoutKomisyoncularInput = {
@@ -19083,6 +21022,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -19091,6 +21031,7 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    cari_hesaplar?: cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutKomisyoncularInput = {
@@ -19453,6 +21394,43 @@ export namespace Prisma {
     create: XOR<ambalajlarCreateWithoutMal_kabul_recordsInput, ambalajlarUncheckedCreateWithoutMal_kabul_recordsInput>
   }
 
+  export type cari_hesaplarCreateWithoutMalKabulRecordInput = {
+    id: string
+    saticiTipi: string
+    saticiId: string
+    saticiAdi: string
+    alisTarihi: Date | string
+    fisNo: string
+    toplamAlisMiktari: number
+    birimFiyat: number
+    kdvHaricTutar: number
+    herseyDahilTutar: number
+    cariBakiyesi: number
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type cari_hesaplarUncheckedCreateWithoutMalKabulRecordInput = {
+    id: string
+    saticiTipi: string
+    saticiId: string
+    saticiAdi: string
+    alisTarihi: Date | string
+    fisNo: string
+    toplamAlisMiktari: number
+    birimFiyat: number
+    kdvHaricTutar: number
+    herseyDahilTutar: number
+    cariBakiyesi: number
+    createdAt?: Date | string | null
+    updatedAt?: Date | string | null
+  }
+
+  export type cari_hesaplarCreateOrConnectWithoutMalKabulRecordInput = {
+    where: cari_hesaplarWhereUniqueInput
+    create: XOR<cari_hesaplarCreateWithoutMalKabulRecordInput, cari_hesaplarUncheckedCreateWithoutMalKabulRecordInput>
+  }
+
   export type usersUpsertWithoutMal_kabul_recordsInput = {
     update: XOR<usersUpdateWithoutMal_kabul_recordsInput, usersUncheckedUpdateWithoutMal_kabul_recordsInput>
     create: XOR<usersCreateWithoutMal_kabul_recordsInput, usersUncheckedCreateWithoutMal_kabul_recordsInput>
@@ -19761,6 +21739,49 @@ export namespace Prisma {
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
+  export type cari_hesaplarUpsertWithoutMalKabulRecordInput = {
+    update: XOR<cari_hesaplarUpdateWithoutMalKabulRecordInput, cari_hesaplarUncheckedUpdateWithoutMalKabulRecordInput>
+    create: XOR<cari_hesaplarCreateWithoutMalKabulRecordInput, cari_hesaplarUncheckedCreateWithoutMalKabulRecordInput>
+    where?: cari_hesaplarWhereInput
+  }
+
+  export type cari_hesaplarUpdateToOneWithWhereWithoutMalKabulRecordInput = {
+    where?: cari_hesaplarWhereInput
+    data: XOR<cari_hesaplarUpdateWithoutMalKabulRecordInput, cari_hesaplarUncheckedUpdateWithoutMalKabulRecordInput>
+  }
+
+  export type cari_hesaplarUpdateWithoutMalKabulRecordInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    saticiId?: StringFieldUpdateOperationsInput | string
+    saticiAdi?: StringFieldUpdateOperationsInput | string
+    alisTarihi?: DateTimeFieldUpdateOperationsInput | Date | string
+    fisNo?: StringFieldUpdateOperationsInput | string
+    toplamAlisMiktari?: FloatFieldUpdateOperationsInput | number
+    birimFiyat?: FloatFieldUpdateOperationsInput | number
+    kdvHaricTutar?: FloatFieldUpdateOperationsInput | number
+    herseyDahilTutar?: FloatFieldUpdateOperationsInput | number
+    cariBakiyesi?: FloatFieldUpdateOperationsInput | number
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type cari_hesaplarUncheckedUpdateWithoutMalKabulRecordInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    saticiTipi?: StringFieldUpdateOperationsInput | string
+    saticiId?: StringFieldUpdateOperationsInput | string
+    saticiAdi?: StringFieldUpdateOperationsInput | string
+    alisTarihi?: DateTimeFieldUpdateOperationsInput | Date | string
+    fisNo?: StringFieldUpdateOperationsInput | string
+    toplamAlisMiktari?: FloatFieldUpdateOperationsInput | number
+    birimFiyat?: FloatFieldUpdateOperationsInput | number
+    kdvHaricTutar?: FloatFieldUpdateOperationsInput | number
+    herseyDahilTutar?: FloatFieldUpdateOperationsInput | number
+    cariBakiyesi?: FloatFieldUpdateOperationsInput | number
+    createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
   export type mal_kabul_recordsCreateWithoutMustahsilInput = {
     id: string
     tarih?: Date | string | null
@@ -19784,6 +21805,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -19799,6 +21821,7 @@ export namespace Prisma {
     faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
     ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
     ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
+    cari_hesaplar?: cari_hesaplarCreateNestedOneWithoutMalKabulRecordInput
   }
 
   export type mal_kabul_recordsUncheckedCreateWithoutMustahsilInput = {
@@ -19831,6 +21854,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -19839,6 +21863,7 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    cari_hesaplar?: cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutMustahsilInput = {
@@ -19890,6 +21915,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -19905,6 +21931,7 @@ export namespace Prisma {
     faturalar?: faturalarCreateNestedOneWithoutMal_kabul_recordsInput
     mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
     ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
+    cari_hesaplar?: cari_hesaplarCreateNestedOneWithoutMalKabulRecordInput
   }
 
   export type mal_kabul_recordsUncheckedCreateWithoutOzel_firmalarInput = {
@@ -19937,6 +21964,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -19945,6 +21973,7 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    cari_hesaplar?: cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutOzel_firmalarInput = {
@@ -19996,6 +22025,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -20011,6 +22041,7 @@ export namespace Prisma {
     mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
     ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
     ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
+    cari_hesaplar?: cari_hesaplarCreateNestedOneWithoutMalKabulRecordInput
   }
 
   export type mal_kabul_recordsUncheckedCreateWithoutUreticilerInput = {
@@ -20043,6 +22074,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -20051,6 +22083,7 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    cari_hesaplar?: cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutUreticilerInput = {
@@ -20178,6 +22211,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -20193,6 +22227,7 @@ export namespace Prisma {
     mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
     ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
     ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
+    cari_hesaplar?: cari_hesaplarCreateNestedOneWithoutMalKabulRecordInput
   }
 
   export type mal_kabul_recordsUncheckedCreateWithoutUrunlerInput = {
@@ -20225,6 +22260,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -20233,6 +22269,7 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    cari_hesaplar?: cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutUrunlerInput = {
@@ -20284,6 +22321,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -20299,6 +22337,7 @@ export namespace Prisma {
     mustahsil?: mustahsilCreateNestedOneWithoutMal_kabul_recordsInput
     ozel_firmalar?: ozel_firmalarCreateNestedOneWithoutMal_kabul_recordsInput
     ambalajlar?: ambalajlarCreateNestedOneWithoutMal_kabul_recordsInput
+    cari_hesaplar?: cari_hesaplarCreateNestedOneWithoutMalKabulRecordInput
   }
 
   export type mal_kabul_recordsUncheckedCreateWithoutUsersInput = {
@@ -20331,6 +22370,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -20339,6 +22379,7 @@ export namespace Prisma {
     fiyatGirildi?: boolean
     fiyatGirenKullanici?: string | null
     fiyatGirilmeTarihi?: Date | string | null
+    cari_hesaplar?: cari_hesaplarUncheckedCreateNestedOneWithoutMalKabulRecordInput
   }
 
   export type mal_kabul_recordsCreateOrConnectWithoutUsersInput = {
@@ -20468,6 +22509,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -20501,6 +22543,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -20516,6 +22559,7 @@ export namespace Prisma {
     faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
     mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
     ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
+    cari_hesaplar?: cari_hesaplarUpdateOneWithoutMalKabulRecordNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateWithoutAmbalajlarInput = {
@@ -20548,6 +22592,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -20556,6 +22601,7 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cari_hesaplar?: cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutAmbalajlarInput = {
@@ -20588,6 +22634,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -20628,6 +22675,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -20661,6 +22709,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -20676,6 +22725,7 @@ export namespace Prisma {
     mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
     ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
     ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
+    cari_hesaplar?: cari_hesaplarUpdateOneWithoutMalKabulRecordNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateWithoutFaturalarInput = {
@@ -20708,6 +22758,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -20716,6 +22767,7 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cari_hesaplar?: cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutFaturalarInput = {
@@ -20748,6 +22800,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -20788,6 +22841,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -20835,6 +22889,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -20850,6 +22905,7 @@ export namespace Prisma {
     mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
     ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
     ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
+    cari_hesaplar?: cari_hesaplarUpdateOneWithoutMalKabulRecordNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateWithoutKomisyoncularInput = {
@@ -20882,6 +22938,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -20890,6 +22947,7 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cari_hesaplar?: cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutKomisyoncularInput = {
@@ -20922,6 +22980,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -21006,6 +23065,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -21039,6 +23099,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -21054,6 +23115,7 @@ export namespace Prisma {
     faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
     ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
     ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
+    cari_hesaplar?: cari_hesaplarUpdateOneWithoutMalKabulRecordNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateWithoutMustahsilInput = {
@@ -21086,6 +23148,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -21094,6 +23157,7 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cari_hesaplar?: cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutMustahsilInput = {
@@ -21126,6 +23190,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -21166,6 +23231,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -21199,6 +23265,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -21214,6 +23281,7 @@ export namespace Prisma {
     faturalar?: faturalarUpdateOneWithoutMal_kabul_recordsNestedInput
     mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
     ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
+    cari_hesaplar?: cari_hesaplarUpdateOneWithoutMalKabulRecordNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateWithoutOzel_firmalarInput = {
@@ -21246,6 +23314,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -21254,6 +23323,7 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cari_hesaplar?: cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutOzel_firmalarInput = {
@@ -21286,6 +23356,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -21326,6 +23397,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -21359,6 +23431,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -21374,6 +23447,7 @@ export namespace Prisma {
     mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
     ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
     ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
+    cari_hesaplar?: cari_hesaplarUpdateOneWithoutMalKabulRecordNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateWithoutUreticilerInput = {
@@ -21406,6 +23480,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -21414,6 +23489,7 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cari_hesaplar?: cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutUreticilerInput = {
@@ -21446,6 +23522,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -21486,6 +23563,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -21519,6 +23597,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -21534,6 +23613,7 @@ export namespace Prisma {
     mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
     ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
     ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
+    cari_hesaplar?: cari_hesaplarUpdateOneWithoutMalKabulRecordNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateWithoutUrunlerInput = {
@@ -21566,6 +23646,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -21574,6 +23655,7 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cari_hesaplar?: cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutUrunlerInput = {
@@ -21606,6 +23688,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -21646,6 +23729,7 @@ export namespace Prisma {
     cikmaFireKg?: number | null
     netKg?: number | null
     netAdet?: number | null
+    kdvHaricTutar?: number | null
     kdvOrani?: number | null
     belediyeRusumOrani?: number | null
     kdvHesapla?: boolean
@@ -21692,6 +23776,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -21707,6 +23792,7 @@ export namespace Prisma {
     mustahsil?: mustahsilUpdateOneWithoutMal_kabul_recordsNestedInput
     ozel_firmalar?: ozel_firmalarUpdateOneWithoutMal_kabul_recordsNestedInput
     ambalajlar?: ambalajlarUpdateOneWithoutMal_kabul_recordsNestedInput
+    cari_hesaplar?: cari_hesaplarUpdateOneWithoutMalKabulRecordNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateWithoutUsersInput = {
@@ -21739,6 +23825,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean
@@ -21747,6 +23834,7 @@ export namespace Prisma {
     fiyatGirildi?: BoolFieldUpdateOperationsInput | boolean
     fiyatGirenKullanici?: NullableStringFieldUpdateOperationsInput | string | null
     fiyatGirilmeTarihi?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cari_hesaplar?: cari_hesaplarUncheckedUpdateOneWithoutMalKabulRecordNestedInput
   }
 
   export type mal_kabul_recordsUncheckedUpdateManyWithoutUsersInput = {
@@ -21779,6 +23867,7 @@ export namespace Prisma {
     cikmaFireKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netKg?: NullableFloatFieldUpdateOperationsInput | number | null
     netAdet?: NullableIntFieldUpdateOperationsInput | number | null
+    kdvHaricTutar?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     belediyeRusumOrani?: NullableFloatFieldUpdateOperationsInput | number | null
     kdvHesapla?: BoolFieldUpdateOperationsInput | boolean

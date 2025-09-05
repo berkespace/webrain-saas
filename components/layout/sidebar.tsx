@@ -22,7 +22,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Building,
-  Apple
+  Apple,
+  CreditCard
 } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
@@ -409,6 +410,11 @@ export function Sidebar() {
           href: '#',
           icon: <BarChart3 className="h-4 w-4" />,
           children: [
+            {
+              title: 'Cari Hesaplar',
+              href: '/dashboard/muhasebe/cari-hesaplar',
+              icon: <CreditCard className="h-4 w-4" />
+            },
             {
               title: 'Genel Ürün Tablosu',
               href: '/dashboard/muhasebe/genel-urun-tablosu',

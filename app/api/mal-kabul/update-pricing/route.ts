@@ -27,13 +27,32 @@ export async function POST(request: NextRequest) {
     const belediyeRusumHesapla = formData.get('belediyeRusumHesapla') === 'true'
     const notlar = formData.get('notlar') as string
 
-    // Toplam fiyatı hesapla
-    let toplamFiyat = alisFiyati
+    // Önce kaydı al ki Net KG/Adet bilgisine erişelim
+    const record = await prisma.malKabulRecord.findUnique({
+      where: { id: recordId },
+      include: {
+        urunler: true
+      }
+    })
+
+    if (!record) {
+      return NextResponse.json({ error: 'Kayıt bulunamadı' }, { status: 404 })
+    }
+
+    // Net miktarı hesapla (KG veya Adet)
+    const netMiktar = record.urunler.birim === 'KG' 
+      ? (record.netKg || 0) 
+      : (record.netAdet || 0)
+
+    // Toplam fiyatı hesapla: Net Miktar * Alış Fiyatı
+    let toplamFiyat = netMiktar * alisFiyati
+    let kdvHaricTutar = toplamFiyat // KDV ve vergi hariç tutar
+    
     if (kdvHesapla) {
-      toplamFiyat += (alisFiyati * kdvOrani) / 100
+      toplamFiyat += (toplamFiyat * kdvOrani) / 100
     }
     if (belediyeRusumHesapla) {
-      toplamFiyat += (alisFiyati * belediyeRusumOrani) / 100
+      toplamFiyat += (toplamFiyat * belediyeRusumOrani) / 100
     }
 
     // Dosyaları kaydet
@@ -61,12 +80,43 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Satıcı bilgilerini al
+    let saticiId = ''
+    let saticiAdi = ''
+    
+    if (record.saticiTipi === 'KOMISYONCU' && record.komisyoncuId) {
+      saticiId = record.komisyoncuId
+      const komisyoncu = await prisma.komisyoncular.findUnique({
+        where: { id: record.komisyoncuId }
+      })
+      saticiAdi = komisyoncu?.dukkanAdi || 'Bilinmeyen Komisyoncu'
+    } else if (record.saticiTipi === 'MUSTAHSIL' && record.mustahsilId) {
+      saticiId = record.mustahsilId
+      const mustahsil = await prisma.mustahsil.findUnique({
+        where: { id: record.mustahsilId }
+      })
+      saticiAdi = mustahsil ? `${mustahsil.ad} ${mustahsil.soyad}` : 'Bilinmeyen Müstahsil'
+    } else if (record.saticiTipi === 'OZEL_FIRMA' && record.ozelFirmaId) {
+      saticiId = record.ozelFirmaId
+      const ozelFirma = await prisma.ozel_firmalar.findUnique({
+        where: { id: record.ozelFirmaId }
+      })
+      saticiAdi = ozelFirma?.firmaAdi || 'Bilinmeyen Firma'
+    } else if (record.saticiTipi === 'URETICI' && record.ureticiId) {
+      saticiId = record.ureticiId
+      const uretici = await prisma.ureticiler.findUnique({
+        where: { id: record.ureticiId }
+      })
+      saticiAdi = uretici ? `${uretici.ad} ${uretici.soyad}` : 'Bilinmeyen Üretici'
+    }
+
     // Veritabanını güncelle
     const updatedRecord = await prisma.malKabulRecord.update({
       where: { id: recordId },
       data: {
         birimFiyat: alisFiyati,
         toplamFiyat: toplamFiyat,
+        kdvHaricTutar: kdvHaricTutar,
         kdvOrani: kdvOrani,
         belediyeRusumOrani: belediyeRusumOrani,
         kdvHesapla: kdvHesapla,
@@ -76,6 +126,40 @@ export async function POST(request: NextRequest) {
         fiyatGirildi: true,
         fiyatGirenKullanici: session.user.id,
         fiyatGirilmeTarihi: new Date()
+      }
+    })
+
+    // Cari hesap kaydı oluştur veya güncelle
+    const cariHesapId = `cari-${recordId}-${Date.now()}`
+    
+    await prisma.cari_hesaplar.upsert({
+      where: { malKabulRecordId: recordId },
+      update: {
+        saticiTipi: record.saticiTipi,
+        saticiId: saticiId,
+        saticiAdi: saticiAdi,
+        alisTarihi: record.tarih || new Date(),
+        fisNo: record.fisNo,
+        toplamAlisMiktari: netMiktar,
+        birimFiyat: alisFiyati,
+        kdvHaricTutar: kdvHaricTutar,
+        herseyDahilTutar: toplamFiyat,
+        cariBakiyesi: toplamFiyat, // Şimdilik toplam tutar = bakiye
+        updatedAt: new Date()
+      },
+      create: {
+        id: cariHesapId,
+        saticiTipi: record.saticiTipi,
+        saticiId: saticiId,
+        saticiAdi: saticiAdi,
+        alisTarihi: record.tarih || new Date(),
+        fisNo: record.fisNo,
+        malKabulRecordId: recordId,
+        toplamAlisMiktari: netMiktar,
+        birimFiyat: alisFiyati,
+        kdvHaricTutar: kdvHaricTutar,
+        herseyDahilTutar: toplamFiyat,
+        cariBakiyesi: toplamFiyat // Şimdilik toplam tutar = bakiye
       }
     })
 

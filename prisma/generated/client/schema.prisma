@@ -46,6 +46,26 @@ model faturalar {
   users             users               @relation(fields: [satinAlmaciId], references: [id])
 }
 
+model cari_hesaplar {
+  id                String    @id
+  saticiTipi        String // KOMISYONCU, MUSTAHSIL, OZEL_FIRMA, URETICI
+  saticiId          String // Komisyoncu, Müstahsil, Özel Firma veya Üretici ID'si
+  saticiAdi         String // Satıcı adı (display için)
+  alisTarihi        DateTime  @db.Timestamp(6)
+  fisNo             String
+  malKabulRecordId  String    @unique // Mal kabul kaydına referans
+  toplamAlisMiktari Float     @db.Real // Net KG veya Net Adet
+  birimFiyat        Float     @db.Real
+  kdvHaricTutar     Float     @db.Real // KDV ve vergi hariç tutar
+  herseyDahilTutar  Float     @db.Real // KDV ve vergi dahil tutar
+  cariBakiyesi      Float     @db.Real // Cari bakiyesi
+  createdAt         DateTime? @default(now()) @db.Timestamp(6)
+  updatedAt         DateTime? @default(now()) @db.Timestamp(6)
+
+  // Relations
+  malKabulRecord mal_kabul_records @relation(fields: [malKabulRecordId], references: [id])
+}
+
 model komisyoncular {
   id             String    @id
   createdAt      DateTime? @default(now()) @db.Timestamp(6)
@@ -97,6 +117,7 @@ model mal_kabul_records {
   netAdet      Int?           @default(0) // ADET birimi için net adet (girisAdet - cikmaAdet - fireAdet)
 
   // Fiyat ve evrak bilgileri
+  kdvHaricTutar        Float?    @default(0) @db.Real // KDV ve vergi hariç tutar
   kdvOrani             Float?    @default(0) @db.Real
   belediyeRusumOrani   Float?    @default(0) @db.Real
   kdvHesapla           Boolean   @default(false)
@@ -115,6 +136,7 @@ model mal_kabul_records {
   mustahsil     mustahsil?     @relation(fields: [mustahsilId], references: [id])
   ozel_firmalar ozel_firmalar? @relation(fields: [ozelFirmaId], references: [id])
   ambalajlar    ambalajlar?    @relation(fields: [ambalajId], references: [id])
+  cari_hesaplar cari_hesaplar?
 }
 
 model mustahsil {
