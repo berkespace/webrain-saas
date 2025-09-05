@@ -1180,7 +1180,7 @@ export default function YeniMalKabul() {
           paletAdi: ambalajlar.find(a => a.id === formData.paletId)?.ad,
           paletSayisi: parseInt(formData.paletSayisi) || 0,
           notlar: formData.notlar,
-          malKabulcuAdi: `${session.user?.firstName || ''} ${session.user?.lastName || ''}`.trim() || 'Mal Kabulcu'
+          malKabulcuAdi: session?.user?.name || `${session?.user?.firstName || ''} ${session?.user?.lastName || ''}`.trim() || 'Mal Kabulcu'
         }
         
         setReceiptData(receiptData)
@@ -1330,11 +1330,7 @@ export default function YeniMalKabul() {
         paletAdi: receiptData.paletAdi || null,
         paletSayisi: parseInt(receiptData.paletSayisi) || 0,
         notlar: receiptData.notlar || '',
-        malKabulcuAdi: (() => {
-          const result = session?.user?.name || `${session?.user?.firstName || ''} ${session?.user?.lastName || ''}`.trim() || 'Mal Kabulcu';
-          console.log('printData malKabulcuAdi:', result);
-          return result;
-        })(),
+        malKabulcuAdi: session?.user?.name || `${session?.user?.firstName || ''} ${session?.user?.lastName || ''}`.trim() || 'Mal Kabulcu',
         komisyoncuAdi: saticiDetay.komisyoncuAdi,
         ureticiAdi: saticiDetay.ureticiAdi,
         sehir: saticiDetay.sehir
@@ -1890,11 +1886,7 @@ export default function YeniMalKabul() {
         paletAdi: receiptData.paletAdi || null,
         paletSayisi: parseInt(receiptData.paletSayisi) || 0,
         notlar: receiptData.notlar || '',
-        malKabulcuAdi: (() => {
-          const result = session?.user?.name || `${session?.user?.firstName || ''} ${session?.user?.lastName || ''}`.trim() || 'Mal Kabulcu';
-          console.log('printData malKabulcuAdi:', result);
-          return result;
-        })(),
+        malKabulcuAdi: session?.user?.name || `${session?.user?.firstName || ''} ${session?.user?.lastName || ''}`.trim() || 'Mal Kabulcu',
         komisyoncuAdi: saticiDetay.komisyoncuAdi,
         ureticiAdi: saticiDetay.ureticiAdi,
         sehir: saticiDetay.sehir
