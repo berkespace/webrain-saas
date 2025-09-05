@@ -1,26 +1,40 @@
-import nodemailer from 'nodemailer'
 import webpush from 'web-push'
 import { prisma } from './prisma'
 
 // Web Push Configuration
 if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+  const vapidEmail = process.env.VAPID_EMAIL || 'admin@webrain.com'
+  const formattedEmail = vapidEmail.startsWith('mailto:') ? vapidEmail : `mailto:${vapidEmail}`
+  
   webpush.setVapidDetails(
-    process.env.VAPID_EMAIL || 'mailto:admin@webrain.com',
+    formattedEmail,
     process.env.VAPID_PUBLIC_KEY,
     process.env.VAPID_PRIVATE_KEY
   )
 }
 
-// Email transporter
-const emailTransporter = nodemailer.createTransporter({
-  host: process.env.EMAIL_SMTP_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.EMAIL_SMTP_PORT || '587'),
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-})
+// Email transporter - conditionally import
+let emailTransporter: any = null
+async function getEmailTransporter() {
+  if (!emailTransporter && process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
+    try {
+      const nodemailer = await import('nodemailer')
+      emailTransporter = nodemailer.default.createTransport({
+        host: process.env.EMAIL_SMTP_HOST || 'smtp.gmail.com',
+        port: parseInt(process.env.EMAIL_SMTP_PORT || '587'),
+        secure: false,
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      })
+    } catch (error) {
+      console.warn('Email service not available:', error.message)
+      return null
+    }
+  }
+  return emailTransporter
+}
 
 export interface NotificationData {
   userId: string
@@ -85,6 +99,17 @@ export class NotificationService {
         return
       }
 
+      const transporter = await getEmailTransporter()
+      if (!transporter) {
+        console.warn('📧 Email transporter not available, skipping email')
+        // Database'de email'i skip edildi olarak işaretle ama hata verme
+        await prisma.notifications.update({
+          where: { id: notification.id },
+          data: { isEmailSent: false },
+        })
+        return
+      }
+
       const mailOptions = {
         from: {
           name: process.env.EMAIL_FROM_NAME || 'Webrain SaaS',
@@ -95,7 +120,7 @@ export class NotificationService {
         html: this.generateEmailTemplate(notification),
       }
 
-      await emailTransporter.sendMail(mailOptions)
+      await transporter.sendMail(mailOptions)
 
       // Database'de email gönderim durumunu güncelle
       await prisma.notifications.update({
@@ -103,9 +128,9 @@ export class NotificationService {
         data: { isEmailSent: true },
       })
 
-      console.log(`Email sent to ${notification.user.email}`)
+      console.log(`✅ Email sent to ${notification.user.email}`)
     } catch (error) {
-      console.error('Email sending error:', error)
+      console.error('❌ Email sending error:', error)
     }
   }
 

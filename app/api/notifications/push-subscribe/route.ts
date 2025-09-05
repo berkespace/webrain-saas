@@ -7,8 +7,18 @@ import { prisma } from '@/lib/prisma'
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
-    if (!session?.user?.id) {
+    if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // User ID'yi email'den al
+    const user = await prisma.users.findUnique({
+      where: { email: session.user.email! },
+      select: { id: true }
+    })
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
     const body = await request.json()
@@ -21,7 +31,7 @@ export async function POST(request: NextRequest) {
     // Mevcut subscription'ı kontrol et
     const existingSubscription = await prisma.push_subscriptions.findFirst({
       where: {
-        userId: session.user.id,
+        userId: user.id,
         endpoint,
       },
     })
@@ -42,7 +52,7 @@ export async function POST(request: NextRequest) {
       // Yeni subscription oluştur
       await prisma.push_subscriptions.create({
         data: {
-          userId: session.user.id,
+          userId: user.id,
           endpoint,
           p256dhKey: keys.p256dh,
           authKey: keys.auth,
@@ -63,8 +73,18 @@ export async function POST(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
-    if (!session?.user?.id) {
+    if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // User ID'yi email'den al
+    const user = await prisma.users.findUnique({
+      where: { email: session.user.email! },
+      select: { id: true }
+    })
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
     const body = await request.json()
@@ -72,7 +92,7 @@ export async function DELETE(request: NextRequest) {
 
     await prisma.push_subscriptions.updateMany({
       where: {
-        userId: session.user.id,
+        userId: user.id,
         endpoint,
       },
       data: {

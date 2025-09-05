@@ -405,10 +405,12 @@ export async function PUT(
     // Bu basit bir çözüm, production'da Redis kullanılmalı
     
     // Bildirim gönder - Ürün NETLENDI durumuna geçtiyse satın almacılara bildir
+    console.log(`🔔 Status kontrol: yeni=${calculatedStatus}, eski=${existingRecord.status}`)
     if (calculatedStatus === 'NETLENDI' && existingRecord.status !== 'NETLENDI') {
+      console.log('🚀 NETLENDI bildirim tetikleniyor...')
       try {
         const malKabulcu = await prisma.users.findUnique({
-          where: { id: session.user.id },
+          where: { email: session.user.email! },
           select: { firstName: true, lastName: true }
         })
         
@@ -418,16 +420,22 @@ export async function PUT(
         })
         
         if (malKabulcu && urun) {
+          console.log(`📧 Bildirim gönderiliyor: ${malKabulcu.firstName} ${malKabulcu.lastName} -> ${urun.ad}`)
           await NotificationService.notifyProductNetlendi(
             id,
             `${malKabulcu.firstName} ${malKabulcu.lastName}`,
             urun.ad
           )
+          console.log('✅ Bildirim gönderildi!')
+        } else {
+          console.log('❌ MalKabulcu veya ürün bulunamadı:', { malKabulcu, urun })
         }
       } catch (notificationError) {
-        console.error('Notification error:', notificationError)
+        console.error('❌ Notification hatası:', notificationError.message)
         // Bildirim hatası ana işlemi etkilemesin
       }
+    } else {
+      console.log('🔕 Bildirim tetiklenmedi - durum değişikliği yok veya NETLENDI zaten')
     }
     
     return NextResponse.json(

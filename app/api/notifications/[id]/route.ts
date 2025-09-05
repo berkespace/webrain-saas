@@ -10,8 +10,18 @@ export async function PATCH(
 ) {
   try {
     const session = await getServerSession(authOptions)
-    if (!session?.user?.id) {
+    if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // User ID'yi email'den al
+    const user = await prisma.users.findUnique({
+      where: { email: session.user.email! },
+      select: { id: true }
+    })
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
     const body = await request.json()
@@ -20,7 +30,7 @@ export async function PATCH(
     const notification = await prisma.notifications.updateMany({
       where: {
         id: params.id,
-        userId: session.user.id, // Sadece kendi bildirimini güncelleyebilir
+        userId: user.id, // Sadece kendi bildirimini güncelleyebilir
       },
       data: {
         isRead,
@@ -46,14 +56,24 @@ export async function DELETE(
 ) {
   try {
     const session = await getServerSession(authOptions)
-    if (!session?.user?.id) {
+    if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // User ID'yi email'den al
+    const user = await prisma.users.findUnique({
+      where: { email: session.user.email! },
+      select: { id: true }
+    })
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
     const notification = await prisma.notifications.deleteMany({
       where: {
         id: params.id,
-        userId: session.user.id, // Sadece kendi bildirimini silebilir
+        userId: user.id, // Sadece kendi bildirimini silebilir
       },
     })
 
