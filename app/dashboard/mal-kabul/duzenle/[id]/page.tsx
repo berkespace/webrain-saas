@@ -476,12 +476,19 @@ export default function MalKabulDuzenle() {
         girisKg: parseFloat(formData.girisKg) || 0,
         cikmaFireKg: isAdetBased ? (parseFloat(formData.cikmaAdet) || 0) : (parseFloat(formData.cikmaFireKg) || 0),
         netKg: isAdetBased ? (parseFloat(formData.netAdet) || 0) : (parseFloat(formData.netKg) || 0),
+        cikmaKg: parseFloat(formData.cikmaAdet) || 0,
+        fireKg: parseFloat(formData.fireAdet) || 0,
+        cikmaAdet: parseInt(formData.cikmaAdet) || 0,
+        fireAdet: parseInt(formData.fireAdet) || 0,
+        adetSayisi: parseInt(formData.adetSayisi) || 0,
+        netAdet: parseInt(formData.netAdet) || 0,
+        birim: record.urunler?.birim || 'KG',
         ambalajAdi: 'Kasa',
         kasaSayisi: parseInt(formData.kasaSayisi) || 0,
         paletAdi: null,
         paletSayisi: 0,
         notlar: formData.notlar || '',
-        malKabulcuAdi: `${record.malKabulcu?.firstName || ''} ${record.malKabulcu?.lastName || ''}`.trim()
+        malKabulcuAdi: record.malKabulcu?.name || `${record.malKabulcu?.firstName || ''} ${record.malKabulcu?.lastName || ''}`.trim() || 'Mal Kabulcu'
       }
       
       // QR kod ve barkod resimlerini oluştur
@@ -611,7 +618,7 @@ export default function MalKabulDuzenle() {
             </head>
             <body>
               <div class="logo">
-                <img src="${window.location.origin}/logo-dark.png" alt="Webrain Logo" />
+                <img src="${window.location.origin}/hnr-lgoo.png" alt="Webrain Logo" />
               </div>
               <div class="header">${fişBaşlığı}</div>
               
@@ -662,7 +669,35 @@ export default function MalKabulDuzenle() {
               </div>
               
               <div class="section">
-                <div class="section-title">KİLOGRAM BİLGİLERİ</div>
+                <div class="section-title">${receiptData.birim?.toLowerCase() === 'adet' ? 'ADET BİLGİLERİ' : 'KİLOGRAM BİLGİLERİ'}</div>
+                ${receiptData.birim?.toLowerCase() === 'adet' ? `
+                <div class="row">
+                  <span class="label">Kasa Sayısı:</span>
+                  <span class="value">${receiptData.kasaSayisi} kasa</span>
+                </div>
+                <div class="row">
+                  <span class="label">Adet Sayısı:</span>
+                  <span class="value">${receiptData.adetSayisi} adet</span>
+                </div>
+                <div class="row">
+                  <span class="label">Giriş Adet:</span>
+                  <span class="value">${receiptData.adetSayisi} adet</span>
+                </div>
+                ${fişTipi === 'SON_DURUM' ? `
+                <div class="row">
+                  <span class="label">Çıkma Adet:</span>
+                  <span class="value">${receiptData.cikmaAdet} adet</span>
+                </div>
+                <div class="row">
+                  <span class="label">Fire Adet:</span>
+                  <span class="value">${receiptData.fireAdet} adet</span>
+                </div>
+                <div class="row">
+                  <span class="label">Net Adet:</span>
+                  <span class="value">${receiptData.netAdet} adet</span>
+                </div>
+                ` : ''}
+                ` : `
                 <div class="row">
                   <span class="label">Brüt KG:</span>
                   <span class="value">${receiptData.brutKg.toFixed(2)}</span>
@@ -677,14 +712,19 @@ export default function MalKabulDuzenle() {
                 </div>
                 ${fişTipi === 'SON_DURUM' ? `
                 <div class="row">
-                  <span class="label">Çıkma Fire KG:</span>
-                  <span class="value">${receiptData.cikmaFireKg.toFixed(2)}</span>
+                  <span class="label">Çıkma KG:</span>
+                  <span class="value">${receiptData.cikmaKg.toFixed(2)}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Fire KG:</span>
+                  <span class="value">${receiptData.fireKg.toFixed(2)}</span>
                 </div>
                 <div class="row">
                   <span class="label">Net KG:</span>
                   <span class="value">${receiptData.netKg.toFixed(2)}</span>
                 </div>
                 ` : ''}
+                `}
               </div>
               
               ${receiptData.notlar ? `
@@ -713,7 +753,7 @@ export default function MalKabulDuzenle() {
               <div class="page-break"></div>
               
               <div class="logo">
-                <img src="${window.location.origin}/logo-dark.png" alt="Webrain Logo" />
+                <img src="${window.location.origin}/hnr-lgoo.png" alt="Webrain Logo" />
               </div>
               <div class="header">${fişBaşlığı}</div>
               
@@ -764,7 +804,35 @@ export default function MalKabulDuzenle() {
               </div>
               
               <div class="section">
-                <div class="section-title">KİLOGRAM BİLGİLERİ</div>
+                <div class="section-title">${receiptData.birim?.toLowerCase() === 'adet' ? 'ADET BİLGİLERİ' : 'KİLOGRAM BİLGİLERİ'}</div>
+                ${receiptData.birim?.toLowerCase() === 'adet' ? `
+                <div class="row">
+                  <span class="label">Kasa Sayısı:</span>
+                  <span class="value">${receiptData.kasaSayisi} kasa</span>
+                </div>
+                <div class="row">
+                  <span class="label">Adet Sayısı:</span>
+                  <span class="value">${receiptData.adetSayisi} adet</span>
+                </div>
+                <div class="row">
+                  <span class="label">Giriş Adet:</span>
+                  <span class="value">${receiptData.adetSayisi} adet</span>
+                </div>
+                ${fişTipi === 'SON_DURUM' ? `
+                <div class="row">
+                  <span class="label">Çıkma Adet:</span>
+                  <span class="value">${receiptData.cikmaAdet} adet</span>
+                </div>
+                <div class="row">
+                  <span class="label">Fire Adet:</span>
+                  <span class="value">${receiptData.fireAdet} adet</span>
+                </div>
+                <div class="row">
+                  <span class="label">Net Adet:</span>
+                  <span class="value">${receiptData.netAdet} adet</span>
+                </div>
+                ` : ''}
+                ` : `
                 <div class="row">
                   <span class="label">Brüt KG:</span>
                   <span class="value">${receiptData.brutKg.toFixed(2)}</span>
@@ -779,14 +847,19 @@ export default function MalKabulDuzenle() {
                 </div>
                 ${fişTipi === 'SON_DURUM' ? `
                 <div class="row">
-                  <span class="label">Çıkma Fire KG:</span>
-                  <span class="value">${receiptData.cikmaFireKg.toFixed(2)}</span>
+                  <span class="label">Çıkma KG:</span>
+                  <span class="value">${receiptData.cikmaKg.toFixed(2)}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Fire KG:</span>
+                  <span class="value">${receiptData.fireKg.toFixed(2)}</span>
                 </div>
                 <div class="row">
                   <span class="label">Net KG:</span>
                   <span class="value">${receiptData.netKg.toFixed(2)}</span>
                 </div>
                 ` : ''}
+                `}
               </div>
               
               ${receiptData.notlar ? `
@@ -1694,6 +1767,8 @@ export default function MalKabulDuzenle() {
                   cikmaKg: parseFloat(record.cikmaKg.toString()) || 0,
                   fireKg: parseFloat(record.fireKg.toString()) || 0,
                   netKg: parseFloat(record.netKg.toString()) || 0,
+                  cikmaAdet: parseInt(record.cikmaAdet.toString()) || 0,
+                  fireAdet: parseInt(record.fireAdet.toString()) || 0,
                   adetSayisi: parseInt(formData.adetSayisi) || 0,
                   netAdet: parseInt(record.netAdet.toString()) || 0,
                   ambalajAdi: record.ambalaj?.ad,
@@ -1701,7 +1776,7 @@ export default function MalKabulDuzenle() {
                   paletAdi: record.palet?.ad,
                   paletSayisi: record.paletSayisi,
                   notlar: formData.notlar,
-                  malKabulcuAdi: record.malKabulcu.firstName + ' ' + record.malKabulcu.lastName
+                  malKabulcuAdi: record.malKabulcu?.name || `${record.malKabulcu?.firstName || ''} ${record.malKabulcu?.lastName || ''}`.trim() || 'Mal Kabulcu'
                 }
                 
                 // QR kod ve barkod resimlerini oluştur
@@ -1912,7 +1987,7 @@ export default function MalKabulDuzenle() {
                     </head>
                     <body>
                         <div class="logo">
-                          <img src="${window.location.origin}/logo-dark.png" alt="Webrain Logo" />
+                          <img src="${window.location.origin}/hnr-lgoo.png" alt="Webrain Logo" />
                         </div>
                         <div class="header">${fişBaşlığı}</div>
                       
@@ -1968,8 +2043,8 @@ export default function MalKabulDuzenle() {
                           <div class="row"><span class="label">Kasa Sayısı:</span><span class="value">${finalReceiptData.kasaSayisi} kasa</span></div>
                           <div class="row"><span class="label">Adet Sayısı:</span><span class="value">${finalReceiptData.adetSayisi} adet</span></div>
                           <div class="row"><span class="label">Giriş Adet:</span><span class="value">${finalReceiptData.adetSayisi} adet</span></div>
-                          ${finalReceiptData.cikmaKg > 0 ? `<div class="row"><span class="label">Çıkma Adet:</span><span class="value">${finalReceiptData.cikmaKg} adet</span></div>` : ''}
-                          ${finalReceiptData.fireKg > 0 ? `<div class="row"><span class="label">Fire Adet:</span><span class="value">${finalReceiptData.fireKg} adet</span></div>` : ''}
+                          ${finalReceiptData.cikmaAdet > 0 ? `<div class="row"><span class="label">Çıkma Adet:</span><span class="value">${finalReceiptData.cikmaAdet} adet</span></div>` : ''}
+                          ${finalReceiptData.fireAdet > 0 ? `<div class="row"><span class="label">Fire Adet:</span><span class="value">${finalReceiptData.fireAdet} adet</span></div>` : ''}
                           ${finalReceiptData.netAdet > 0 ? `<div class="row"><span class="label">Net Adet:</span><span class="value">${finalReceiptData.netAdet} adet</span></div>` : ''}
                         ` : `
                           <div class="row"><span class="label">Brüt KG:</span><span class="value">${finalReceiptData.brutKg.toFixed(2)}</span></div>
@@ -2061,8 +2136,8 @@ export default function MalKabulDuzenle() {
                           <div class="row"><span class="label">Kasa Sayısı:</span><span class="value">${finalReceiptData.kasaSayisi} kasa</span></div>
                           <div class="row"><span class="label">Adet Sayısı:</span><span class="value">${finalReceiptData.adetSayisi} adet</span></div>
                           <div class="row"><span class="label">Giriş Adet:</span><span class="value">${finalReceiptData.adetSayisi} adet</span></div>
-                          ${finalReceiptData.cikmaKg > 0 ? `<div class="row"><span class="label">Çıkma Adet:</span><span class="value">${finalReceiptData.cikmaKg} adet</span></div>` : ''}
-                          ${finalReceiptData.fireKg > 0 ? `<div class="row"><span class="label">Fire Adet:</span><span class="value">${finalReceiptData.fireKg} adet</span></div>` : ''}
+                          ${finalReceiptData.cikmaAdet > 0 ? `<div class="row"><span class="label">Çıkma Adet:</span><span class="value">${finalReceiptData.cikmaAdet} adet</span></div>` : ''}
+                          ${finalReceiptData.fireAdet > 0 ? `<div class="row"><span class="label">Fire Adet:</span><span class="value">${finalReceiptData.fireAdet} adet</span></div>` : ''}
                           ${finalReceiptData.netAdet > 0 ? `<div class="row"><span class="label">Net Adet:</span><span class="value">${finalReceiptData.netAdet} adet</span></div>` : ''}
                         ` : `
                           <div class="row"><span class="label">Brüt KG:</span><span class="value">${finalReceiptData.brutKg.toFixed(2)}</span></div>

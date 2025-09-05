@@ -1321,6 +1321,8 @@ export default function YeniMalKabul() {
         cikmaKg: parseFloat(receiptData.cikmaKg) || 0,
         fireKg: parseFloat(receiptData.fireKg) || 0,
         netKg: parseFloat(receiptData.netKg) || 0,
+        cikmaAdet: parseInt(receiptData.cikmaAdet) || 0,
+        fireAdet: parseInt(receiptData.fireAdet) || 0,
         adetSayisi: parseInt(receiptData.adetSayisi) || 0,
         netAdet: parseInt(receiptData.netAdet) || 0,
         ambalajAdi: receiptData.ambalajAdi || 'Kasa',
@@ -1328,7 +1330,7 @@ export default function YeniMalKabul() {
         paletAdi: receiptData.paletAdi || null,
         paletSayisi: parseInt(receiptData.paletSayisi) || 0,
         notlar: receiptData.notlar || '',
-        malKabulcuAdi: `${session?.user?.firstName || ''} ${session?.user?.lastName || ''}`.trim() || 'Mal Kabulcu',
+        malKabulcuAdi: session?.user?.name || `${session?.user?.firstName || ''} ${session?.user?.lastName || ''}`.trim() || 'Mal Kabulcu',
         komisyoncuAdi: saticiDetay.komisyoncuAdi,
         ureticiAdi: saticiDetay.ureticiAdi,
         sehir: saticiDetay.sehir
@@ -1513,7 +1515,7 @@ export default function YeniMalKabul() {
           </head>
           <body>
               <div class="logo">
-                <img src="${window.location.origin}/logo-dark.png" alt="Webrain Logo" />
+                <img src="${window.location.origin}/hnr-lgoo.png" alt="Webrain Logo" />
               </div>
               <div class="header">${fişBaşlığı}</div>
             
@@ -1597,16 +1599,16 @@ export default function YeniMalKabul() {
                   <span class="label">Giriş Adet:</span>
                   <span class="value">${printData.adetSayisi} adet</span>
                 </div>
-                ${printData.cikmaKg > 0 ? `
+                ${printData.cikmaAdet > 0 ? `
                 <div class="row">
                   <span class="label">Çıkma Adet:</span>
-                  <span class="value">${printData.cikmaKg} adet</span>
+                  <span class="value">${printData.cikmaAdet} adet</span>
                 </div>
                 ` : ''}
-                ${printData.fireKg > 0 ? `
+                ${printData.fireAdet > 0 ? `
                 <div class="row">
                   <span class="label">Fire Adet:</span>
-                  <span class="value">${printData.fireKg} adet</span>
+                  <span class="value">${printData.fireAdet} adet</span>
                 </div>
                 ` : ''}
                 ${printData.netAdet > 0 ? `
@@ -1675,7 +1677,7 @@ export default function YeniMalKabul() {
               <div class="page-break"></div>
               
               <div class="logo">
-                <img src="${window.location.origin}/logo-dark.png" alt="Webrain Logo" />
+                <img src="${window.location.origin}/hnr-lgoo.png" alt="Webrain Logo" />
               </div>
               <div class="header">${fişBaşlığı}</div>
             
@@ -1740,16 +1742,16 @@ export default function YeniMalKabul() {
                   <span class="label">Giriş Adet:</span>
                   <span class="value">${printData.adetSayisi} adet</span>
                 </div>
-                ${printData.cikmaKg > 0 ? `
+                ${printData.cikmaAdet > 0 ? `
                 <div class="row">
                   <span class="label">Çıkma Adet:</span>
-                  <span class="value">${printData.cikmaKg} adet</span>
+                  <span class="value">${printData.cikmaAdet} adet</span>
                 </div>
                 ` : ''}
-                ${printData.fireKg > 0 ? `
+                ${printData.fireAdet > 0 ? `
                 <div class="row">
                   <span class="label">Fire Adet:</span>
-                  <span class="value">${printData.fireKg} adet</span>
+                  <span class="value">${printData.fireAdet} adet</span>
                 </div>
                 ` : ''}
                 ${printData.netAdet > 0 ? `
@@ -1875,6 +1877,8 @@ export default function YeniMalKabul() {
         cikmaKg: parseFloat(receiptData.cikmaKg) || 0,
         fireKg: parseFloat(receiptData.fireKg) || 0,
         netKg: parseFloat(receiptData.netKg) || 0,
+        cikmaAdet: parseInt(receiptData.cikmaAdet) || 0,
+        fireAdet: parseInt(receiptData.fireAdet) || 0,
         adetSayisi: parseInt(receiptData.adetSayisi) || 0,
         netAdet: parseInt(receiptData.netAdet) || 0,
         ambalajAdi: receiptData.ambalajAdi || 'Kasa',
@@ -1882,7 +1886,7 @@ export default function YeniMalKabul() {
         paletAdi: receiptData.paletAdi || null,
         paletSayisi: parseInt(receiptData.paletSayisi) || 0,
         notlar: receiptData.notlar || '',
-        malKabulcuAdi: `${session?.user?.firstName || ''} ${session?.user?.lastName || ''}`.trim() || 'Mal Kabulcu',
+        malKabulcuAdi: session?.user?.name || `${session?.user?.firstName || ''} ${session?.user?.lastName || ''}`.trim() || 'Mal Kabulcu',
         komisyoncuAdi: saticiDetay.komisyoncuAdi,
         ureticiAdi: saticiDetay.ureticiAdi,
         sehir: saticiDetay.sehir
