@@ -488,7 +488,15 @@ export default function MalKabulDuzenle() {
         paletAdi: null,
         paletSayisi: 0,
         notlar: formData.notlar || '',
-        malKabulcuAdi: record.malKabulcu?.name || `${record.malKabulcu?.firstName || ''} ${record.malKabulcu?.lastName || ''}`.trim() || 'Mal Kabulcu'
+        malKabulcuAdi: (() => {
+          console.log('Record malKabulcu debug:', {
+            name: record.malKabulcu?.name,
+            firstName: record.malKabulcu?.firstName,
+            lastName: record.malKabulcu?.lastName,
+            fullMalKabulcu: record.malKabulcu
+          });
+          return record.malKabulcu?.name || `${record.malKabulcu?.firstName || ''} ${record.malKabulcu?.lastName || ''}`.trim() || 'Mal Kabulcu';
+        })()
       }
       
       // QR kod ve barkod resimlerini oluştur
@@ -1776,7 +1784,15 @@ export default function MalKabulDuzenle() {
                   paletAdi: record.palet?.ad,
                   paletSayisi: record.paletSayisi,
                   notlar: formData.notlar,
-                  malKabulcuAdi: record.malKabulcu?.name || `${record.malKabulcu?.firstName || ''} ${record.malKabulcu?.lastName || ''}`.trim() || 'Mal Kabulcu'
+                  malKabulcuAdi: (() => {
+          console.log('Record malKabulcu debug:', {
+            name: record.malKabulcu?.name,
+            firstName: record.malKabulcu?.firstName,
+            lastName: record.malKabulcu?.lastName,
+            fullMalKabulcu: record.malKabulcu
+          });
+          return record.malKabulcu?.name || `${record.malKabulcu?.firstName || ''} ${record.malKabulcu?.lastName || ''}`.trim() || 'Mal Kabulcu';
+        })()
                 }
                 
                 // QR kod ve barkod resimlerini oluştur

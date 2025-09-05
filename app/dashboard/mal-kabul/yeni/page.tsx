@@ -1330,7 +1330,15 @@ export default function YeniMalKabul() {
         paletAdi: receiptData.paletAdi || null,
         paletSayisi: parseInt(receiptData.paletSayisi) || 0,
         notlar: receiptData.notlar || '',
-        malKabulcuAdi: session?.user?.name || `${session?.user?.firstName || ''} ${session?.user?.lastName || ''}`.trim() || 'Mal Kabulcu',
+        malKabulcuAdi: (() => {
+          console.log('Session debug:', {
+            name: session?.user?.name,
+            firstName: session?.user?.firstName,
+            lastName: session?.user?.lastName,
+            fullSession: session?.user
+          });
+          return session?.user?.name || `${session?.user?.firstName || ''} ${session?.user?.lastName || ''}`.trim() || 'Mal Kabulcu';
+        })(),
         komisyoncuAdi: saticiDetay.komisyoncuAdi,
         ureticiAdi: saticiDetay.ureticiAdi,
         sehir: saticiDetay.sehir
@@ -1886,7 +1894,15 @@ export default function YeniMalKabul() {
         paletAdi: receiptData.paletAdi || null,
         paletSayisi: parseInt(receiptData.paletSayisi) || 0,
         notlar: receiptData.notlar || '',
-        malKabulcuAdi: session?.user?.name || `${session?.user?.firstName || ''} ${session?.user?.lastName || ''}`.trim() || 'Mal Kabulcu',
+        malKabulcuAdi: (() => {
+          console.log('Session debug:', {
+            name: session?.user?.name,
+            firstName: session?.user?.firstName,
+            lastName: session?.user?.lastName,
+            fullSession: session?.user
+          });
+          return session?.user?.name || `${session?.user?.firstName || ''} ${session?.user?.lastName || ''}`.trim() || 'Mal Kabulcu';
+        })(),
         komisyoncuAdi: saticiDetay.komisyoncuAdi,
         ureticiAdi: saticiDetay.ureticiAdi,
         sehir: saticiDetay.sehir
