@@ -4,7 +4,6 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/toaster";
 import { SWRegister } from "@/components/sw-register";
-import 'quagga/dist/quagga.min.css';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

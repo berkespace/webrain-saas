@@ -6,7 +6,6 @@ import { Input } from './input'
 import { Label } from './label'
 import { QrCode, Camera, X } from 'lucide-react'
 import jsQR from 'jsqr'
-import Quagga from 'quagga'
 
 interface QRScannerProps {
   onScan: (data: string) => void
@@ -34,54 +33,45 @@ export function QRScanner({ onScan, onClose, isOpen }: QRScannerProps) {
 
   const startCamera = async () => {
     try {
-      // Quagga barkod tarayıcısını başlat
-      Quagga.init({
-        inputStream: {
-          name: "Live",
-          type: "LiveStream",
-          target: videoRef.current,
-          constraints: {
-            width: 640,
-            height: 480,
-            facingMode: "environment"
-          }
-        },
-        decoder: {
-          readers: [
-            "code_128_reader",
-            "ean_reader",
-            "ean_8_reader",
-            "code_39_reader",
-            "code_39_vin_reader",
-            "codabar_reader",
-            "upc_reader",
-            "upc_e_reader",
-            "i2of5_reader"
-          ]
-        },
-        locate: true,
-        locator: {
-          patchSize: "medium",
-          halfSample: true
-        }
-      }, (err) => {
-        if (err) {
-          console.error('Quagga başlatma hatası:', err)
-          setScanMode('manual')
-          return
-        }
-        
-        Quagga.start()
-        
-        // Barkod tarama eventi
-        Quagga.onDetected((result) => {
-          console.log('Barkod bulundu:', result.codeResult.code)
-          onScan(result.codeResult.code)
-          Quagga.stop()
-          stopCamera()
-        })
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'environment' }
       })
       
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream
+        streamRef.current = stream
+        
+        // QR kod tarama için canvas oluştur
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        
+        const scanFrame = () => {
+          if (videoRef.current && ctx) {
+            canvas.width = videoRef.current.videoWidth
+            canvas.height = videoRef.current.videoHeight
+            ctx.drawImage(videoRef.current, 0, 0)
+            
+            // QR kod tarama
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+            const code = jsQR(imageData.data, imageData.width, imageData.height)
+            
+            if (code) {
+              console.log('QR kod bulundu:', code.data)
+              onScan(code.data)
+              stopCamera()
+              return
+            }
+          }
+          
+          if (streamRef.current) {
+            requestAnimationFrame(scanFrame)
+          }
+        }
+        
+        videoRef.current.addEventListener('loadedmetadata', () => {
+          scanFrame()
+        })
+      }
     } catch (error) {
       console.error('Kamera erişim hatası:', error)
       setScanMode('manual')
@@ -89,12 +79,6 @@ export function QRScanner({ onScan, onClose, isOpen }: QRScannerProps) {
   }
 
   const stopCamera = () => {
-    try {
-      Quagga.stop()
-    } catch (error) {
-      console.error('Quagga durdurma hatası:', error)
-    }
-    
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop())
       streamRef.current = null
@@ -155,10 +139,11 @@ export function QRScanner({ onScan, onClose, isOpen }: QRScannerProps) {
         {scanMode === 'camera' ? (
           <div className="space-y-4">
             <div className="relative">
-              <div
+              <video
                 ref={videoRef}
+                autoPlay
+                playsInline
                 className="w-full h-64 bg-gray-100 rounded-lg"
-                id="scanner-container"
               />
               <div className="absolute inset-0 border-2 border-primary border-dashed rounded-lg pointer-events-none">
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-primary">
