@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+import { NotificationService } from "@/lib/notification-service"
 
 // GET - Tek bir mal kabul kaydını getir
 export async function GET(
@@ -402,6 +403,32 @@ export async function PUT(
 
     // Cache'i temizle (ana API'deki cache'i temizlemek için)
     // Bu basit bir çözüm, production'da Redis kullanılmalı
+    
+    // Bildirim gönder - Ürün NETLENDI durumuna geçtiyse satın almacılara bildir
+    if (calculatedStatus === 'NETLENDI' && existingRecord.status !== 'NETLENDI') {
+      try {
+        const malKabulcu = await prisma.users.findUnique({
+          where: { id: session.user.id },
+          select: { firstName: true, lastName: true }
+        })
+        
+        const urun = await prisma.urunler.findUnique({
+          where: { id: urunId },
+          select: { ad: true }
+        })
+        
+        if (malKabulcu && urun) {
+          await NotificationService.notifyProductNetlendi(
+            id,
+            `${malKabulcu.firstName} ${malKabulcu.lastName}`,
+            urun.ad
+          )
+        }
+      } catch (notificationError) {
+        console.error('Notification error:', notificationError)
+        // Bildirim hatası ana işlemi etkilemesin
+      }
+    }
     
     return NextResponse.json(
       { message: "Mal kabul kaydı başarıyla güncellendi", malKabulRecord: updatedRecord }

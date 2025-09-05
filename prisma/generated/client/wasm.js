@@ -316,9 +316,46 @@ exports.Prisma.MalKabulRecordsScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.NotificationsScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  message: 'message',
+  type: 'type',
+  category: 'category',
+  priority: 'priority',
+  isRead: 'isRead',
+  isEmailSent: 'isEmailSent',
+  isPushSent: 'isPushSent',
+  isSMSSent: 'isSMSSent',
+  relatedId: 'relatedId',
+  relatedModel: 'relatedModel',
+  actionUrl: 'actionUrl',
+  metadata: 'metadata',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.Push_subscriptionsScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  endpoint: 'endpoint',
+  p256dhKey: 'p256dhKey',
+  authKey: 'authKey',
+  userAgent: 'userAgent',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -329,6 +366,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.MalKabulStatus = exports.$Enums.MalKabulStatus = {
   BEKLEMEDE: 'BEKLEMEDE',
@@ -347,7 +390,9 @@ exports.Prisma.ModelName = {
   ureticiler: 'ureticiler',
   urunler: 'urunler',
   users: 'users',
-  malKabulRecords: 'malKabulRecords'
+  malKabulRecords: 'malKabulRecords',
+  notifications: 'notifications',
+  push_subscriptions: 'push_subscriptions'
 };
 
 /**

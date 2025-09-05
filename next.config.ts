@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true, // Geçici olarak TypeScript'i devre dışı bırak
   },
+  env: {
+    NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.VAPID_PUBLIC_KEY,
+  },
   headers: async () => {
     return [
       {

@@ -241,7 +241,7 @@ export default function CariHesaplar() {
     if (!selectedRecord) return
 
     const malKabulRecord = selectedRecord.malKabulRecord
-    const logoPath = `${window.location.origin}/logo-dark.png`
+    const logoPath = `${window.location.origin}/hnr-lgoo.png`
     
     // Satıcı adını al
     const getSaticiAdi = () => {

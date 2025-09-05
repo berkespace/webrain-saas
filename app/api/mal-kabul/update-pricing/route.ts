@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { NotificationService } from '@/lib/notification-service'
 import { writeFile, mkdir } from 'fs/promises'
 import { join } from 'path'
 
@@ -174,6 +175,28 @@ export async function POST(request: NextRequest) {
           cariBakiyesi: toplamFiyat // Şimdilik toplam tutar = bakiye
         }
       })
+    }
+
+    // Bildirim gönder - Manuel fatura varsa muhasebe onayına gönder
+    if (faturaYontemi === 'MANUEL') {
+      try {
+        const satinAlmaci = await prisma.users.findUnique({
+          where: { id: session.user.id },
+          select: { firstName: true, lastName: true }
+        })
+        
+        if (satinAlmaci) {
+          await NotificationService.notifyInvoiceNeedsApproval(
+            recordId,
+            `${satinAlmaci.firstName} ${satinAlmaci.lastName}`,
+            record.urunler.ad,
+            true // Manuel fatura
+          )
+        }
+      } catch (notificationError) {
+        console.error('Notification error:', notificationError)
+        // Bildirim hatası ana işlemi etkilemesin
+      }
     }
 
     return NextResponse.json({

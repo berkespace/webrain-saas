@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
+import { NotificationService } from "@/lib/notification-service"
 
 export async function POST(request: NextRequest) {
   try {
@@ -109,6 +110,26 @@ export async function POST(request: NextRequest) {
           }
         })
       }
+    }
+
+    // Bildirim gönder - Onay/Red durumunu satın almacıya bildir
+    try {
+      const muhasebeci = await prisma.users.findUnique({
+        where: { id: session.user.id },
+        select: { firstName: true, lastName: true }
+      })
+      
+      if (muhasebeci && record.fiyatGirenKullanici) {
+        await NotificationService.notifyInvoiceApproved(
+          recordId,
+          `${muhasebeci.firstName} ${muhasebeci.lastName}`,
+          record.urunler.ad,
+          action === 'approve'
+        )
+      }
+    } catch (notificationError) {
+      console.error('Notification error:', notificationError)
+      // Bildirim hatası ana işlemi etkilemesin
     }
 
     return NextResponse.json({ 

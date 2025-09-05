@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSession, signOut } from 'next-auth/react'
 import { useRouter, usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
+import { NotificationCenter } from '@/components/ui/notification-center'
 import { 
   Package, 
   FileText, 
@@ -912,6 +913,7 @@ export function Sidebar() {
                 {userRole?.toLowerCase().replace('_', ' ')}
               </p>
             </div>
+            <NotificationCenter />
           </div>
         </div>
       )}

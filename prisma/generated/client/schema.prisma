@@ -233,8 +233,10 @@ model users {
   updatedAt DateTime? @default(now()) @db.Timestamp(6)
 
   // Relations
-  mal_kabul_records mal_kabul_records[]
-  faturalar         faturalar[]
+  mal_kabul_records  mal_kabul_records[]
+  faturalar          faturalar[]
+  notifications      notifications[]
+  push_subscriptions push_subscriptions[]
 }
 
 model malKabulRecords {
@@ -293,4 +295,47 @@ enum UserRole {
   MAL_KABULCU
   MUHASEBE
   SATIN_ALMACI
+}
+
+model notifications {
+  id           String   @id @default(cuid())
+  userId       String // Alıcı kullanıcı
+  title        String // Bildirim başlığı
+  message      String // Bildirim içeriği
+  type         String // 'INFO', 'WARNING', 'SUCCESS', 'ERROR', 'WORKFLOW'
+  category     String // 'MAL_KABUL', 'SATIN_ALMA', 'MUHASEBE', 'SYSTEM'
+  priority     String   @default("NORMAL") // 'LOW', 'NORMAL', 'HIGH', 'URGENT'
+  isRead       Boolean  @default(false)
+  isEmailSent  Boolean  @default(false)
+  isPushSent   Boolean  @default(false)
+  isSMSSent    Boolean  @default(false)
+  relatedId    String? // İlgili kayıt ID'si (mal_kabul_record id vs.)
+  relatedModel String? // İlgili model adı
+  actionUrl    String? // Tıklandığında gidilecek URL
+  metadata     Json? // Ek veriler
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // İlişkiler
+  user users @relation(fields: [userId], references: [id])
+
+  @@map("notifications")
+}
+
+model push_subscriptions {
+  id        String   @id @default(cuid())
+  userId    String
+  endpoint  String
+  p256dhKey String
+  authKey   String
+  userAgent String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // İlişkiler
+  user users @relation(fields: [userId], references: [id])
+
+  @@unique([userId, endpoint])
+  @@map("push_subscriptions")
 }
