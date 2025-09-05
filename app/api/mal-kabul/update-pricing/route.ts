@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Kullanıcının rolünü kontrol et
-    if (!['SATIN_ALMACI', 'MUHASEBECI', 'ADMIN'].includes(session.user.role)) {
+    if (!['SATIN_ALMACI', 'MUHASEBECI', 'MUHASEBE', 'ADMIN'].includes(session.user.role)) {
       return NextResponse.json({ error: 'Bu işlem için yetkiniz yok' }, { status: 403 })
     }
 

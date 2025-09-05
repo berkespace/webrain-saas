@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
 
     // Sadece muhasebeci ve admin onay verebilir
     const userRole = (session.user as any)?.role
-    if (!['MUHASEBECI', 'ADMIN'].includes(userRole)) {
+    if (!['MUHASEBECI', 'MUHASEBE', 'ADMIN'].includes(userRole)) {
       return NextResponse.json({ error: "Bu işlem için yetkiniz yok" }, { status: 403 })
     }
 

@@ -529,7 +529,7 @@ export function Sidebar() {
     }
 
     // Muhasebeci için hem mal kabul hem satın alma menüleri
-    if (userRole === 'MUHASEBECI') {
+    if (userRole === 'MUHASEBECI' || userRole === 'MUHASEBE') {
       return [
         ...baseItems,
         {
