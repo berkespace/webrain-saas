@@ -247,6 +247,14 @@ export async function POST(request: NextRequest) {
       calculatedMiktar = parseInt(adetSayisi) || 0   // Adet ürünler için miktar = adetSayisi
       calculatedNetAdet = (parseInt(adetSayisi) || 0) - (parseFloat(cikmaKg) || 0) - (parseFloat(fireKg) || 0)
       calculatedNetKg = 0  // ADET ürünler için netKg = 0
+      
+      console.log('🧮 ADET Hesaplama:', {
+        adetSayisi: parseInt(adetSayisi) || 0,
+        cikmaKg: parseFloat(cikmaKg) || 0,
+        fireKg: parseFloat(fireKg) || 0,
+        calculatedNetAdet: calculatedNetAdet
+      })
+      
       if (parseFloat(cikmaKg) > 0 || parseFloat(fireKg) > 0) {
         calculatedStatus = 'NETLENDI'
       }
@@ -256,6 +264,14 @@ export async function POST(request: NextRequest) {
       calculatedMiktar = parseFloat(girisKg) || 0
       calculatedNetKg = (parseFloat(girisKg) || 0) - (parseFloat(cikmaKg) || 0) - (parseFloat(fireKg) || 0)
       calculatedNetAdet = 0  // KG ürünler için netAdet = 0
+      
+      console.log('🧮 KG Hesaplama:', {
+        girisKg: parseFloat(girisKg) || 0,
+        cikmaKg: parseFloat(cikmaKg) || 0,
+        fireKg: parseFloat(fireKg) || 0,
+        calculatedNetKg: calculatedNetKg
+      })
+      
       if (parseFloat(cikmaKg) > 0 || parseFloat(fireKg) > 0) {
         calculatedStatus = 'NETLENDI'
       }
@@ -349,6 +365,13 @@ export async function POST(request: NextRequest) {
 
     // Cache'i temizle
     clearCache()
+
+    console.log('✅ Kayıt oluşturuldu:', {
+      fisNo: malKabulRecord.fisNo,
+      netKg: malKabulRecord.netKg,
+      netAdet: malKabulRecord.netAdet,
+      status: malKabulRecord.status
+    })
 
     return NextResponse.json(
       { message: "Mal kabul kaydı başarıyla oluşturuldu", malKabulRecord },
