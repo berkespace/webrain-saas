@@ -227,6 +227,263 @@ export default function CariHesaplar() {
     setSelectedRecord(null)
   }
 
+  const openReceiptModal = (record: CariHesapRecord) => {
+    setSelectedRecord(record)
+    setIsReceiptModalOpen(true)
+  }
+
+  const closeReceiptModal = () => {
+    setIsReceiptModalOpen(false)
+    setSelectedRecord(null)
+  }
+
+  const printReceipt = () => {
+    if (!selectedRecord) return
+
+    const malKabulRecord = selectedRecord.malKabulRecord
+    const logoPath = `${window.location.origin}/logo-dark.png`
+    
+    // Satıcı adını al
+    const getSaticiAdi = () => {
+      switch (malKabulRecord.saticiTipi) {
+        case 'KOMISYONCU':
+          return malKabulRecord.komisyoncular?.dukkanAdi || 'Bilinmeyen Komisyoncu'
+        case 'URETICI':
+          return malKabulRecord.ureticiler ? 
+            `${malKabulRecord.ureticiler.ad} ${malKabulRecord.ureticiler.soyad}` : 
+            'Bilinmeyen Üretici'
+        case 'OZEL_FIRMA':
+          return malKabulRecord.ozel_firmalar?.firmaAdi || 'Bilinmeyen Firma'
+        case 'MUSTAHSIL':
+          return malKabulRecord.mustahsil ? 
+            `${malKabulRecord.mustahsil.ad} ${malKabulRecord.mustahsil.soyad}` : 
+            'Bilinmeyen Müstahsil'
+        default:
+          return 'Bilinmeyen Satıcı'
+      }
+    }
+
+    const receiptContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Mal Kabul Fişi - ${malKabulRecord.fisNo}</title>
+        <style>
+          @media print {
+            body { margin: 0; padding: 20px; }
+            .no-print { display: none; }
+          }
+          body {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.4;
+            color: #000;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+          }
+          .logo {
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          .logo img {
+            max-width: 200px;
+            height: auto;
+          }
+          .header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+          }
+          .title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+          }
+          .section {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+          }
+          .section-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 8px;
+          }
+          .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3px;
+          }
+          .label {
+            font-weight: bold;
+            width: 60%;
+          }
+          .value {
+            width: 40%;
+            text-align: right;
+          }
+          .total {
+            font-weight: bold;
+            font-size: 16px;
+            border-top: 2px solid #000;
+            padding-top: 8px;
+            margin-top: 8px;
+          }
+          .footer {
+            text-align: center;
+            margin-top: 20px;
+            border-top: 2px solid #000;
+            padding-top: 15px;
+          }
+          .thank-you {
+            font-weight: bold;
+            font-size: 14px;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="logo">
+          <img src="${logoPath}" alt="WEBRAIN Logo" />
+        </div>
+        
+        <div class="header">
+          <div class="title">MAL KABUL FİŞİ</div>
+          <div>Fiş No: ${malKabulRecord.fisNo}</div>
+          <div>Tarih: ${new Date(malKabulRecord.tarih).toLocaleDateString('tr-TR')}</div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Genel Bilgiler</div>
+          <div class="row">
+            <span class="label">Mal Kabulcu:</span>
+            <span class="value">${malKabulRecord.users.firstName} ${malKabulRecord.users.lastName}</span>
+          </div>
+          <div class="row">
+            <span class="label">Satıcı Tipi:</span>
+            <span class="value">${malKabulRecord.saticiTipi}</span>
+          </div>
+          <div class="row">
+            <span class="label">Satıcı Adı:</span>
+            <span class="value">${getSaticiAdi()}</span>
+          </div>
+          <div class="row">
+            <span class="label">Ürün:</span>
+            <span class="value">${malKabulRecord.urunler.ad}</span>
+          </div>
+          <div class="row">
+            <span class="label">Kategori:</span>
+            <span class="value">${malKabulRecord.urunler.kategori}</span>
+          </div>
+        </div>
+
+        ${malKabulRecord.urunler.birim?.toLowerCase() === 'kg' ? `
+        <div class="section">
+          <div class="section-title">Ağırlık Bilgileri (KG)</div>
+          <div class="row">
+            <span class="label">Brüt KG:</span>
+            <span class="value">${malKabulRecord.brutKg || 0}</span>
+          </div>
+          <div class="row">
+            <span class="label">Dara KG:</span>
+            <span class="value">${malKabulRecord.daraKg || 0}</span>
+          </div>
+          <div class="row">
+            <span class="label">Giriş KG:</span>
+            <span class="value">${malKabulRecord.girisKg || 0}</span>
+          </div>
+          <div class="row">
+            <span class="label">Çıkma KG:</span>
+            <span class="value">${malKabulRecord.cikmaKg || 0}</span>
+          </div>
+          <div class="row">
+            <span class="label">Fire KG:</span>
+            <span class="value">${malKabulRecord.fireKg || 0}</span>
+          </div>
+          <div class="row total">
+            <span class="label">Net KG:</span>
+            <span class="value">${malKabulRecord.netKg || 0}</span>
+          </div>
+        </div>
+        ` : `
+        <div class="section">
+          <div class="section-title">Adet Bilgileri</div>
+          <div class="row">
+            <span class="label">Kasa Sayısı:</span>
+            <span class="value">${malKabulRecord.kasaSayisi || 0}</span>
+          </div>
+          <div class="row">
+            <span class="label">Giriş Adet:</span>
+            <span class="value">${malKabulRecord.adetSayisi || 0}</span>
+          </div>
+          <div class="row">
+            <span class="label">Çıkma Adet:</span>
+            <span class="value">0</span>
+          </div>
+          <div class="row">
+            <span class="label">Fire Adet:</span>
+            <span class="value">0</span>
+          </div>
+          <div class="row total">
+            <span class="label">Net Adet:</span>
+            <span class="value">${malKabulRecord.netAdet || 0}</span>
+          </div>
+        </div>
+        `}
+
+        <div class="section">
+          <div class="section-title">Fiyat Bilgileri</div>
+          <div class="row">
+            <span class="label">Birim Fiyat:</span>
+            <span class="value">${malKabulRecord.birimFiyat ? malKabulRecord.birimFiyat.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' }) : '-'}</span>
+          </div>
+          <div class="row">
+            <span class="label">KDV Hariç:</span>
+            <span class="value">${selectedRecord.kdvHaricTutar.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}</span>
+          </div>
+          <div class="row total">
+            <span class="label">Toplam Tutar:</span>
+            <span class="value">${selectedRecord.herseyDahilTutar.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}</span>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Durum Bilgileri</div>
+          <div class="row">
+            <span class="label">Durum:</span>
+            <span class="value">${malKabulRecord.status}</span>
+          </div>
+          <div class="row">
+            <span class="label">Onay Durumu:</span>
+            <span class="value">${malKabulRecord.onayDurumu || 'BEKLEMEDE'}</span>
+          </div>
+        </div>
+
+        ${malKabulRecord.notlar ? `
+        <div class="section">
+          <div class="section-title">Notlar</div>
+          <div>${malKabulRecord.notlar}</div>
+        </div>
+        ` : ''}
+
+        <div class="footer">
+          <div class="thank-you">Bizi tercih ettiğiniz için teşekkür ederiz!</div>
+        </div>
+      </body>
+      </html>
+    `
+
+    const printWindow = window.open('', '_blank')
+    if (printWindow) {
+      printWindow.document.write(receiptContent)
+      printWindow.document.close()
+      printWindow.focus()
+      printWindow.print()
+    }
+  }
+
   // Export fonksiyonları
   const exportToExcel = async () => {
     setExportLoading(true)
@@ -482,8 +739,8 @@ export default function CariHesaplar() {
                       <Button
                         variant="link"
                         className="p-0 h-auto font-mono text-sm text-blue-600 hover:text-blue-800"
-                        onClick={() => openDetailModal(record)}
-                        title="Fiş detaylarını görüntüle"
+                        onClick={() => openReceiptModal(record)}
+                        title="Mal kabul fişini görüntüle"
                       >
                         {record.fisNo}
                         <ExternalLink className="h-3 w-3 ml-1" />
@@ -701,6 +958,255 @@ export default function CariHesaplar() {
           <div className="flex justify-end gap-2 pt-4 border-t">
             <Button variant="outline" onClick={closeDetailModal}>
               Kapat
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Mal Kabul Fişi Modal */}
+      <Dialog open={isReceiptModalOpen} onOpenChange={setIsReceiptModalOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5" />
+              Mal Kabul Fişi - {selectedRecord?.fisNo}
+            </DialogTitle>
+            <DialogDescription>
+              {selectedRecord?.malKabulRecord.urunler.ad} için mal kabul fiş detayları
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedRecord && (
+            <div className="space-y-6">
+              {/* Genel Bilgiler */}
+              <div className="grid gap-6 md:grid-cols-2">
+                <div className="space-y-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Genel Bilgiler</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Fiş No:</span>
+                        <span className="font-mono">{selectedRecord.malKabulRecord.fisNo}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Tarih:</span>
+                        <span>{new Date(selectedRecord.malKabulRecord.tarih).toLocaleDateString('tr-TR')}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Mal Kabulcu:</span>
+                        <span>{selectedRecord.malKabulRecord.users.firstName} {selectedRecord.malKabulRecord.users.lastName}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Satıcı:</span>
+                        <span>{selectedRecord.saticiAdi}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Satıcı Tipi:</span>
+                        <Badge variant="outline">{selectedRecord.saticiTipi}</Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Ürün Bilgileri</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Ürün:</span>
+                        <span className="font-medium">{selectedRecord.malKabulRecord.urunler.ad}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Kategori:</span>
+                        <span>{selectedRecord.malKabulRecord.urunler.kategori}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Birim:</span>
+                        <span>{selectedRecord.malKabulRecord.urunler.birim}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Durum:</span>
+                        <Badge variant={selectedRecord.malKabulRecord.status === 'NETLENDI' ? 'default' : 'secondary'}>
+                          {selectedRecord.malKabulRecord.status}
+                        </Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Ağırlık/Adet Bilgileri */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">
+                        {selectedRecord.malKabulRecord.urunler.birim?.toLowerCase() === 'kg' 
+                          ? 'Ağırlık Bilgileri (KG)' 
+                          : 'Adet Bilgileri'
+                        }
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      {selectedRecord.malKabulRecord.urunler.birim?.toLowerCase() === 'kg' ? (
+                        <>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Brüt KG:</span>
+                            <span>{selectedRecord.malKabulRecord.brutKg || 0}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Dara KG:</span>
+                            <span>{selectedRecord.malKabulRecord.daraKg || 0}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Giriş KG:</span>
+                            <span>{selectedRecord.malKabulRecord.girisKg || 0}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Çıkma KG:</span>
+                            <span>{selectedRecord.malKabulRecord.cikmaKg || 0}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Fire KG:</span>
+                            <span>{selectedRecord.malKabulRecord.fireKg || 0}</span>
+                          </div>
+                          <div className="flex justify-between border-t pt-2">
+                            <span className="font-medium">Net KG:</span>
+                            <span className="font-bold text-lg">{selectedRecord.malKabulRecord.netKg || 0}</span>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Kasa Sayısı:</span>
+                            <span>{selectedRecord.malKabulRecord.kasaSayisi || 0}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Giriş Adet:</span>
+                            <span>{selectedRecord.malKabulRecord.adetSayisi || 0}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Çıkma Adet:</span>
+                            <span>0</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Fire Adet:</span>
+                            <span>0</span>
+                          </div>
+                          <div className="flex justify-between border-t pt-2">
+                            <span className="font-medium">Net Adet:</span>
+                            <span className="font-bold text-lg">{selectedRecord.malKabulRecord.netAdet || 0}</span>
+                          </div>
+                        </>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Fiyat Bilgileri */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Fiyat Bilgileri</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Birim Fiyat:</span>
+                        <span className="font-medium">
+                          {selectedRecord.birimFiyat ? 
+                            selectedRecord.birimFiyat.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' }) : 
+                            '-'
+                          }
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Net Miktar:</span>
+                        <span>
+                          {selectedRecord.toplamAlisMiktari} {selectedRecord.malKabulRecord.urunler.birim}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">KDV Hariç:</span>
+                        <span>
+                          {selectedRecord.kdvHaricTutar.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
+                        </span>
+                      </div>
+                      <div className="flex justify-between border-t pt-2">
+                        <span className="font-medium">Toplam Tutar:</span>
+                        <span className="font-bold text-lg text-green-600">
+                          {selectedRecord.herseyDahilTutar.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+
+              {/* Fatura Bilgileri */}
+              {selectedRecord.malKabulRecord.faturaYontemi === 'MANUEL' && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Fatura Bilgileri</CardTitle>
+                  </CardHeader>
+                  <CardContent className="grid grid-cols-2 gap-4">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Fatura Yöntemi:</span>
+                      <Badge variant="default">Manuel</Badge>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Onay Durumu:</span>
+                      <Badge variant={
+                        selectedRecord.malKabulRecord.onayDurumu === 'ONAYLANDI' ? 'default' :
+                        selectedRecord.malKabulRecord.onayDurumu === 'REDDEDILDI' ? 'destructive' : 'secondary'
+                      }>
+                        {selectedRecord.malKabulRecord.onayDurumu || 'BEKLEMEDE'}
+                      </Badge>
+                    </div>
+                    {selectedRecord.malKabulRecord.faturaSeriNo && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Fatura Seri No:</span>
+                        <span>{selectedRecord.malKabulRecord.faturaSeriNo}</span>
+                      </div>
+                    )}
+                    {selectedRecord.malKabulRecord.faturaTarihi && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Fatura Tarihi:</span>
+                        <span>{new Date(selectedRecord.malKabulRecord.faturaTarihi).toLocaleDateString('tr-TR')}</span>
+                      </div>
+                    )}
+                    {selectedRecord.malKabulRecord.faturaAciklamasi && (
+                      <div className="col-span-2">
+                        <span className="text-muted-foreground">Açıklama:</span>
+                        <div className="bg-muted p-2 rounded mt-1">
+                          {selectedRecord.malKabulRecord.faturaAciklamasi}
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Notlar */}
+              {selectedRecord.malKabulRecord.notlar && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Notlar</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="bg-muted p-3 rounded">
+                      {selectedRecord.malKabulRecord.notlar}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          )}
+
+          <div className="flex justify-end gap-2 pt-4 border-t">
+            <Button variant="outline" onClick={closeReceiptModal}>
+              Kapat
+            </Button>
+            <Button onClick={printReceipt} className="bg-blue-600 hover:bg-blue-700">
+              <FileText className="h-4 w-4 mr-2" />
+              Fiş Yazdır
             </Button>
           </div>
         </DialogContent>

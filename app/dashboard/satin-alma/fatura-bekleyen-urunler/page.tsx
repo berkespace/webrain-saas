@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { useSession } from 'next-auth/react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -98,6 +99,7 @@ interface MalKabulRecord {
 }
 
 export default function FaturaBekleyenUrunler() {
+  const { data: session } = useSession()
   const [records, setRecords] = useState<MalKabulRecord[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -883,14 +885,21 @@ export default function FaturaBekleyenUrunler() {
                     </td>
                     <td className="p-3">
                       <div className="flex gap-1">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => openModal(record)}
-                          title="Fiyat Girişi ve Evrak Yükleme"
-                        >
-                          <Calculator className="h-3 w-3" />
-                        </Button>
+                        {/* Fiyat Girişi - Sadece onaylanmamış veya muhasebeci rolü için */}
+                        {(record.onayDurumu !== 'ONAYLANDI' || 
+                          ['MUHASEBECI', 'MUHASEBE', 'ADMIN'].includes((session?.user as any)?.role)) && (
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => openModal(record)}
+                            title={record.onayDurumu === 'ONAYLANDI' 
+                              ? "Muhasebeci Düzenlemesi" 
+                              : "Fiyat Girişi ve Evrak Yükleme"
+                            }
+                          >
+                            <Calculator className="h-3 w-3" />
+                          </Button>
+                        )}
                         <Button variant="outline" size="sm" title="Görüntüle">
                           <Eye className="h-3 w-3" />
                         </Button>
