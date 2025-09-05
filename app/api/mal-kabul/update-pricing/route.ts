@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     const notlar = formData.get('notlar') as string
 
     // Önce kaydı al ki Net KG/Adet bilgisine erişelim
-    const record = await prisma.malKabulRecord.findUnique({
+    const record = await prisma.mal_kabul_records.findUnique({
       where: { id: recordId },
       include: {
         urunler: true
@@ -39,8 +39,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Kayıt bulunamadı' }, { status: 404 })
     }
 
-    // Net miktarı hesapla (KG veya Adet)
-    const netMiktar = record.urunler.birim === 'KG' 
+    // Net miktarı hesapla (KG veya Adet) - case-insensitive kontrol
+    const netMiktar = record.urunler.birim?.toLowerCase() === 'kg' 
       ? (record.netKg || 0) 
       : (record.netAdet || 0)
 
@@ -111,7 +111,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Veritabanını güncelle
-    const updatedRecord = await prisma.malKabulRecord.update({
+    const updatedRecord = await prisma.mal_kabul_records.update({
       where: { id: recordId },
       data: {
         birimFiyat: alisFiyati,
