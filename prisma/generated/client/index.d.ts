@@ -68,7 +68,16 @@ export type malKabulRecords = $Result.DefaultSelection<Prisma.$malKabulRecordsPa
  * Enums
  */
 export namespace $Enums {
-  export const AmbalajTipi: {
+  export const MalKabulStatus: {
+  BEKLEMEDE: 'BEKLEMEDE',
+  NETLENDI: 'NETLENDI',
+  IADE: 'IADE'
+};
+
+export type MalKabulStatus = (typeof MalKabulStatus)[keyof typeof MalKabulStatus]
+
+
+export const AmbalajTipi: {
   PALET: 'PALET',
   PLASTIK_KASA: 'PLASTIK_KASA',
   KARTON_KASA: 'KARTON_KASA'
@@ -123,6 +132,10 @@ export const UserRole: {
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 }
+
+export type MalKabulStatus = $Enums.MalKabulStatus
+
+export const MalKabulStatus: typeof $Enums.MalKabulStatus
 
 export type AmbalajTipi = $Enums.AmbalajTipi
 
@@ -5633,7 +5646,7 @@ export namespace Prisma {
     miktar: number | null
     birimFiyat: number | null
     toplamFiyat: number | null
-    status: string | null
+    status: $Enums.MalKabulStatus | null
     notlar: string | null
     malKabulcuId: string | null
     komisyoncuId: string | null
@@ -5666,7 +5679,7 @@ export namespace Prisma {
     miktar: number | null
     birimFiyat: number | null
     toplamFiyat: number | null
-    status: string | null
+    status: $Enums.MalKabulStatus | null
     notlar: string | null
     malKabulcuId: string | null
     komisyoncuId: string | null
@@ -5954,7 +5967,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat: number | null
     toplamFiyat: number | null
-    status: string
+    status: $Enums.MalKabulStatus
     notlar: string | null
     malKabulcuId: string
     komisyoncuId: string | null
@@ -6206,7 +6219,7 @@ export namespace Prisma {
       miktar: number
       birimFiyat: number | null
       toplamFiyat: number | null
-      status: string
+      status: $Enums.MalKabulStatus
       notlar: string | null
       malKabulcuId: string
       komisyoncuId: string | null
@@ -6667,7 +6680,7 @@ export namespace Prisma {
     readonly miktar: FieldRef<"mal_kabul_records", 'Float'>
     readonly birimFiyat: FieldRef<"mal_kabul_records", 'Float'>
     readonly toplamFiyat: FieldRef<"mal_kabul_records", 'Float'>
-    readonly status: FieldRef<"mal_kabul_records", 'String'>
+    readonly status: FieldRef<"mal_kabul_records", 'MalKabulStatus'>
     readonly notlar: FieldRef<"mal_kabul_records", 'String'>
     readonly malKabulcuId: FieldRef<"mal_kabul_records", 'String'>
     readonly komisyoncuId: FieldRef<"mal_kabul_records", 'String'>
@@ -14508,6 +14521,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'MalKabulStatus'
+   */
+  export type EnumMalKabulStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MalKabulStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'MalKabulStatus[]'
+   */
+  export type ListEnumMalKabulStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MalKabulStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -14783,7 +14810,7 @@ export namespace Prisma {
     miktar?: FloatFilter<"mal_kabul_records"> | number
     birimFiyat?: FloatNullableFilter<"mal_kabul_records"> | number | null
     toplamFiyat?: FloatNullableFilter<"mal_kabul_records"> | number | null
-    status?: StringFilter<"mal_kabul_records"> | string
+    status?: EnumMalKabulStatusFilter<"mal_kabul_records"> | $Enums.MalKabulStatus
     notlar?: StringNullableFilter<"mal_kabul_records"> | string | null
     malKabulcuId?: StringFilter<"mal_kabul_records"> | string
     komisyoncuId?: StringNullableFilter<"mal_kabul_records"> | string | null
@@ -14869,7 +14896,7 @@ export namespace Prisma {
     miktar?: FloatFilter<"mal_kabul_records"> | number
     birimFiyat?: FloatNullableFilter<"mal_kabul_records"> | number | null
     toplamFiyat?: FloatNullableFilter<"mal_kabul_records"> | number | null
-    status?: StringFilter<"mal_kabul_records"> | string
+    status?: EnumMalKabulStatusFilter<"mal_kabul_records"> | $Enums.MalKabulStatus
     notlar?: StringNullableFilter<"mal_kabul_records"> | string | null
     malKabulcuId?: StringFilter<"mal_kabul_records"> | string
     komisyoncuId?: StringNullableFilter<"mal_kabul_records"> | string | null
@@ -14950,7 +14977,7 @@ export namespace Prisma {
     miktar?: FloatWithAggregatesFilter<"mal_kabul_records"> | number
     birimFiyat?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
     toplamFiyat?: FloatNullableWithAggregatesFilter<"mal_kabul_records"> | number | null
-    status?: StringWithAggregatesFilter<"mal_kabul_records"> | string
+    status?: EnumMalKabulStatusWithAggregatesFilter<"mal_kabul_records"> | $Enums.MalKabulStatus
     notlar?: StringNullableWithAggregatesFilter<"mal_kabul_records"> | string | null
     malKabulcuId?: StringWithAggregatesFilter<"mal_kabul_records"> | string
     komisyoncuId?: StringNullableWithAggregatesFilter<"mal_kabul_records"> | string | null
@@ -15816,7 +15843,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -15849,7 +15876,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
@@ -15882,7 +15909,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -15915,7 +15942,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15948,7 +15975,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
@@ -15981,7 +16008,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -16006,7 +16033,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17000,6 +17027,13 @@ export namespace Prisma {
     yetkiliTelefon?: SortOrder
   }
 
+  export type EnumMalKabulStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.MalKabulStatus | EnumMalKabulStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MalKabulStatus[] | ListEnumMalKabulStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MalKabulStatus[] | ListEnumMalKabulStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMalKabulStatusFilter<$PrismaModel> | $Enums.MalKabulStatus
+  }
+
   export type IntNullableFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -17177,6 +17211,16 @@ export namespace Prisma {
     cikmaFireKg?: SortOrder
     netKg?: SortOrder
     netAdet?: SortOrder
+  }
+
+  export type EnumMalKabulStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MalKabulStatus | EnumMalKabulStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MalKabulStatus[] | ListEnumMalKabulStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MalKabulStatus[] | ListEnumMalKabulStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMalKabulStatusWithAggregatesFilter<$PrismaModel> | $Enums.MalKabulStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMalKabulStatusFilter<$PrismaModel>
+    _max?: NestedEnumMalKabulStatusFilter<$PrismaModel>
   }
 
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -17776,6 +17820,10 @@ export namespace Prisma {
     connect?: ambalajlarWhereUniqueInput
   }
 
+  export type EnumMalKabulStatusFieldUpdateOperationsInput = {
+    set?: $Enums.MalKabulStatus
+  }
+
   export type NullableIntFieldUpdateOperationsInput = {
     set?: number | null
     increment?: number
@@ -18295,6 +18343,23 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumMalKabulStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.MalKabulStatus | EnumMalKabulStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MalKabulStatus[] | ListEnumMalKabulStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MalKabulStatus[] | ListEnumMalKabulStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMalKabulStatusFilter<$PrismaModel> | $Enums.MalKabulStatus
+  }
+
+  export type NestedEnumMalKabulStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MalKabulStatus | EnumMalKabulStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MalKabulStatus[] | ListEnumMalKabulStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MalKabulStatus[] | ListEnumMalKabulStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMalKabulStatusWithAggregatesFilter<$PrismaModel> | $Enums.MalKabulStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMalKabulStatusFilter<$PrismaModel>
+    _max?: NestedEnumMalKabulStatusFilter<$PrismaModel>
+  }
+
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
     in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
@@ -18342,7 +18407,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -18374,7 +18439,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
@@ -18435,7 +18500,7 @@ export namespace Prisma {
     miktar?: FloatFilter<"mal_kabul_records"> | number
     birimFiyat?: FloatNullableFilter<"mal_kabul_records"> | number | null
     toplamFiyat?: FloatNullableFilter<"mal_kabul_records"> | number | null
-    status?: StringFilter<"mal_kabul_records"> | string
+    status?: EnumMalKabulStatusFilter<"mal_kabul_records"> | $Enums.MalKabulStatus
     notlar?: StringNullableFilter<"mal_kabul_records"> | string | null
     malKabulcuId?: StringFilter<"mal_kabul_records"> | string
     komisyoncuId?: StringNullableFilter<"mal_kabul_records"> | string | null
@@ -18468,7 +18533,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -18500,7 +18565,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
@@ -18622,7 +18687,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -18654,7 +18719,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     malKabulcuId: string
     ureticiId?: string | null
@@ -19354,7 +19419,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -19386,7 +19451,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
@@ -19444,7 +19509,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -19476,7 +19541,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
@@ -19534,7 +19599,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -19566,7 +19631,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
@@ -19700,7 +19765,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -19732,7 +19797,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
@@ -19790,7 +19855,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     createdAt?: Date | string | null
     updatedAt?: Date | string | null
@@ -19822,7 +19887,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     komisyoncuId?: string | null
     ureticiId?: string | null
@@ -19951,7 +20016,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
@@ -19983,7 +20048,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -20015,7 +20080,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20047,7 +20112,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20079,7 +20144,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
@@ -20111,7 +20176,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -20143,7 +20208,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20175,7 +20240,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20207,7 +20272,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     malKabulcuId: string
     ureticiId?: string | null
@@ -20253,7 +20318,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -20285,7 +20350,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20317,7 +20382,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20393,7 +20458,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
@@ -20425,7 +20490,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -20457,7 +20522,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20489,7 +20554,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20521,7 +20586,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
@@ -20553,7 +20618,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -20585,7 +20650,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20617,7 +20682,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20649,7 +20714,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
@@ -20681,7 +20746,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -20713,7 +20778,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20745,7 +20810,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20777,7 +20842,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     malKabulcuId: string
     komisyoncuId?: string | null
@@ -20809,7 +20874,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -20841,7 +20906,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20873,7 +20938,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     malKabulcuId?: StringFieldUpdateOperationsInput | string
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20905,7 +20970,7 @@ export namespace Prisma {
     miktar: number
     birimFiyat?: number | null
     toplamFiyat?: number | null
-    status?: string
+    status?: $Enums.MalKabulStatus
     notlar?: string | null
     komisyoncuId?: string | null
     ureticiId?: string | null
@@ -20950,7 +21015,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -20982,7 +21047,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
     ureticiId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -21014,7 +21079,7 @@ export namespace Prisma {
     miktar?: FloatFieldUpdateOperationsInput | number
     birimFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
     toplamFiyat?: NullableFloatFieldUpdateOperationsInput | number | null
-    status?: StringFieldUpdateOperationsInput | string
+    status?: EnumMalKabulStatusFieldUpdateOperationsInput | $Enums.MalKabulStatus
     notlar?: NullableStringFieldUpdateOperationsInput | string | null
     komisyoncuId?: NullableStringFieldUpdateOperationsInput | string | null
     ureticiId?: NullableStringFieldUpdateOperationsInput | string | null

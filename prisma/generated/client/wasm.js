@@ -296,7 +296,11 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.MalKabulStatus = exports.$Enums.MalKabulStatus = {
+  BEKLEMEDE: 'BEKLEMEDE',
+  NETLENDI: 'NETLENDI',
+  IADE: 'IADE'
+};
 
 exports.Prisma.ModelName = {
   ambalajlar: 'ambalajlar',

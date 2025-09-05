@@ -249,11 +249,11 @@ export default function MalKabulDashboard() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'FATURA_BEKLIYOR':
+      case 'BEKLEMEDE':
         return 'bg-yellow-100 text-yellow-800'
-      case 'TAMAMLANDI':
+      case 'NETLENDI':
         return 'bg-green-100 text-green-800'
-      case 'IPTAL':
+      case 'IADE':
         return 'bg-red-100 text-red-800'
       default:
         return 'bg-gray-100 text-gray-800'
@@ -262,12 +262,12 @@ export default function MalKabulDashboard() {
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'FATURA_BEKLIYOR':
-        return 'Fatura Bekliyor'
-      case 'TAMAMLANDI':
-        return 'Tamamlandı'
-      case 'IPTAL':
-        return 'İptal'
+      case 'BEKLEMEDE':
+        return 'Beklemede'
+      case 'NETLENDI':
+        return 'Netlendi'
+      case 'IADE':
+        return 'İade'
       default:
         return status
     }
@@ -390,7 +390,7 @@ export default function MalKabulDashboard() {
                 <div>
                   <p className="text-sm text-muted-foreground">Bekleyen</p>
                   <p className="text-2xl font-bold text-orange-500">
-                    {malKabulRecords.filter(item => item.status === 'FATURA_BEKLIYOR').length}
+                    {malKabulRecords.filter(item => item.status === 'BEKLEMEDE').length}
                   </p>
                 </div>
                 <Clock className="h-8 w-8 text-orange-500" />
@@ -450,22 +450,22 @@ export default function MalKabulDashboard() {
                   Tümü
                 </Button>
                 <Button
-                  variant={filterStatus === 'FATURA_BEKLIYOR' ? 'default' : 'outline'}
-                  onClick={() => setFilterStatus('FATURA_BEKLIYOR')}
+                  variant={filterStatus === 'BEKLEMEDE' ? 'default' : 'outline'}
+                  onClick={() => setFilterStatus('BEKLEMEDE')}
                 >
-                  Fatura Bekliyor
+                  Beklemede
                 </Button>
                 <Button
-                  variant={filterStatus === 'TAMAMLANDI' ? 'default' : 'outline'}
-                  onClick={() => setFilterStatus('TAMAMLANDI')}
+                  variant={filterStatus === 'NETLENDI' ? 'default' : 'outline'}
+                  onClick={() => setFilterStatus('NETLENDI')}
                 >
-                  Tamamlandı
+                  Netlendi
                 </Button>
                 <Button
-                  variant={filterStatus === 'IPTAL' ? 'default' : 'outline'}
-                  onClick={() => setFilterStatus('IPTAL')}
+                  variant={filterStatus === 'IADE' ? 'default' : 'outline'}
+                  onClick={() => setFilterStatus('IADE')}
                 >
-                  İptal
+                  İade
                 </Button>
               </div>
               <div className="flex gap-2">

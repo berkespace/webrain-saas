@@ -8,6 +8,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum MalKabulStatus {
+  BEKLEMEDE
+  NETLENDI
+  IADE
+}
+
 model ambalajlar {
   id        String    @id
   ad        String
@@ -64,7 +70,7 @@ model mal_kabul_records {
   miktar       Float     @db.Real
   birimFiyat   Float?    @db.Real
   toplamFiyat  Float?    @db.Real
-  status       String    @default("FATURA_BEKLIYOR")
+  status       MalKabulStatus @default(BEKLEMEDE)
   notlar       String?
   malKabulcuId String
   komisyoncuId String?

@@ -8,6 +8,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum MalKabulStatus {
+  BEKLEMEDE
+  NETLENDI
+  IADE
+}
+
 model ambalajlar {
   id        String    @id
   ad        String
@@ -59,36 +65,36 @@ model komisyoncular {
 }
 
 model mal_kabul_records {
-  id           String    @id
-  tarih        DateTime? @default(now()) @db.Timestamp(6)
-  miktar       Float     @db.Real
-  birimFiyat   Float?    @db.Real
-  toplamFiyat  Float?    @db.Real
-  status       String    @default("FATURA_BEKLIYOR")
+  id           String         @id
+  tarih        DateTime?      @default(now()) @db.Timestamp(6)
+  miktar       Float          @db.Real
+  birimFiyat   Float?         @db.Real
+  toplamFiyat  Float?         @db.Real
+  status       MalKabulStatus @default(BEKLEMEDE)
   notlar       String?
   malKabulcuId String
   komisyoncuId String?
   ureticiId    String?
   urunId       String
   faturaId     String?
-  createdAt    DateTime? @default(now()) @db.Timestamp(6)
-  updatedAt    DateTime? @default(now()) @db.Timestamp(6)
-  fisNo        String    @unique
+  createdAt    DateTime?      @default(now()) @db.Timestamp(6)
+  updatedAt    DateTime?      @default(now()) @db.Timestamp(6)
+  fisNo        String         @unique
   mustahsilId  String?
   ozelFirmaId  String?
-  saticiTipi   String    @default("OZEL_FIRMA")
+  saticiTipi   String         @default("OZEL_FIRMA")
   ambalajId    String?
-  paletSayisi  Int?      @default(0)
-  kasaSayisi   Int?      @default(0)
-  adetSayisi   Int?      @default(0) // ADET birimi için adet sayısı
-  brutKg       Float?    @default(0) @db.Real
-  daraKg       Float?    @default(0) @db.Real
-  girisKg      Float?    @default(0) @db.Real
-  cikmaKg      Float?    @default(0) @db.Real // Ana çıkma miktarı
-  fireKg       Float?    @default(0) @db.Real // Ekstradan kesilen fire miktarı
-  cikmaFireKg  Float?    @default(0) @db.Real // Eski alan (geriye uyumluluk için)
-  netKg        Float?    @default(0) @db.Real
-  netAdet      Int?      @default(0) // ADET birimi için net adet (girisAdet - cikmaAdet - fireAdet)
+  paletSayisi  Int?           @default(0)
+  kasaSayisi   Int?           @default(0)
+  adetSayisi   Int?           @default(0) // ADET birimi için adet sayısı
+  brutKg       Float?         @default(0) @db.Real
+  daraKg       Float?         @default(0) @db.Real
+  girisKg      Float?         @default(0) @db.Real
+  cikmaKg      Float?         @default(0) @db.Real // Ana çıkma miktarı
+  fireKg       Float?         @default(0) @db.Real // Ekstradan kesilen fire miktarı
+  cikmaFireKg  Float?         @default(0) @db.Real // Eski alan (geriye uyumluluk için)
+  netKg        Float?         @default(0) @db.Real
+  netAdet      Int?           @default(0) // ADET birimi için net adet (girisAdet - cikmaAdet - fireAdet)
 
   // Relations
   users         users          @relation(fields: [malKabulcuId], references: [id])

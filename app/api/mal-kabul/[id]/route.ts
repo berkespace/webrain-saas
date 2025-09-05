@@ -216,7 +216,7 @@ export async function PUT(
     // Birime göre NET değerleri hesapla
     let calculatedNetKg = 0
     let calculatedNetAdet = 0
-    let calculatedStatus = status || 'FATURA_BEKLIYOR'
+    let calculatedStatus = status || 'BEKLEMEDE'
     let calculatedGirisKg = 0
     let calculatedMiktar = 0
 
@@ -241,16 +241,22 @@ export async function PUT(
         calculatedMiktar
       })
       
+      // ADET ürünler için: Çıkma veya fire varsa NETLENDI, yoksa BEKLEMEDE
       if (cikmaAdetValue > 0 || fireAdetValue > 0) {
         calculatedStatus = 'NETLENDI'
+      } else {
+        calculatedStatus = 'BEKLEMEDE'
       }
     } else {
       // KG ürünler için
       calculatedGirisKg = parseFloat(girisKg) || 0
       calculatedMiktar = parseFloat(girisKg) || 0
       calculatedNetKg = (parseFloat(girisKg) || 0) - (parseFloat(cikmaKg) || 0) - (parseFloat(fireKg) || 0)
+      // KG ürünler için: Çıkma veya fire varsa NETLENDI, yoksa BEKLEMEDE
       if (parseFloat(cikmaKg) > 0 || parseFloat(fireKg) > 0) {
         calculatedStatus = 'NETLENDI'
+      } else {
+        calculatedStatus = 'BEKLEMEDE'
       }
     }
 

@@ -280,7 +280,7 @@ export async function POST(request: NextRequest) {
     // Birime göre NET değerleri hesapla
     let calculatedNetKg = 0
     let calculatedNetAdet = 0
-    let calculatedStatus = 'FATURA_BEKLIYOR'
+    let calculatedStatus = 'BEKLEMEDE'  // Varsayılan durum: Beklemede
     let calculatedGirisKg = 0
     let calculatedMiktar = 0
 
@@ -305,8 +305,11 @@ export async function POST(request: NextRequest) {
         formula: `${parseInt(adetSayisi) || 0} - ${cikmaAdet} - ${fireAdet} = ${calculatedNetAdet}`
       })
       
+      // ADET ürünler için: Çıkma veya fire varsa NETLENDI, yoksa BEKLEMEDE
       if (cikmaAdet > 0 || fireAdet > 0) {
         calculatedStatus = 'NETLENDI'
+      } else {
+        calculatedStatus = 'BEKLEMEDE'
       }
     } else {
       // KG ürünler için
@@ -327,8 +330,11 @@ export async function POST(request: NextRequest) {
         formula: `${parseFloat(girisKg) || 0} - ${cikmaKgValue} - ${fireKgValue} = ${calculatedNetKg}`
       })
       
+      // KG ürünler için: Çıkma veya fire varsa NETLENDI, yoksa BEKLEMEDE
       if (cikmaKgValue > 0 || fireKgValue > 0) {
         calculatedStatus = 'NETLENDI'
+      } else {
+        calculatedStatus = 'BEKLEMEDE'
       }
     }
 

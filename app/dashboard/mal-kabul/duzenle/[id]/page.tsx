@@ -38,7 +38,7 @@ interface MalKabulRecord {
   cikmaFireKg: number
   netKg: number
   netAdet: number
-  status: 'FATURA_BEKLIYOR' | 'FATURALANDI' | 'NETLENDI' | 'TAMAMLANDI' | 'IPTAL'
+  status: 'BEKLEMEDE' | 'NETLENDI' | 'IADE'
   notlar?: string
   komisyoncu?: {
     id: string
@@ -167,7 +167,7 @@ export default function MalKabulDuzenle() {
     fireAdet: '',
     netKg: '',
     netAdet: '',
-    status: 'NETLENDI' as 'NETLENDI',
+    status: 'BEKLEMEDE' as 'BEKLEMEDE' | 'NETLENDI' | 'IADE',
     notlar: ''
   })
 
@@ -1355,17 +1355,41 @@ export default function MalKabulDuzenle() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="BEKLEMEDE">
+                        <div className="flex items-center gap-2">
+                          <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                          Beklemede (Depoda Bekliyor)
+                        </div>
+                      </SelectItem>
                       <SelectItem value="NETLENDI">
                         <div className="flex items-center gap-2">
                           <CheckCircle className="h-4 w-4 text-green-500" />
-                          Netlendi (Ürün Son Durumu)
+                          Netlendi (Son Fiş Yazdırıldı)
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="IADE">
+                        <div className="flex items-center gap-2">
+                          <X className="h-4 w-4 text-red-500" />
+                          İade (Ürün İade Edildi)
                         </div>
                       </SelectItem>
                     </SelectContent>
                   </Select>
-                  <p className="text-xs text-green-600 bg-green-50 p-2 rounded">
-                    ✓ Bu ürün netlendi. Son fiş yazdırılacak ve işlem tamamlanacak.
-                  </p>
+                  {formData.status === 'BEKLEMEDE' && (
+                    <p className="text-xs text-yellow-600 bg-yellow-50 p-2 rounded">
+                      ⚠️ Ürün depoda bekliyor. Çıkma/fire belirtilirse Netlendi durumuna geçer.
+                    </p>
+                  )}
+                  {formData.status === 'NETLENDI' && (
+                    <p className="text-xs text-green-600 bg-green-50 p-2 rounded">
+                      ✓ Bu ürün netlendi. Son fiş yazdırılacak ve işlem tamamlanacak.
+                    </p>
+                  )}
+                  {formData.status === 'IADE' && (
+                    <p className="text-xs text-red-600 bg-red-50 p-2 rounded">
+                      ❌ Bu ürün iade edildi. Sistemde stok olarak sayılmayacak ve tekrar güncellenemeyecek.
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -1588,8 +1612,8 @@ export default function MalKabulDuzenle() {
                   brutKg: parseFloat(formData.brutKg) || 0,
                   daraKg: parseFloat(formData.daraKg) || 0,
                   girisKg: parseFloat(formData.girisKg) || 0,
-                  cikmaKg: parseFloat(formData.cikmaAdet) || parseFloat(record.cikmaKg) || 0,
-                  fireKg: parseFloat(formData.fireAdet) || parseFloat(record.fireKg) || 0,
+                  cikmaKg: parseFloat(formData.cikmaAdet) || parseFloat(record.cikmaKg.toString()) || 0,
+                  fireKg: parseFloat(formData.fireAdet) || parseFloat(record.fireKg.toString()) || 0,
                   netKg: parseFloat(formData.netKg) || 0,
                   adetSayisi: parseInt(formData.adetSayisi) || 0,
                   netAdet: parseInt(formData.netAdet) || 0,
