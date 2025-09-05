@@ -140,39 +140,41 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    // Cari hesap kaydı oluştur veya güncelle
-    const cariHesapId = `cari-${recordId}-${Date.now()}`
-    
-    await prisma.cari_hesaplar.upsert({
-      where: { malKabulRecordId: recordId },
-      update: {
-        saticiTipi: record.saticiTipi,
-        saticiId: saticiId,
-        saticiAdi: saticiAdi,
-        alisTarihi: record.tarih || new Date(),
-        fisNo: record.fisNo,
-        toplamAlisMiktari: netMiktar,
-        birimFiyat: alisFiyati,
-        kdvHaricTutar: kdvHaricTutar,
-        herseyDahilTutar: toplamFiyat,
-        cariBakiyesi: toplamFiyat, // Şimdilik toplam tutar = bakiye
-        updatedAt: new Date()
-      },
-      create: {
-        id: cariHesapId,
-        saticiTipi: record.saticiTipi,
-        saticiId: saticiId,
-        saticiAdi: saticiAdi,
-        alisTarihi: record.tarih || new Date(),
-        fisNo: record.fisNo,
-        malKabulRecordId: recordId,
-        toplamAlisMiktari: netMiktar,
-        birimFiyat: alisFiyati,
-        kdvHaricTutar: kdvHaricTutar,
-        herseyDahilTutar: toplamFiyat,
-        cariBakiyesi: toplamFiyat // Şimdilik toplam tutar = bakiye
-      }
-    })
+    // Cari hesap kaydı sadece evrak yükleme durumunda veya onaylanan manuel faturalar için oluştur
+    if (faturaYontemi === 'EVRAK') {
+      const cariHesapId = `cari-${recordId}-${Date.now()}`
+      
+      await prisma.cari_hesaplar.upsert({
+        where: { malKabulRecordId: recordId },
+        update: {
+          saticiTipi: record.saticiTipi,
+          saticiId: saticiId,
+          saticiAdi: saticiAdi,
+          alisTarihi: record.tarih || new Date(),
+          fisNo: record.fisNo,
+          toplamAlisMiktari: netMiktar,
+          birimFiyat: alisFiyati,
+          kdvHaricTutar: kdvHaricTutar,
+          herseyDahilTutar: toplamFiyat,
+          cariBakiyesi: toplamFiyat, // Şimdilik toplam tutar = bakiye
+          updatedAt: new Date()
+        },
+        create: {
+          id: cariHesapId,
+          saticiTipi: record.saticiTipi,
+          saticiId: saticiId,
+          saticiAdi: saticiAdi,
+          alisTarihi: record.tarih || new Date(),
+          fisNo: record.fisNo,
+          malKabulRecordId: recordId,
+          toplamAlisMiktari: netMiktar,
+          birimFiyat: alisFiyati,
+          kdvHaricTutar: kdvHaricTutar,
+          herseyDahilTutar: toplamFiyat,
+          cariBakiyesi: toplamFiyat // Şimdilik toplam tutar = bakiye
+        }
+      })
+    }
 
     return NextResponse.json({
       success: true,

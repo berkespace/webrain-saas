@@ -50,6 +50,7 @@ interface CariHesapRecord {
   kdvHaricTutar: number
   herseyDahilTutar: number
   cariBakiyesi: number
+  faturaSeriNo?: string
   malKabulRecord: {
     id: string
     fisNo: string
@@ -87,9 +88,17 @@ interface CariHesapRecord {
   }
 }
 
+interface SaticiOption {
+  id: string
+  name: string
+  type: string
+}
+
 export default function CariHesaplar() {
   const [records, setRecords] = useState<CariHesapRecord[]>([])
   const [loading, setLoading] = useState(true)
+  const [saticilar, setSaticilar] = useState<SaticiOption[]>([])
+  const [selectedSatici, setSelectedSatici] = useState<string>('')
   const [searchTerm, setSearchTerm] = useState('')
   const [saticiTipiFilter, setSaticiTipiFilter] = useState<string>('ALL')
   const [sortBy, setSortBy] = useState<'alisTarihi' | 'fisNo' | 'cariBakiyesi'>('alisTarihi')
@@ -97,17 +106,54 @@ export default function CariHesaplar() {
   const [exportLoading, setExportLoading] = useState(false)
   const [selectedRecord, setSelectedRecord] = useState<CariHesapRecord | null>(null)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
+  const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false)
   
   const { toast } = useToast()
 
   useEffect(() => {
-    fetchRecords()
+    fetchSaticilar()
+    // İlk yükleme için loading'i 2 saniye sonra false yap (fallback)
+    const timeout = setTimeout(() => {
+      setLoading(false)
+    }, 2000)
+    
+    return () => clearTimeout(timeout)
   }, [])
 
-  const fetchRecords = async () => {
+  useEffect(() => {
+    if (selectedSatici) {
+      fetchRecords(selectedSatici)
+    } else {
+      setRecords([])
+    }
+  }, [selectedSatici])
+
+  const fetchSaticilar = async () => {
+    try {
+      console.log('Satıcılar yükleniyor...')
+      const response = await fetch('/api/cari-hesaplar?action=saticilar')
+      const data = await response.json()
+      
+      console.log('Satıcı response:', response.ok, data)
+      
+      if (response.ok) {
+        setSaticilar(data.saticilar || [])
+        console.log('Satıcılar yüklendi:', data.saticilar)
+      } else {
+        console.error('Satıcılar alınamadı:', data.error)
+      }
+    } catch (error) {
+      console.error('Satıcılar fetch hatası:', error)
+    } finally {
+      // İlk yükleme bittiğinde loading'i false yap
+      setLoading(false)
+    }
+  }
+
+  const fetchRecords = async (saticiId: string) => {
     try {
       setLoading(true)
-      const response = await fetch('/api/cari-hesaplar')
+      const response = await fetch(`/api/cari-hesaplar?saticiId=${saticiId}`)
       const data = await response.json()
       
       if (response.ok) {
@@ -325,32 +371,33 @@ export default function CariHesaplar() {
         <CardContent>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-2">
+              <label className="text-sm font-medium">Cari Seçimi</label>
+              <Select value={selectedSatici} onValueChange={setSelectedSatici}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Cari hesap seçin" />
+                </SelectTrigger>
+                <SelectContent>
+                  {saticilar.map((satici) => (
+                    <SelectItem key={satici.id} value={satici.id}>
+                      {satici.name} ({satici.type})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
               <label className="text-sm font-medium">Arama</label>
               <div className="relative">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Fiş no, satıcı, ürün ara..."
+                  placeholder="Fiş no, fatura no ara..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
+                  disabled={!selectedSatici}
                 />
               </div>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Satıcı Tipi</label>
-              <Select value={saticiTipiFilter} onValueChange={setSaticiTipiFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Satıcı tipi seçin" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="ALL">Tümü</SelectItem>
-                  <SelectItem value="KOMISYONCU">Komisyoncu</SelectItem>
-                  <SelectItem value="OZEL_FIRMA">Özel Firma</SelectItem>
-                  <SelectItem value="MUSTAHSIL">Müstahsil</SelectItem>
-                  <SelectItem value="URETICI">Üretici</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
 
             <div className="space-y-2">
@@ -408,19 +455,18 @@ export default function CariHesaplar() {
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left p-3 font-medium">Alış Tarihi</th>
-                  <th className="text-left p-3 font-medium">Fiş No</th>
-                  <th className="text-left p-3 font-medium">Satıcı</th>
-                  <th className="text-left p-3 font-medium">Ürün</th>
-                  <th className="text-left p-3 font-medium">Toplam Alış Miktarı</th>
-                  <th className="text-left p-3 font-medium">KDV Vergi Hariç</th>
-                  <th className="text-left p-3 font-medium">Herşey Dahil Tutar</th>
-                  <th className="text-left p-3 font-medium">Cari Bakiyesi</th>
-                  <th className="text-left p-3 font-medium">İşlemler</th>
-                </tr>
-              </thead>
+                              <thead>
+                  <tr className="border-b">
+                    <th className="text-left p-3 font-medium">Alış Tarihi</th>
+                    <th className="text-left p-3 font-medium">Fiş No</th>
+                    <th className="text-left p-3 font-medium">Fatura No</th>
+                    <th className="text-left p-3 font-medium">Toplam Alış Miktarı</th>
+                    <th className="text-left p-3 font-medium">KDV Vergi Hariç</th>
+                    <th className="text-left p-3 font-medium">Herşey Dahil Tutar</th>
+                    <th className="text-left p-3 font-medium">Cari Bakiyesi</th>
+                    <th className="text-left p-3 font-medium">İşlemler</th>
+                  </tr>
+                </thead>
               <tbody>
                 {sortedRecords.map((record) => (
                   <tr key={record.id} className="border-b hover:bg-muted/50">
@@ -433,23 +479,30 @@ export default function CariHesaplar() {
                       </div>
                     </td>
                     <td className="p-3">
-                      <div className="font-mono text-sm">{record.fisNo}</div>
+                      <Button
+                        variant="link"
+                        className="p-0 h-auto font-mono text-sm text-blue-600 hover:text-blue-800"
+                        onClick={() => openDetailModal(record)}
+                        title="Fiş detaylarını görüntüle"
+                      >
+                        {record.fisNo}
+                        <ExternalLink className="h-3 w-3 ml-1" />
+                      </Button>
                     </td>
                     <td className="p-3">
-                      <div>
-                        <div className="font-medium">{record.saticiAdi}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {record.saticiTipi}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-3">
-                      <div>
-                        <div className="font-medium">{record.malKabulRecord.urunler.ad}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {record.malKabulRecord.urunler.kategori} • {record.malKabulRecord.urunler.birim}
-                        </div>
-                      </div>
+                      {record.faturaSeriNo ? (
+                        <Button
+                          variant="link"
+                          className="p-0 h-auto text-sm text-blue-600 hover:text-blue-800"
+                          onClick={() => openDetailModal(record)}
+                          title="Fatura detaylarını görüntüle"
+                        >
+                          {record.faturaSeriNo}
+                          <ExternalLink className="h-3 w-3 ml-1" />
+                        </Button>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">-</span>
+                      )}
                     </td>
                     <td className="p-3">
                       <div className="text-sm font-medium">
@@ -498,12 +551,22 @@ export default function CariHesaplar() {
             </table>
           </div>
 
-          {sortedRecords.length === 0 && (
+          {!selectedSatici && (
             <div className="text-center py-8">
               <CreditCard className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-              <h3 className="text-lg font-medium mb-2">Cari hesap bulunamadı</h3>
+              <h3 className="text-lg font-medium mb-2">Cari hesap seçin</h3>
               <p className="text-muted-foreground">
-                Şu anda cari hesap kaydı bulunmuyor.
+                Lütfen yukarıdan görüntülemek istediğiniz cari hesabı seçin.
+              </p>
+            </div>
+          )}
+
+          {selectedSatici && sortedRecords.length === 0 && !loading && (
+            <div className="text-center py-8">
+              <CreditCard className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+              <h3 className="text-lg font-medium mb-2">Kayıt bulunamadı</h3>
+              <p className="text-muted-foreground">
+                Bu cari hesap için kayıt bulunmuyor.
               </p>
             </div>
           )}
