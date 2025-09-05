@@ -413,12 +413,8 @@ export default function MalKabulDuzenle() {
       if (formData.status === 'NETLENDI') {
         setShowFinalReceipt(true)
       } else {
-        // Eğer durum NETLENDI değilse, normal yönlendirme yap
-        if (userRole === 'MAL_KABULCU') {
-          router.push('/dashboard/satin-alma')
-        } else {
-          router.push('/dashboard/mal-kabul')
-        }
+        // Mal Kabulcu her durumda mal kabul sayfasına yönlendirilir
+        router.push('/dashboard/mal-kabul')
       }
     } catch (error) {
       console.error('Güncelleme hatası:', error)
