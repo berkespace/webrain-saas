@@ -765,9 +765,10 @@ export function Sidebar() {
                 variant="ghost"
                 onClick={() => toggleExpanded(item.title)}
                 className={cn(
-                  "w-full justify-start h-10 px-3 py-2",
-                  "text-sm font-semibold text-muted-foreground uppercase tracking-wide",
-                  "border-b border-border/50 mb-2 hover:bg-muted/50"
+                  "w-full justify-start h-11 px-3 py-2",
+                  "text-sm font-semibold text-foreground uppercase tracking-wide",
+                  "border-b-2 border-primary/20 mb-3 hover:bg-primary/5",
+                  "transition-all duration-200"
                 )}
               >
                 {item.icon}
@@ -789,9 +790,11 @@ export function Sidebar() {
               <Button
                 variant={active ? "secondary" : "ghost"}
                 className={cn(
-                  "w-full justify-start h-10",
-                  level > 0 && "ml-4",
-                  active && "bg-primary/10 text-primary"
+                  "w-full justify-start h-9",
+                  level > 0 && "ml-2 text-sm",
+                  level > 1 && "ml-4 text-xs",
+                  active && "bg-primary/10 text-primary",
+                  "hover:bg-muted/50 transition-colors"
                 )}
               >
                 {item.icon}
@@ -826,7 +829,10 @@ export function Sidebar() {
         </div>
         
         {hasChildren && isExpanded && !isCollapsed && (
-          <div className="mt-1">
+          <div className={cn(
+            "mt-1 ml-2 border-l-2 border-border/30 pl-2",
+            "bg-muted/20 rounded-r-md py-1"
+          )}>
             {item.children!.map(child => renderSidebarItem(child, level + 1))}
           </div>
         )}
