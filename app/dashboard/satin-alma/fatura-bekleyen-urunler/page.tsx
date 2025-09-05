@@ -170,18 +170,41 @@ export default function FaturaBekleyenUrunler() {
 
   // Fiyat hesaplama fonksiyonları
   const calculateTotalPrice = () => {
+    if (!selectedRecord) return 0
+    
     const basePrice = parseFloat(alisFiyati) || 0
-    let total = basePrice
+    
+    // Net miktarı hesapla (KG veya Adet)
+    const netMiktar = selectedRecord.urunler.birim === 'KG' 
+      ? (selectedRecord.netKg || 0) 
+      : (selectedRecord.netAdet || 0)
+    
+    // Toplam fiyatı hesapla: Net Miktar * Alış Fiyatı
+    let toplamFiyat = netMiktar * basePrice
     
     if (kdvHesapla) {
-      total += (basePrice * kdvOrani) / 100
+      toplamFiyat += (toplamFiyat * kdvOrani) / 100
     }
     
     if (belediyeRusumHesapla) {
-      total += (basePrice * belediyeRusumOrani) / 100
+      toplamFiyat += (toplamFiyat * belediyeRusumOrani) / 100
     }
     
-    return total
+    return toplamFiyat
+  }
+
+  const calculateKdvHaricTutar = () => {
+    if (!selectedRecord) return 0
+    
+    const basePrice = parseFloat(alisFiyati) || 0
+    
+    // Net miktarı hesapla (KG veya Adet)
+    const netMiktar = selectedRecord.urunler.birim === 'KG' 
+      ? (selectedRecord.netKg || 0) 
+      : (selectedRecord.netAdet || 0)
+    
+    // KDV hariç tutar: Net Miktar * Alış Fiyatı
+    return netMiktar * basePrice
   }
 
   const openModal = (record: MalKabulRecord) => {
@@ -949,19 +972,33 @@ export default function FaturaBekleyenUrunler() {
                   <div className="p-4 bg-muted rounded-lg">
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span>Alış Fiyatı:</span>
+                        <span>Birim Fiyat:</span>
                         <span className="font-medium">₺{parseFloat(alisFiyati || '0').toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Net Miktar:</span>
+                        <span className="font-medium">
+                          {selectedRecord ? (
+                            selectedRecord.urunler.birim === 'KG' 
+                              ? `${selectedRecord.netKg || 0} KG`
+                              : `${selectedRecord.netAdet || 0} Adet`
+                          ) : '0'}
+                        </span>
+                      </div>
+                      <div className="flex justify-between border-t pt-2">
+                        <span>KDV Hariç Tutar:</span>
+                        <span className="font-medium">₺{calculateKdvHaricTutar().toFixed(2)}</span>
                       </div>
                       {kdvHesapla && (
                         <div className="flex justify-between text-sm text-muted-foreground">
                           <span>KDV (%{kdvOrani}):</span>
-                          <span>₺{((parseFloat(alisFiyati || '0') * kdvOrani) / 100).toFixed(2)}</span>
+                          <span>₺{((calculateKdvHaricTutar() * kdvOrani) / 100).toFixed(2)}</span>
                         </div>
                       )}
                       {belediyeRusumHesapla && (
                         <div className="flex justify-between text-sm text-muted-foreground">
                           <span>Belediye Rüsum (%{belediyeRusumOrani}):</span>
-                          <span>₺{((parseFloat(alisFiyati || '0') * belediyeRusumOrani) / 100).toFixed(2)}</span>
+                          <span>₺{((calculateKdvHaricTutar() * belediyeRusumOrani) / 100).toFixed(2)}</span>
                         </div>
                       )}
                       <div className="flex justify-between border-t pt-2 font-bold text-lg">
