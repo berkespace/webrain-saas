@@ -514,6 +514,18 @@ export function Sidebar() {
               icon: <FileText className="h-4 w-4" />
             }
           ]
+        },
+        {
+          title: 'Muhasebe İşlemleri',
+          href: '#',
+          icon: <BarChart3 className="h-4 w-4" />,
+          children: [
+            {
+              title: 'Cari Hesaplar',
+              href: '/dashboard/muhasebe/cari-hesaplar',
+              icon: <CreditCard className="h-4 w-4" />
+            }
+          ]
         }
       ]
     }
