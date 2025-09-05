@@ -761,16 +761,28 @@ export function Sidebar() {
         <div className="flex items-center">
           {isCategoryHeader ? (
             <div className="flex-1">
-              <div className={cn(
-                "w-full justify-start h-10 px-3 py-2 flex items-center",
-                "text-sm font-semibold text-muted-foreground uppercase tracking-wide",
-                "border-b border-border/50 mb-2"
-              )}>
+              <Button
+                variant="ghost"
+                onClick={() => toggleExpanded(item.title)}
+                className={cn(
+                  "w-full justify-start h-10 px-3 py-2",
+                  "text-sm font-semibold text-muted-foreground uppercase tracking-wide",
+                  "border-b border-border/50 mb-2 hover:bg-muted/50"
+                )}
+              >
                 {item.icon}
                 {!isCollapsed && (
-                  <span className="ml-2 flex-1 text-left">{item.title}</span>
+                  <>
+                    <span className="ml-2 flex-1 text-left">{item.title}</span>
+                    <ChevronRight 
+                      className={cn(
+                        "h-4 w-4 transition-transform",
+                        isExpanded && "rotate-90"
+                      )} 
+                    />
+                  </>
                 )}
-              </div>
+              </Button>
             </div>
           ) : (
             <Link href={item.href} className="flex-1">
