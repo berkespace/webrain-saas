@@ -140,6 +140,7 @@ export default function MalKabulDuzenle() {
   const [qrDataUrl, setQrDataUrl] = useState<string>('')
   const [barcodeDataUrl, setBarcodeDataUrl] = useState<string>('')
   const [record, setRecord] = useState<MalKabulRecord | null>(null)
+  const [userRole, setUserRole] = useState<string>('')
   const [komisyoncular, setKomisyoncular] = useState<Komisyoncu[]>([])
   const [ureticiler, setUreticiler] = useState<Uretici[]>([])
   const [ozelFirmalar, setOzelFirmalar] = useState<OzelFirma[]>([])
@@ -171,28 +172,54 @@ export default function MalKabulDuzenle() {
     notlar: ''
   })
 
-  const userRole = (session?.user as any)?.role
-
   // Ürün birimini kontrol et
   const isAdetBased = record?.urunler?.birim?.toLowerCase() === 'adet'
+
+  // Kullanıcı rolünü al
+  useEffect(() => {
+    if (session?.user?.email) {
+      // Kullanıcı rolünü API'den al
+      fetch('/api/users/me')
+        .then(res => res.json())
+        .then(data => {
+          if (data.user?.role) {
+            setUserRole(data.user.role)
+          }
+        })
+        .catch(err => console.error('Kullanıcı rolü alınamadı:', err))
+    }
+  }, [session])
 
   // Rol bazlı erişim kontrolü
   const canEdit = userRole === 'MAL_KABULCU' || userRole === 'SATIN_ALMACI' || userRole === 'MUHASEBE' || userRole === 'ADMIN'
   const canChangeStatus = userRole === 'MAL_KABULCU' || userRole === 'ADMIN'
   const canEditBasicInfo = userRole === 'MAL_KABULCU' || userRole === 'ADMIN'
+  const canEditIadeRecords = userRole === 'MUHASEBECI' || userRole === 'ADMIN'
+  
+  // İade kayıtları için özel kontrol
+  const isIadeRecord = record?.status === 'IADE'
+  const canEditThisRecord = isIadeRecord ? canEditIadeRecords : canEdit
 
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login')
-    } else if (status === 'authenticated' && !canEdit) {
-      toast({
-        title: "Erişim Reddedildi",
-        description: "Bu sayfaya erişim yetkiniz bulunmamaktadır",
-        variant: "destructive",
-      })
+    } else if (status === 'authenticated' && !canEditThisRecord) {
+      if (isIadeRecord) {
+        toast({
+          title: "Erişim Reddedildi",
+          description: "İade edilen kayıtlar sadece muhasebeci tarafından güncellenebilir",
+          variant: "destructive",
+        })
+      } else {
+        toast({
+          title: "Erişim Reddedildi",
+          description: "Bu sayfaya erişim yetkiniz bulunmamaktadır",
+          variant: "destructive",
+        })
+      }
       router.push('/dashboard')
     }
-  }, [status, router, canEdit, toast])
+  }, [status, router, canEditThisRecord, isIadeRecord, toast])
 
   useEffect(() => {
     if (id) {
@@ -945,6 +972,21 @@ export default function MalKabulDuzenle() {
           </div>
         </div>
 
+        {/* İade kayıtları için uyarı */}
+        {isIadeRecord && (
+          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-yellow-600" />
+              <div>
+                <h3 className="font-semibold text-yellow-800">İade Edilen Kayıt</h3>
+                <p className="text-yellow-700 text-sm">
+                  Bu kayıt iade edilmiştir. Sadece muhasebeci rolü bu kaydı güncelleyebilir.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Temel Bilgiler */}
@@ -998,7 +1040,7 @@ export default function MalKabulDuzenle() {
                   <Select 
                     value={formData.saticiTipi || "OZEL_FIRMA"} 
                     onValueChange={(value) => handleInputChange('saticiTipi', value)}
-                    disabled={!canEditBasicInfo}
+                    disabled={!canEditThisRecord}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -1017,7 +1059,7 @@ export default function MalKabulDuzenle() {
                     <Select 
                       value={formData.ozelFirmaId || ""} 
                       onValueChange={(value) => handleInputChange('ozelFirmaId', value)}
-                      disabled={!canEditBasicInfo}
+                      disabled={!canEditThisRecord}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Özel firma seçin" />
@@ -1040,7 +1082,7 @@ export default function MalKabulDuzenle() {
                       <Select 
                         value={formData.komisyoncuId || ""} 
                         onValueChange={(value) => handleInputChange('komisyoncuId', value)}
-                        disabled={!canEditBasicInfo}
+                        disabled={!canEditThisRecord}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Komisyoncu seçin" />
@@ -1059,7 +1101,7 @@ export default function MalKabulDuzenle() {
                       <Select 
                         value={formData.ureticiId || ""} 
                         onValueChange={(value) => handleInputChange('ureticiId', value)}
-                        disabled={!canEditBasicInfo}
+                        disabled={!canEditThisRecord}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Üretici seçin" />
@@ -1081,7 +1123,7 @@ export default function MalKabulDuzenle() {
                     <Select 
                       value={formData.mustahsilId || ""} 
                       onValueChange={(value) => handleInputChange('mustahsilId', value)}
-                      disabled={!canEditBasicInfo}
+                      disabled={!canEditThisRecord}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Müstahsil seçin" />
@@ -1114,7 +1156,7 @@ export default function MalKabulDuzenle() {
                   <Select 
                     value={formData.urunId || ""} 
                     onValueChange={(value) => handleInputChange('urunId', value)}
-                    disabled={!canEditBasicInfo}
+                    disabled={!canEditThisRecord}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Ürün seçin" />

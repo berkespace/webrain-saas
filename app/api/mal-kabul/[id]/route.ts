@@ -152,6 +152,22 @@ export async function PUT(
       )
     }
 
+    // İade edilen kayıtların güncellenmesi sadece muhasebeci rolüne izin verilir
+    if (existingRecord.status === 'IADE') {
+      // Kullanıcının rolünü kontrol et
+      const user = await prisma.users.findUnique({
+        where: { email: session.user.email },
+        select: { role: true }
+      })
+
+      if (!user || user.role !== 'MUHASEBECI') {
+        return NextResponse.json(
+          { error: "İade edilen kayıtlar sadece muhasebeci tarafından güncellenebilir" },
+          { status: 403 }
+        )
+      }
+    }
+
     // Validasyon
     if (!urunId) {
       return NextResponse.json(
