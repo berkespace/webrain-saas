@@ -3215,6 +3215,21 @@ export default function YeniMalKabul() {
               >
                 Dashboard'a Dön
               </Button>
+              
+              {/* Test QR Kodu */}
+              <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p className="text-sm text-yellow-800 font-medium mb-2">Test QR Kodu:</p>
+                <div className="flex justify-center">
+                  <QRCode 
+                    value="HNR0001|2025-01-05|MUSTAHSIL|Test Ürün" 
+                    size={100} 
+                    className="border border-gray-300 rounded"
+                  />
+                </div>
+                <p className="text-xs text-yellow-700 mt-2">
+                  Bu QR kodu tarayarak test edebilirsiniz
+                </p>
+              </div>
             </div>
           </div>
         </div>
