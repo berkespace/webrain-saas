@@ -465,7 +465,7 @@ export default function MalKabulListePage() {
                     {record.urunler.birim?.toLowerCase() === 'adet' ? (
                       <span>{record.adetSayisi || 0} adet</span>
                     ) : (
-                      <span>{record.girisKg.toFixed(2)} kg</span>
+                      <span>{record.girisKg?.toFixed(2) || '0.00'} kg</span>
                     )}
                   </div>
                 </div>
@@ -492,7 +492,11 @@ export default function MalKabulListePage() {
                       </div>
                       <div>
                         <span className="text-gray-600">Çıkma:</span>
-                        <span className="ml-2 font-medium">{record.cikmaKg || 0} adet</span>
+                        <span className="ml-2 font-medium">{Math.round(record.cikmaKg || 0)} adet</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-600">Fire:</span>
+                        <span className="ml-2 font-medium">{Math.round(record.fireKg || 0)} adet</span>
                       </div>
                       <div>
                         <span className="text-gray-600">Net:</span>

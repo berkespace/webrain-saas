@@ -10,6 +10,8 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ArrowLeft, Save, Loader2, Package, User, Building, Truck, Calendar, FileText, Scale, CheckCircle, AlertTriangle, Printer, X } from 'lucide-react'
+import QRCode from 'qrcode'
+import JsBarcode from 'jsbarcode'
 import { useToast } from '@/components/ui/use-toast'
 import Link from 'next/link'
 
@@ -156,16 +158,23 @@ export default function MalKabulDuzenle() {
     mustahsilId: '',
     urunId: '',
     kasaSayisi: '',
+    adetSayisi: '',
     brutKg: '',
     daraKg: '',
     girisKg: '',
     cikmaFireKg: '',
+    cikmaAdet: '',
+    fireAdet: '',
     netKg: '',
-    status: 'FATURA_BEKLIYOR' as 'FATURA_BEKLIYOR' | 'FATURALANDI' | 'NETLENDI' | 'TAMAMLANDI' | 'IPTAL',
+    netAdet: '',
+    status: 'NETLENDI' as 'NETLENDI',
     notlar: ''
   })
 
   const userRole = (session?.user as any)?.role
+
+  // Ürün birimini kontrol et
+  const isAdetBased = record?.urunler?.birim?.toLowerCase() === 'adet'
 
   // Rol bazlı erişim kontrolü
   const canEdit = userRole === 'MAL_KABULCU' || userRole === 'SATIN_ALMACI' || userRole === 'MUHASEBE' || userRole === 'ADMIN'
@@ -196,29 +205,49 @@ export default function MalKabulDuzenle() {
     }
   }, [id])
 
-  // Giriş KG hesaplama (Brüt KG - Dara KG)
+  // Giriş KG hesaplama (Brüt KG - Dara KG) - sadece KG ürünler için
   useEffect(() => {
-    const brutKgNum = parseFloat(formData.brutKg) || 0;
-    const daraKgNum = parseFloat(formData.daraKg) || 0;
-    const girisKgNum = brutKgNum - daraKgNum;
-    
-    setFormData(prev => ({
-      ...prev,
-      girisKg: girisKgNum.toString()
-    }));
-  }, [formData.brutKg, formData.daraKg]);
+    if (!isAdetBased) {
+      const brutKgNum = parseFloat(formData.brutKg) || 0;
+      const daraKgNum = parseFloat(formData.daraKg) || 0;
+      const girisKgNum = brutKgNum - daraKgNum;
+      
+      setFormData(prev => ({
+        ...prev,
+        girisKg: girisKgNum.toString()
+      }));
+    }
+  }, [formData.brutKg, formData.daraKg, isAdetBased]);
 
-  // Net KG hesaplama (sadece çıkma/fire KG değiştiğinde)
+  // Net KG hesaplama (çıkma ve fire KG değiştiğinde) - sadece KG ürünler için
   useEffect(() => {
-    const girisKgNum = parseFloat(formData.girisKg) || 0;
-    const cikmaFireKgNum = parseFloat(formData.cikmaFireKg) || 0;
-    const netKgNum = girisKgNum - cikmaFireKgNum;
-    
-    setFormData(prev => ({
-      ...prev,
-      netKg: netKgNum.toString()
-    }));
-  }, [formData.girisKg, formData.cikmaFireKg]);
+    if (!isAdetBased) {
+      const girisKgNum = parseFloat(formData.girisKg) || 0;
+      const cikmaKgNum = parseFloat(formData.cikmaAdet) || 0;
+      const fireKgNum = parseFloat(formData.fireAdet) || 0;
+      const netKgNum = girisKgNum - cikmaKgNum - fireKgNum;
+      
+      setFormData(prev => ({
+        ...prev,
+        netKg: netKgNum.toString()
+      }));
+    }
+  }, [formData.girisKg, formData.cikmaAdet, formData.fireAdet, isAdetBased]);
+
+  // Net Adet hesaplama (Adet Sayısı - Çıkma Adet - Fire Adet) - sadece adet ürünler için
+  useEffect(() => {
+    if (isAdetBased) {
+      const adetSayisiNum = parseFloat(formData.adetSayisi) || 0;
+      const cikmaAdetNum = parseFloat(formData.cikmaAdet) || 0;
+      const fireAdetNum = parseFloat(formData.fireAdet) || 0;
+      const netAdetNum = adetSayisiNum - cikmaAdetNum - fireAdetNum;
+      
+      setFormData(prev => ({
+        ...prev,
+        netAdet: netAdetNum.toString()
+      }));
+    }
+  }, [formData.adetSayisi, formData.cikmaAdet, formData.fireAdet, isAdetBased]);
 
   const fetchRecord = async () => {
     try {
@@ -233,6 +262,12 @@ export default function MalKabulDuzenle() {
       console.log('Mustahsil data in record:', data.mustahsil)
       console.log('Mustahsil ID in record:', data.mustahsilId)
       console.log('Satici tipi in record:', data.saticiTipi)
+      console.log('Adet değerleri:', {
+        cikmaKg: data.cikmaKg,
+        fireKg: data.fireKg,
+        netAdet: data.netAdet,
+        adetSayisi: data.adetSayisi
+      })
       
       // Form data'yı doldur
       const newFormData = {
@@ -245,12 +280,16 @@ export default function MalKabulDuzenle() {
         mustahsilId: data.mustahsilId || '',
         urunId: data.urunId || '',
         kasaSayisi: data.kasaSayisi?.toString() || '',
+        adetSayisi: data.adetSayisi?.toString() || '',
         brutKg: data.brutKg?.toString() || '',
         daraKg: data.daraKg?.toString() || '',
         girisKg: data.girisKg?.toString() || '',
-        cikmaFireKg: data.cikmaFireKg?.toString() || '',
+        cikmaFireKg: (data.cikmaKg + data.fireKg)?.toString() || '',
+        cikmaAdet: data.cikmaKg?.toString() || '',
+        fireAdet: data.fireKg?.toString() || '',
         netKg: data.netKg?.toString() || '',
-        status: data.status || 'FATURA_BEKLIYOR',
+        netAdet: data.netAdet?.toString() || '',
+        status: data.status || 'NETLENDI',
         notlar: data.notlar || ''
       }
       
@@ -334,12 +373,29 @@ export default function MalKabulDuzenle() {
     setSaving(true)
 
     try {
+      // Debug: Gönderilecek verileri logla
+      console.log('handleSubmit - Gönderilecek formData:', {
+        formData,
+        cikmaAdet: formData.cikmaAdet,
+        fireAdet: formData.fireAdet,
+        adetSayisi: formData.adetSayisi,
+        isAdetBased
+      })
+
+      // Form verilerini API'ye uygun formatta hazırla
+      const submitData = {
+        ...formData,
+        // KG birimi için çıkma ve fire değerlerini cikmaAdet ve fireAdet'ten al
+        cikmaKg: isAdetBased ? formData.cikmaAdet : formData.cikmaAdet,
+        fireKg: isAdetBased ? formData.fireAdet : formData.fireAdet,
+      }
+
       const response = await fetch(`/api/mal-kabul/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(submitData),
       })
 
       if (!response.ok) {
@@ -378,6 +434,349 @@ export default function MalKabulDuzenle() {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
+  }
+
+  // Fiş yazdırma fonksiyonu (test sayfasındaki ile aynı)
+  const printReceipt = async (fişTipi: 'ILK_KAYIT' | 'SON_DURUM') => {
+    try {
+      if (!record) return
+
+      // Fiş verilerini hazırla
+      const receiptData = {
+        fisNo: record.fisNo,
+        tarih: record.tarih,
+        saticiTipi: record.saticiTipi,
+        saticiAdi: getSaticiAdi(),
+        urunAdi: record.urunler?.ad || '',
+        brutKg: parseFloat(formData.brutKg) || 0,
+        daraKg: parseFloat(formData.daraKg) || 0,
+        girisKg: parseFloat(formData.girisKg) || 0,
+        cikmaFireKg: isAdetBased ? (parseFloat(formData.cikmaAdet) || 0) : (parseFloat(formData.cikmaFireKg) || 0),
+        netKg: isAdetBased ? (parseFloat(formData.netAdet) || 0) : (parseFloat(formData.netKg) || 0),
+        ambalajAdi: 'Kasa',
+        kasaSayisi: parseInt(formData.kasaSayisi) || 0,
+        paletAdi: null,
+        paletSayisi: 0,
+        notlar: formData.notlar || '',
+        malKabulcuAdi: `${record.malKabulcu?.firstName || ''} ${record.malKabulcu?.lastName || ''}`.trim()
+      }
+      
+      // QR kod ve barkod resimlerini oluştur
+      const qrValue = `${receiptData.fisNo}|${receiptData.tarih}|${receiptData.saticiTipi}|${receiptData.urunAdi}`
+      
+      // QR kod oluştur
+      const QRCodeLib = await import('qrcode')
+      const qrDataUrl = await QRCodeLib.toDataURL(qrValue, {
+        width: 80,
+        margin: 1,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      })
+      
+      // Barkod oluştur
+      const JsBarcode = await import('jsbarcode')
+      const canvas = document.createElement('canvas')
+      JsBarcode.default(canvas, receiptData.fisNo, {
+        format: 'CODE128',
+        width: 2,
+        height: 50,
+        displayValue: true,
+        fontSize: 12,
+        margin: 5
+      })
+      const barcodeDataUrl = canvas.toDataURL('image/png')
+      
+      // Yazdırma penceresini aç
+      const printWindow = window.open('', '_blank')
+      if (printWindow) {
+        const fişBaşlığı = fişTipi === 'ILK_KAYIT' ? 'BİLGİ FİŞİ' : 'SON DURUM FİŞİ'
+        
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>${fişBaşlığı} - ${receiptData.fisNo}</title>
+              <style>
+                body { 
+                  font-family: monospace; 
+                  font-size: 12px; 
+                  width: 80mm; 
+                  max-width: 80mm; 
+                  margin: 0; 
+                  padding: 8px;
+                  box-sizing: border-box;
+                  overflow-x: hidden;
+                }
+                .header { text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 10px; }
+                .section { margin-bottom: 12px; border-bottom: 1px solid #000; padding-bottom: 8px; }
+                .section-title { font-weight: bold; font-size: 12px; margin-bottom: 8px; text-align: center; background: #f0f0f0; padding: 3px; border-radius: 3px; }
+                .row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; }
+                .label { font-weight: bold; }
+                .value { text-align: right; font-weight: 500; }
+                .copy-info {
+                  text-align: center;
+                  font-size: 10px;
+                  color: #666;
+                  margin-top: 10px;
+                  padding: 5px;
+                  background: #f0f0f0;
+                  border-radius: 3px;
+                  font-weight: bold;
+                }
+                .page-break { page-break-after: always; }
+                .copy-label { 
+                  text-align: center; 
+                  font-size: 14px; 
+                  font-weight: bold; 
+                  margin: 15px 0; 
+                  padding: 8px; 
+                  background: #000; 
+                  color: #fff; 
+                  border-radius: 5px; 
+                }
+                
+                @media print {
+                  body { 
+                    width: 80mm !important; 
+                    max-width: 80mm !important; 
+                    margin: 0 !important; 
+                    padding: 8px !important; 
+                    font-size: 12px !important;
+                  }
+                  @page { 
+                    size: 80mm auto; 
+                    margin: 0; 
+                  }
+                  .qr-code img, .barcode img { 
+                    display: block !important; 
+                  }
+                }
+              </style>
+            </head>
+            <body>
+              <div class="header">${fişBaşlığı}</div>
+              
+              <div class="section">
+                <div class="section-title">FİŞ BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Fiş No:</span>
+                  <span class="value">${receiptData.fisNo}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Tarih:</span>
+                  <span class="value">${new Date(receiptData.tarih).toLocaleDateString('tr-TR')}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Mal Kabulcu:</span>
+                  <span class="value">${receiptData.malKabulcuAdi}</span>
+                </div>
+              </div>
+              
+              <div class="section">
+                <div class="section-title">SATICI BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Satıcı Tipi:</span>
+                  <span class="value">${receiptData.saticiTipi}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Satıcı Adı:</span>
+                  <span class="value">${receiptData.saticiAdi}</span>
+                </div>
+              </div>
+              
+              <div class="section">
+                <div class="section-title">ÜRÜN BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Ürün:</span>
+                  <span class="value">${receiptData.urunAdi}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Kasa Sayısı:</span>
+                  <span class="value">${receiptData.kasaSayisi}</span>
+                </div>
+                ${receiptData.paletAdi ? `
+                <div class="row">
+                  <span class="label">Palet:</span>
+                  <span class="value">${receiptData.paletAdi} (${receiptData.paletSayisi})</span>
+                </div>
+                ` : ''}
+              </div>
+              
+              <div class="section">
+                <div class="section-title">KİLOGRAM BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Brüt KG:</span>
+                  <span class="value">${receiptData.brutKg.toFixed(2)}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Dara KG:</span>
+                  <span class="value">${receiptData.daraKg.toFixed(2)}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Giriş KG:</span>
+                  <span class="value">${receiptData.girisKg.toFixed(2)}</span>
+                </div>
+                ${fişTipi === 'SON_DURUM' ? `
+                <div class="row">
+                  <span class="label">Çıkma Fire KG:</span>
+                  <span class="value">${receiptData.cikmaFireKg.toFixed(2)}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Net KG:</span>
+                  <span class="value">${receiptData.netKg.toFixed(2)}</span>
+                </div>
+                ` : ''}
+              </div>
+              
+              ${receiptData.notlar ? `
+              <div class="section">
+                <div class="section-title">NOTLAR</div>
+                <div class="row">
+                  <span class="value">${receiptData.notlar}</span>
+                </div>
+              </div>
+              ` : ''}
+              
+              <div class="copy-info">
+                Bu fiş ${fişTipi === 'ILK_KAYIT' ? 'ilk kayıt' : 'son durum'} için yazdırılmıştır
+              </div>
+              
+              <div class="copy-label">ORİJİNAL - MAL KABULCU İÇİN</div>
+              
+              <div class="qr-code">
+                <img src="${qrDataUrl}" alt="QR Code" style="width: 80px; height: 80px; display: block; margin: 10px auto;" />
+              </div>
+              
+              <div class="barcode">
+                <img src="${barcodeDataUrl}" alt="Barcode" style="width: 100%; height: 50px; display: block; margin: 10px auto;" />
+              </div>
+              
+              <div class="page-break"></div>
+              
+              <div class="header">${fişBaşlığı}</div>
+              
+              <div class="section">
+                <div class="section-title">FİŞ BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Fiş No:</span>
+                  <span class="value">${receiptData.fisNo}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Tarih:</span>
+                  <span class="value">${new Date(receiptData.tarih).toLocaleDateString('tr-TR')}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Mal Kabulcu:</span>
+                  <span class="value">${receiptData.malKabulcuAdi}</span>
+                </div>
+              </div>
+              
+              <div class="section">
+                <div class="section-title">SATICI BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Satıcı Tipi:</span>
+                  <span class="value">${receiptData.saticiTipi}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Satıcı Adı:</span>
+                  <span class="value">${receiptData.saticiAdi}</span>
+                </div>
+              </div>
+              
+              <div class="section">
+                <div class="section-title">ÜRÜN BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Ürün:</span>
+                  <span class="value">${receiptData.urunAdi}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Kasa Sayısı:</span>
+                  <span class="value">${receiptData.kasaSayisi}</span>
+                </div>
+                ${receiptData.paletAdi ? `
+                <div class="row">
+                  <span class="label">Palet:</span>
+                  <span class="value">${receiptData.paletAdi} (${receiptData.paletSayisi})</span>
+                </div>
+                ` : ''}
+              </div>
+              
+              <div class="section">
+                <div class="section-title">KİLOGRAM BİLGİLERİ</div>
+                <div class="row">
+                  <span class="label">Brüt KG:</span>
+                  <span class="value">${receiptData.brutKg.toFixed(2)}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Dara KG:</span>
+                  <span class="value">${receiptData.daraKg.toFixed(2)}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Giriş KG:</span>
+                  <span class="value">${receiptData.girisKg.toFixed(2)}</span>
+                </div>
+                ${fişTipi === 'SON_DURUM' ? `
+                <div class="row">
+                  <span class="label">Çıkma Fire KG:</span>
+                  <span class="value">${receiptData.cikmaFireKg.toFixed(2)}</span>
+                </div>
+                <div class="row">
+                  <span class="label">Net KG:</span>
+                  <span class="value">${receiptData.netKg.toFixed(2)}</span>
+                </div>
+                ` : ''}
+              </div>
+              
+              ${receiptData.notlar ? `
+              <div class="section">
+                <div class="section-title">NOTLAR</div>
+                <div class="row">
+                  <span class="value">${receiptData.notlar}</span>
+                </div>
+              </div>
+              ` : ''}
+              
+              <div class="copy-info">
+                Bu fiş ${fişTipi === 'ILK_KAYIT' ? 'ilk kayıt' : 'son durum'} için yazdırılmıştır
+              </div>
+              
+              <div class="copy-label">KOPYA - ÜRETİCİ İÇİN</div>
+              
+              <div class="qr-code">
+                <img src="${qrDataUrl}" alt="QR Code" style="width: 80px; height: 80px; display: block; margin: 10px auto;" />
+              </div>
+              
+              <div class="barcode">
+                <img src="${barcodeDataUrl}" alt="Barcode" style="width: 100%; height: 50px; display: block; margin: 10px auto;" />
+              </div>
+            </body>
+          </html>
+        `)
+        
+        printWindow.document.close()
+        
+        // Yazdırma işlemini başlat
+        setTimeout(() => {
+          printWindow.print()
+          printWindow.close()
+          
+          toast({
+            title: "Fiş Yazdırıldı",
+            description: `${fişBaşlığı} başarıyla yazdırıldı`,
+            variant: "success",
+          })
+        }, 500)
+      }
+    } catch (error) {
+      console.error('Fiş yazdırma hatası:', error)
+      toast({
+        title: "Hata",
+        description: "Fiş yazdırılırken hata oluştu",
+        variant: "destructive",
+      })
+    }
   }
 
   const getSaticiAdi = () => {
@@ -754,87 +1153,184 @@ export default function MalKabulDuzenle() {
               </CardContent>
             </Card>
 
-            {/* Ağırlık Bilgileri */}
+            {/* Ağırlık/Adet Bilgileri */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Scale className="h-5 w-5" />
-                  Ağırlık Bilgileri
+                  {isAdetBased ? (
+                    <>
+                      <Package className="h-5 w-5" />
+                      Adet Bilgileri
+                    </>
+                  ) : (
+                    <>
+                      <Scale className="h-5 w-5" />
+                      Ağırlık Bilgileri
+                    </>
+                  )}
                 </CardTitle>
-                <CardDescription>Ağırlık hesaplamaları</CardDescription>
+                <CardDescription>
+                  {isAdetBased 
+                    ? "Kasa sayısı ve adet bilgileri" 
+                    : "Ağırlık hesaplamaları"
+                  }
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="brutKg">Brüt KG *</Label>
-                    <Input
-                      id="brutKg"
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      value={formData.brutKg}
-                      onChange={(e) => handleInputChange('brutKg', e.target.value)}
-                      required
-                      readOnly={!canEditBasicInfo}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="daraKg">Dara KG *</Label>
-                    <Input
-                      id="daraKg"
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      value={formData.daraKg}
-                      onChange={(e) => handleInputChange('daraKg', e.target.value)}
-                      placeholder="0.00"
-                      required
-                      readOnly={!canEditBasicInfo}
-                    />
-                    <div className="text-xs text-muted-foreground">
-                      Kasa ve ambalaj ağırlığı toplamı
+                {isAdetBased ? (
+                  // ADET birimi için adet alanları
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="kasaSayisi">Kasa Sayısı *</Label>
+                        <Input
+                          id="kasaSayisi"
+                          type="number"
+                          value={formData.kasaSayisi}
+                          onChange={(e) => handleInputChange('kasaSayisi', e.target.value)}
+                          placeholder="0"
+                          required
+                          readOnly={!canEditBasicInfo}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="adetSayisi">Adet Sayısı *</Label>
+                        <Input
+                          id="adetSayisi"
+                          type="number"
+                          value={formData.adetSayisi || record?.adetSayisi || ''}
+                          onChange={(e) => handleInputChange('adetSayisi', e.target.value)}
+                          placeholder="0"
+                          required
+                          readOnly={!canEditBasicInfo}
+                        />
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="girisKg">Giriş KG</Label>
-                    <Input
-                      id="girisKg"
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      value={formData.girisKg}
-                      onChange={(e) => handleInputChange('girisKg', e.target.value)}
-                      readOnly
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="cikmaFireKg">Çıkma/Fire KG</Label>
-                    <Input
-                      id="cikmaFireKg"
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      value={formData.cikmaFireKg}
-                      onChange={(e) => handleInputChange('cikmaFireKg', e.target.value)}
-                    />
-                  </div>
-                </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="cikmaAdet">Çıkma Adet</Label>
+                        <Input
+                          id="cikmaAdet"
+                          type="number"
+                          value={formData.cikmaAdet || record?.cikmaKg || ''}
+                          onChange={(e) => handleInputChange('cikmaAdet', e.target.value)}
+                          placeholder="0"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="fireAdet">Fire Adet</Label>
+                        <Input
+                          id="fireAdet"
+                          type="number"
+                          value={formData.fireAdet || record?.fireKg || ''}
+                          onChange={(e) => handleInputChange('fireAdet', e.target.value)}
+                          placeholder="0"
+                        />
+                      </div>
+                    </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="netKg">Net KG (Ürün Son Durumu)</Label>
-                  <Input
-                    id="netKg"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={formData.netKg}
-                    onChange={(e) => handleInputChange('netKg', e.target.value)}
-                    readOnly
-                  />
-                </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="netAdet">Net Adet (Ürün Son Durumu)</Label>
+                      <Input
+                        id="netAdet"
+                        type="number"
+                        value={formData.netAdet || record?.netAdet || ''}
+                        onChange={(e) => handleInputChange('netAdet', e.target.value)}
+                        readOnly
+                      />
+                    </div>
+                  </>
+                ) : (
+                  // KG birimi için ağırlık alanları
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="brutKg">Brüt KG *</Label>
+                        <Input
+                          id="brutKg"
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={formData.brutKg}
+                          onChange={(e) => handleInputChange('brutKg', e.target.value)}
+                          required
+                          readOnly={!canEditBasicInfo}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="daraKg">Dara KG *</Label>
+                        <Input
+                          id="daraKg"
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={formData.daraKg}
+                          onChange={(e) => handleInputChange('daraKg', e.target.value)}
+                          placeholder="0.00"
+                          required
+                          readOnly={!canEditBasicInfo}
+                        />
+                        <div className="text-xs text-muted-foreground">
+                          Kasa ve ambalaj ağırlığı toplamı
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="girisKg">Giriş KG</Label>
+                      <Input
+                        id="girisKg"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={formData.girisKg}
+                        onChange={(e) => handleInputChange('girisKg', e.target.value)}
+                        readOnly
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="cikmaKg">Çıkma KG</Label>
+                        <Input
+                          id="cikmaKg"
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={formData.cikmaAdet || record?.cikmaKg || ''}
+                          onChange={(e) => handleInputChange('cikmaAdet', e.target.value)}
+                          placeholder="0.00"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="fireKg">Fire KG</Label>
+                        <Input
+                          id="fireKg"
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={formData.fireAdet || record?.fireKg || ''}
+                          onChange={(e) => handleInputChange('fireAdet', e.target.value)}
+                          placeholder="0.00"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="netKg">Net KG (Ürün Son Durumu)</Label>
+                      <Input
+                        id="netKg"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        value={formData.netKg}
+                        onChange={(e) => handleInputChange('netKg', e.target.value)}
+                        readOnly
+                      />
+                    </div>
+                  </>
+                )}
               </CardContent>
             </Card>
 
@@ -851,7 +1347,7 @@ export default function MalKabulDuzenle() {
                 <div className="space-y-2">
                   <Label htmlFor="status">Durum</Label>
                   <Select 
-                    value={formData.status || "FATURA_BEKLIYOR"} 
+                    value={formData.status || "NETLENDI"} 
                     onValueChange={(value) => handleInputChange('status', value)}
                     disabled={!canChangeStatus}
                   >
@@ -859,43 +1355,17 @@ export default function MalKabulDuzenle() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="FATURA_BEKLIYOR">
-                        <div className="flex items-center gap-2">
-                          <AlertTriangle className="h-4 w-4 text-yellow-500" />
-                          Fatura Bekliyor
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="FATURALANDI">
-                        <div className="flex items-center gap-2">
-                          <FileText className="h-4 w-4 text-blue-500" />
-                          Faturalandı
-                        </div>
-                      </SelectItem>
                       <SelectItem value="NETLENDI">
                         <div className="flex items-center gap-2">
                           <CheckCircle className="h-4 w-4 text-green-500" />
                           Netlendi (Ürün Son Durumu)
                         </div>
                       </SelectItem>
-                      <SelectItem value="TAMAMLANDI">
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="h-4 w-4 text-green-600" />
-                          Tamamlandı
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="IPTAL">
-                        <div className="flex items-center gap-2">
-                          <AlertTriangle className="h-4 w-4 text-red-500" />
-                          İptal
-                        </div>
-                      </SelectItem>
                     </SelectContent>
                   </Select>
-                  {formData.status === 'NETLENDI' && (
-                    <p className="text-xs text-green-600 bg-green-50 p-2 rounded">
-                      ✓ Bu ürün netlendi. Satın almacı paneline anında düşecek.
-                    </p>
-                  )}
+                  <p className="text-xs text-green-600 bg-green-50 p-2 rounded">
+                    ✓ Bu ürün netlendi. Son fiş yazdırılacak ve işlem tamamlanacak.
+                  </p>
                 </div>
 
                 <div className="space-y-2">
@@ -913,116 +1383,193 @@ export default function MalKabulDuzenle() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-end gap-4 mt-6">
-            <Link href="/dashboard/mal-kabul">
-              <Button type="button" variant="outline">
-                İptal
+          <div className="flex justify-between items-center mt-6">
+            <div className="flex gap-2">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => printReceipt('ILK_KAYIT')}
+                disabled={!record?.fisNo}
+              >
+                <Printer className="mr-2 h-4 w-4" />
+                İlk Kayıt Fişi
               </Button>
-            </Link>
-            <Button type="submit" disabled={saving}>
-              {saving ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Kaydediliyor...
-                </>
-              ) : (
-                <>
-                  <Save className="mr-2 h-4 w-4" />
-                  Kaydet
-                </>
-              )}
-            </Button>
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => printReceipt('SON_DURUM')}
+                disabled={formData.status !== 'NETLENDI' || (!isAdetBased && parseFloat(formData.netKg) <= 0) || (isAdetBased && parseFloat(formData.netAdet) <= 0)}
+              >
+                <Printer className="mr-2 h-4 w-4" />
+                Son Durum Fişi
+              </Button>
+            </div>
+            <div className="flex gap-4">
+              <Link href="/dashboard/mal-kabul">
+                <Button type="button" variant="outline">
+                  İptal
+                </Button>
+              </Link>
+              <Button type="submit" disabled={saving}>
+                {saving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Kaydediliyor...
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    Kaydet
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </form>
 
         {/* Son Fiş Yazdırma Modal */}
         {showFinalReceipt && record && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-background border border-border rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto shadow-lg">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold">Son Fiş Yazdır</h3>
+              <h3 className="text-lg font-bold text-foreground">Son Fiş Yazdır</h3>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowFinalReceipt(false)}
-                className="h-8 w-8 p-0"
+                className="h-8 w-8 p-0 hover:bg-muted"
               >
                 <X className="h-4 w-4" />
               </Button>
             </div>
             
             <div className="mb-4">
-              <p className="text-sm text-gray-600 mb-2">
+              <p className="text-sm text-muted-foreground mb-2">
                 Ürün netlendi! Bu fiş ürünün son evrakıdır:
               </p>
-              <ul className="text-sm text-gray-600 list-disc list-inside space-y-1">
+              <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
                 <li>Net KG: {formData.netKg} kg</li>
-                <li>Çıkma/Fire KG: {formData.cikmaFireKg} kg</li>
+                <li>Çıkma KG: {formData.cikmaAdet || record.cikmaKg} kg</li>
+                <li>Fire KG: {formData.fireAdet || record.fireKg} kg</li>
                 <li>Durum: Netlendi (Ürün Son Durumu)</li>
               </ul>
             </div>
 
             {/* Son Fiş Önizleme */}
-            <div className="mb-4">
-              <div className="bg-white border rounded-lg p-6 max-w-sm mx-auto">
-                <div className="text-center mb-4">
-                  <h3 className="text-lg font-bold">SON FİŞ ÖNİZLEME</h3>
-                  <p className="text-sm text-gray-600">80mm Termal Yazıcı</p>
+            <div className="mb-4 bg-muted/50 p-4 rounded-lg border border-border">
+              <h4 className="font-bold text-center mb-3 text-foreground">Son Fiş Önizleme</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="font-medium text-foreground"><strong>Fiş No:</strong></span>
+                  <span className="text-foreground">{record.fisNo}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-foreground"><strong>Tarih:</strong></span>
+                  <span className="text-foreground">{new Date(record.tarih).toLocaleDateString('tr-TR')}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-foreground"><strong>Satıcı:</strong></span>
+                  <span className="text-foreground">
+                    {record.saticiTipi === 'MUSTAHSIL' && record.mustahsil 
+                      ? `${record.mustahsil.ad} ${record.mustahsil.soyad}`
+                      : record.saticiTipi === 'KOMISYONCU' && record.komisyoncu && record.uretici
+                      ? `${record.komisyoncu.dukkanAdi} - ${record.uretici.ad} ${record.uretici.soyad}`
+                      : record.saticiTipi === 'OZEL_FIRMA' && record.ozelFirma
+                      ? record.ozelFirma.firmaAdi
+                      : 'Bilinmeyen'
+                    }
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="font-medium text-foreground"><strong>Ürün:</strong></span>
+                  <span className="text-foreground">{record.urunler.ad}</span>
                 </div>
                 
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="font-semibold">Fiş No:</span>
-                    <span>{record.fisNo}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-semibold">Tarih:</span>
-                    <span>{new Date(record.tarih).toLocaleDateString('tr-TR')}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-semibold">Satıcı:</span>
-                    <span>
-                      {record.saticiTipi === 'MUSTAHSIL' && record.mustahsil 
-                        ? `${record.mustahsil.ad} ${record.mustahsil.soyad}`
-                        : record.saticiTipi === 'KOMISYONCU' && record.komisyoncu && record.uretici
-                        ? `${record.komisyoncu.dukkanAdi} - ${record.uretici.ad} ${record.uretici.soyad}`
-                        : record.saticiTipi === 'OZEL_FIRMA' && record.ozelFirma
-                        ? record.ozelFirma.firmaAdi
-                        : 'Bilinmeyen'
-                      }
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-semibold">Ürün:</span>
-                    <span>{record.urunler.ad}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="font-semibold">Net KG:</span>
-                    <span className="font-bold">{formData.netKg} kg</span>
-                  </div>
-                  
-                  {qrDataUrl && barcodeDataUrl && (
-                    <div className="mt-4 p-3 bg-gray-50 rounded">
-                      <div className="text-center text-xs text-gray-600 mb-2">QR Kod ve Barkod</div>
-                      <div className="flex justify-center items-center space-x-4">
-                        <div className="text-center">
-                          <img src={qrDataUrl} alt="QR Kod" className="w-16 h-16 mx-auto" />
-                          <div className="text-xs text-gray-500 mt-1">QR Kod</div>
-                        </div>
-                        <div className="text-center">
-                          <img src={barcodeDataUrl} alt="Barkod" className="w-24 h-12 mx-auto" />
-                          <div className="text-xs text-gray-500 mt-1">Barkod</div>
-                        </div>
-                      </div>
+                {isAdetBased ? (
+                  // ADET birimi için adet bilgileri
+                  <>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Adet Sayısı:</strong></span>
+                      <span className="text-foreground">{formData.adetSayisi} adet</span>
                     </div>
-                  )}
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Çıkma Adet:</strong></span>
+                      <span className="text-foreground">{formData.cikmaAdet || record.cikmaKg} adet</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Fire Adet:</strong></span>
+                      <span className="text-foreground">{formData.fireAdet || record.fireKg} adet</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Net Adet:</strong></span>
+                      <span className="text-foreground font-bold">{formData.netAdet} adet</span>
+                    </div>
+                  </>
+                ) : (
+                  // KG birimi için ağırlık bilgileri
+                  <>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Brüt KG:</strong></span>
+                      <span className="text-foreground">{formData.brutKg} kg</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Dara KG:</strong></span>
+                      <span className="text-foreground">{formData.daraKg} kg</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Giriş KG:</strong></span>
+                      <span className="text-foreground">{formData.girisKg} kg</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Çıkma KG:</strong></span>
+                      <span className="text-foreground">{formData.cikmaAdet || record.cikmaKg} kg</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Fire KG:</strong></span>
+                      <span className="text-foreground">{formData.fireAdet || record.fireKg} kg</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-medium text-foreground"><strong>Net KG:</strong></span>
+                      <span className="text-foreground font-bold">{formData.netKg} kg</span>
+                    </div>
+                  </>
+                )}
+              </div>
+              
+              {/* QR Kod ve Barkod Önizleme */}
+              <div className="mt-4 pt-4 border-t border-border">
+                <h5 className="font-bold text-center mb-3 text-foreground">QR Kod ve Barkod</h5>
+                <div className="flex flex-col items-center gap-3">
+                  <div className="text-center">
+                    <div className="text-xs text-muted-foreground mb-2">QR Kod</div>
+                    {qrDataUrl ? (
+                      <img src={qrDataUrl} alt="QR Kod" className="w-16 h-16 mx-auto border border-border rounded" />
+                    ) : (
+                      <div className="w-16 h-16 mx-auto border border-border rounded bg-muted flex items-center justify-center text-xs text-muted-foreground">
+                        QR Kod
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-center">
+                    <div className="text-xs text-muted-foreground mb-2">Barkod</div>
+                    {barcodeDataUrl ? (
+                      <img src={barcodeDataUrl} alt="Barkod" className="w-24 h-12 mx-auto border border-border rounded" />
+                    ) : (
+                      <div className="w-24 h-12 mx-auto border border-border rounded bg-muted flex items-center justify-center text-xs text-muted-foreground">
+                        Barkod
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="text-center text-xs text-muted-foreground mt-3">
+                  Bu fiş ürünün son evrakıdır
                 </div>
               </div>
             </div>
 
             {/* Yazdırma Butonu */}
-            <div className="flex gap-3 justify-center">
-                          <Button onClick={async () => {
+            <div className="flex justify-center gap-4">
+              <Button onClick={async () => {
               try {
                 // Son fiş yazdırma işlemi
                 const finalReceiptData = {
@@ -1037,11 +1584,15 @@ export default function MalKabulDuzenle() {
                     ? record.ozelFirma.firmaAdi
                     : 'Bilinmeyen',
                   urunAdi: record.urunler.ad,
-                  brutKg: record.brutKg,
-                  daraKg: record.daraKg,
-                  girisKg: record.girisKg,
-                  cikmaFireKg: parseFloat(formData.cikmaFireKg) || 0,
+                  birim: record.urunler.birim,
+                  brutKg: parseFloat(formData.brutKg) || 0,
+                  daraKg: parseFloat(formData.daraKg) || 0,
+                  girisKg: parseFloat(formData.girisKg) || 0,
+                  cikmaKg: parseFloat(formData.cikmaAdet) || parseFloat(record.cikmaKg) || 0,
+                  fireKg: parseFloat(formData.fireAdet) || parseFloat(record.fireKg) || 0,
                   netKg: parseFloat(formData.netKg) || 0,
+                  adetSayisi: parseInt(formData.adetSayisi) || 0,
+                  netAdet: parseInt(formData.netAdet) || 0,
                   ambalajAdi: record.ambalaj?.ad,
                   kasaSayisi: record.kasaSayisi,
                   paletAdi: record.palet?.ad,
@@ -1086,30 +1637,50 @@ export default function MalKabulDuzenle() {
                 // Yazdırma penceresini aç
                 const printWindow = window.open('', '_blank')
                 if (printWindow) {
+                  const fişBaşlığı = 'SON FİŞ'
+                  
                   printWindow.document.write(`
                   <!DOCTYPE html>
                   <html>
                     <head>
-                      <title>Son Fiş Yazdır</title>
+                      <title>${fişBaşlığı} - ${finalReceiptData.fisNo}</title>
                       <style>
                         body { 
                           font-family: monospace; 
                           font-size: 12px; 
                           width: 80mm; 
+                          max-width: 80mm; 
                           margin: 0; 
-                          padding: 10px;
+                          padding: 8px;
+                          box-sizing: border-box;
+                          overflow-x: hidden;
                         }
                         .header { text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 10px; }
-                        .section { margin-bottom: 10px; border-bottom: 1px solid #000; padding-bottom: 5px; }
-                        .row { display: flex; justify-content: space-between; margin-bottom: 5px; }
+                        .section { margin-bottom: 12px; border-bottom: 1px solid #000; padding-bottom: 8px; }
+                        .section-title { font-weight: bold; font-size: 12px; margin-bottom: 8px; text-align: center; background: #f0f0f0; padding: 3px; border-radius: 3px; }
+                        .row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; }
                         .label { font-weight: bold; }
-                        .value { text-align: right; }
-                        .qr-placeholder { 
-                          text-align: center; 
-                          margin: 10px 0; 
-                          padding: 20px; 
-                          border: 2px dashed #ccc;
+                        .value { text-align: right; font-weight: 500; }
+                        .copy-info {
+                          text-align: center;
+                          font-size: 10px;
                           color: #666;
+                          margin-top: 10px;
+                          padding: 5px;
+                          background: #f0f0f0;
+                          border-radius: 3px;
+                          font-weight: bold;
+                        }
+                        .page-break { page-break-after: always; }
+                        .copy-label { 
+                          text-align: center; 
+                          font-size: 14px; 
+                          font-weight: bold; 
+                          margin: 15px 0; 
+                          padding: 8px; 
+                          background: #000; 
+                          color: #fff; 
+                          border-radius: 5px; 
                         }
                         .final-status { 
                           background: #4ade80; 
@@ -1118,16 +1689,33 @@ export default function MalKabulDuzenle() {
                           text-align: center; 
                           font-weight: bold;
                           margin: 10px 0;
+                          border-radius: 3px;
+                        }
+                        
+                        @media print {
+                          body { 
+                            width: 80mm !important; 
+                            max-width: 80mm !important; 
+                            margin: 0 !important; 
+                            padding: 8px !important; 
+                            font-size: 12px !important;
+                          }
+                          @page { 
+                            size: 80mm auto; 
+                            margin: 0; 
+                          }
+                          .qr-code img, .barcode img { 
+                            display: block !important; 
+                          }
                         }
                       </style>
                     </head>
                     <body>
                       <div class="header">WEBRAIN</div>
                       <div class="header">Tarım Ürünleri Yönetim Sistemi</div>
-                      <div class="header"></div>
                       
                       <div class="section">
-                        <div class="header">SON FİŞ</div>
+                        <div class="section-title">${fişBaşlığı}</div>
                         <div class="final-status">ÜRÜN SON EVRAKI</div>
                         <div class="row">
                           <span class="label">Fiş No:</span>
@@ -1141,79 +1729,172 @@ export default function MalKabulDuzenle() {
                           <span class="label">Saat:</span>
                           <span class="value">${new Date(finalReceiptData.tarih).toLocaleTimeString('tr-TR')}</span>
                         </div>
+                        <div class="row">
+                          <span class="label">Mal Kabulcu:</span>
+                          <span class="value">${finalReceiptData.malKabulcuAdi}</span>
+                        </div>
                       </div>
                       
                       <div class="section">
-                        <div class="label">SATICI BİLGİLERİ</div>
-                        <div>Tip: ${finalReceiptData.saticiTipi}</div>
-                        <div class="label">${finalReceiptData.saticiAdi}</div>
+                        <div class="section-title">SATICI BİLGİLERİ</div>
+                        <div class="row">
+                          <span class="label">Satıcı Tipi:</span>
+                          <span class="value">${finalReceiptData.saticiTipi}</span>
+                        </div>
+                        <div class="row">
+                          <span class="label">Satıcı Adı:</span>
+                          <span class="value">${finalReceiptData.saticiAdi}</span>
+                        </div>
                       </div>
                       
                       <div class="section">
-                        <div class="label">ÜRÜN BİLGİLERİ</div>
-                        <div class="label">${finalReceiptData.urunAdi}</div>
-                        ${finalReceiptData.ambalajAdi ? `<div>Ambalaj: ${finalReceiptData.ambalajAdi} x ${finalReceiptData.kasaSayisi}</div>` : ''}
-                        ${finalReceiptData.paletAdi && finalReceiptData.paletSayisi ? `<div>Palet: ${finalReceiptData.paletAdi} x ${finalReceiptData.paletSayisi}</div>` : ''}
+                        <div class="section-title">ÜRÜN BİLGİLERİ</div>
+                        <div class="row">
+                          <span class="label">Ürün:</span>
+                          <span class="value">${finalReceiptData.urunAdi}</span>
+                        </div>
+                        <div class="row">
+                          <span class="label">Kasa Sayısı:</span>
+                          <span class="value">${finalReceiptData.kasaSayisi}</span>
+                        </div>
+                        ${finalReceiptData.paletAdi ? `
+                        <div class="row">
+                          <span class="label">Palet:</span>
+                          <span class="value">${finalReceiptData.paletAdi} (${finalReceiptData.paletSayisi})</span>
+                        </div>
+                        ` : ''}
                       </div>
                       
                       <div class="section">
-                        <div class="label">AĞIRLIK BİLGİLERİ</div>
-                        <div class="row">
-                          <span>Brüt KG:</span>
-                          <span class="value">${finalReceiptData.brutKg.toFixed(2)} kg</span>
-                        </div>
-                        <div class="row">
-                          <span>Dara KG:</span>
-                          <span>${finalReceiptData.daraKg.toFixed(2)} kg</span>
-                        </div>
-                        <div class="row">
-                          <span>Giriş KG:</span>
-                          <span>${finalReceiptData.girisKg.toFixed(2)} kg</span>
-                        </div>
-                        <div class="row">
-                          <span>Çıkma/Fire KG:</span>
-                          <span>${finalReceiptData.cikmaFireKg.toFixed(2)} kg</span>
-                        </div>
-                        <div class="row">
-                          <span>Net KG:</span>
-                          <span class="value" style="font-size: 16px; font-weight: bold;">${finalReceiptData.netKg.toFixed(2)} kg</span>
-                        </div>
+                        <div class="section-title">${finalReceiptData.birim?.toLowerCase() === 'adet' ? 'ADET BİLGİLERİ' : 'KİLOGRAM BİLGİLERİ'}</div>
+                        ${finalReceiptData.birim?.toLowerCase() === 'adet' ? `
+                          <div class="row"><span class="label">Kasa Sayısı:</span><span class="value">${finalReceiptData.kasaSayisi} kasa</span></div>
+                          <div class="row"><span class="label">Adet Sayısı:</span><span class="value">${finalReceiptData.adetSayisi} adet</span></div>
+                          <div class="row"><span class="label">Giriş Adet:</span><span class="value">${finalReceiptData.adetSayisi} adet</span></div>
+                          ${finalReceiptData.cikmaKg > 0 ? `<div class="row"><span class="label">Çıkma Adet:</span><span class="value">${finalReceiptData.cikmaKg} adet</span></div>` : ''}
+                          ${finalReceiptData.fireKg > 0 ? `<div class="row"><span class="label">Fire Adet:</span><span class="value">${finalReceiptData.fireKg} adet</span></div>` : ''}
+                          ${finalReceiptData.netAdet > 0 ? `<div class="row"><span class="label">Net Adet:</span><span class="value">${finalReceiptData.netAdet} adet</span></div>` : ''}
+                        ` : `
+                          <div class="row"><span class="label">Brüt KG:</span><span class="value">${finalReceiptData.brutKg.toFixed(2)}</span></div>
+                          <div class="row"><span class="label">Dara KG:</span><span class="value">${finalReceiptData.daraKg.toFixed(2)}</span></div>
+                          <div class="row"><span class="label">Giriş KG:</span><span class="value">${finalReceiptData.girisKg.toFixed(2)}</span></div>
+                          ${finalReceiptData.cikmaKg > 0 ? `<div class="row"><span class="label">Çıkma KG:</span><span class="value">${finalReceiptData.cikmaKg.toFixed(2)}</span></div>` : ''}
+                          ${finalReceiptData.fireKg > 0 ? `<div class="row"><span class="label">Fire KG:</span><span class="value">${finalReceiptData.fireKg.toFixed(2)}</span></div>` : ''}
+                          ${finalReceiptData.netKg > 0 ? `<div class="row"><span class="label">Net KG:</span><span class="value">${finalReceiptData.netKg.toFixed(2)}</span></div>` : ''}
+                        `}
                       </div>
                       
                       ${finalReceiptData.notlar ? `
                       <div class="section">
-                        <div class="label">NOTLAR</div>
-                        <div>${finalReceiptData.notlar}</div>
+                        <div class="section-title">NOTLAR</div>
+                        <div class="row"><span class="value">${finalReceiptData.notlar}</span></div>
+                      </div>` : ''}
+                      
+                      <div class="copy-info">
+                        Bu fiş son durum için yazdırılmıştır
                       </div>
-                      ` : ''}
+                      
+                      <div class="copy-label">ORİJİNAL - MAL KABULCU İÇİN</div>
+                      
+                      <div class="qr-code">
+                        <img src="${qrDataUrl}" alt="QR Code" style="width: 80px; height: 80px; display: block; margin: 10px auto;" />
+                      </div>
+                      
+                      <div class="barcode">
+                        <img src="${barcodeDataUrl}" alt="Barcode" style="width: 100%; height: 50px; display: block; margin: 10px auto;" />
+                      </div>
+                      
+                      <div class="page-break"></div>
+                      
+                      <div class="header">${fişBaşlığı}</div>
                       
                       <div class="section">
-                        <div>Mal Kabulcu:</div>
-                        <div class="label">${finalReceiptData.malKabulcuAdi}</div>
+                        <div class="section-title">FİŞ BİLGİLERİ</div>
+                        <div class="row">
+                          <span class="label">Fiş No:</span>
+                          <span class="value">${finalReceiptData.fisNo}</span>
+                        </div>
+                        <div class="row">
+                          <span class="label">Tarih:</span>
+                          <span class="value">${new Date(finalReceiptData.tarih).toLocaleDateString('tr-TR')}</span>
+                        </div>
+                        <div class="row">
+                          <span class="label">Saat:</span>
+                          <span class="value">${new Date(finalReceiptData.tarih).toLocaleTimeString('tr-TR')}</span>
+                        </div>
+                        <div class="row">
+                          <span class="label">Mal Kabulcu:</span>
+                          <span class="value">${finalReceiptData.malKabulcuAdi}</span>
+                        </div>
                       </div>
                       
                       <div class="section">
-                        <div class="label">QR KOD VE BARKOD</div>
-                        <div style="text-align: center; margin: 8px 0;">
-                          <div style="font-size: 8px; color: #888; line-height: 1.2; margin-bottom: 8px;">
-                            Bu fiş ürünün son evrakıdır
-                          </div>
-                          <div style="margin-top: 8px; padding: 6px; background: #f0f0f0; border-radius: 3px;">
-                            <div style="font-size: 7px; color: #666; margin-bottom: 4px;">QR Kod</div>
-                            <img src="${qrDataUrl}" alt="QR Kod" style="width: 40px; height: 40px; margin: 0 auto; display: block;" />
-                            <div style="font-size: 7px; color: #666; margin-top: 4px;">Barkod</div>
-                            <img src="${barcodeDataUrl}" alt="Barkod" style="width: 60px; height: 30px; margin: 0 auto; display: block;" />
-                          </div>
+                        <div class="section-title">SATICI BİLGİLERİ</div>
+                        <div class="row">
+                          <span class="label">Satıcı Tipi:</span>
+                          <span class="value">${finalReceiptData.saticiTipi}</span>
+                        </div>
+                        <div class="row">
+                          <span class="label">Satıcı Adı:</span>
+                          <span class="value">${finalReceiptData.saticiAdi}</span>
                         </div>
                       </div>
                       
-                      <div style="text-align: center; margin-top: 20px;">
-                        <div style="font-size: 10px; color: #666;">
-                          Ürün işlemi tamamlandı
+                      <div class="section">
+                        <div class="section-title">ÜRÜN BİLGİLERİ</div>
+                        <div class="row">
+                          <span class="label">Ürün:</span>
+                          <span class="value">${finalReceiptData.urunAdi}</span>
                         </div>
-                        <div style="font-size: 10px; margin-top: 5px;">
-                          ${new Date().toLocaleDateString('tr-TR')} - ${new Date().toLocaleTimeString('tr-TR')}
+                        <div class="row">
+                          <span class="label">Kasa Sayısı:</span>
+                          <span class="value">${finalReceiptData.kasaSayisi}</span>
                         </div>
+                        ${finalReceiptData.paletAdi ? `
+                        <div class="row">
+                          <span class="label">Palet:</span>
+                          <span class="value">${finalReceiptData.paletAdi} (${finalReceiptData.paletSayisi})</span>
+                        </div>
+                        ` : ''}
+                      </div>
+                      
+                      <div class="section">
+                        <div class="section-title">${finalReceiptData.birim?.toLowerCase() === 'adet' ? 'ADET BİLGİLERİ' : 'KİLOGRAM BİLGİLERİ'}</div>
+                        ${finalReceiptData.birim?.toLowerCase() === 'adet' ? `
+                          <div class="row"><span class="label">Kasa Sayısı:</span><span class="value">${finalReceiptData.kasaSayisi} kasa</span></div>
+                          <div class="row"><span class="label">Adet Sayısı:</span><span class="value">${finalReceiptData.adetSayisi} adet</span></div>
+                          <div class="row"><span class="label">Giriş Adet:</span><span class="value">${finalReceiptData.adetSayisi} adet</span></div>
+                          ${finalReceiptData.cikmaKg > 0 ? `<div class="row"><span class="label">Çıkma Adet:</span><span class="value">${finalReceiptData.cikmaKg} adet</span></div>` : ''}
+                          ${finalReceiptData.fireKg > 0 ? `<div class="row"><span class="label">Fire Adet:</span><span class="value">${finalReceiptData.fireKg} adet</span></div>` : ''}
+                          ${finalReceiptData.netAdet > 0 ? `<div class="row"><span class="label">Net Adet:</span><span class="value">${finalReceiptData.netAdet} adet</span></div>` : ''}
+                        ` : `
+                          <div class="row"><span class="label">Brüt KG:</span><span class="value">${finalReceiptData.brutKg.toFixed(2)}</span></div>
+                          <div class="row"><span class="label">Dara KG:</span><span class="value">${finalReceiptData.daraKg.toFixed(2)}</span></div>
+                          <div class="row"><span class="label">Giriş KG:</span><span class="value">${finalReceiptData.girisKg.toFixed(2)}</span></div>
+                          ${finalReceiptData.cikmaKg > 0 ? `<div class="row"><span class="label">Çıkma KG:</span><span class="value">${finalReceiptData.cikmaKg.toFixed(2)}</span></div>` : ''}
+                          ${finalReceiptData.fireKg > 0 ? `<div class="row"><span class="label">Fire KG:</span><span class="value">${finalReceiptData.fireKg.toFixed(2)}</span></div>` : ''}
+                          ${finalReceiptData.netKg > 0 ? `<div class="row"><span class="label">Net KG:</span><span class="value">${finalReceiptData.netKg.toFixed(2)}</span></div>` : ''}
+                        `}
+                      </div>
+                      
+                      ${finalReceiptData.notlar ? `
+                      <div class="section">
+                        <div class="section-title">NOTLAR</div>
+                        <div class="row"><span class="value">${finalReceiptData.notlar}</span></div>
+                      </div>` : ''}
+                      
+                      <div class="copy-info">
+                        Bu fiş son durum için yazdırılmıştır
+                      </div>
+                      
+                      <div class="copy-label">KOPYA - ÜRETİCİ İÇİN</div>
+                      
+                      <div class="qr-code">
+                        <img src="${qrDataUrl}" alt="QR Code" style="width: 80px; height: 80px; display: block; margin: 10px auto;" />
+                      </div>
+                      
+                      <div class="barcode">
+                        <img src="${barcodeDataUrl}" alt="Barcode" style="width: 100%; height: 50px; display: block; margin: 10px auto;" />
                       </div>
                     </body>
                   </html>
@@ -1241,7 +1922,7 @@ export default function MalKabulDuzenle() {
                 variant: "destructive",
               })
             }
-          }} className="flex-1 max-w-xs">
+          }} className="px-6">
                 <Printer className="mr-2 h-4 w-4" />
                 Son Fiş Yazdır
               </Button>
@@ -1264,3 +1945,4 @@ export default function MalKabulDuzenle() {
       </div>
     )
   }
+

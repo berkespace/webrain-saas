@@ -710,13 +710,22 @@ export default function MalKabulTest() {
   }
 
   // Fiş numarası oluşturma
-  const generateFisNo = () => {
-    const now = new Date()
-    const year = now.getFullYear()
-    const month = String(now.getMonth() + 1).padStart(2, '0')
-    const day = String(now.getDate()).padStart(2, '0')
-    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0')
-    return `${year}${month}${day}${random}`
+  const generateFisNo = async () => {
+    try {
+      // Bugünkü HNR serisi kayıtlarını say
+      const response = await fetch('/api/mal-kabul')
+      if (!response.ok) return 'HNR0001'
+      
+      const data = await response.json()
+      const todayRecords = data.filter((record: any) => 
+        record.fisNo && record.fisNo.startsWith('HNR')
+      ).length
+      
+      return 'HNR' + (todayRecords + 1).toString().padStart(4, '0')
+    } catch (error) {
+      console.error('Fiş numarası oluşturma hatası:', error)
+      return 'HNR0001'
+    }
   }
 
   // Fiş yazdırma fonksiyonu (yeni sayfadaki ile aynı tasarım)
@@ -724,7 +733,7 @@ export default function MalKabulTest() {
     try {
       // Fiş verilerini hazırla
       const receiptData = {
-        fisNo: row.fisNo || generateFisNo(),
+        fisNo: row.fisNo || await generateFisNo(),
         tarih: row.tarih || new Date().toISOString(),
         saticiTipi: row.saticiTipi,
         saticiAdi: getSaticiAdi(row),

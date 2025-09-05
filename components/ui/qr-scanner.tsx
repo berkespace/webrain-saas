@@ -5,6 +5,8 @@ import { Button } from './button'
 import { Input } from './input'
 import { Label } from './label'
 import { QrCode, Camera, X } from 'lucide-react'
+import jsQR from 'jsqr'
+import Quagga from 'quagga'
 
 interface QRScannerProps {
   onScan: (data: string) => void
@@ -32,14 +34,54 @@ export function QRScanner({ onScan, onClose, isOpen }: QRScannerProps) {
 
   const startCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' }
+      // Quagga barkod tarayıcısını başlat
+      Quagga.init({
+        inputStream: {
+          name: "Live",
+          type: "LiveStream",
+          target: videoRef.current,
+          constraints: {
+            width: 640,
+            height: 480,
+            facingMode: "environment"
+          }
+        },
+        decoder: {
+          readers: [
+            "code_128_reader",
+            "ean_reader",
+            "ean_8_reader",
+            "code_39_reader",
+            "code_39_vin_reader",
+            "codabar_reader",
+            "upc_reader",
+            "upc_e_reader",
+            "i2of5_reader"
+          ]
+        },
+        locate: true,
+        locator: {
+          patchSize: "medium",
+          halfSample: true
+        }
+      }, (err) => {
+        if (err) {
+          console.error('Quagga başlatma hatası:', err)
+          setScanMode('manual')
+          return
+        }
+        
+        Quagga.start()
+        
+        // Barkod tarama eventi
+        Quagga.onDetected((result) => {
+          console.log('Barkod bulundu:', result.codeResult.code)
+          onScan(result.codeResult.code)
+          Quagga.stop()
+          stopCamera()
+        })
       })
       
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream
-        streamRef.current = stream
-      }
     } catch (error) {
       console.error('Kamera erişim hatası:', error)
       setScanMode('manual')
@@ -47,6 +89,12 @@ export function QRScanner({ onScan, onClose, isOpen }: QRScannerProps) {
   }
 
   const stopCamera = () => {
+    try {
+      Quagga.stop()
+    } catch (error) {
+      console.error('Quagga durdurma hatası:', error)
+    }
+    
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop())
       streamRef.current = null
@@ -107,16 +155,15 @@ export function QRScanner({ onScan, onClose, isOpen }: QRScannerProps) {
         {scanMode === 'camera' ? (
           <div className="space-y-4">
             <div className="relative">
-              <video
+              <div
                 ref={videoRef}
-                autoPlay
-                playsInline
                 className="w-full h-64 bg-gray-100 rounded-lg"
+                id="scanner-container"
               />
               <div className="absolute inset-0 border-2 border-primary border-dashed rounded-lg pointer-events-none">
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-primary">
                   <QrCode className="h-16 w-16 mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">QR kodu bu alana hizalayın</p>
+                  <p className="text-sm">QR kod veya barkodu bu alana hizalayın</p>
                 </div>
               </div>
             </div>
@@ -133,7 +180,7 @@ export function QRScanner({ onScan, onClose, isOpen }: QRScannerProps) {
                   id="manualInput"
                   value={manualInput}
                   onChange={(e) => setManualInput(e.target.value)}
-                  placeholder="Fiş no girin veya QR kod verisini yapıştırın"
+                  placeholder="HNR0001 veya QR kod verisini yapıştırın"
                   className="font-mono"
                 />
               </div>

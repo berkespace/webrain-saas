@@ -1128,8 +1128,8 @@ export default function YeniMalKabul() {
           brutKg: isAdetBased ? '0' : (formData.brutKg || '0'),
           daraKg: isAdetBased ? '0' : (formData.daraKg || '0'),
           girisKg: isAdetBased ? '0' : (formData.girisKg || '0'),
-          cikmaKg: isAdetBased ? '0' : (formData.cikmaKg || '0'),
-          fireKg: isAdetBased ? '0' : (formData.fireKg || '0'),
+          cikmaKg: formData.cikmaKg || '0',
+          fireKg: formData.fireKg || '0',
           netKg: isAdetBased ? '0' : (formData.netKg || '0'),
           netAdet: isAdetBased ? (() => {
             const girisAdet = parseInt(formData.adetSayisi) || 0
@@ -1284,13 +1284,22 @@ export default function YeniMalKabul() {
   }
 
   // Fiş numarası oluşturma
-  const generateFisNo = () => {
-    const now = new Date()
-    const year = now.getFullYear()
-    const month = String(now.getMonth() + 1).padStart(2, '0')
-    const day = String(now.getDate()).padStart(2, '0')
-    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0')
-    return `${year}${month}${day}${random}`
+  const generateFisNo = async () => {
+    try {
+      // Bugünkü HNR serisi kayıtlarını say
+      const response = await fetch('/api/mal-kabul')
+      if (!response.ok) return 'HNR0001'
+      
+      const data = await response.json()
+      const todayRecords = data.filter((record: any) => 
+        record.fisNo && record.fisNo.startsWith('HNR')
+      ).length
+      
+      return 'HNR' + (todayRecords + 1).toString().padStart(4, '0')
+    } catch (error) {
+      console.error('Fiş numarası oluşturma hatası:', error)
+      return 'HNR0001'
+    }
   }
 
   const handlePrint = async () => {
@@ -1300,7 +1309,7 @@ export default function YeniMalKabul() {
       // Fiş verilerini hazırla
       const saticiDetay = getSaticiDetay(receiptData)
       const printData = {
-        fisNo: receiptData.fisNo || generateFisNo(),
+        fisNo: receiptData.fisNo || await generateFisNo(),
         tarih: receiptData.tarih || new Date().toISOString(),
         saticiTipi: receiptData.saticiTipi,
         saticiAdi: getSaticiAdi(receiptData),
@@ -1809,7 +1818,7 @@ export default function YeniMalKabul() {
       // Fiş verilerini hazırla
       const saticiDetay = getSaticiDetay(receiptData)
       const printData = {
-        fisNo: receiptData.fisNo || generateFisNo(),
+        fisNo: receiptData.fisNo || await generateFisNo(),
         tarih: receiptData.tarih || new Date().toISOString(),
         saticiTipi: receiptData.saticiTipi,
         saticiAdi: getSaticiAdi(receiptData),

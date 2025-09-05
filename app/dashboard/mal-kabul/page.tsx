@@ -587,13 +587,13 @@ export default function MalKabulDashboard() {
                           </td>
                           <td className="py-3 px-2 text-right">
                             {item.urunler.birim?.toLowerCase() === 'adet' 
-                              ? (item.cikmaKg || 0).toLocaleString() + ' adet'
+                              ? Math.round(item.cikmaKg || 0).toLocaleString() + ' adet'
                               : (item.cikmaKg || 0).toLocaleString() + ' kg'
                             }
                           </td>
                           <td className="py-3 px-2 text-right">
                             {item.urunler.birim?.toLowerCase() === 'adet' 
-                              ? (item.fireKg || 0).toLocaleString() + ' adet'
+                              ? Math.round(item.fireKg || 0).toLocaleString() + ' adet'
                               : (item.fireKg || 0).toLocaleString() + ' kg'
                             }
                           </td>

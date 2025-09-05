@@ -103,6 +103,17 @@ export async function PUT(
 
     const { id } = await params
     const body = await request.json()
+    
+    // Debug: Gelen verileri logla
+    console.log('PUT /api/mal-kabul/[id] - Gelen veriler:', {
+      id,
+      body,
+      cikmaAdet: body.cikmaAdet,
+      fireAdet: body.fireAdet,
+      adetSayisi: body.adetSayisi,
+      urunId: body.urunId
+    })
+    
     const {
       saticiTipi,
       komisyoncuId,
@@ -121,6 +132,8 @@ export async function PUT(
       cikmaKg,
       fireKg,
       cikmaFireKg,
+      cikmaAdet,
+      fireAdet,
       netKg,
       netAdet,
       status,
@@ -175,6 +188,12 @@ export async function PUT(
       )
     }
 
+    // Debug: Ürün bilgisini logla
+    console.log('Ürün bilgisi:', {
+      id: urunId,
+      birim: urun.birim
+    })
+
     // Birime göre validasyon
     if (urun.birim === 'ADET') {
       // ADET birimi için validasyon
@@ -198,20 +217,53 @@ export async function PUT(
     let calculatedNetKg = 0
     let calculatedNetAdet = 0
     let calculatedStatus = status || 'FATURA_BEKLIYOR'
+    let calculatedGirisKg = 0
+    let calculatedMiktar = 0
 
     if (urun.birim === 'ADET') {
       // ADET ürünler için
-      calculatedNetAdet = (parseInt(adetSayisi) || 0) - (parseFloat(cikmaKg) || 0) - (parseFloat(fireKg) || 0)
-      if (parseFloat(cikmaKg) > 0 || parseFloat(fireKg) > 0) {
+      calculatedGirisKg = parseInt(adetSayisi) || 0  // Adet ürünler için girisKg = adetSayisi
+      calculatedMiktar = parseInt(adetSayisi) || 0   // Adet ürünler için miktar = adetSayisi
+      // Adet ürünler için çıkma ve fire değerlerini cikmaAdet ve fireAdet'ten al
+      const cikmaAdetValue = parseFloat(cikmaAdet) || 0
+      const fireAdetValue = parseFloat(fireAdet) || 0
+      calculatedNetAdet = (parseInt(adetSayisi) || 0) - cikmaAdetValue - fireAdetValue
+      
+      // Debug: ADET hesaplamalarını logla
+      console.log('ADET hesaplamaları:', {
+        adetSayisi: parseInt(adetSayisi) || 0,
+        cikmaAdet: cikmaAdet,
+        cikmaAdetValue,
+        fireAdet: fireAdet,
+        fireAdetValue,
+        calculatedNetAdet,
+        calculatedGirisKg,
+        calculatedMiktar
+      })
+      
+      if (cikmaAdetValue > 0 || fireAdetValue > 0) {
         calculatedStatus = 'NETLENDI'
       }
     } else {
       // KG ürünler için
+      calculatedGirisKg = parseFloat(girisKg) || 0
+      calculatedMiktar = parseFloat(girisKg) || 0
       calculatedNetKg = (parseFloat(girisKg) || 0) - (parseFloat(cikmaKg) || 0) - (parseFloat(fireKg) || 0)
       if (parseFloat(cikmaKg) > 0 || parseFloat(fireKg) > 0) {
         calculatedStatus = 'NETLENDI'
       }
     }
+
+    // Debug: Güncellenecek verileri logla
+    console.log('Güncellenecek veriler:', {
+      id,
+      urunBirim: urun.birim,
+      cikmaKg: urun.birim === 'ADET' ? (parseFloat(cikmaAdet) || 0) : (parseFloat(cikmaKg) || 0),
+      fireKg: urun.birim === 'ADET' ? (parseFloat(fireAdet) || 0) : (parseFloat(fireKg) || 0),
+      netAdet: calculatedNetAdet,
+      calculatedGirisKg,
+      calculatedMiktar
+    })
 
     // Mal kabul kaydını güncelle
     const updatedRecord = await prisma.mal_kabul_records.update({
@@ -229,17 +281,15 @@ export async function PUT(
         adetSayisi: parseInt(adetSayisi) || 0,
         brutKg: parseFloat(brutKg) || 0,
         daraKg: parseFloat(daraKg) || 0,
-        girisKg: parseFloat(girisKg) || 0,
-        cikmaKg: parseFloat(cikmaKg) || 0,
-        fireKg: parseFloat(fireKg) || 0,
+        girisKg: calculatedGirisKg,
+        cikmaKg: urun.birim === 'ADET' ? (parseFloat(cikmaAdet) || 0) : (parseFloat(cikmaKg) || 0),
+        fireKg: urun.birim === 'ADET' ? (parseFloat(fireAdet) || 0) : (parseFloat(fireKg) || 0),
         cikmaFireKg: parseFloat(cikmaFireKg) || 0,
         netKg: calculatedNetKg,
         netAdet: calculatedNetAdet,
-
         status: calculatedStatus,
         notlar: notlar || null,
-        // Note: miktar is set to girisKg, as in original
-        miktar: parseFloat(girisKg) || 0,
+        miktar: calculatedMiktar,
       },
       include: {
         komisyoncular: {
@@ -297,6 +347,19 @@ export async function PUT(
       }
     })
 
+    // Debug: Güncellenmiş kaydı logla
+    console.log('Güncellenmiş kayıt:', {
+      id: updatedRecord.id,
+      cikmaKg: updatedRecord.cikmaKg,
+      fireKg: updatedRecord.fireKg,
+      netAdet: updatedRecord.netAdet,
+      girisKg: updatedRecord.girisKg,
+      miktar: updatedRecord.miktar
+    })
+
+    // Cache'i temizle (ana API'deki cache'i temizlemek için)
+    // Bu basit bir çözüm, production'da Redis kullanılmalı
+    
     return NextResponse.json(
       { message: "Mal kabul kaydı başarıyla güncellendi", malKabulRecord: updatedRecord }
     )

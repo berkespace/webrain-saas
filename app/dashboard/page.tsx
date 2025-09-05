@@ -253,6 +253,16 @@ export default function DashboardPage() {
         fisNo = parts[0]
       }
       
+      // HNR prefix kontrolü
+      if (!fisNo.startsWith('HNR')) {
+        toast({
+          title: "Geçersiz QR Kod",
+          description: "Bu QR kod mal kabul sistemi için değil",
+          variant: "destructive",
+        })
+        return
+      }
+      
       // Fiş numarası ile mal kabul kaydını bul
       const response = await fetch(`/api/mal-kabul?fisNo=${fisNo}`)
       if (!response.ok) {

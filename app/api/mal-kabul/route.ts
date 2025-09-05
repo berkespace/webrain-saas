@@ -7,7 +7,14 @@ import { authOptions } from "@/lib/auth"
 let cacheKey = ''
 let cacheData: any = null
 let cacheTime = 0
-const CACHE_TTL_MS = 10_000
+const CACHE_TTL_MS = 1_000 // Cache süresini 1 saniyeye düşür
+
+// Cache temizleme fonksiyonu
+function clearCache() {
+  cacheKey = ''
+  cacheData = null
+  cacheTime = 0
+}
 
 // GET - Tüm mal kabul kayıtlarını listele
 export async function GET(request: NextRequest) {
@@ -224,22 +231,30 @@ export async function POST(request: NextRequest) {
       }
     })
     
-    const fisNo = dateStr + (todayRecords + 1).toString().padStart(4, '0')
+    const fisNo = 'HNR' + (todayRecords + 1).toString().padStart(4, '0')
 
     // Birime göre NET değerleri hesapla
     let calculatedNetKg = 0
     let calculatedNetAdet = 0
     let calculatedStatus = 'FATURA_BEKLIYOR'
+    let calculatedGirisKg = 0
+    let calculatedMiktar = 0
 
     if (urun.birim === 'ADET') {
       // ADET ürünler için
+      calculatedGirisKg = parseInt(adetSayisi) || 0  // Adet ürünler için girisKg = adetSayisi
+      calculatedMiktar = parseInt(adetSayisi) || 0   // Adet ürünler için miktar = adetSayisi
       calculatedNetAdet = (parseInt(adetSayisi) || 0) - (parseFloat(cikmaKg) || 0) - (parseFloat(fireKg) || 0)
+      calculatedNetKg = 0  // ADET ürünler için netKg = 0
       if (parseFloat(cikmaKg) > 0 || parseFloat(fireKg) > 0) {
         calculatedStatus = 'NETLENDI'
       }
     } else {
       // KG ürünler için
+      calculatedGirisKg = parseFloat(girisKg) || 0
+      calculatedMiktar = parseFloat(girisKg) || 0
       calculatedNetKg = (parseFloat(girisKg) || 0) - (parseFloat(cikmaKg) || 0) - (parseFloat(fireKg) || 0)
+      calculatedNetAdet = 0  // KG ürünler için netAdet = 0
       if (parseFloat(cikmaKg) > 0 || parseFloat(fireKg) > 0) {
         calculatedStatus = 'NETLENDI'
       }
@@ -262,14 +277,14 @@ export async function POST(request: NextRequest) {
         adetSayisi: parseInt(adetSayisi) || 0,
         brutKg: parseFloat(brutKg) || 0,
         daraKg: parseFloat(daraKg) || 0,
-        girisKg: parseFloat(girisKg) || 0,
+        girisKg: calculatedGirisKg,
         cikmaKg: parseFloat(cikmaKg) || 0,
         fireKg: parseFloat(fireKg) || 0,
         cikmaFireKg: parseFloat(cikmaFireKg) || 0,
         netKg: calculatedNetKg,
         netAdet: calculatedNetAdet,
         status: calculatedStatus,
-        miktar: parseFloat(girisKg) || 0,
+        miktar: calculatedMiktar,
         
         notlar: notlar || null,
         malKabulcuId: malKabulcu.id
@@ -330,6 +345,9 @@ export async function POST(request: NextRequest) {
         }
       }
     })
+
+    // Cache'i temizle
+    clearCache()
 
     return NextResponse.json(
       { message: "Mal kabul kaydı başarıyla oluşturuldu", malKabulRecord },
