@@ -1374,50 +1374,56 @@ export default function YeniMalKabul() {
             <style>
               body { 
                 font-family: 'Courier New', monospace; 
-                font-size: 11px; 
+                font-size: 12px; 
                 width: 80mm; 
                 max-width: 80mm; 
                 margin: 0; 
-                padding: 0;
+                padding: 2px;
                 box-sizing: border-box;
                 overflow-x: hidden;
-                line-height: 1.2;
+                line-height: 1.3;
                 min-height: 210mm;
+                color: #000;
+                background: #fff;
               }
               .header { 
                 text-align: center;
                 font-weight: bold; 
-                font-size: 14px; 
-                margin-bottom: 4px; 
-                border-bottom: 1px solid #000;
-                padding-bottom: 2px;
+                font-size: 16px; 
+                margin-bottom: 6px; 
+                border-bottom: 2px solid #000;
+                padding-bottom: 4px;
+                color: #000;
               }
               .section { 
-                margin-bottom: 4px; 
-                border-bottom: 1px solid #ccc; 
-                padding-bottom: 2px; 
+                margin-bottom: 6px; 
+                border-bottom: 1px solid #000; 
+                padding-bottom: 4px; 
               }
               .section-title { 
                 font-weight: bold; 
-                font-size: 12px; 
-                margin-bottom: 3px; 
+                font-size: 13px; 
+                margin-bottom: 4px; 
                 text-align: center; 
-                background: #f0f0f0; 
-                padding: 1px; 
-                border-radius: 1px; 
+                background: #000; 
+                color: #fff;
+                padding: 3px; 
+                border-radius: 2px; 
               }
               .row { 
                 display: flex; 
                 justify-content: space-between; 
-                margin-bottom: 2px; 
-                font-size: 10px;
+                margin-bottom: 3px; 
+                font-size: 11px;
                 font-weight: bold;
                 align-items: center;
+                color: #000;
               }
               .label { 
                 font-weight: bold; 
                 min-width: 32mm;
                 max-width: 32mm;
+                color: #000;
               }
               .value { 
                 text-align: right; 
@@ -1426,27 +1432,30 @@ export default function YeniMalKabul() {
                 word-wrap: break-word;
                 text-overflow: ellipsis;
                 overflow: hidden;
+                color: #000;
               }
               .copy-info {
                 text-align: center;
-                font-size: 9px;
-                color: #666;
-                margin-top: 4px;
-                padding: 2px;
-                background: #f0f0f0;
-                border-radius: 1px;
+                font-size: 10px;
+                color: #000;
+                margin-top: 6px;
+                padding: 3px;
+                background: #fff;
+                border: 1px solid #000;
+                border-radius: 2px;
                 font-weight: bold;
               }
               .page-break { page-break-after: always; }
               .copy-label { 
                 text-align: center; 
-                font-size: 12px; 
+                font-size: 13px; 
                 font-weight: bold; 
-                margin: 4px 0; 
-                padding: 2px; 
+                margin: 6px 0; 
+                padding: 4px; 
                 background: #000; 
                 color: #fff; 
-                border-radius: 2px; 
+                border-radius: 3px; 
+                border: 2px solid #000;
               }
               .qr-code, .barcode {
                 text-align: center;
@@ -1466,13 +1475,14 @@ export default function YeniMalKabul() {
               }
               .thank-you {
                 text-align: center;
-                font-size: 12px;
+                font-size: 13px;
                 font-weight: bold;
                 margin-top: 15px;
                 padding: 8px;
-                background: #f0f0f0;
-                border-radius: 3px;
-                border: 2px solid #333;
+                background: #000;
+                color: #fff;
+                border-radius: 4px;
+                border: 2px solid #000;
               }
               
               @media print {
@@ -1480,9 +1490,11 @@ export default function YeniMalKabul() {
                   width: 80mm !important; 
                   max-width: 80mm !important; 
                   margin: 0 !important; 
-                  padding: 0 !important; 
-                  font-size: 11px !important;
+                  padding: 2px !important; 
+                  font-size: 12px !important;
                   min-height: 210mm !important;
+                  color: #000 !important;
+                  background: #fff !important;
                 }
                 @page { 
                   size: 80mm 210mm; 
@@ -1491,6 +1503,10 @@ export default function YeniMalKabul() {
                 .qr-code img, .barcode img { 
                   display: block !important; 
                   max-width: 55mm !important;
+                }
+                * {
+                  -webkit-print-color-adjust: exact !important;
+                  color-adjust: exact !important;
                 }
               }
             </style>
