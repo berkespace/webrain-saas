@@ -19,6 +19,15 @@ function clearCache() {
 // GET - Tüm mal kabul kayıtlarını listele
 export async function GET(request: NextRequest) {
   try {
+    // Session kontrolü
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.email) {
+      return NextResponse.json(
+        { error: "Oturum açmanız gerekiyor" },
+        { status: 401 }
+      )
+    }
+
     const { searchParams } = new URL(request.url)
     const search = searchParams.get('search')
     const fisNo = searchParams.get('fisNo')
