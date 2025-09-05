@@ -1229,24 +1229,40 @@ export default function YeniMalKabul() {
   }
 
   const getSaticiAdi = (data: any) => {
+    console.log('getSaticiAdi called with data:', data);
+    
     if (data.saticiTipi === 'OZEL_FIRMA') {
       return ozelFirmalar.find(f => f.id === data.ozelFirmaId)?.firmaAdi || 'Bilinmeyen Firma'
     } else if (data.saticiTipi === 'KOMISYONCU') {
-      const komisyoncu = komisyoncular.find(k => k.id === data.komisyoncuId)
-      if (komisyoncu) {
-        const uretici = filteredUreticiler.find((u: any) => u.id === data.ureticiId)
-        if (uretici) {
-          return `${komisyoncu.dukkanAdi} - ${uretici.ad} ${uretici.soyad}`
-        } else {
-          return `${komisyoncu.dukkanAdi} (Üretici Seçilmedi)`
-        }
+      // Önce data'dan kontrol et, sonra formData'dan al
+      const komisyoncuId = data.komisyoncuId || formData.komisyoncuId;
+      const ureticiId = data.ureticiId || formData.ureticiId;
+      
+      const komisyoncu = komisyoncular.find(k => k.id === komisyoncuId);
+      const uretici = filteredUreticiler.find((u: any) => u.id === ureticiId);
+      
+      console.log('Komisyoncu debug:', {
+        komisyoncuId,
+        ureticiId,
+        komisyoncu,
+        uretici,
+        formDataKomisyoncuId: formData.komisyoncuId,
+        formDataUreticiId: formData.ureticiId
+      });
+      
+      if (komisyoncu && uretici) {
+        return `${komisyoncu.dukkanAdi} - ${uretici.ad} ${uretici.soyad}`
+      } else if (komisyoncu) {
+        return `${komisyoncu.dukkanAdi} (Üretici Seçilmedi)`
       }
       return 'Bilinmeyen Komisyoncu'
     } else if (data.saticiTipi === 'MUSTAHSIL') {
-      const selectedMustahsil = mustahsil.find(m => m.id === data.mustahsilId)
+      const mustahsilId = data.mustahsilId || formData.mustahsilId;
+      const selectedMustahsil = mustahsil.find(m => m.id === mustahsilId)
       return selectedMustahsil ? `${selectedMustahsil.ad} ${selectedMustahsil.soyad}` : 'Bilinmeyen Müstahsil'
     } else if (data.saticiTipi === 'URETICI') {
-      const uretici = filteredUreticiler.find((u: any) => u.id === data.ureticiId)
+      const ureticiId = data.ureticiId || formData.ureticiId;
+      const uretici = filteredUreticiler.find((u: any) => u.id === ureticiId)
       return uretici ? `${uretici.ad} ${uretici.soyad}` : 'Bilinmeyen Üretici'
     }
     return 'Bilinmeyen'
