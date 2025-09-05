@@ -191,7 +191,7 @@ export default function MalKabulDuzenle() {
   }, [session])
 
   // Rol bazlı erişim kontrolü
-  const canEdit = userRole === 'MAL_KABULCU' || userRole === 'SATIN_ALMACI' || userRole === 'MUHASEBE' || userRole === 'ADMIN'
+  const canEdit = userRole === 'MAL_KABULCU' || userRole === 'SATIN_ALMACI' || userRole === 'MUHASEBECI' || userRole === 'ADMIN'
   const canChangeStatus = userRole === 'MAL_KABULCU' || userRole === 'ADMIN'
   const canEditBasicInfo = userRole === 'MAL_KABULCU' || userRole === 'ADMIN'
   const canEditIadeRecords = userRole === 'MUHASEBECI' || userRole === 'ADMIN'
@@ -203,7 +203,7 @@ export default function MalKabulDuzenle() {
   useEffect(() => {
     if (status === 'unauthenticated') {
       router.push('/login')
-    } else if (status === 'authenticated' && !canEditThisRecord) {
+    } else if (status === 'authenticated' && userRole && !canEditThisRecord) {
       if (isIadeRecord) {
         toast({
           title: "Erişim Reddedildi",
@@ -219,7 +219,7 @@ export default function MalKabulDuzenle() {
       }
       router.push('/dashboard')
     }
-  }, [status, router, canEditThisRecord, isIadeRecord, toast])
+  }, [status, router, canEditThisRecord, isIadeRecord, userRole, toast])
 
   useEffect(() => {
     if (id) {
