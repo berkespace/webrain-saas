@@ -103,13 +103,30 @@ export async function GET(request: NextRequest) {
 // POST - Yeni mal kabul kaydı oluştur
 export async function POST(request: NextRequest) {
   try {
+    console.log('🚀 POST /api/mal-kabul başlatıldı')
+    
     // Veritabanı bağlantısını test et
-    await prisma.$connect()
-    console.log('✅ Veritabanı bağlantısı başarılı')
+    try {
+      await prisma.$connect()
+      console.log('✅ Veritabanı bağlantısı başarılı')
+    } catch (dbError) {
+      console.error('❌ Veritabanı bağlantı hatası:', dbError)
+      return NextResponse.json(
+        { error: "Veritabanı bağlantı hatası", details: dbError instanceof Error ? dbError.message : 'Bilinmeyen hata' },
+        { status: 500 }
+      )
+    }
     
     const session = await getServerSession(authOptions)
+    console.log('👤 Session kontrolü:', { 
+      hasSession: !!session, 
+      hasUser: !!session?.user, 
+      hasEmail: !!session?.user?.email,
+      email: session?.user?.email 
+    })
     
     if (!session?.user?.email) {
+      console.log('❌ Session bulunamadı')
       return NextResponse.json(
         { error: "Oturum açmanız gerekiyor" },
         { status: 401 }
@@ -180,17 +197,22 @@ export async function POST(request: NextRequest) {
     }
 
     // Ürün birimini kontrol et
+    console.log('🔍 Ürün kontrolü:', { urunId })
+    
     const urun = await prisma.urunler.findUnique({
       where: { id: urunId },
-      select: { birim: true }
+      select: { birim: true, ad: true }
     })
 
     if (!urun) {
+      console.log('❌ Ürün bulunamadı:', urunId)
       return NextResponse.json(
         { error: "Ürün bulunamadı" },
         { status: 400 }
       )
     }
+    
+    console.log('✅ Ürün bulundu:', { ad: urun.ad, birim: urun.birim })
 
     // Birime göre validasyon
     if (urun.birim === 'ADET') {
@@ -212,18 +234,25 @@ export async function POST(request: NextRequest) {
     }
 
     // Mal kabulcu kullanıcısını bul
+    console.log('👤 Mal kabulcu aranıyor:', session.user.email)
+    
     const malKabulcu = await prisma.users.findUnique({
       where: { email: session.user.email }
     })
 
     if (!malKabulcu) {
+      console.log('❌ Mal kabulcu bulunamadı:', session.user.email)
       return NextResponse.json(
         { error: "Mal kabulcu kullanıcısı bulunamadı" },
         { status: 404 }
       )
     }
+    
+    console.log('✅ Mal kabulcu bulundu:', { id: malKabulcu.id, email: malKabulcu.email })
 
     // Fiş numarası oluştur (HNR + 4 haneli sıra no)
+    console.log('🔢 Fiş numarası oluşturuluyor...')
+    
     const todayRecords = await prisma.mal_kabul_records.count({
       where: {
         fisNo: {
@@ -233,6 +262,7 @@ export async function POST(request: NextRequest) {
     })
     
     const fisNo = 'HNR' + (todayRecords + 1).toString().padStart(4, '0')
+    console.log('✅ Fiş numarası oluşturuldu:', fisNo)
 
     // Birime göre NET değerleri hesapla
     let calculatedNetKg = 0
@@ -278,6 +308,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Mal kabul kaydını oluştur
+    console.log('💾 Mal kabul kaydı oluşturuluyor...')
+    
     const malKabulRecord = await prisma.mal_kabul_records.create({
       data: {
         id: `mal-kabul-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
