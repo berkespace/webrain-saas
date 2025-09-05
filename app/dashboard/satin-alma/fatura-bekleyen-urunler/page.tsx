@@ -174,8 +174,8 @@ export default function FaturaBekleyenUrunler() {
     
     const basePrice = parseFloat(alisFiyati) || 0
     
-    // Net miktarı hesapla (KG veya Adet)
-    const netMiktar = selectedRecord.urunler.birim === 'KG' 
+    // Net miktarı hesapla (KG veya Adet) - birim kontrolünü case-insensitive yap
+    const netMiktar = selectedRecord.urunler.birim?.toLowerCase() === 'kg' 
       ? (selectedRecord.netKg || 0) 
       : (selectedRecord.netAdet || 0)
     
@@ -198,8 +198,8 @@ export default function FaturaBekleyenUrunler() {
     
     const basePrice = parseFloat(alisFiyati) || 0
     
-    // Net miktarı hesapla (KG veya Adet)
-    const netMiktar = selectedRecord.urunler.birim === 'KG' 
+    // Net miktarı hesapla (KG veya Adet) - birim kontrolünü case-insensitive yap
+    const netMiktar = selectedRecord.urunler.birim?.toLowerCase() === 'kg' 
       ? (selectedRecord.netKg || 0) 
       : (selectedRecord.netAdet || 0)
     
@@ -209,8 +209,7 @@ export default function FaturaBekleyenUrunler() {
     console.log('Hesaplama - Ürün Birimi:', selectedRecord.urunler?.birim)
     console.log('Hesaplama - Net KG:', selectedRecord.netKg)
     console.log('Hesaplama - Net Adet:', selectedRecord.netAdet)
-    console.log('Hesaplama - Selected Record:', selectedRecord)
-    console.log('Hesaplama - Ürün Objesi:', selectedRecord.urunler)
+    console.log('Hesaplama - Birim Kontrolü:', selectedRecord.urunler.birim?.toLowerCase() === 'kg')
     console.log('=== HESAPLAMA BİTTİ ===')
     
     // KDV hariç tutar: Net Miktar * Alış Fiyatı
@@ -1012,7 +1011,7 @@ export default function FaturaBekleyenUrunler() {
                         <span>Net Miktar:</span>
                         <span className="font-medium">
                           {selectedRecord ? (
-                            selectedRecord.urunler.birim === 'KG' 
+                            selectedRecord.urunler.birim?.toLowerCase() === 'kg' 
                               ? `${selectedRecord.netKg || 0} KG`
                               : `${selectedRecord.netAdet || 0} Adet`
                           ) : '0'}
