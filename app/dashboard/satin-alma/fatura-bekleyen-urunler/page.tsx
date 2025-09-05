@@ -168,6 +168,14 @@ export default function FaturaBekleyenUrunler() {
     setPreviewImages(prev => prev.filter((_, i) => i !== index))
   }
 
+  // Türkçe sayı formatı fonksiyonu
+  const formatNumber = (num: number): string => {
+    return new Intl.NumberFormat('tr-TR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(num)
+  }
+
   // Fiyat hesaplama fonksiyonları
   const calculateTotalPrice = () => {
     if (!selectedRecord) return 0
@@ -203,36 +211,12 @@ export default function FaturaBekleyenUrunler() {
       ? (selectedRecord.netKg || 0) 
       : (selectedRecord.netAdet || 0)
     
-    console.log('=== HESAPLAMA BAŞLIYOR ===')
-    console.log('Hesaplama - Base Price:', basePrice)
-    console.log('Hesaplama - Net Miktar:', netMiktar)
-    console.log('Hesaplama - Ürün Birimi:', selectedRecord.urunler?.birim)
-    console.log('Hesaplama - Net KG:', selectedRecord.netKg)
-    console.log('Hesaplama - Net Adet:', selectedRecord.netAdet)
-    console.log('Hesaplama - Birim Kontrolü:', selectedRecord.urunler.birim?.toLowerCase() === 'kg')
-    console.log('=== HESAPLAMA BİTTİ ===')
     
     // KDV hariç tutar: Net Miktar * Alış Fiyatı
     return netMiktar * basePrice
   }
 
   const openModal = (record: MalKabulRecord) => {
-    console.log('=== MODAL AÇILIYOR ===')
-    console.log('Selected record:', record)
-    console.log('Record ID:', record.id)
-    console.log('Record FisNo:', record.fisNo)
-    console.log('Net KG:', record.netKg)
-    console.log('Net Adet:', record.netAdet)
-    console.log('Ürün birimi:', record.urunler?.birim)
-    console.log('Ürün adı:', record.urunler?.ad)
-    console.log('Ürün ID:', record.urunler?.id)
-    console.log('Giriş KG:', record.girisKg)
-    console.log('Giriş Adet:', record.girisAdet)
-    console.log('Çıkma KG:', record.cikmaKg)
-    console.log('Çıkma Adet:', record.cikmaAdet)
-    console.log('Fire KG:', record.fireKg)
-    console.log('Fire Adet:', record.fireAdet)
-    console.log('=== MODAL AÇILDI ===')
     setSelectedRecord(record)
     setAlisFiyati(record.birimFiyat?.toString() || '')
     setIsModalOpen(true)
@@ -301,17 +285,10 @@ export default function FaturaBekleyenUrunler() {
       const data = await response.json()
       
       if (response.ok) {
-        console.log('API Response:', data)
-        console.log('Records count:', data.records?.length)
-        
         // Sadece NETLENDI durumundaki kayıtları filtrele
-        const netlenenRecords = (data.records || []).filter((record: MalKabulRecord) => {
-          console.log('Record status:', record.status, 'Record ID:', record.id)
-          console.log('Record urunler:', record.urunler)
-          return record.status === 'NETLENDI'
-        })
-        
-        console.log('Filtered records count:', netlenenRecords.length)
+        const netlenenRecords = (data.records || []).filter((record: MalKabulRecord) => 
+          record.status === 'NETLENDI'
+        )
         setRecords(netlenenRecords)
       } else {
         console.error('Mal kabul kayıtları alınamadı:', data.error)
@@ -1005,7 +982,7 @@ export default function FaturaBekleyenUrunler() {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span>Birim Fiyat:</span>
-                        <span className="font-medium">₺{parseFloat(alisFiyati || '0').toFixed(2)}</span>
+                        <span className="font-medium">₺{formatNumber(parseFloat(alisFiyati || '0'))}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Net Miktar:</span>
@@ -1019,23 +996,23 @@ export default function FaturaBekleyenUrunler() {
                       </div>
                       <div className="flex justify-between border-t pt-2">
                         <span>KDV Hariç Tutar:</span>
-                        <span className="font-medium">₺{calculateKdvHaricTutar().toFixed(2)}</span>
+                        <span className="font-medium">₺{formatNumber(calculateKdvHaricTutar())}</span>
                       </div>
                       {kdvHesapla && (
                         <div className="flex justify-between text-sm text-muted-foreground">
                           <span>KDV (%{kdvOrani}):</span>
-                          <span>₺{((calculateKdvHaricTutar() * kdvOrani) / 100).toFixed(2)}</span>
+                          <span>₺{formatNumber((calculateKdvHaricTutar() * kdvOrani) / 100)}</span>
                         </div>
                       )}
                       {belediyeRusumHesapla && (
                         <div className="flex justify-between text-sm text-muted-foreground">
                           <span>Belediye Rüsum (%{belediyeRusumOrani}):</span>
-                          <span>₺{((calculateKdvHaricTutar() * belediyeRusumOrani) / 100).toFixed(2)}</span>
+                          <span>₺{formatNumber((calculateKdvHaricTutar() * belediyeRusumOrani) / 100)}</span>
                         </div>
                       )}
                       <div className="flex justify-between border-t pt-2 font-bold text-lg">
                         <span>Toplam:</span>
-                        <span className="text-green-600">₺{calculateTotalPrice().toFixed(2)}</span>
+                        <span className="text-green-600">₺{formatNumber(calculateTotalPrice())}</span>
                       </div>
                     </div>
                   </div>
