@@ -1180,7 +1180,7 @@ export default function YeniMalKabul() {
           paletAdi: ambalajlar.find(a => a.id === formData.paletId)?.ad,
           paletSayisi: parseInt(formData.paletSayisi) || 0,
           notlar: formData.notlar,
-          malKabulcuAdi: session.user?.name || ''
+          malKabulcuAdi: `${session.user?.firstName || ''} ${session.user?.lastName || ''}`.trim() || 'Mal Kabulcu'
         }
         
         setReceiptData(receiptData)
@@ -1328,7 +1328,7 @@ export default function YeniMalKabul() {
         paletAdi: receiptData.paletAdi || null,
         paletSayisi: parseInt(receiptData.paletSayisi) || 0,
         notlar: receiptData.notlar || '',
-        malKabulcuAdi: session?.user?.name || '',
+        malKabulcuAdi: `${session?.user?.firstName || ''} ${session?.user?.lastName || ''}`.trim() || 'Mal Kabulcu',
         komisyoncuAdi: saticiDetay.komisyoncuAdi,
         ureticiAdi: saticiDetay.ureticiAdi,
         sehir: saticiDetay.sehir
@@ -1497,7 +1497,7 @@ export default function YeniMalKabul() {
           </head>
           <body>
               <div class="logo">
-                <img src="/logo-dark.png" alt="Webrain Logo" />
+                <img src="${window.location.origin}/logo-dark.png" alt="Webrain Logo" />
               </div>
               <div class="header">${fişBaşlığı}</div>
             
@@ -1567,6 +1567,7 @@ export default function YeniMalKabul() {
             
             <div class="section">
                 <div class="section-title">${printData.birim?.toLowerCase() === 'adet' ? 'ADET BİLGİLERİ' : 'KİLOGRAM BİLGİLERİ'}</div>
+                <!-- Debug: Birim: ${printData.birim}, Lowercase: ${printData.birim?.toLowerCase()} -->
                 ${printData.birim?.toLowerCase() === 'adet' ? `
                 <div class="row">
                   <span class="label">Kasa Sayısı:</span>
@@ -1658,7 +1659,7 @@ export default function YeniMalKabul() {
               <div class="page-break"></div>
               
               <div class="logo">
-                <img src="/logo-dark.png" alt="Webrain Logo" />
+                <img src="${window.location.origin}/logo-dark.png" alt="Webrain Logo" />
               </div>
               <div class="header">${fişBaşlığı}</div>
             
@@ -1865,7 +1866,7 @@ export default function YeniMalKabul() {
         paletAdi: receiptData.paletAdi || null,
         paletSayisi: parseInt(receiptData.paletSayisi) || 0,
         notlar: receiptData.notlar || '',
-        malKabulcuAdi: session?.user?.name || '',
+        malKabulcuAdi: `${session?.user?.firstName || ''} ${session?.user?.lastName || ''}`.trim() || 'Mal Kabulcu',
         komisyoncuAdi: saticiDetay.komisyoncuAdi,
         ureticiAdi: saticiDetay.ureticiAdi,
         sehir: saticiDetay.sehir

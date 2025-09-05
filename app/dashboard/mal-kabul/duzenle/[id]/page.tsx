@@ -1841,7 +1841,7 @@ export default function MalKabulDuzenle() {
                     </head>
                     <body>
                         <div class="logo">
-                          <img src="/logo-dark.png" alt="Webrain Logo" />
+                          <img src="${window.location.origin}/logo-dark.png" alt="Webrain Logo" />
                         </div>
                         <div class="header">${fişBaşlığı}</div>
                       
