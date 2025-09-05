@@ -440,9 +440,25 @@ export default function CariHesaplar() {
             <span class="value">${malKabulRecord.birimFiyat ? malKabulRecord.birimFiyat.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' }) : '-'}</span>
           </div>
           <div class="row">
-            <span class="label">KDV Hariç:</span>
+            <span class="label">Net Miktar:</span>
+            <span class="value">${selectedRecord.toplamAlisMiktari} ${malKabulRecord.urunler.birim}</span>
+          </div>
+          <div class="row">
+            <span class="label">KDV Hariç Tutar:</span>
             <span class="value">${selectedRecord.kdvHaricTutar.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}</span>
           </div>
+          ${malKabulRecord.kdvHesapla && malKabulRecord.kdvOrani > 0 ? `
+          <div class="row">
+            <span class="label">KDV (%${malKabulRecord.kdvOrani}):</span>
+            <span class="value">${(selectedRecord.herseyDahilTutar - selectedRecord.kdvHaricTutar - (malKabulRecord.belediyeRusumHesapla ? selectedRecord.kdvHaricTutar * (malKabulRecord.belediyeRusumOrani / 100) : 0)).toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}</span>
+          </div>
+          ` : ''}
+          ${malKabulRecord.belediyeRusumHesapla && malKabulRecord.belediyeRusumOrani > 0 ? `
+          <div class="row">
+            <span class="label">Belediye Rüsum (%${malKabulRecord.belediyeRusumOrani}):</span>
+            <span class="value">${(selectedRecord.kdvHaricTutar * (malKabulRecord.belediyeRusumOrani / 100)).toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}</span>
+          </div>
+          ` : ''}
           <div class="row total">
             <span class="label">Toplam Tutar:</span>
             <span class="value">${selectedRecord.herseyDahilTutar.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}</span>
