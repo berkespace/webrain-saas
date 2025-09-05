@@ -215,7 +215,7 @@ export async function POST(request: NextRequest) {
     console.log('✅ Ürün bulundu:', { ad: urun.ad, birim: urun.birim })
 
     // Birime göre validasyon
-    if (urun.birim === 'ADET') {
+    if (urun.birim === 'ADET' || urun.birim === 'adet') {
       // ADET birimi için validasyon
       if (!adetSayisi || parseInt(adetSayisi) <= 0) {
         return NextResponse.json(
@@ -284,7 +284,7 @@ export async function POST(request: NextRequest) {
     let calculatedGirisKg = 0
     let calculatedMiktar = 0
 
-    if (urun.birim === 'ADET') {
+    if (urun.birim === 'ADET' || urun.birim === 'adet') {
       // ADET ürünler için
       calculatedGirisKg = parseInt(adetSayisi) || 0  // Adet ürünler için girisKg = adetSayisi
       calculatedMiktar = parseInt(adetSayisi) || 0   // Adet ürünler için miktar = adetSayisi
