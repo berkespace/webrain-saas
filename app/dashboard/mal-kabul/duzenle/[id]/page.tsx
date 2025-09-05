@@ -1708,41 +1708,88 @@ export default function MalKabulDuzenle() {
                       <title>${fişBaşlığı} - ${finalReceiptData.fisNo}</title>
                       <style>
                         body { 
-                          font-family: monospace; 
-                          font-size: 12px; 
+                          font-family: 'Courier New', monospace; 
+                          font-size: 11px; 
                           width: 80mm; 
                           max-width: 80mm; 
                           margin: 0; 
-                          padding: 8px;
+                          padding: 0;
                           box-sizing: border-box;
                           overflow-x: hidden;
+                          line-height: 1.2;
+                          min-height: 210mm;
                         }
-                        .header { text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 10px; }
-                        .section { margin-bottom: 12px; border-bottom: 1px solid #000; padding-bottom: 8px; }
-                        .section-title { font-weight: bold; font-size: 12px; margin-bottom: 8px; text-align: center; background: #f0f0f0; padding: 3px; border-radius: 3px; }
-                        .row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 11px; }
-                        .label { font-weight: bold; }
-                        .value { text-align: right; font-weight: 500; }
+                        .header { 
+                          text-align: center;
+                          font-weight: bold; 
+                          font-size: 14px; 
+                          margin-bottom: 4px; 
+                          border-bottom: 1px solid #000;
+                          padding-bottom: 2px;
+                        }
+                        .section { 
+                          margin-bottom: 4px; 
+                          border-bottom: 1px solid #ccc; 
+                          padding-bottom: 2px; 
+                        }
+                        .section-title { 
+                          font-weight: bold; 
+                          font-size: 12px; 
+                          margin-bottom: 3px; 
+                          text-align: center; 
+                          background: #f0f0f0; 
+                          padding: 1px; 
+                          border-radius: 1px; 
+                        }
+                        .row { 
+                          display: flex; 
+                          justify-content: space-between; 
+                          margin-bottom: 2px; 
+                          font-size: 10px;
+                          font-weight: bold;
+                          align-items: center;
+                        }
+                        .label { 
+                          font-weight: bold; 
+                          min-width: 32mm;
+                          max-width: 32mm;
+                        }
+                        .value { 
+                          text-align: right; 
+                          font-weight: bold; 
+                          max-width: 45mm;
+                          word-wrap: break-word;
+                          text-overflow: ellipsis;
+                          overflow: hidden;
+                        }
                         .copy-info {
                           text-align: center;
-                          font-size: 10px;
+                          font-size: 9px;
                           color: #666;
-                          margin-top: 10px;
-                          padding: 5px;
+                          margin-top: 4px;
+                          padding: 2px;
                           background: #f0f0f0;
-                          border-radius: 3px;
+                          border-radius: 1px;
                           font-weight: bold;
                         }
                         .page-break { page-break-after: always; }
                         .copy-label { 
                           text-align: center; 
-                          font-size: 14px; 
+                          font-size: 12px; 
                           font-weight: bold; 
-                          margin: 15px 0; 
-                          padding: 8px; 
+                          margin: 4px 0; 
+                          padding: 2px; 
                           background: #000; 
                           color: #fff; 
-                          border-radius: 5px; 
+                          border-radius: 2px; 
+                        }
+                        .qr-code, .barcode {
+                          text-align: center;
+                          margin: 2px 0;
+                        }
+                        .qr-code img, .barcode img {
+                          max-width: 55mm;
+                          height: auto;
                         }
                         .final-status { 
                           background: #4ade80; 
@@ -1759,41 +1806,37 @@ export default function MalKabulDuzenle() {
                             width: 80mm !important; 
                             max-width: 80mm !important; 
                             margin: 0 !important; 
-                            padding: 8px !important; 
-                            font-size: 12px !important;
+                            padding: 0 !important; 
+                            font-size: 11px !important;
+                            min-height: 210mm !important;
                           }
                           @page { 
-                            size: 80mm auto; 
+                            size: 80mm 210mm; 
                             margin: 0; 
                           }
                           .qr-code img, .barcode img { 
                             display: block !important; 
+                            max-width: 55mm !important;
                           }
                         }
                       </style>
                     </head>
                     <body>
-                      <div class="header">WEBRAIN</div>
-                      <div class="header">Tarım Ürünleri Yönetim Sistemi</div>
+                        <div class="header">${fişBaşlığı}</div>
                       
                       <div class="section">
-                        <div class="section-title">${fişBaşlığı}</div>
-                        <div class="final-status">ÜRÜN SON EVRAKI</div>
+                          <div class="section-title">FİŞ BİLGİLERİ</div>
                         <div class="row">
-                          <span class="label">Fiş No:</span>
-                          <span class="value">${finalReceiptData.fisNo}</span>
+                            <span class="label">Fiş No:</span>
+                            <span class="value">${finalReceiptData.fisNo}</span>
                         </div>
                         <div class="row">
-                          <span class="label">Tarih:</span>
-                          <span class="value">${new Date(finalReceiptData.tarih).toLocaleDateString('tr-TR')}</span>
+                            <span class="label">Tarih:</span>
+                            <span class="value">${new Date(finalReceiptData.tarih).toLocaleDateString('tr-TR')}</span>
                         </div>
                         <div class="row">
-                          <span class="label">Saat:</span>
-                          <span class="value">${new Date(finalReceiptData.tarih).toLocaleTimeString('tr-TR')}</span>
-                        </div>
-                        <div class="row">
-                          <span class="label">Mal Kabulcu:</span>
-                          <span class="value">${finalReceiptData.malKabulcuAdi}</span>
+                            <span class="label">Mal Kabulcu:</span>
+                            <span class="value">${finalReceiptData.malKabulcuAdi}</span>
                         </div>
                       </div>
                       
