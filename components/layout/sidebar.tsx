@@ -70,103 +70,137 @@ export function Sidebar() {
       return [
         ...baseItems,
         {
-          title: 'Mal Kabul',
-          href: '/dashboard/mal-kabul',
-          icon: <Package className="h-4 w-4" />,
-          badge: 12,
-          children: [
-            {
-              title: 'Yeni Mal Kabul',
-              href: '/dashboard/mal-kabul/yeni',
-              icon: <Plus className="h-4 w-4" />
-            },
-            {
-              title: 'Mal Kabul Listesi',
-              href: '/dashboard/mal-kabul/liste',
-              icon: <FileText className="h-4 w-4" />
-            },
-            
-            {
-              title: 'Fiş Yazdır',
-              href: '/dashboard/mal-kabul/fis',
-              icon: <Download className="h-4 w-4" />
-            }
-          ]
-        },
-        {
-          title: 'Komisyoncular',
-          href: '/dashboard/komisyoncular/liste',
-          icon: <Users className="h-4 w-4" />,
-          children: [
-            {
-              title: 'Yeni Komisyoncu',
-              href: '/dashboard/komisyoncular/yeni',
-              icon: <Plus className="h-4 w-4" />
-            }
-          ]
-        },
-        {
-          title: 'Üreticiler',
-          href: '/dashboard/ureticiler/liste',
-          icon: <Users className="h-4 w-4" />,
-          children: [
-            {
-              title: 'Yeni Üretici',
-              href: '/dashboard/ureticiler/yeni',
-              icon: <Plus className="h-4 w-4" />
-            }
-          ]
-        },
-        {
-          title: 'Müstahsil',
-          href: '/dashboard/mustahsil/',
-          icon: <Users className="h-4 w-4" />,
-          children: [
-            {
-              title: 'Yeni Müstahsil',
-              href: '/dashboard/mustahsil/yeni',
-              icon: <Plus className="h-4 w-4" />
-            }
-          ]
-        },
-        {
-          title: 'Özel Firmalar',
-          href: '/dashboard/ozel-firmalar/liste',
-          icon: <Building className="h-4 w-4" />,
-          children: [
-            {
-              title: 'Yeni Özel Firma',
-              href: '/dashboard/ozel-firmalar/yeni',
-              icon: <Plus className="h-4 w-4" />
-            }
-          ]
-        },
-        {
-          title: 'Ambalajlar',
-          href: '/dashboard/ambalajlar/liste',
+          title: 'Mal Kabul İşlemleri',
+          href: '#',
           icon: <Package className="h-4 w-4" />,
           children: [
             {
-              title: 'Yeni Ambalaj',
-              href: '/dashboard/ambalajlar/yeni',
-              icon: <Plus className="h-4 w-4" />
-            }
-          ]
-        },
-        {
-          title: 'Ürünler',
-          href: '/dashboard/urunler',
-          icon: <Apple className="h-4 w-4" />,
-          children: [
-           
+              title: 'Mal Kabul',
+              href: '/dashboard/mal-kabul',
+              icon: <Package className="h-4 w-4" />,
+              badge: 12,
+              children: [
+                {
+                  title: 'Yeni Mal Kabul',
+                  href: '/dashboard/mal-kabul/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                },
+                {
+                  title: 'Mal Kabul Listesi',
+                  href: '/dashboard/mal-kabul/liste',
+                  icon: <FileText className="h-4 w-4" />
+                },
+                {
+                  title: 'Fiş Yazdır',
+                  href: '/dashboard/mal-kabul/fis',
+                  icon: <Download className="h-4 w-4" />
+                }
+              ]
+            },
             {
-              title: 'Yeni Ürün',
-              href: '/dashboard/urunler/yeni',
-              icon: <Plus className="h-4 w-4" />
+              title: 'Komisyoncular',
+              href: '/dashboard/komisyoncular/liste',
+              icon: <Users className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Komisyoncu Listesi',
+                  href: '/dashboard/komisyoncular/liste',
+                  icon: <Users className="h-4 w-4" />
+                },
+                {
+                  title: 'Yeni Komisyoncu',
+                  href: '/dashboard/komisyoncular/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                }
+              ]
+            },
+            {
+              title: 'Üreticiler',
+              href: '/dashboard/ureticiler/liste',
+              icon: <Users className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Üretici Listesi',
+                  href: '/dashboard/ureticiler/liste',
+                  icon: <Users className="h-4 w-4" />
+                },
+                {
+                  title: 'Yeni Üretici',
+                  href: '/dashboard/ureticiler/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                }
+              ]
+            },
+            {
+              title: 'Müstahsil',
+              href: '/dashboard/mustahsil/',
+              icon: <Users className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Müstahsil Listesi',
+                  href: '/dashboard/mustahsil/',
+                  icon: <Users className="h-4 w-4" />
+                },
+                {
+                  title: 'Yeni Müstahsil',
+                  href: '/dashboard/mustahsil/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                }
+              ]
+            },
+            {
+              title: 'Özel Firmalar',
+              href: '/dashboard/ozel-firmalar/liste',
+              icon: <Building className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Özel Firma Listesi',
+                  href: '/dashboard/ozel-firmalar/liste',
+                  icon: <Building className="h-4 w-4" />
+                },
+                {
+                  title: 'Yeni Özel Firma',
+                  href: '/dashboard/ozel-firmalar/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                }
+              ]
+            },
+            {
+              title: 'Ambalajlar',
+              href: '/dashboard/ambalajlar/liste',
+              icon: <Package className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Ambalaj Listesi',
+                  href: '/dashboard/ambalajlar/liste',
+                  icon: <Package className="h-4 w-4" />
+                },
+                {
+                  title: 'Yeni Ambalaj',
+                  href: '/dashboard/ambalajlar/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                }
+              ]
+            },
+            {
+              title: 'Ürünler',
+              href: '/dashboard/urunler',
+              icon: <Apple className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Ürün Listesi',
+                  href: '/dashboard/urunler/liste',
+                  icon: <Apple className="h-4 w-4" />
+                },
+                {
+                  title: 'Yeni Ürün',
+                  href: '/dashboard/urunler/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                }
+              ]
             }
           ]
-        },
-    
+        }
       ]
     }
 
@@ -174,164 +208,185 @@ export function Sidebar() {
 
 
 
-    // Admin için tüm menüler
+    // Admin/Yönetici için tüm menüler
     if (userRole === 'ADMIN') {
       return [
         ...baseItems,
         {
-          title: 'Mal Kabul',
-          href: '/dashboard/mal-kabul',
+          title: 'Mal Kabul İşlemleri',
+          href: '#',
           icon: <Package className="h-4 w-4" />,
-          badge: 12,
           children: [
             {
-              title: 'Yeni Mal Kabul',
-              href: '/dashboard/mal-kabul/yeni',
-              icon: <Plus className="h-4 w-4" />
+              title: 'Mal Kabul',
+              href: '/dashboard/mal-kabul',
+              icon: <Package className="h-4 w-4" />,
+              badge: 12,
+              children: [
+                {
+                  title: 'Yeni Mal Kabul',
+                  href: '/dashboard/mal-kabul/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                },
+                {
+                  title: 'Mal Kabul Listesi',
+                  href: '/dashboard/mal-kabul/liste',
+                  icon: <FileText className="h-4 w-4" />
+                },
+                {
+                  title: 'Bekleyen Faturalar',
+                  href: '/dashboard/mal-kabul/bekleyen',
+                  icon: <AlertTriangle className="h-4 w-4" />,
+                  badge: 8
+                },
+                {
+                  title: 'Fiş Yazdır',
+                  href: '/dashboard/mal-kabul/fis',
+                  icon: <Download className="h-4 w-4" />
+                }
+              ]
             },
             {
-              title: 'Mal Kabul Listesi',
-              href: '/dashboard/mal-kabul/liste',
+              title: 'Komisyoncular',
+              href: '/dashboard/komisyoncular',
+              icon: <Users className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Komisyoncu Listesi',
+                  href: '/dashboard/komisyoncular/liste',
+                  icon: <Users className="h-4 w-4" />
+                },
+                {
+                  title: 'Yeni Komisyoncu',
+                  href: '/dashboard/komisyoncular/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                }
+              ]
+            },
+            {
+              title: 'Üreticiler',
+              href: '/dashboard/ureticiler/liste',
+              icon: <Users className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Üretici Listesi',
+                  href: '/dashboard/ureticiler/liste',
+                  icon: <Users className="h-4 w-4" />
+                },
+                {
+                  title: 'Yeni Üretici',
+                  href: '/dashboard/ureticiler/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                }
+              ]
+            },
+            {
+              title: 'Müstahsil',
+              href: '/dashboard/mustahsil/liste',
+              icon: <Users className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Müstahsil Listesi',
+                  href: '/dashboard/mustahsil/liste',
+                  icon: <Users className="h-4 w-4" />
+                },
+                {
+                  title: 'Yeni Müstahsil',
+                  href: '/dashboard/mustahsil/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                }
+              ]
+            },
+            {
+              title: 'Özel Firmalar',
+              href: '/dashboard/ozel-firmalar',
+              icon: <Building className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Özel Firma Listesi',
+                  href: '/dashboard/ozel-firmalar/liste',
+                  icon: <Building className="h-4 w-4" />
+                },
+                {
+                  title: 'Yeni Özel Firma',
+                  href: '/dashboard/ozel-firmalar/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                }
+              ]
+            },
+            {
+              title: 'Ambalajlar',
+              href: '/dashboard/ambalajlar',
+              icon: <Package className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Ambalaj Listesi',
+                  href: '/dashboard/ambalajlar/liste',
+                  icon: <Package className="h-4 w-4" />
+                },
+                {
+                  title: 'Yeni Ambalaj',
+                  href: '/dashboard/ambalajlar/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                }
+              ]
+            },
+            {
+              title: 'Ürünler',
+              href: '/dashboard/urunler',
+              icon: <Apple className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Ürün Listesi',
+                  href: '/dashboard/urunler/liste',
+                  icon: <Apple className="h-4 w-4" />
+                },
+                {
+                  title: 'Yeni Ürün',
+                  href: '/dashboard/urunler/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                }
+              ]
+            }
+          ]
+        },
+        {
+          title: 'Satın Alma İşlemleri',
+          href: '#',
+          icon: <FileText className="h-4 w-4" />,
+          children: [
+            {
+              title: 'Genel Ürün Tablosu',
+              href: '/dashboard/satin-alma/genel-urun-tablosu',
               icon: <FileText className="h-4 w-4" />
             },
             {
-              title: 'Bekleyen Faturalar',
-              href: '/dashboard/mal-kabul/bekleyen',
-              icon: <AlertTriangle className="h-4 w-4" />,
-              badge: 8
+              title: 'Netlenen Ürün Tablosu',
+              href: '/dashboard/satin-alma/netlenen-urun-tablosu',
+              icon: <FileText className="h-4 w-4" />
             },
             {
-              title: 'Fiş Yazdır',
-              href: '/dashboard/mal-kabul/fis',
-              icon: <Download className="h-4 w-4" />
-            }
-          ]
-        },
-        {
-          title: 'Komisyoncular',
-          href: '/dashboard/komisyoncular',
-          icon: <Users className="h-4 w-4" />,
-          children: [
-            {
-              title: 'Komisyoncu Listesi',
-              href: '/dashboard/komisyoncular/liste',
-              icon: <Users className="h-4 w-4" />
+              title: 'Raporlar',
+              href: '/dashboard/satin-alma/raporlar',
+              icon: <BarChart3 className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Günlük Rapor',
+                  href: '/dashboard/satin-alma/raporlar/gunluk',
+                  icon: <Calendar className="h-4 w-4" />
+                },
+                {
+                  title: 'Aylık Rapor',
+                  href: '/dashboard/satin-alma/raporlar/aylik',
+                  icon: <BarChart3 className="h-4 w-4" />
+                },
+                {
+                  title: 'Ürün Raporu',
+                  href: '/dashboard/satin-alma/raporlar/urun',
+                  icon: <Package className="h-4 w-4" />
+                }
+              ]
             },
-            {
-              title: 'Yeni Komisyoncu',
-              href: '/dashboard/komisyoncular/yeni',
-              icon: <Plus className="h-4 w-4" />
-            }
-          ]
-        },
-        {
-          title: 'Üreticiler',
-          href: '/dashboard/ureticiler/liste',
-          icon: <Users className="h-4 w-4" />,
-          children: [
-            {
-              title: 'Yeni Üretici',
-              href: '/dashboard/ureticiler/yeni',
-              icon: <Plus className="h-4 w-4" />
-            }
-          ]
-        },
-        {
-          title: 'Müstahsil',
-          href: '/dashboard/mustahsil/liste',
-          icon: <Users className="h-4 w-4" />,
-          children: [
-            {
-              title: 'Yeni Müstahsil',
-              href: '/dashboard/mustahsil/yeni',
-              icon: <Plus className="h-4 w-4" />
-            }
-          ]
-        },
-        {
-          title: 'Özel Firmalar',
-          href: '/dashboard/ozel-firmalar',
-          icon: <Building className="h-4 w-4" />,
-          children: [
-            {
-              title: 'Özel Firma Listesi',
-              href: '/dashboard/ozel-firmalar/liste',
-              icon: <Building className="h-4 w-4" />
-            },
-            {
-              title: 'Yeni Özel Firma',
-              href: '/dashboard/ozel-firmalar/yeni',
-              icon: <Plus className="h-4 w-4" />
-            }
-          ]
-        },
-        {
-          title: 'Ambalajlar',
-          href: '/dashboard/ambalajlar',
-          icon: <Package className="h-4 w-4" />,
-          children: [
-            {
-              title: 'Ambalaj Listesi',
-              href: '/dashboard/ambalajlar/liste',
-              icon: <Package className="h-4 w-4" />
-            },
-            {
-              title: 'Yeni Ambalaj',
-              href: '/dashboard/ambalajlar/yeni',
-              icon: <Plus className="h-4 w-4" />
-            }
-          ]
-        },
-        {
-          title: 'Ürünler',
-          href: '/dashboard/urunler',
-          icon: <Package className="h-4 w-4" />,
-          children: [
-            {
-              title: 'Ürün Listesi',
-              href: '/dashboard/urunler/liste',
-              icon: <Package className="h-4 w-4" />
-            },
-            {
-              title: 'Yeni Ürün',
-              href: '/dashboard/urunler/yeni',
-              icon: <Plus className="h-4 w-4" />
-            }
-          ]
-        },
-        {
-          title: 'Raporlar',
-          href: '/dashboard/raporlar',
-          icon: <BarChart3 className="h-4 w-4" />,
-          children: [
-            {
-              title: 'Günlük Rapor',
-              href: '/dashboard/raporlar/gunluk',
-              icon: <Calendar className="h-4 w-4" />
-            },
-            {
-              title: 'Aylık Rapor',
-              href: '/dashboard/raporlar/aylik',
-              icon: <BarChart3 className="h-4 w-4" />
-            },
-            {
-              title: 'Komisyoncu Raporu',
-              href: '/dashboard/raporlar/komisyoncu',
-              icon: <Users className="h-4 w-4" />
-            },
-            {
-              title: 'Ürün Raporu',
-              href: '/dashboard/raporlar/urun',
-              icon: <Package className="h-4 w-4" />
-            }
-          ]
-        },
-        {
-          title: 'Satın Alma',
-          href: '/dashboard/satin-alma',
-          icon: <FileText className="h-4 w-4" />,
-          badge: 5,
-          children: [
             {
               title: 'Fiyat Girişi',
               href: '/dashboard/satin-alma/fiyat',
@@ -350,10 +405,15 @@ export function Sidebar() {
           ]
         },
         {
-          title: 'Muhasebe',
-          href: '/dashboard/muhasebe',
+          title: 'Muhasebe İşlemleri',
+          href: '#',
           icon: <BarChart3 className="h-4 w-4" />,
           children: [
+            {
+              title: 'Genel Ürün Tablosu',
+              href: '/dashboard/muhasebe/genel-urun-tablosu',
+              icon: <FileText className="h-4 w-4" />
+            },
             {
               title: 'Finansal Raporlar',
               href: '/dashboard/muhasebe/raporlar',
@@ -368,7 +428,7 @@ export function Sidebar() {
         },
         {
           title: 'Sistem Yönetimi',
-          href: '/dashboard/admin',
+          href: '#',
           icon: <Settings className="h-4 w-4" />,
           children: [
             {
@@ -380,6 +440,11 @@ export function Sidebar() {
               title: 'Sistem Ayarları',
               href: '/dashboard/admin/ayarlar',
               icon: <Settings className="h-4 w-4" />
+            },
+            {
+              title: 'Gelişmiş Raporlar',
+              href: '/dashboard/admin/gelismis-raporlar',
+              icon: <BarChart3 className="h-4 w-4" />
             }
           ]
         }
@@ -391,11 +456,42 @@ export function Sidebar() {
       return [
         ...baseItems,
         {
-          title: 'Satın Alma',
-          href: '/dashboard/satin-alma',
+          title: 'Satın Alma İşlemleri',
+          href: '#',
           icon: <FileText className="h-4 w-4" />,
-          badge: 5,
           children: [
+            {
+              title: 'Genel Ürün Tablosu',
+              href: '/dashboard/satin-alma/genel-urun-tablosu',
+              icon: <FileText className="h-4 w-4" />
+            },
+            {
+              title: 'Netlenen Ürün Tablosu',
+              href: '/dashboard/satin-alma/netlenen-urun-tablosu',
+              icon: <FileText className="h-4 w-4" />
+            },
+            {
+              title: 'Raporlar',
+              href: '/dashboard/satin-alma/raporlar',
+              icon: <BarChart3 className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Günlük Rapor',
+                  href: '/dashboard/satin-alma/raporlar/gunluk',
+                  icon: <Calendar className="h-4 w-4" />
+                },
+                {
+                  title: 'Aylık Rapor',
+                  href: '/dashboard/satin-alma/raporlar/aylik',
+                  icon: <BarChart3 className="h-4 w-4" />
+                },
+                {
+                  title: 'Ürün Raporu',
+                  href: '/dashboard/satin-alma/raporlar/urun',
+                  icon: <Package className="h-4 w-4" />
+                }
+              ]
+            },
             {
               title: 'Fiyat Girişi',
               href: '/dashboard/satin-alma/fiyat',
@@ -416,15 +512,206 @@ export function Sidebar() {
       ]
     }
 
-    // Muhasebe için sadece muhasebe menüleri
-    if (userRole === 'MUHASEBE') {
+    // Muhasebeci için hem mal kabul hem satın alma menüleri
+    if (userRole === 'MUHASEBECI') {
       return [
         ...baseItems,
         {
-          title: 'Muhasebe',
-          href: '/dashboard/muhasebe',
+          title: 'Mal Kabul İşlemleri',
+          href: '#',
+          icon: <Package className="h-4 w-4" />,
+          children: [
+            {
+              title: 'Mal Kabul',
+              href: '/dashboard/mal-kabul',
+              icon: <Package className="h-4 w-4" />,
+              badge: 12,
+              children: [
+                {
+                  title: 'Yeni Mal Kabul',
+                  href: '/dashboard/mal-kabul/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                },
+                {
+                  title: 'Mal Kabul Listesi',
+                  href: '/dashboard/mal-kabul/liste',
+                  icon: <FileText className="h-4 w-4" />
+                },
+                {
+                  title: 'Fiş Yazdır',
+                  href: '/dashboard/mal-kabul/fis',
+                  icon: <Download className="h-4 w-4" />
+                }
+              ]
+            },
+            {
+              title: 'Komisyoncular',
+              href: '/dashboard/komisyoncular/liste',
+              icon: <Users className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Komisyoncu Listesi',
+                  href: '/dashboard/komisyoncular/liste',
+                  icon: <Users className="h-4 w-4" />
+                },
+                {
+                  title: 'Yeni Komisyoncu',
+                  href: '/dashboard/komisyoncular/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                }
+              ]
+            },
+            {
+              title: 'Üreticiler',
+              href: '/dashboard/ureticiler/liste',
+              icon: <Users className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Üretici Listesi',
+                  href: '/dashboard/ureticiler/liste',
+                  icon: <Users className="h-4 w-4" />
+                },
+                {
+                  title: 'Yeni Üretici',
+                  href: '/dashboard/ureticiler/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                }
+              ]
+            },
+            {
+              title: 'Müstahsil',
+              href: '/dashboard/mustahsil/',
+              icon: <Users className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Müstahsil Listesi',
+                  href: '/dashboard/mustahsil/',
+                  icon: <Users className="h-4 w-4" />
+                },
+                {
+                  title: 'Yeni Müstahsil',
+                  href: '/dashboard/mustahsil/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                }
+              ]
+            },
+            {
+              title: 'Özel Firmalar',
+              href: '/dashboard/ozel-firmalar/liste',
+              icon: <Building className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Özel Firma Listesi',
+                  href: '/dashboard/ozel-firmalar/liste',
+                  icon: <Building className="h-4 w-4" />
+                },
+                {
+                  title: 'Yeni Özel Firma',
+                  href: '/dashboard/ozel-firmalar/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                }
+              ]
+            },
+            {
+              title: 'Ambalajlar',
+              href: '/dashboard/ambalajlar/liste',
+              icon: <Package className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Ambalaj Listesi',
+                  href: '/dashboard/ambalajlar/liste',
+                  icon: <Package className="h-4 w-4" />
+                },
+                {
+                  title: 'Yeni Ambalaj',
+                  href: '/dashboard/ambalajlar/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                }
+              ]
+            },
+            {
+              title: 'Ürünler',
+              href: '/dashboard/urunler',
+              icon: <Apple className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Ürün Listesi',
+                  href: '/dashboard/urunler/liste',
+                  icon: <Apple className="h-4 w-4" />
+                },
+                {
+                  title: 'Yeni Ürün',
+                  href: '/dashboard/urunler/yeni',
+                  icon: <Plus className="h-4 w-4" />
+                }
+              ]
+            }
+          ]
+        },
+        {
+          title: 'Satın Alma İşlemleri',
+          href: '#',
+          icon: <FileText className="h-4 w-4" />,
+          children: [
+            {
+              title: 'Genel Ürün Tablosu',
+              href: '/dashboard/satin-alma/genel-urun-tablosu',
+              icon: <FileText className="h-4 w-4" />
+            },
+            {
+              title: 'Netlenen Ürün Tablosu',
+              href: '/dashboard/satin-alma/netlenen-urun-tablosu',
+              icon: <FileText className="h-4 w-4" />
+            },
+            {
+              title: 'Raporlar',
+              href: '/dashboard/satin-alma/raporlar',
+              icon: <BarChart3 className="h-4 w-4" />,
+              children: [
+                {
+                  title: 'Günlük Rapor',
+                  href: '/dashboard/satin-alma/raporlar/gunluk',
+                  icon: <Calendar className="h-4 w-4" />
+                },
+                {
+                  title: 'Aylık Rapor',
+                  href: '/dashboard/satin-alma/raporlar/aylik',
+                  icon: <BarChart3 className="h-4 w-4" />
+                },
+                {
+                  title: 'Ürün Raporu',
+                  href: '/dashboard/satin-alma/raporlar/urun',
+                  icon: <Package className="h-4 w-4" />
+                }
+              ]
+            },
+            {
+              title: 'Fiyat Girişi',
+              href: '/dashboard/satin-alma/fiyat',
+              icon: <Plus className="h-4 w-4" />
+            },
+            {
+              title: 'Fatura Oluştur',
+              href: '/dashboard/satin-alma/fatura',
+              icon: <FileText className="h-4 w-4" />
+            },
+            {
+              title: 'Fatura Listesi',
+              href: '/dashboard/satin-alma/faturalar',
+              icon: <FileText className="h-4 w-4" />
+            }
+          ]
+        },
+        {
+          title: 'Muhasebe İşlemleri',
+          href: '#',
           icon: <BarChart3 className="h-4 w-4" />,
           children: [
+            {
+              title: 'Genel Ürün Tablosu',
+              href: '/dashboard/muhasebe/genel-urun-tablosu',
+              icon: <FileText className="h-4 w-4" />
+            },
             {
               title: 'Finansal Raporlar',
               href: '/dashboard/muhasebe/raporlar',
@@ -467,33 +754,49 @@ export function Sidebar() {
     const hasChildren = item.children && item.children.length > 0
     const isExpanded = expandedItems.includes(item.title)
     const active = isActive(item.href)
+    const isCategoryHeader = item.href === '#'
 
     return (
       <div key={item.href}>
         <div className="flex items-center">
-          <Link href={item.href} className="flex-1">
-            <Button
-              variant={active ? "secondary" : "ghost"}
-              className={cn(
-                "w-full justify-start h-10",
-                level > 0 && "ml-4",
-                active && "bg-primary/10 text-primary"
-              )}
-            >
-              {item.icon}
-              {!isCollapsed && (
-                <>
+          {isCategoryHeader ? (
+            <div className="flex-1">
+              <div className={cn(
+                "w-full justify-start h-10 px-3 py-2 flex items-center",
+                "text-sm font-semibold text-muted-foreground uppercase tracking-wide",
+                "border-b border-border/50 mb-2"
+              )}>
+                {item.icon}
+                {!isCollapsed && (
                   <span className="ml-2 flex-1 text-left">{item.title}</span>
-                  {item.badge && (
-                    <span className="ml-auto bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
-                      {item.badge}
-                    </span>
-                  )}
-                </>
-              )}
-            </Button>
-          </Link>
-          {hasChildren && !isCollapsed && (
+                )}
+              </div>
+            </div>
+          ) : (
+            <Link href={item.href} className="flex-1">
+              <Button
+                variant={active ? "secondary" : "ghost"}
+                className={cn(
+                  "w-full justify-start h-10",
+                  level > 0 && "ml-4",
+                  active && "bg-primary/10 text-primary"
+                )}
+              >
+                {item.icon}
+                {!isCollapsed && (
+                  <>
+                    <span className="ml-2 flex-1 text-left">{item.title}</span>
+                    {item.badge && (
+                      <span className="ml-auto bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
+                        {item.badge}
+                      </span>
+                    )}
+                  </>
+                )}
+              </Button>
+            </Link>
+          )}
+          {hasChildren && !isCollapsed && !isCategoryHeader && (
             <Button
               variant="ghost"
               size="sm"
