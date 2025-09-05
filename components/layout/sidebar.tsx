@@ -457,7 +457,7 @@ export function Sidebar() {
       ]
     }
 
-    // Satın almacı için sadece satın alma menüleri
+    // Satın almacı için sadece satın alma ve cari hesaplar menüleri
     if (userRole === 'SATIN_ALMACI') {
       return [
         ...baseItems,
@@ -512,14 +512,7 @@ export function Sidebar() {
               title: 'Fatura Listesi',
               href: '/dashboard/satin-alma/faturalar',
               icon: <FileText className="h-4 w-4" />
-            }
-          ]
-        },
-        {
-          title: 'Muhasebe İşlemleri',
-          href: '#',
-          icon: <BarChart3 className="h-4 w-4" />,
-          children: [
+            },
             {
               title: 'Cari Hesaplar',
               href: '/dashboard/muhasebe/cari-hesaplar',
