@@ -103,6 +103,10 @@ export async function GET(request: NextRequest) {
 // POST - Yeni mal kabul kaydı oluştur
 export async function POST(request: NextRequest) {
   try {
+    // Veritabanı bağlantısını test et
+    await prisma.$connect()
+    console.log('✅ Veritabanı bağlantısı başarılı')
+    
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.email) {
@@ -113,6 +117,8 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
+    console.log('📝 Gelen veri:', JSON.stringify(body, null, 2))
+    
     const {
       saticiTipi,
       komisyoncuId,
@@ -217,16 +223,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Fiş numarası oluştur (YYYYMMDD + 4 haneli sıra no)
-    const today = new Date()
-    const dateStr = today.getFullYear().toString() + 
-                   (today.getMonth() + 1).toString().padStart(2, '0') + 
-                   today.getDate().toString().padStart(2, '0')
-    
+    // Fiş numarası oluştur (HNR + 4 haneli sıra no)
     const todayRecords = await prisma.mal_kabul_records.count({
       where: {
         fisNo: {
-          startsWith: dateStr
+          startsWith: 'HNR'
         }
       }
     })
@@ -355,8 +356,17 @@ export async function POST(request: NextRequest) {
     )
   } catch (error) {
     console.error("Mal kabul oluşturma hatası:", error)
+    console.error("Hata detayları:", {
+      message: error instanceof Error ? error.message : 'Bilinmeyen hata',
+      stack: error instanceof Error ? error.stack : undefined,
+      name: error instanceof Error ? error.name : undefined
+    })
+    
     return NextResponse.json(
-      { error: "Mal kabul kaydı oluşturulurken hata oluştu" },
+      { 
+        error: "Mal kabul kaydı oluşturulurken hata oluştu",
+        details: error instanceof Error ? error.message : 'Bilinmeyen hata'
+      },
       { status: 500 }
     )
   }
