@@ -148,12 +148,20 @@ export default function FaturaBekleyenUrunler() {
     
     switch (sortBy) {
       case 'komisyonNo':
-        aValue = a.komisyoncular?.komisyonNo || ''
-        bValue = b.komisyoncular?.komisyonNo || ''
-        // Komisyon No'larını sayısal olarak karşılaştır
-        const aNum = parseInt(aValue.toString()) || 0
-        const bNum = parseInt(bValue.toString()) || 0
-        return sortOrder === 'asc' ? aNum - bNum : bNum - aNum
+        // Sadece komisyoncular için komisyon no'ya göre sırala
+        if (a.saticiTipi === 'KOMISYONCU' && b.saticiTipi === 'KOMISYONCU') {
+          aValue = a.komisyoncular?.komisyonNo || ''
+          bValue = b.komisyoncular?.komisyonNo || ''
+          const aNum = parseInt(aValue.toString()) || 0
+          const bNum = parseInt(bValue.toString()) || 0
+          return sortOrder === 'asc' ? aNum - bNum : bNum - aNum
+        } else if (a.saticiTipi === 'KOMISYONCU') {
+          return sortOrder === 'asc' ? -1 : 1 // Komisyoncular önce
+        } else if (b.saticiTipi === 'KOMISYONCU') {
+          return sortOrder === 'asc' ? 1 : -1 // Komisyoncular önce
+        } else {
+          return 0 // İkisi de komisyoncu değilse sıralama yapma
+        }
       case 'tarih':
         aValue = new Date(a.tarih).getTime()
         bValue = new Date(b.tarih).getTime()
@@ -183,7 +191,9 @@ export default function FaturaBekleyenUrunler() {
         'Kategori': record.urunler.kategori,
         'Birim': record.urunler.birim,
         'Satıcı': getSaticiAdi(record),
-        'Komisyon No': record.komisyoncular?.komisyonNo || '-',
+        'Komisyon No': record.saticiTipi === 'KOMISYONCU' 
+          ? record.komisyoncular?.komisyonNo || '-'
+          : '-',
         'Mal Kabulcu': `${record.users.firstName} ${record.users.lastName}`,
         'Giriş KG': record.girisKg || 0,
         'Dara KG': record.daraKg || 0,
@@ -301,7 +311,10 @@ export default function FaturaBekleyenUrunler() {
                   <td>${new Date(record.tarih).toLocaleDateString('tr-TR')}</td>
                   <td>${record.urunler.ad}</td>
                   <td>${getSaticiAdi(record)}</td>
-                  <td>${record.komisyoncular?.komisyonNo || '-'}</td>
+                  <td>${record.saticiTipi === 'KOMISYONCU' 
+                    ? record.komisyoncular?.komisyonNo || '-'
+                    : '-'
+                  }</td>
                   <td>${record.users.firstName} ${record.users.lastName}</td>
                   <td>${record.girisKg || 0}</td>
                   <td>${record.daraKg || 0}</td>
@@ -590,7 +603,10 @@ export default function FaturaBekleyenUrunler() {
                     </td>
                     <td className="p-3">
                       <div className="font-mono text-sm">
-                        {record.komisyoncular?.komisyonNo || '-'}
+                        {record.saticiTipi === 'KOMISYONCU' 
+                          ? record.komisyoncular?.komisyonNo || '-'
+                          : '-'
+                        }
                       </div>
                     </td>
                     <td className="p-3">
