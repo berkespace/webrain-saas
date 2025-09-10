@@ -229,6 +229,15 @@ model users {
   email     String    @unique
   password  String
   role      String    @default("MAL_KABULCU")
+  // Admin tarafından tanımlanan iletişim bilgileri
+  contactEmail String?
+  phone        String?
+  gender       String?
+  birthDate    DateTime? @db.Timestamp(6)
+
+  // Oturum bilgileri
+  lastLoginAt  DateTime? @db.Timestamp(6)
+  lastLogoutAt DateTime? @db.Timestamp(6)
   createdAt DateTime? @default(now()) @db.Timestamp(6)
   updatedAt DateTime? @default(now()) @db.Timestamp(6)
   
@@ -237,6 +246,21 @@ model users {
   faturalar        faturalar[]
   notifications    notifications[]
   push_subscriptions push_subscriptions[]
+  activityLogs    user_activity_logs[]
+}
+
+model user_activity_logs {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String   // LOGIN, LOGOUT, CREATE_RECORD, UPDATE_RECORD, APPROVE_INVOICE, etc.
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  // Relations
+  user users @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
+  @@map("user_activity_logs")
 }
 
 model malKabulRecords {

@@ -291,8 +291,22 @@ exports.Prisma.UsersScalarFieldEnum = {
   email: 'email',
   password: 'password',
   role: 'role',
+  contactEmail: 'contactEmail',
+  phone: 'phone',
+  gender: 'gender',
+  birthDate: 'birthDate',
+  lastLoginAt: 'lastLoginAt',
+  lastLogoutAt: 'lastLogoutAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.User_activity_logsScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  action: 'action',
+  metadata: 'metadata',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.MalKabulRecordsScalarFieldEnum = {
@@ -390,6 +404,7 @@ exports.Prisma.ModelName = {
   ureticiler: 'ureticiler',
   urunler: 'urunler',
   users: 'users',
+  user_activity_logs: 'user_activity_logs',
   malKabulRecords: 'malKabulRecords',
   notifications: 'notifications',
   push_subscriptions: 'push_subscriptions'

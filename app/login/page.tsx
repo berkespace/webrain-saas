@@ -15,6 +15,7 @@ import Aurora from '@/components/blocks/Backgrounds/Aurora/Aurora'
 import { signIn, getSession } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { fetchWithRetry } from '@/lib/api-helpers'
 
 function LoginContent() {
   const [showPassword, setShowPassword] = useState(false)
@@ -23,6 +24,7 @@ function LoginContent() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [mounted, setMounted] = useState(false)
+  const [retryCount, setRetryCount] = useState(0)
   const { theme, resolvedTheme } = useTheme()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -44,6 +46,16 @@ function LoginContent() {
     setLoading(true)
 
     try {
+      // Önce NextAuth providers endpoint'ini test et
+      try {
+        await fetchWithRetry('/api/auth/providers', { method: 'GET' })
+      } catch (providerError) {
+        console.warn('Providers endpoint test failed:', providerError)
+        setError('Bağlantı sorunu: Şirket ağı ayarlarını kontrol edin')
+        setLoading(false)
+        return
+      }
+
       const result = await signIn('credentials', {
         email,
         password,
@@ -51,7 +63,12 @@ function LoginContent() {
       })
 
       if (result?.error) {
-        setError('E-posta veya şifre hatalı')
+        if (result.error.includes('fetch') || result.error.includes('timeout')) {
+          setError('Bağlantı zaman aşımı: Şirket ağı ayarlarını kontrol edin')
+          setRetryCount(prev => prev + 1)
+        } else {
+          setError('E-posta veya şifre hatalı')
+        }
         setLoading(false)
         return
       }
@@ -60,7 +77,8 @@ function LoginContent() {
         router.push('/dashboard')
       }
     } catch (error) {
-      setError('Giriş yapılırken bir hata oluştu')
+      console.error('Login error:', error)
+      setError('Giriş yapılırken bir hata oluştu. Şirket ağı ayarlarını kontrol edin.')
       setLoading(false)
     }
   }

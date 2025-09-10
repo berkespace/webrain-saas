@@ -394,11 +394,7 @@ export function Sidebar() {
               href: '/dashboard/satin-alma/fiyat',
               icon: <Plus className="h-4 w-4" />
             },
-            {
-              title: 'Fatura Oluştur',
-              href: '/dashboard/satin-alma/fatura',
-              icon: <FileText className="h-4 w-4" />
-            },
+            // Fatura bekleyen akışı onay sonrası cariye kaydoluyor; listeyi burada tutacağız
             {
               title: 'Fatura Listesi',
               href: '/dashboard/satin-alma/faturalar',
@@ -443,6 +439,11 @@ export function Sidebar() {
           href: '#',
           icon: <Settings className="h-4 w-4" />,
           children: [
+            {
+              title: 'Canlı Veriler',
+              href: '/dashboard/admin/canli-veriler',
+              icon: <BarChart3 className="h-4 w-4" />
+            },
             {
               title: 'Kullanıcı Yönetimi',
               href: '/dashboard/admin/kullanicilar',

@@ -301,9 +301,9 @@ export default function FaturaBekleyenUrunler() {
       const data = await response.json()
       
       if (response.ok) {
-        // Sadece NETLENDI durumundaki kayıtları filtrele
-        const netlenenRecords = (data.records || []).filter((record: MalKabulRecord) => 
-          record.status === 'NETLENDI'
+        // Sadece NETLENDI olup henüz onaylanmamış kayıtları göster
+        const netlenenRecords = (data.records || []).filter((record: any) => 
+          record.status === 'NETLENDI' && record.onayDurumu !== 'ONAYLANDI'
         )
         setRecords(netlenenRecords)
       } else {

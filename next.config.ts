@@ -10,6 +10,23 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.VAPID_PUBLIC_KEY,
   },
+  // Şirket ağı için optimize edilmiş ayarlar
+  experimental: {
+    serverComponentsExternalPackages: ['@prisma/client'],
+  },
+  // Timeout ayarları
+  serverRuntimeConfig: {
+    // API timeout'ları
+    apiTimeout: 30000, // 30 saniye
+  },
+  // HTTP ayarları
+  httpAgentOptions: {
+    keepAlive: true,
+    keepAliveMsecs: 1000,
+    maxSockets: 50,
+    maxFreeSockets: 10,
+    timeout: 30000,
+  },
   headers: async () => {
     return [
       {

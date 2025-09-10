@@ -110,12 +110,13 @@ export class NotificationService {
         return
       }
 
+      const recipientEmail = (notification.user as any)?.contactEmail || notification.user.email
       const mailOptions = {
         from: {
           name: process.env.EMAIL_FROM_NAME || 'Webrain SaaS',
           address: process.env.EMAIL_FROM_EMAIL || process.env.EMAIL_USER,
         },
-        to: notification.user.email,
+        to: recipientEmail,
         subject: `🔔 ${notification.title}`,
         html: this.generateEmailTemplate(notification),
       }
@@ -128,7 +129,7 @@ export class NotificationService {
         data: { isEmailSent: true },
       })
 
-      console.log(`✅ Email sent to ${notification.user.email}`)
+      console.log(`✅ Email sent to ${recipientEmail}`)
     } catch (error) {
       console.error('❌ Email sending error:', error)
     }
