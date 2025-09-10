@@ -46,16 +46,6 @@ function LoginContent() {
     setLoading(true)
 
     try {
-      // Önce NextAuth providers endpoint'ini test et
-      try {
-        await fetchWithRetry('/api/auth/providers', { method: 'GET' })
-      } catch (providerError) {
-        console.warn('Providers endpoint test failed:', providerError)
-        setError('Bağlantı sorunu: Şirket ağı ayarlarını kontrol edin')
-        setLoading(false)
-        return
-      }
-
       const result = await signIn('credentials', {
         email,
         password,
