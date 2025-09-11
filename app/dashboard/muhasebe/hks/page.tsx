@@ -47,7 +47,7 @@ async function safeFetch(input: RequestInfo, init?: RequestInit) {
   const res = await fetch(input, init);
   const j = await res.json().catch(() => ({}));
   if (!res.ok || j?.ok === false) {
-    const msg = j?.hata || j?.mesaj || j?.error || j?.raw || `HTTP ${res.status}`;
+    const msg = j?.mesaj || j?.Mesaj || j?.hata || j?.error || j?.raw || `HTTP ${res.status}`;
     throw new Error(typeof msg === 'string' ? msg : JSON.stringify(msg));
   }
   return j;

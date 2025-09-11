@@ -9,60 +9,76 @@ export async function POST(req: NextRequest) {
   try {
     const { KunyeNo = 0, BaslangicTarihi, BitisTarihi, KalanMiktariSifirdanBuyukOlanlar = true } = await req.json();
 
+    if (!HKS.u || !HKS.p || !HKS.sp) {
+      return Response.json({ ok:false, error:'ENV_MISSING' }, { status:500 });
+    }
+
     const method = 'BildirimServisBildirimcininYaptigiBildirimListesi';
     const envelope = buildSoapEnvelope(method, {
       Istek: {
         KunyeTuru: 1,
         KunyeNo,
         BaslangicTarihi: `${BaslangicTarihi}T00:00:00`,
-        BitisTarihi: `${BitisTarihi}T00:00:00`,
-        KalanMiktariSifirdanBuyukOlanlar: !!KalanMiktariSifirdanBuyukOlanlar
+        BitisTarihi: `${BitisTarihi}T23:59:59`,
+        KalanMiktariSifirdanBuyukOlanlar: !!KalanMiktariSifirdanBuyukOlanlar,
       },
       Password: HKS.p,
       ServicePassword: HKS.sp,
       UserName: HKS.u,
     });
 
-    const res = await fetch(HKS.bildirimUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/xml; charset=utf-8',
+    const r = await fetch(HKS.bildirimUrl, {
+      method:'POST',
+      headers:{
+        'Content-Type':'text/xml; charset=utf-8',
         'SOAPAction': soapAction('IBildirimService', method),
       },
       body: envelope,
     });
 
-    const text = await res.text();
-    if (!res.ok) return Response.json({ ok:false, status:res.status, raw:text.slice(0,2000) }, { status:500 });
+    const txt = await r.text();
+    if (!r.ok) return Response.json({ ok:false, status:r.status, raw:txt.slice(0,2000) }, { status:500 });
 
-    const { resp, raw } = parseSoap(text, method);
-    const result = resp?.[`${method}Result`];
-    if (!result) return Response.json({ ok:false, error:'NO_RESULT', raw:raw.slice(0,2000) }, { status:500 });
+    const ps = parseSoap(txt, method);
+    if (!ps.ok) return Response.json({ ok:false, error:ps.error, raw:ps.raw.slice(0,2000) }, { status:500 });
 
-    if (String(result?.IslemKodu) !== '1')
-      return Response.json({ ok:false, islemKodu:result?.IslemKodu, hata:result?.HataKodlari ?? result?.Mesaj, raw:raw.slice(0,2000) }, { status:500 });
+    // WCF şekli: IslemKodu / Sonuc / HataKodlari
+    if (ps.type === 'WCF') {
+      if (String(ps.islemKodu) !== '1') {
+        return Response.json({ ok:false, islemKodu:ps.islemKodu, hataKodlari:ps.hataKodlari, raw:ps.raw.slice(0,2000) }, { status:500 });
+      }
 
-    const sonuc = result?.Sonuc ?? result; // bazen direkt dönebiliyor
-    if (Number(sonuc?.HataKodu) !== 0)
-      return Response.json({ ok:false, hataKodu:sonuc?.HataKodu, mesaj:sonuc?.Mesaj, raw:raw.slice(0,2000) }, { status:500 });
+      const sonuc = ps.sonuc;
+      if (Number(sonuc?.HataKodu ?? -1) !== 0) {
+        return Response.json({ ok:false, hataKodu:sonuc?.HataKodu, mesaj:sonuc?.Mesaj, raw:ps.raw.slice(0,2000) }, { status:500 });
+      }
 
-    const arr = sonuc?.Bildirimler ?? [];
-    const bildirimler = Array.isArray(arr) ? arr : (arr ? [arr] : []);
+      const arr = Array.isArray(sonuc?.Bildirimler) ? sonuc.Bildirimler : (sonuc?.Bildirimler ? [sonuc.Bildirimler] : []);
+      const items = arr.map((b:any, i:number) => ({
+        id: String(b?.KunyeNo ?? i+1),
+        kunyeNo: b?.KunyeNo ?? '',
+        urunAdi: b?.MalinAdi ?? b?.MalinTuru ?? '',
+        urunCinsi: b?.MalinCinsi ?? '',
+        miktar: b?.MalinMiktari ?? '',
+        birimId: b?.MiktarBirimId ?? '',
+        birimAd: b?.MiktarBirimiAd ?? '',
+        bildirimTarihi: b?.BildirimTarihi ?? '',
+        malinSahibiTc: b?.MalinSahibiTcKimlikVergiNo ?? '',
+        durum: '', // bu DTO'da durum yok
+      }));
 
-    const mapped = bildirimler.map((b:any, i:number) => ({
-      id: String(b?.Id ?? i+1),
-      kunyeNo: b?.KunyeNo ?? '',
-      urunAdi: b?.UrunAdi ?? b?.MalAdi ?? '',
-      urunCinsi: b?.UrunCinsi ?? '',
-      miktar: b?.Miktar ?? '',
-      birim: b?.Birim ?? '',
-      bildirimTarihi: b?.BildirimTarihi ?? '',
-      malinSahibiAdi: b?.MalinSahibiAdi ?? '',
-      malinSahibiTc: b?.MalinSahibiTcKimlikNo ?? '',
-      durum: b?.Durum ?? '',
-    }));
+      return Response.json({ ok:true, count: items.length, items });
+    }
 
-    return Response.json({ ok:true, count: mapped.length, items: mapped });
+    // Eski RESULT şekli (Genelde kullanmıyoruz ama kalsın)
+    const result = (ps as any).result;
+    if (!result) return Response.json({ ok:false, error:'NO_RESULT', raw:ps.raw.slice(0,2000) }, { status:500 });
+
+    if (String(result?.IslemKodu) !== '1') {
+      return Response.json({ ok:false, islemKodu:result?.IslemKodu, hata:result?.HataKodlari, raw:ps.raw.slice(0,2000) }, { status:500 });
+    }
+
+    return Response.json({ ok:true, raw:ps.raw.slice(0,2000) }); // Fallback
   } catch (e:any) {
     return Response.json({ ok:false, error:String(e?.message ?? e) }, { status:500 });
   }

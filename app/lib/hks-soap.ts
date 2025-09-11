@@ -7,16 +7,24 @@ export const HKS = {
   ns: 'http://www.gtb.gov.tr//WebServices',
   u: process.env.HKS_USERNAME ?? '',
   p: process.env.HKS_PASSWORD ?? '',
-  sp: process.env.HKS_SERVICE_PASSWORD ?? '', // env adı NET olmalı
+  sp: process.env.HKS_SERVICE_PASSWORD ?? '',
 };
 
-// methoda özel element sırası
+// IBildirimService tarafı (WCF Order=0..3)
 const ORDER: Record<string, string[]> = {
-  // Genel servislerde tipik sıra:
-  GenelServisIller: ['UserName','Password','ServicePassword','Istek'],
-  // Bildirim servisinde C# örneğini taklit ediyoruz:
-  BildirimTurleriListesi: ['UserName','Password','ServicePassword','Istek'],
+  // Bildirim service:
+  BildirimServisBildirimTurleri: ['Istek','Password','ServicePassword','UserName'],
+  BildirimServisSifatListesi: ['Istek','Password','ServicePassword','UserName'],
+  BildirimServisBelgeTipleriListesi: ['Istek','Password','ServicePassword','UserName'],
+  BildirimServisReferansKunyeler: ['Istek','Password','ServicePassword','UserName'],
+  BildirimServisKayitliKisiSorgu: ['Istek','Password','ServicePassword','UserName'],
+  BildirimServisTopluKunye: ['Istek','Password','ServicePassword','UserName'],
+  BildirimServisBildirimEtiket: ['Istek','Password','ServicePassword','UserName'],
   BildirimServisBildirimcininYaptigiBildirimListesi: ['Istek','Password','ServicePassword','UserName'],
+  BildirimServisBildirimciyeYapilanBildirimListesi: ['Istek','Password','ServicePassword','UserName'],
+
+  // GenelService tarafında genelde User/Pass önde olabiliyor; emin değilsek Bildirim'deki sırayı kullanalım:
+  GenelServisIller: ['Istek','Password','ServicePassword','UserName'],
 };
 
 function toXml(obj: any): string {
@@ -28,7 +36,7 @@ function toXml(obj: any): string {
 }
 
 export function buildSoapEnvelope(method: string, parts: Record<string, any>) {
-  const order = ORDER[method] ?? ['UserName','Password','ServicePassword','Istek'];
+  const order = ORDER[method] ?? ['Istek','Password','ServicePassword','UserName'];
   const body = order
     .map(name => (name in parts) ? `<tns:${name}>${toXml(parts[name])}</tns:${name}>` : '')
     .join('');
@@ -47,13 +55,34 @@ export function soapAction(iface: 'IGenelService'|'IBildirimService', method: st
   return `${HKS.ns}/${iface}/${method}`;
 }
 
+// Bu servis iki farklı shape ile görülebilir; ikisini de destekle:
 export function parseSoap(raw: string, method: string) {
   const parser = new XMLParser({ ignoreAttributes:false, attributeNamePrefix:'@_', textNodeName:'#text' });
   const parsed = parser.parse(raw);
   const env = parsed['soap:Envelope'] || parsed['Envelope'];
   const body = env?.['soap:Body'] || env?.['Body'];
-  if (!body) return { resp:null, raw };
-  const key = Object.keys(body).find(k => k.endsWith(`${method}Response`));
-  const resp = key ? body[key] : null;
-  return { resp, raw };
+  if (!body) return { ok:false, error:'NO_SOAP_BODY', raw };
+
+  // 1) WCF tarzı: <MethodResponse><HataKodlari/><IslemKodu/><Sonuc/></MethodResponse>
+  const respKey = Object.keys(body).find(k => k.endsWith(`${method}Response`));
+  const resp = respKey ? body[respKey] : null;
+
+  if (resp && (resp.HataKodlari !== undefined || resp.IslemKodu !== undefined || resp.Sonuc !== undefined)) {
+    return {
+      ok:true,
+      type:'WCF',
+      hataKodlari: resp.HataKodlari ?? null,
+      islemKodu: resp.IslemKodu ?? null,
+      sonuc: resp.Sonuc ?? null,
+      raw,
+    };
+  }
+
+  // 2) Alternatif eski pattern: <MethodResponse><MethodResult>...</MethodResult></MethodResponse>
+  const alt = resp && Object.keys(resp).find(k => k.endsWith('Result'));
+  if (resp && alt) {
+    return { ok:true, type:'RESULT', result: resp[alt], raw };
+  }
+
+  return { ok:false, error:'UNRECOGNIZED_RESPONSE', raw };
 }
