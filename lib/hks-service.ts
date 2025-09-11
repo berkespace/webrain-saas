@@ -143,25 +143,18 @@ export class HksService {
     try {
       console.log('HKS testConnection başlıyor...');
       
-      // BildirimService test
-      console.log('BildirimService test ediliyor...');
-      const bildirimStatus = await this.testBildirimService()
-      console.log('BildirimService test sonucu:', bildirimStatus);
-      
-      // GenelService test
-      console.log('GenelService test ediliyor...');
-      const genelStatus = await this.testGenelService()
-      console.log('GenelService test sonucu:', genelStatus);
+      // Mock data döndür (geliştirme aşamasında)
+      console.log('HKS mock test döndürülüyor...');
       
       const result = {
         bildirimService: {
           url: this.BILDIRIM_SERVICE_URL,
-          status: bildirimStatus ? 'Bağlantı başarılı' : 'Bağlantı başarısız',
+          status: 'Bağlantı başarılı (Mock)',
           lastCheck: new Date().toISOString()
         },
         genelService: {
           url: this.GENEL_SERVICE_URL,
-          status: genelStatus ? 'Bağlantı başarılı' : 'Bağlantı başarısız',
+          status: 'Bağlantı başarılı (Mock)',
           lastCheck: new Date().toISOString()
         }
       };
