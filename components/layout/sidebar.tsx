@@ -24,7 +24,8 @@ import {
   ChevronRight,
   Building,
   Apple,
-  CreditCard
+  CreditCard,
+  Database
 } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
@@ -423,6 +424,11 @@ export function Sidebar() {
               icon: <FileText className="h-4 w-4" />
             },
             {
+              title: 'HKS - Hal Kayıt Sistemi',
+              href: '/dashboard/muhasebe/hks',
+              icon: <Database className="h-4 w-4" />
+            },
+            {
               title: 'Finansal Raporlar',
               href: '/dashboard/muhasebe/raporlar',
               icon: <BarChart3 className="h-4 w-4" />
@@ -739,6 +745,11 @@ export function Sidebar() {
               title: 'Genel Ürün Tablosu',
               href: '/dashboard/muhasebe/genel-urun-tablosu',
               icon: <FileText className="h-4 w-4" />
+            },
+            {
+              title: 'HKS - Hal Kayıt Sistemi',
+              href: '/dashboard/muhasebe/hks',
+              icon: <Database className="h-4 w-4" />
             },
             {
               title: 'Finansal Raporlar',
