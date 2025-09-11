@@ -11,27 +11,27 @@ import { Search, Eye, RefreshCw, Wifi, WifiOff, Calendar, User, MapPin } from 'l
 interface Kunye {
   id: string
   kunyeNo: string
-  hayvanTuru: string
-  irk: string
+  hayvanTuru: string // Ürün Adı
+  irk: string // Ürün Cinsi
   cinsiyet: string
-  dogumTarihi: string
-  sahipAdi: string
+  dogumTarihi: string // Üretim Tarihi
+  sahipAdi: string // Malın Sahibi
   sahipTc: string
-  kayitTarihi: string
+  kayitTarihi: string // Bildirim Tarihi
   durum: string
 }
 
 interface KunyeDetay {
   kunyeNo: string
-  hayvanTuru: string
-  irk: string
+  hayvanTuru: string // Ürün Adı
+  irk: string // Ürün Cinsi
   cinsiyet: string
-  dogumTarihi: string
-  dogumYeri: string
-  sahipAdi: string
+  dogumTarihi: string // Üretim Tarihi
+  dogumYeri: string // Üretim Yeri
+  sahipAdi: string // Malın Sahibi
   sahipTc: string
   sahipAdres: string
-  kayitTarihi: string
+  kayitTarihi: string // Bildirim Tarihi
   durum: string
   notlar: string
   geçmişİşlemler: Array<{
@@ -53,7 +53,7 @@ export default function HKSPage() {
     setLoading(true)
     try {
       const params = new URLSearchParams()
-      params.set('action', 'künyeler')
+      params.set('action', 'kunye-listesi')
       if (searchTerm) params.set('search', searchTerm)
       
       const response = await fetch(`/api/hks?${params.toString()}`, { cache: 'no-store' })
@@ -73,7 +73,7 @@ export default function HKSPage() {
   const testConnection = async () => {
     setConnectionStatus('checking')
     try {
-      const response = await fetch('/api/hks?action=test-bağlantı', { cache: 'no-store' })
+      const response = await fetch('/api/hks?action=test-connection', { cache: 'no-store' })
       const data = await response.json()
       
       if (data.success) {
@@ -89,7 +89,7 @@ export default function HKSPage() {
 
   const loadKunyeDetay = async (kunyeNo: string) => {
     try {
-      const response = await fetch(`/api/hks?action=künye-detay&kunyeNo=${kunyeNo}`, { cache: 'no-store' })
+      const response = await fetch(`/api/hks?action=kunye-detay&kunyeNo=${kunyeNo}`, { cache: 'no-store' })
       const data = await response.json()
       
       if (data.success) {
@@ -218,11 +218,12 @@ export default function HKSPage() {
               <thead>
                 <tr className="border-b">
                   <th className="text-left p-3">Künye No</th>
-                  <th className="text-left p-3">Hayvan Türü</th>
-                  <th className="text-left p-3">Irk</th>
-                  <th className="text-left p-3">Cinsiyet</th>
-                  <th className="text-left p-3">Doğum Tarihi</th>
-                  <th className="text-left p-3">Sahip</th>
+                  <th className="text-left p-3">Ürün Adı</th>
+                  <th className="text-left p-3">Ürün Cinsi</th>
+                  <th className="text-left p-3">Üretim Tarihi</th>
+                  <th className="text-left p-3">Malın Sahibi</th>
+                  <th className="text-left p-3">TC Kimlik No</th>
+                  <th className="text-left p-3">Bildirim Tarihi</th>
                   <th className="text-left p-3">Durum</th>
                   <th className="text-left p-3">İşlemler</th>
                 </tr>
@@ -233,14 +234,10 @@ export default function HKSPage() {
                     <td className="p-3 font-mono text-sm">{kunye.kunyeNo}</td>
                     <td className="p-3 text-sm">{kunye.hayvanTuru}</td>
                     <td className="p-3 text-sm">{kunye.irk}</td>
-                    <td className="p-3 text-sm">{kunye.cinsiyet}</td>
                     <td className="p-3 text-sm">{formatDate(kunye.dogumTarihi)}</td>
-                    <td className="p-3 text-sm">
-                      <div>
-                        <div className="font-medium">{kunye.sahipAdi}</div>
-                        <div className="text-xs text-muted-foreground">{kunye.sahipTc}</div>
-                      </div>
-                    </td>
+                    <td className="p-3 text-sm font-medium">{kunye.sahipAdi}</td>
+                    <td className="p-3 text-sm font-mono">{kunye.sahipTc}</td>
+                    <td className="p-3 text-sm">{formatDate(kunye.kayitTarihi)}</td>
                     <td className="p-3">{getStatusBadge(kunye.durum)}</td>
                     <td className="p-3">
                       <Button
@@ -278,34 +275,38 @@ export default function HKSPage() {
                     <p className="font-mono">{selectedKunye.kunyeNo}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-500">Hayvan Türü</label>
+                    <label className="text-sm font-medium text-gray-500">Ürün Adı</label>
                     <p>{selectedKunye.hayvanTuru}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-500">Irk</label>
+                    <label className="text-sm font-medium text-gray-500">Ürün Cinsi</label>
                     <p>{selectedKunye.irk}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-500">Cinsiyet</label>
-                    <p>{selectedKunye.cinsiyet}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Doğum Tarihi</label>
+                    <label className="text-sm font-medium text-gray-500">Üretim Tarihi</label>
                     <p>{formatDate(selectedKunye.dogumTarihi)}</p>
                   </div>
                   <div>
-                    <label className="text-sm font-medium text-gray-500">Doğum Yeri</label>
+                    <label className="text-sm font-medium text-gray-500">Üretim Yeri</label>
                     <p>{selectedKunye.dogumYeri}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">Bildirim Tarihi</label>
+                    <p>{formatDate(selectedKunye.kayitTarihi)}</p>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-500">Durum</label>
+                    <p>{getStatusBadge(selectedKunye.durum)}</p>
                   </div>
                 </div>
               </div>
 
-              {/* Sahip Bilgileri */}
+              {/* Malın Sahibi Bilgileri */}
               <div>
-                <h3 className="font-semibold mb-3">Sahip Bilgileri</h3>
+                <h3 className="font-semibold mb-3">Malın Sahibi Bilgileri</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-500">Sahip Adı</label>
+                    <label className="text-sm font-medium text-gray-500">Malın Sahibi</label>
                     <p>{selectedKunye.sahipAdi}</p>
                   </div>
                   <div>
@@ -318,6 +319,14 @@ export default function HKSPage() {
                   </div>
                 </div>
               </div>
+
+              {/* Notlar */}
+              {selectedKunye.notlar && (
+                <div>
+                  <h3 className="font-semibold mb-3">Notlar</h3>
+                  <p className="text-sm text-gray-600">{selectedKunye.notlar}</p>
+                </div>
+              )}
 
               {/* Geçmiş İşlemler */}
               <div>

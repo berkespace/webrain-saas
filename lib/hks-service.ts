@@ -9,7 +9,7 @@ const HKS_CONFIG = {
   genelServiceUrl: 'https://hks.hal.gov.tr/WebServices/GenelService.svc',
   username: process.env.HKS_USERNAME || '',
   password: process.env.HKS_PASSWORD || '',
-  webservice: process.env.HKS_WEBSERVICE || ''
+  servicePassword: process.env.HKS_SERVICE_PASSWORD || '!1QAZWSX' // Test sistemi için sabit
 };
 
 export interface HksKunye {
@@ -49,7 +49,7 @@ export interface HksServiceStatus {
   }
 }
 
-// SOAP Request Builder
+// SOAP Request Builder - HKS Kılavuzuna göre
 function buildSoapRequest(serviceUrl: string, method: string, parameters: any): string {
   const soapBody = Object.keys(parameters)
     .map(key => `<${key}>${parameters[key]}</${key}>`)
@@ -57,15 +57,11 @@ function buildSoapRequest(serviceUrl: string, method: string, parameters: any): 
 
   return `<?xml version="1.0" encoding="utf-8"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
-  <soap:Header>
-    <tem:AuthenticationHeader>
-      <tem:Username>${HKS_CONFIG.username}</tem:Username>
-      <tem:Password>${HKS_CONFIG.password}</tem:Password>
-      <tem:WebService>${HKS_CONFIG.webservice}</tem:WebService>
-    </tem:AuthenticationHeader>
-  </soap:Header>
   <soap:Body>
     <tem:${method}>
+      <tem:UserName>${HKS_CONFIG.username}</tem:UserName>
+      <tem:Password>${HKS_CONFIG.password}</tem:Password>
+      <tem:ServicePassword>${HKS_CONFIG.servicePassword}</tem:ServicePassword>
       ${soapBody}
     </tem:${method}>
   </soap:Body>
@@ -126,12 +122,12 @@ export class HksService {
     }
   }
 
-  // BildirimService bağlantı testi
+  // BildirimService bağlantı testi - Bildirim Türleri Listesi ile
   private static async testBildirimService(): Promise<boolean> {
     try {
       const soapRequest = buildSoapRequest(
         HKS_CONFIG.bildirimServiceUrl,
-        'GetSystemInfo',
+        'BildirimTurleriListesi',
         {}
       );
 
@@ -139,7 +135,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://tempuri.org/IBildirimService/GetSystemInfo`
+          'SOAPAction': `http://tempuri.org/IBildirimService/BildirimTurleriListesi`
         },
         body: soapRequest
       });
@@ -149,21 +145,26 @@ export class HksService {
       }
 
       const xmlResponse = await response.text();
-      const parsedResponse = parseSoapResponse(xmlResponse, 'GetSystemInfo');
+      const parsedResponse = parseSoapResponse(xmlResponse, 'BildirimTurleriListesi');
       
-      return parsedResponse !== null;
+      if (parsedResponse?.BildirimTurleriListesiResult) {
+        const result = parsedResponse.BildirimTurleriListesiResult;
+        return result.IslemKodu === '1';
+      }
+      
+      return false;
     } catch (error) {
       console.error('BildirimService test hatası:', error)
       return false
     }
   }
 
-  // GenelService bağlantı testi
+  // GenelService bağlantı testi - Ülke Listesi ile
   private static async testGenelService(): Promise<boolean> {
     try {
       const soapRequest = buildSoapRequest(
         HKS_CONFIG.genelServiceUrl,
-        'GetSystemInfo',
+        'UlkeListesi',
         {}
       );
 
@@ -171,7 +172,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://tempuri.org/IGenelService/GetSystemInfo`
+          'SOAPAction': `http://tempuri.org/IGenelService/UlkeListesi`
         },
         body: soapRequest
       });
@@ -181,42 +182,57 @@ export class HksService {
       }
 
       const xmlResponse = await response.text();
-      const parsedResponse = parseSoapResponse(xmlResponse, 'GetSystemInfo');
+      const parsedResponse = parseSoapResponse(xmlResponse, 'UlkeListesi');
       
-      return parsedResponse !== null;
+      if (parsedResponse?.UlkeListesiResult) {
+        const result = parsedResponse.UlkeListesiResult;
+        return result.IslemKodu === '1';
+      }
+      
+      return false;
     } catch (error) {
       console.error('GenelService test hatası:', error)
       return false
     }
   }
 
-  // Künye listesi çekme
+  // Referans Künye Listesi Servisi - HKS Kılavuzuna göre
   static async getKunyeListesi(params: {
     page: number
     limit: number
     search: string
   }): Promise<{ kunyeler: HksKunye[], total: number }> {
     try {
-      const parameters: any = {
-        page: params.page,
-        limit: params.limit
-      };
+      // HKS Referans Künye Listesi Servisi parametreleri
+      const parameters: any = {};
       
+      // Arama parametreleri (kılavuzda belirtilen alanlar)
       if (params.search) {
-        parameters.search = params.search;
+        // TC Kimlik No ile arama
+        if (/^\d{11}$/.test(params.search)) {
+          parameters.TcKimlikVergiNo = params.search;
+        }
+        // Künye No ile arama
+        else if (params.search.startsWith('TR')) {
+          parameters.KunyeNo = params.search;
+        }
+        // Diğer durumlarda genel arama
+        else {
+          parameters.AdSoyad = params.search;
+        }
       }
 
       const soapRequest = buildSoapRequest(
-        HKS_CONFIG.genelServiceUrl,
-        'GetKunyeListesi',
+        HKS_CONFIG.bildirimServiceUrl,
+        'ReferansKunyeListesi',
         parameters
       );
 
-      const response = await fetch(`${HKS_CONFIG.genelServiceUrl}?wsdl`, {
+      const response = await fetch(`${HKS_CONFIG.bildirimServiceUrl}?wsdl`, {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://tempuri.org/IGenelService/GetKunyeListesi`
+          'SOAPAction': `http://tempuri.org/IBildirimService/ReferansKunyeListesi`
         },
         body: soapRequest
       });
@@ -226,25 +242,33 @@ export class HksService {
       }
 
       const xmlResponse = await response.text();
-      const parsedResponse = parseSoapResponse(xmlResponse, 'GetKunyeListesi');
+      const parsedResponse = parseSoapResponse(xmlResponse, 'ReferansKunyeListesi');
 
-      if (parsedResponse?.GetKunyeListesiResult) {
-        const kunyeler = Array.isArray(parsedResponse.GetKunyeListesiResult) 
-          ? parsedResponse.GetKunyeListesiResult 
-          : [parsedResponse.GetKunyeListesiResult];
+      // HKS response kontrolü
+      if (parsedResponse?.ReferansKunyeListesiResult) {
+        const result = parsedResponse.ReferansKunyeListesiResult;
+        
+        // İşlem kodu kontrolü
+        if (result.IslemKodu !== '1') {
+          throw new Error(`HKS Hatası: ${result.HataKodlari || 'Bilinmeyen hata'}`);
+        }
+
+        const kunyeler = Array.isArray(result.KunyeListesi) 
+          ? result.KunyeListesi 
+          : result.KunyeListesi ? [result.KunyeListesi] : [];
         
         return {
           kunyeler: kunyeler.map((item: any, index: number) => ({
-            id: item.id || index.toString(),
-            kunyeNo: item.kunyeNo || item.KunyeNo || '',
-            hayvanTuru: item.hayvanTuru || item.HayvanTuru || '',
-            irk: item.irk || item.Irk || '',
-            cinsiyet: item.cinsiyet || item.Cinsiyet || '',
-            dogumTarihi: item.dogumTarihi || item.DogumTarihi || '',
-            sahipAdi: item.sahipAdi || item.SahipAdi || '',
-            sahipTc: item.sahipTc || item.SahipTc || '',
-            kayitTarihi: item.kayitTarihi || item.KayitTarihi || '',
-            durum: item.durum || item.Durum || 'Aktif'
+            id: item.Id || index.toString(),
+            kunyeNo: item.KunyeNo || '',
+            hayvanTuru: item.UrunAdi || item.MalAdi || '',
+            irk: item.UrunCinsi || '',
+            cinsiyet: item.Cinsiyet || '',
+            dogumTarihi: item.UretimTarihi || item.BildirimTarihi || '',
+            sahipAdi: item.MalinSahibiAdi || item.SahipAdi || '',
+            sahipTc: item.MalinSahibiTcKimlikNo || item.SahipTc || '',
+            kayitTarihi: item.BildirimTarihi || '',
+            durum: item.Durum || 'Aktif'
           })),
           total: kunyeler.length
         };
@@ -258,20 +282,25 @@ export class HksService {
     }
   }
 
-  // Künye detayı çekme
+  // Künye detayı çekme - Bildirim Sorgulama Servisi ile
   static async getKunyeDetay(kunyeNo: string): Promise<HksKunyeDetay> {
     try {
       const soapRequest = buildSoapRequest(
-        HKS_CONFIG.genelServiceUrl,
-        'GetKunyeDetay',
-        { kunyeNo: kunyeNo }
+        HKS_CONFIG.bildirimServiceUrl,
+        'BildirimSorgulama',
+        { 
+          KunyeNo: kunyeNo,
+          BildirimTarihi: '', // Boş bırakıyoruz, tüm tarihleri getirsin
+          AracPlakaNo: '',
+          BelgeNo: ''
+        }
       );
 
-      const response = await fetch(`${HKS_CONFIG.genelServiceUrl}?wsdl`, {
+      const response = await fetch(`${HKS_CONFIG.bildirimServiceUrl}?wsdl`, {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://tempuri.org/IGenelService/GetKunyeDetay`
+          'SOAPAction': `http://tempuri.org/IBildirimService/BildirimSorgulama`
         },
         body: soapRequest
       });
@@ -281,25 +310,46 @@ export class HksService {
       }
 
       const xmlResponse = await response.text();
-      const parsedResponse = parseSoapResponse(xmlResponse, 'GetKunyeDetay');
+      const parsedResponse = parseSoapResponse(xmlResponse, 'BildirimSorgulama');
 
-      if (parsedResponse?.GetKunyeDetayResult) {
-        const item = parsedResponse.GetKunyeDetayResult;
+      if (parsedResponse?.BildirimSorgulamaResult) {
+        const result = parsedResponse.BildirimSorgulamaResult;
+        
+        // İşlem kodu kontrolü
+        if (result.IslemKodu !== '1') {
+          throw new Error(`HKS Hatası: ${result.HataKodlari || 'Bilinmeyen hata'}`);
+        }
+
+        const bildirimler = Array.isArray(result.BildirimListesi) 
+          ? result.BildirimListesi 
+          : result.BildirimListesi ? [result.BildirimListesi] : [];
+
+        if (bildirimler.length === 0) {
+          throw new Error('Künye detayı bulunamadı');
+        }
+
+        // İlk bildirimi detay olarak kullan
+        const item = bildirimler[0];
+        
         return {
-          id: item.id || '1',
-          kunyeNo: item.kunyeNo || item.KunyeNo || kunyeNo,
-          hayvanTuru: item.hayvanTuru || item.HayvanTuru || '',
-          irk: item.irk || item.Irk || '',
-          cinsiyet: item.cinsiyet || item.Cinsiyet || '',
-          dogumTarihi: item.dogumTarihi || item.DogumTarihi || '',
-          dogumYeri: item.dogumYeri || item.DogumYeri || '',
-          sahipAdi: item.sahipAdi || item.SahipAdi || '',
-          sahipTc: item.sahipTc || item.SahipTc || '',
-          sahipAdres: item.sahipAdres || item.SahipAdres || '',
-          kayitTarihi: item.kayitTarihi || item.KayitTarihi || '',
-          durum: item.durum || item.Durum || 'Aktif',
-          notlar: item.notlar || item.Notlar || '',
-          geçmişİşlemler: item.geçmişİşlemler || item.GecmisIslemler || []
+          id: item.Id || '1',
+          kunyeNo: item.KunyeNo || kunyeNo,
+          hayvanTuru: item.MalAdi || item.UrunAdi || '',
+          irk: item.UrunCinsi || '',
+          cinsiyet: item.Cinsiyet || '',
+          dogumTarihi: item.UretimTarihi || item.BildirimTarihi || '',
+          dogumYeri: item.UretimIlAdi || '',
+          sahipAdi: item.MalinSahibiAdi || '',
+          sahipTc: item.MalinSahibiTcKimlikNo || '',
+          sahipAdres: item.MalinSahibiAdres || '',
+          kayitTarihi: item.BildirimTarihi || '',
+          durum: item.Durum || 'Aktif',
+          notlar: item.Notlar || '',
+          geçmişİşlemler: bildirimler.map((bildirim: any) => ({
+            tarih: bildirim.BildirimTarihi || '',
+            işlem: bildirim.BildirimTuru || '',
+            açıklama: `${bildirim.MalAdi} - ${bildirim.Miktar} ${bildirim.Birim}`
+          }))
         };
       } else {
         throw new Error('Künye detayı alınamadı');
@@ -312,43 +362,67 @@ export class HksService {
   }
 
 
-  // Mock data fonksiyonları (geliştirme aşamasında)
+  // Mock data fonksiyonları (geliştirme aşamasında) - HKS'ye uygun
   private static getMockKunyeListesi(params: { page: number, limit: number, search: string }): { kunyeler: HksKunye[], total: number } {
     const mockKunyeler: HksKunye[] = [
       {
         id: '1',
         kunyeNo: 'TR001234567890',
-        hayvanTuru: 'Sığır',
-        irk: 'Holstein',
-        cinsiyet: 'Dişi',
-        dogumTarihi: '2023-01-15',
+        hayvanTuru: 'Domates',
+        irk: 'Sera Domatesi',
+        cinsiyet: '',
+        dogumTarihi: '2024-01-15',
         sahipAdi: 'Ahmet Yılmaz',
         sahipTc: '12345678901',
-        kayitTarihi: '2023-01-20',
+        kayitTarihi: '2024-01-20',
         durum: 'Aktif'
       },
       {
         id: '2',
         kunyeNo: 'TR001234567891',
-        hayvanTuru: 'Sığır',
-        irk: 'Angus',
-        cinsiyet: 'Erkek',
-        dogumTarihi: '2023-02-10',
+        hayvanTuru: 'Salatalık',
+        irk: 'Hıyar',
+        cinsiyet: '',
+        dogumTarihi: '2024-02-10',
         sahipAdi: 'Mehmet Demir',
         sahipTc: '12345678902',
-        kayitTarihi: '2023-02-15',
+        kayitTarihi: '2024-02-15',
         durum: 'Aktif'
       },
       {
         id: '3',
         kunyeNo: 'TR001234567892',
-        hayvanTuru: 'Koyun',
-        irk: 'Merinos',
-        cinsiyet: 'Dişi',
-        dogumTarihi: '2023-03-05',
+        hayvanTuru: 'Patlıcan',
+        irk: 'Klasik Patlıcan',
+        cinsiyet: '',
+        dogumTarihi: '2024-03-05',
         sahipAdi: 'Fatma Kaya',
         sahipTc: '12345678903',
-        kayitTarihi: '2023-03-10',
+        kayitTarihi: '2024-03-10',
+        durum: 'Aktif'
+      },
+      {
+        id: '4',
+        kunyeNo: 'TR001234567893',
+        hayvanTuru: 'Biber',
+        irk: 'Dolmalık Biber',
+        cinsiyet: '',
+        dogumTarihi: '2024-03-15',
+        sahipAdi: 'Ali Özkan',
+        sahipTc: '12345678904',
+        kayitTarihi: '2024-03-20',
+        durum: 'Aktif'
+      },
+      {
+        id: '5',
+        kunyeNo: 'TR001234567894',
+        hayvanTuru: 'Soğan',
+        irk: 'Kuru Soğan',
+        cinsiyet: '',
+        dogumTarihi: '2024-04-01',
+        sahipAdi: 'Ayşe Çelik',
+        sahipTc: '12345678905',
+        kayitTarihi: '2024-04-05',
         durum: 'Aktif'
       }
     ]
@@ -378,37 +452,37 @@ export class HksService {
     return {
       id: '1',
       kunyeNo: kunyeNo,
-      hayvanTuru: 'Sığır',
-      irk: 'Holstein',
-      cinsiyet: 'Dişi',
-      dogumTarihi: '2023-01-15',
-      dogumYeri: 'Ankara',
+      hayvanTuru: 'Domates',
+      irk: 'Sera Domatesi',
+      cinsiyet: '',
+      dogumTarihi: '2024-01-15',
+      dogumYeri: 'Antalya',
       sahipAdi: 'Ahmet Yılmaz',
       sahipTc: '12345678901',
-      sahipAdres: 'Ankara Merkez, Çankaya Mahallesi, No: 123',
-      kayitTarihi: '2023-01-20',
+      sahipAdres: 'Antalya Merkez, Kepez Mahallesi, No: 123',
+      kayitTarihi: '2024-01-20',
       durum: 'Aktif',
-      notlar: 'Sağlıklı, aşıları tamamlanmış, veteriner kontrolü yapılmış',
+      notlar: 'Organik tarım sertifikalı, kalite kontrolü yapılmış',
       geçmişİşlemler: [
         {
-          tarih: '2023-01-20',
-          işlem: 'Kayıt',
-          açıklama: 'İlk kayıt işlemi gerçekleştirildi'
+          tarih: '2024-01-20',
+          işlem: 'Satın Alım',
+          açıklama: 'Domates - 1000 KG'
         },
         {
-          tarih: '2023-03-15',
-          işlem: 'Aşı',
-          açıklama: 'Kuduz aşısı yapıldı'
+          tarih: '2024-01-25',
+          işlem: 'Sevk Etme',
+          açıklama: 'Domates - 500 KG'
         },
         {
-          tarih: '2023-06-10',
-          işlem: 'Kontrol',
-          açıklama: 'Veteriner kontrolü yapıldı'
+          tarih: '2024-02-01',
+          işlem: 'Satış',
+          açıklama: 'Domates - 300 KG'
         },
         {
-          tarih: '2023-09-05',
-          işlem: 'Aşı',
-          açıklama: 'Şap aşısı yapıldı'
+          tarih: '2024-02-05',
+          işlem: 'Sevk Etme',
+          açıklama: 'Domates - 200 KG'
         }
       ]
     }
