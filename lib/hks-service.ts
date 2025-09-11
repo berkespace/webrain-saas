@@ -122,20 +122,29 @@ export class HksService {
     }
   }
 
-  // BildirimService bağlantı testi - Bildirim Türleri Listesi ile
+  // BildirimService bağlantı testi - Bildirimcinin Yaptığı Bildirimleri Sorgulama ile
   private static async testBildirimService(): Promise<boolean> {
     try {
+      // BildirimSorguIstek parametreleri (C# kodundan)
+      const parameters: any = {
+        KunyeTuru: 1,
+        KunyeNo: 0,
+        BaslangicTarihi: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 hafta önce
+        BitisTarihi: new Date().toISOString().split('T')[0], // Bugün
+        KalanMiktariSifirdanBuyukOlanlar: true
+      };
+
       const soapRequest = buildSoapRequest(
         HKS_CONFIG.bildirimServiceUrl,
-        'BildirimTurleriListesi',
-        {}
+        'BildirimServisBildirimcininYaptigiBildirimListesi',
+        parameters
       );
 
       const response = await fetch(`${HKS_CONFIG.bildirimServiceUrl}?wsdl`, {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BildirimTurleriListesi`
+          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BildirimServisBildirimcininYaptigiBildirimListesi`
         },
         body: soapRequest
       });
@@ -145,10 +154,10 @@ export class HksService {
       }
 
       const xmlResponse = await response.text();
-      const parsedResponse = parseSoapResponse(xmlResponse, 'BildirimTurleriListesi');
+      const parsedResponse = parseSoapResponse(xmlResponse, 'BildirimServisBildirimcininYaptigiBildirimListesi');
       
-      if (parsedResponse?.BildirimTurleriListesiResult) {
-        const result = parsedResponse.BildirimTurleriListesiResult;
+      if (parsedResponse?.BildirimServisBildirimcininYaptigiBildirimListesiResult) {
+        const result = parsedResponse.BildirimServisBildirimcininYaptigiBildirimListesiResult;
         return result.IslemKodu === '1';
       }
       
@@ -196,35 +205,33 @@ export class HksService {
     }
   }
 
-  // Referans Künye Listesi Servisi - HKS Kılavuzuna göre
+  // Bildirimcinin Yaptığı Bildirimleri Sorgulama Servisi - C# koduna göre
   static async getKunyeListesi(params: {
     page: number
     limit: number
     search: string
   }): Promise<{ kunyeler: HksKunye[], total: number }> {
     try {
-      // HKS Referans Künye Listesi Servisi parametreleri
-      const parameters: any = {};
+      // BildirimSorguIstek parametreleri (C# kodundan)
+      const parameters: any = {
+        KunyeTuru: 1,
+        KunyeNo: 0,
+        BaslangicTarihi: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 ay önce
+        BitisTarihi: new Date().toISOString().split('T')[0], // Bugün
+        KalanMiktariSifirdanBuyukOlanlar: true
+      };
       
-      // Arama parametreleri (kılavuzda belirtilen alanlar)
+      // Arama parametreleri
       if (params.search) {
-        // TC Kimlik No ile arama
-        if (/^\d{11}$/.test(params.search)) {
-          parameters.TcKimlikVergiNo = params.search;
-        }
         // Künye No ile arama
-        else if (params.search.startsWith('TR')) {
+        if (params.search.startsWith('TR') || /^\d+$/.test(params.search)) {
           parameters.KunyeNo = params.search;
-        }
-        // Diğer durumlarda genel arama
-        else {
-          parameters.AdSoyad = params.search;
         }
       }
 
       const soapRequest = buildSoapRequest(
         HKS_CONFIG.bildirimServiceUrl,
-        'ReferansKunyeListesi',
+        'BildirimServisBildirimcininYaptigiBildirimListesi',
         parameters
       );
 
@@ -232,7 +239,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/ReferansKunyeListesi`
+          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BildirimServisBildirimcininYaptigiBildirimListesi`
         },
         body: soapRequest
       });
@@ -242,23 +249,24 @@ export class HksService {
       }
 
       const xmlResponse = await response.text();
-      const parsedResponse = parseSoapResponse(xmlResponse, 'ReferansKunyeListesi');
+      const parsedResponse = parseSoapResponse(xmlResponse, 'BildirimServisBildirimcininYaptigiBildirimListesi');
 
-      // HKS response kontrolü
-      if (parsedResponse?.ReferansKunyeListesiResult) {
-        const result = parsedResponse.ReferansKunyeListesiResult;
+      // HKS response kontrolü (C# kodundan)
+      if (parsedResponse?.BildirimServisBildirimcininYaptigiBildirimListesiResult) {
+        const result = parsedResponse.BildirimServisBildirimcininYaptigiBildirimListesiResult;
         
         // İşlem kodu kontrolü
         if (result.IslemKodu !== '1') {
           throw new Error(`HKS Hatası: ${result.HataKodlari || 'Bilinmeyen hata'}`);
         }
 
-        const kunyeler = Array.isArray(result.KunyeListesi) 
-          ? result.KunyeListesi 
-          : result.KunyeListesi ? [result.KunyeListesi] : [];
+        // Bildirimler array'ini kontrol et
+        const bildirimler = Array.isArray(result.Bildirimler) 
+          ? result.Bildirimler 
+          : result.Bildirimler ? [result.Bildirimler] : [];
         
         return {
-          kunyeler: kunyeler.map((item: any, index: number) => ({
+          kunyeler: bildirimler.map((item: any, index: number) => ({
             id: item.Id || index.toString(),
             kunyeNo: item.KunyeNo || '',
             hayvanTuru: item.UrunAdi || item.MalAdi || '',
@@ -270,7 +278,7 @@ export class HksService {
             kayitTarihi: item.BildirimTarihi || '',
             durum: item.Durum || 'Aktif'
           })),
-          total: kunyeler.length
+          total: bildirimler.length
         };
       } else {
         throw new Error('Künye listesi alınamadı');
@@ -282,25 +290,29 @@ export class HksService {
     }
   }
 
-  // Künye detayı çekme - Bildirim Sorgulama Servisi ile
+  // Künye detayı çekme - Bildirimcinin Yaptığı Bildirimleri Sorgulama Servisi ile
   static async getKunyeDetay(kunyeNo: string): Promise<HksKunyeDetay> {
     try {
+      // BildirimSorguIstek parametreleri (C# kodundan)
+      const parameters: any = {
+        KunyeTuru: 1,
+        KunyeNo: kunyeNo, // Belirli künye no için
+        BaslangicTarihi: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 yıl önce
+        BitisTarihi: new Date().toISOString().split('T')[0], // Bugün
+        KalanMiktariSifirdanBuyukOlanlar: false // Tüm kayıtları getir
+      };
+
       const soapRequest = buildSoapRequest(
         HKS_CONFIG.bildirimServiceUrl,
-        'BildirimSorgulama',
-        { 
-          KunyeNo: kunyeNo,
-          BildirimTarihi: '', // Boş bırakıyoruz, tüm tarihleri getirsin
-          AracPlakaNo: '',
-          BelgeNo: ''
-        }
+        'BildirimServisBildirimcininYaptigiBildirimListesi',
+        parameters
       );
 
       const response = await fetch(`${HKS_CONFIG.bildirimServiceUrl}?wsdl`, {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BildirimSorgulama`
+          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BildirimServisBildirimcininYaptigiBildirimListesi`
         },
         body: soapRequest
       });
@@ -310,19 +322,19 @@ export class HksService {
       }
 
       const xmlResponse = await response.text();
-      const parsedResponse = parseSoapResponse(xmlResponse, 'BildirimSorgulama');
+      const parsedResponse = parseSoapResponse(xmlResponse, 'BildirimServisBildirimcininYaptigiBildirimListesi');
 
-      if (parsedResponse?.BildirimSorgulamaResult) {
-        const result = parsedResponse.BildirimSorgulamaResult;
+      if (parsedResponse?.BildirimServisBildirimcininYaptigiBildirimListesiResult) {
+        const result = parsedResponse.BildirimServisBildirimcininYaptigiBildirimListesiResult;
         
         // İşlem kodu kontrolü
         if (result.IslemKodu !== '1') {
           throw new Error(`HKS Hatası: ${result.HataKodlari || 'Bilinmeyen hata'}`);
         }
 
-        const bildirimler = Array.isArray(result.BildirimListesi) 
-          ? result.BildirimListesi 
-          : result.BildirimListesi ? [result.BildirimListesi] : [];
+        const bildirimler = Array.isArray(result.Bildirimler) 
+          ? result.Bildirimler 
+          : result.Bildirimler ? [result.Bildirimler] : [];
 
         if (bildirimler.length === 0) {
           throw new Error('Künye detayı bulunamadı');
@@ -334,7 +346,7 @@ export class HksService {
         return {
           id: item.Id || '1',
           kunyeNo: item.KunyeNo || kunyeNo,
-          hayvanTuru: item.MalAdi || item.UrunAdi || '',
+          hayvanTuru: item.UrunAdi || item.MalAdi || '',
           irk: item.UrunCinsi || '',
           cinsiyet: item.Cinsiyet || '',
           dogumTarihi: item.UretimTarihi || item.BildirimTarihi || '',
@@ -348,7 +360,7 @@ export class HksService {
           geçmişİşlemler: bildirimler.map((bildirim: any) => ({
             tarih: bildirim.BildirimTarihi || '',
             işlem: bildirim.BildirimTuru || '',
-            açıklama: `${bildirim.MalAdi} - ${bildirim.Miktar} ${bildirim.Birim}`
+            açıklama: `${bildirim.UrunAdi || bildirim.MalAdi} - ${bildirim.Miktar} ${bildirim.Birim}`
           }))
         };
       } else {
