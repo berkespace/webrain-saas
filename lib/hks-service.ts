@@ -9,8 +9,17 @@ const HKS_CONFIG = {
   genelServiceUrl: 'https://hks.hal.gov.tr/WebServices/GenelService.svc',
   username: process.env.HKS_USERNAME || '',
   password: process.env.HKS_PASSWORD || '',
+  webservice: process.env.HKS_WEBSERVICE || '',
   servicePassword: process.env.HKS_SERVICE_PASSWORD || '!1QAZWSX' // Test sistemi için sabit
 };
+
+// Debug: Environment variables kontrolü
+console.log('HKS Config:', {
+  username: HKS_CONFIG.username ? 'SET' : 'NOT SET',
+  password: HKS_CONFIG.password ? 'SET' : 'NOT SET',
+  webservice: HKS_CONFIG.webservice ? 'SET' : 'NOT SET',
+  servicePassword: HKS_CONFIG.servicePassword
+});
 
 export interface HksKunye {
   id: string
@@ -55,7 +64,7 @@ function buildSoapRequest(serviceUrl: string, method: string, parameters: any): 
     .map(key => `<${key}>${parameters[key]}</${key}>`)
     .join('');
 
-  return `<?xml version="1.0" encoding="utf-8"?>
+  const soapRequest = `<?xml version="1.0" encoding="utf-8"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://hks.hal.gov.tr/WebServices">
   <soap:Body>
     <tns:${method}>
@@ -66,11 +75,28 @@ function buildSoapRequest(serviceUrl: string, method: string, parameters: any): 
     </tns:${method}>
   </soap:Body>
 </soap:Envelope>`;
+
+  // Debug: SOAP request'i logla
+  console.log('SOAP Request:', {
+    method,
+    serviceUrl,
+    soapAction: `http://hks.hal.gov.tr/WebServices/IBildirimService/${method}`,
+    requestBody: soapRequest.substring(0, 500) + '...'
+  });
+
+  return soapRequest;
 }
 
 // SOAP Response Parser
 function parseSoapResponse(xmlResponse: string, method: string): any {
   try {
+    // Debug: Response'u logla
+    console.log('SOAP Response:', {
+      method,
+      responseLength: xmlResponse.length,
+      responsePreview: xmlResponse.substring(0, 500) + '...'
+    });
+
     const parser = new XMLParser({
       ignoreAttributes: false,
       attributeNamePrefix: "@_",
@@ -79,6 +105,9 @@ function parseSoapResponse(xmlResponse: string, method: string): any {
     
     const parsed = parser.parse(xmlResponse);
     const soapBody = parsed['soap:Envelope']?.['soap:Body'];
+    
+    // Debug: Parsed response'u logla
+    console.log('Parsed SOAP Body:', soapBody);
     
     if (soapBody?.[`tns:${method}Response`]) {
       return soapBody[`tns:${method}Response`];
