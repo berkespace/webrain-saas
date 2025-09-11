@@ -56,14 +56,14 @@ function buildSoapRequest(serviceUrl: string, method: string, parameters: any): 
     .join('');
 
   return `<?xml version="1.0" encoding="utf-8"?>
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:gtb="http://www.gtb.gov.tr//WebServices">
   <soap:Body>
-    <tem:${method}>
-      <tem:UserName>${HKS_CONFIG.username}</tem:UserName>
-      <tem:Password>${HKS_CONFIG.password}</tem:Password>
-      <tem:ServicePassword>${HKS_CONFIG.servicePassword}</tem:ServicePassword>
+    <gtb:${method}>
+      <gtb:UserName>${HKS_CONFIG.username}</gtb:UserName>
+      <gtb:Password>${HKS_CONFIG.password}</gtb:Password>
+      <gtb:ServicePassword>${HKS_CONFIG.servicePassword}</gtb:ServicePassword>
       ${soapBody}
-    </tem:${method}>
+    </gtb:${method}>
   </soap:Body>
 </soap:Envelope>`;
 }
@@ -80,8 +80,8 @@ function parseSoapResponse(xmlResponse: string, method: string): any {
     const parsed = parser.parse(xmlResponse);
     const soapBody = parsed['soap:Envelope']?.['soap:Body'];
     
-    if (soapBody?.[`tem:${method}Response`]) {
-      return soapBody[`tem:${method}Response`];
+    if (soapBody?.[`gtb:${method}Response`]) {
+      return soapBody[`gtb:${method}Response`];
     }
     
     return null;
@@ -135,7 +135,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://tempuri.org/IBildirimService/BildirimTurleriListesi`
+          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BildirimTurleriListesi`
         },
         body: soapRequest
       });
@@ -172,7 +172,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://tempuri.org/IGenelService/UlkeListesi`
+          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IGenelService/UlkeListesi`
         },
         body: soapRequest
       });
@@ -232,7 +232,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://tempuri.org/IBildirimService/ReferansKunyeListesi`
+          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/ReferansKunyeListesi`
         },
         body: soapRequest
       });
@@ -300,7 +300,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://tempuri.org/IBildirimService/BildirimSorgulama`
+          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BildirimSorgulama`
         },
         body: soapRequest
       });
