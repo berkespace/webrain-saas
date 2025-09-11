@@ -60,8 +60,18 @@ export interface HksServiceStatus {
 
 // SOAP Request Builder - HKS Kılavuzuna göre
 function buildSoapRequest(serviceUrl: string, method: string, parameters: any): string {
+  // Objeleri XML'e çeviren recursive fonksiyon
+  function objectToXml(obj: any, key: string = ''): string {
+    if (typeof obj === 'object' && obj !== null) {
+      return Object.keys(obj)
+        .map(k => `<${k}>${objectToXml(obj[k], k)}</${k}>`)
+        .join('');
+    }
+    return obj.toString();
+  }
+
   const soapBody = Object.keys(parameters)
-    .map(key => `<${key}>${parameters[key]}</${key}>`)
+    .map(key => `<${key}>${objectToXml(parameters[key], key)}</${key}>`)
     .join('');
 
   const soapRequest = `<?xml version="1.0" encoding="utf-8"?>
