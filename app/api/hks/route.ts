@@ -18,10 +18,13 @@ export async function GET(req: NextRequest) {
   try {
     switch (action) {
       case 'künyeler':
+      case 'kunye-listesi':
         return await getKunyeListesi(req)
       case 'künye-detay':
+      case 'kunye-detay':
         return await getKunyeDetay(req)
       case 'test-bağlantı':
+      case 'test-connection':
         return await testHksBaglanti()
       default:
         return NextResponse.json({ error: 'Geçersiz işlem' }, { status: 400 })
