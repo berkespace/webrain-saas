@@ -10,7 +10,7 @@ const HKS_CONFIG = {
   username: process.env.HKS_USERNAME || '',
   password: process.env.HKS_PASSWORD || '',
   webservice: process.env.HKS_WEBSERVICE || '',
-  servicePassword: process.env.HKS_SERVICE_PASSWORD || '!1QAZWSX' // Test sistemi için sabit
+  servicePassword: process.env.HKS_SERVICE_PASSWORD  // Test sistemi için sabit
 };
 
 // Debug: Environment variables kontrolü
@@ -70,8 +70,7 @@ function buildSoapRequest(serviceUrl: string, method: string, parameters: any): 
     <tns:${method}>
       <tns:UserName>${HKS_CONFIG.username}</tns:UserName>
       <tns:Password>${HKS_CONFIG.password}</tns:Password>
-      <tns:WebService>${HKS_CONFIG.webservice}</tns:WebService>
-      <tns:ServicePassword>${HKS_CONFIG.servicePassword}</tns:ServicePassword>
+      <tns:ServicePassword>${HKS_CONFIG.webservice}</tns:ServicePassword>
       ${soapBody}
     </tns:${method}>
   </soap:Body>
