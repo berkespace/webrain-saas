@@ -122,29 +122,22 @@ export class HksService {
     }
   }
 
-  // BildirimService bağlantı testi - Bildirimcinin Yaptığı Bildirimleri Sorgulama ile
+  // BildirimService bağlantı testi - Bildirim Türleri Listesi ile (PHP örneğine göre)
   private static async testBildirimService(): Promise<boolean> {
     try {
-      // BildirimSorguIstek parametreleri (C# kodundan)
-      const parameters: any = {
-        KunyeTuru: 1,
-        KunyeNo: 0,
-        BaslangicTarihi: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 hafta önce
-        BitisTarihi: new Date().toISOString().split('T')[0], // Bugün
-        KalanMiktariSifirdanBuyukOlanlar: true
-      };
-
       const soapRequest = buildSoapRequest(
         HKS_CONFIG.bildirimServiceUrl,
-        'BildirimServisBildirimcininYaptigiBildirimListesi',
-        parameters
+        'BaseRequestMessageOf_BildirimTurleriIstek',
+        {
+          Istek: 'BildirimTurleriIstek'
+        }
       );
 
       const response = await fetch(`${HKS_CONFIG.bildirimServiceUrl}?wsdl`, {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BildirimServisBildirimcininYaptigiBildirimListesi`
+          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BaseRequestMessageOf_BildirimTurleriIstek`
         },
         body: soapRequest
       });
@@ -154,10 +147,10 @@ export class HksService {
       }
 
       const xmlResponse = await response.text();
-      const parsedResponse = parseSoapResponse(xmlResponse, 'BildirimServisBildirimcininYaptigiBildirimListesi');
+      const parsedResponse = parseSoapResponse(xmlResponse, 'BaseRequestMessageOf_BildirimTurleriIstek');
       
-      if (parsedResponse?.BildirimServisBildirimcininYaptigiBildirimListesiResult) {
-        const result = parsedResponse.BildirimServisBildirimcininYaptigiBildirimListesiResult;
+      if (parsedResponse?.BaseRequestMessageOf_BildirimTurleriIstekResult) {
+        const result = parsedResponse.BaseRequestMessageOf_BildirimTurleriIstekResult;
         return result.IslemKodu === '1';
       }
       
@@ -168,20 +161,22 @@ export class HksService {
     }
   }
 
-  // GenelService bağlantı testi - Ülke Listesi ile
+  // GenelService bağlantı testi - İller Listesi ile (PHP örneğine göre)
   private static async testGenelService(): Promise<boolean> {
     try {
       const soapRequest = buildSoapRequest(
         HKS_CONFIG.genelServiceUrl,
-        'UlkeListesi',
-        {}
+        'BaseRequestMessageOf_IllerIstek',
+        {
+          Istek: 'IllerIstek'
+        }
       );
 
       const response = await fetch(`${HKS_CONFIG.genelServiceUrl}?wsdl`, {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IGenelService/UlkeListesi`
+          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IGenelService/BaseRequestMessageOf_IllerIstek`
         },
         body: soapRequest
       });
@@ -191,10 +186,10 @@ export class HksService {
       }
 
       const xmlResponse = await response.text();
-      const parsedResponse = parseSoapResponse(xmlResponse, 'UlkeListesi');
+      const parsedResponse = parseSoapResponse(xmlResponse, 'BaseRequestMessageOf_IllerIstek');
       
-      if (parsedResponse?.UlkeListesiResult) {
-        const result = parsedResponse.UlkeListesiResult;
+      if (parsedResponse?.BaseRequestMessageOf_IllerIstekResult) {
+        const result = parsedResponse.BaseRequestMessageOf_IllerIstekResult;
         return result.IslemKodu === '1';
       }
       
@@ -205,33 +200,35 @@ export class HksService {
     }
   }
 
-  // Bildirimcinin Yaptığı Bildirimleri Sorgulama Servisi - C# koduna göre
+  // Bildirimcinin Yaptığı Bildirimleri Sorgulama Servisi - PHP örneğine göre
   static async getKunyeListesi(params: {
     page: number
     limit: number
     search: string
   }): Promise<{ kunyeler: HksKunye[], total: number }> {
     try {
-      // BildirimSorguIstek parametreleri (C# kodundan)
+      // BildirimSorguIstek parametreleri (PHP örneğine göre)
       const parameters: any = {
-        KunyeTuru: 1,
-        KunyeNo: 0,
-        BaslangicTarihi: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 ay önce
-        BitisTarihi: new Date().toISOString().split('T')[0], // Bugün
-        KalanMiktariSifirdanBuyukOlanlar: true
+        Istek: {
+          KunyeTuru: 1,
+          KunyeNo: 0,
+          BaslangicTarihi: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 ay önce
+          BitisTarihi: new Date().toISOString().split('T')[0], // Bugün
+          KalanMiktariSifirdanBuyukOlanlar: true
+        }
       };
       
       // Arama parametreleri
       if (params.search) {
         // Künye No ile arama
         if (params.search.startsWith('TR') || /^\d+$/.test(params.search)) {
-          parameters.KunyeNo = params.search;
+          parameters.Istek.KunyeNo = params.search;
         }
       }
 
       const soapRequest = buildSoapRequest(
         HKS_CONFIG.bildirimServiceUrl,
-        'BildirimServisBildirimcininYaptigiBildirimListesi',
+        'BaseRequestMessageOf_BildirimSorguIstek',
         parameters
       );
 
@@ -239,7 +236,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BildirimServisBildirimcininYaptigiBildirimListesi`
+          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BaseRequestMessageOf_BildirimSorguIstek`
         },
         body: soapRequest
       });
@@ -249,11 +246,11 @@ export class HksService {
       }
 
       const xmlResponse = await response.text();
-      const parsedResponse = parseSoapResponse(xmlResponse, 'BildirimServisBildirimcininYaptigiBildirimListesi');
+      const parsedResponse = parseSoapResponse(xmlResponse, 'BaseRequestMessageOf_BildirimSorguIstek');
 
-      // HKS response kontrolü (C# kodundan)
-      if (parsedResponse?.BildirimServisBildirimcininYaptigiBildirimListesiResult) {
-        const result = parsedResponse.BildirimServisBildirimcininYaptigiBildirimListesiResult;
+      // HKS response kontrolü (PHP örneğine göre)
+      if (parsedResponse?.BaseRequestMessageOf_BildirimSorguIstekResult) {
+        const result = parsedResponse.BaseRequestMessageOf_BildirimSorguIstekResult;
         
         // İşlem kodu kontrolü
         if (result.IslemKodu !== '1') {
@@ -290,21 +287,23 @@ export class HksService {
     }
   }
 
-  // Künye detayı çekme - Bildirimcinin Yaptığı Bildirimleri Sorgulama Servisi ile
+  // Künye detayı çekme - Bildirimcinin Yaptığı Bildirimleri Sorgulama Servisi ile (PHP örneğine göre)
   static async getKunyeDetay(kunyeNo: string): Promise<HksKunyeDetay> {
     try {
-      // BildirimSorguIstek parametreleri (C# kodundan)
+      // BildirimSorguIstek parametreleri (PHP örneğine göre)
       const parameters: any = {
-        KunyeTuru: 1,
-        KunyeNo: kunyeNo, // Belirli künye no için
-        BaslangicTarihi: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 yıl önce
-        BitisTarihi: new Date().toISOString().split('T')[0], // Bugün
-        KalanMiktariSifirdanBuyukOlanlar: false // Tüm kayıtları getir
+        Istek: {
+          KunyeTuru: 1,
+          KunyeNo: kunyeNo, // Belirli künye no için
+          BaslangicTarihi: new Date(Date.now() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 yıl önce
+          BitisTarihi: new Date().toISOString().split('T')[0], // Bugün
+          KalanMiktariSifirdanBuyukOlanlar: false // Tüm kayıtları getir
+        }
       };
 
       const soapRequest = buildSoapRequest(
         HKS_CONFIG.bildirimServiceUrl,
-        'BildirimServisBildirimcininYaptigiBildirimListesi',
+        'BaseRequestMessageOf_BildirimSorguIstek',
         parameters
       );
 
@@ -312,7 +311,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BildirimServisBildirimcininYaptigiBildirimListesi`
+          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BaseRequestMessageOf_BildirimSorguIstek`
         },
         body: soapRequest
       });
@@ -322,10 +321,10 @@ export class HksService {
       }
 
       const xmlResponse = await response.text();
-      const parsedResponse = parseSoapResponse(xmlResponse, 'BildirimServisBildirimcininYaptigiBildirimListesi');
+      const parsedResponse = parseSoapResponse(xmlResponse, 'BaseRequestMessageOf_BildirimSorguIstek');
 
-      if (parsedResponse?.BildirimServisBildirimcininYaptigiBildirimListesiResult) {
-        const result = parsedResponse.BildirimServisBildirimcininYaptigiBildirimListesiResult;
+      if (parsedResponse?.BaseRequestMessageOf_BildirimSorguIstekResult) {
+        const result = parsedResponse.BaseRequestMessageOf_BildirimSorguIstekResult;
         
         // İşlem kodu kontrolü
         if (result.IslemKodu !== '1') {
