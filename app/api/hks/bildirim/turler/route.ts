@@ -8,13 +8,13 @@ import { HKS, buildSoapEnvelope, soapAction, pickSoapResponse } from '@/app/lib/
 export async function GET() {
   try {
     const method = 'BildirimTurleriListesi';
-    const envelope = await buildSoapEnvelope(method, { Istek: {} });
+    const envelope = buildSoapEnvelope(method, { Istek: {} });
 
     const res = await fetch(HKS.bildirimUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/xml; charset=utf-8',
-        'SOAPAction': await soapAction('IBildirimService', method),
+        'SOAPAction': soapAction('IBildirimService', method),
       },
       body: envelope,
     });
@@ -24,7 +24,7 @@ export async function GET() {
 
     const parser = new XMLParser({ ignoreAttributes:false, attributeNamePrefix:'@_', textNodeName:'#text' });
     const parsed = parser.parse(raw);
-    const resp = await pickSoapResponse(parsed, method);
+    const resp = pickSoapResponse(parsed, method);
     const result = resp?.[`${method}Result`];
 
     if (String(result?.IslemKodu) !== '1') {

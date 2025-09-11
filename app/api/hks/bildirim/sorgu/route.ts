@@ -21,13 +21,13 @@ export async function POST(req: NextRequest) {
       }
     };
 
-    const envelope = await buildSoapEnvelope(method, payload);
+    const envelope = buildSoapEnvelope(method, payload);
 
     const res = await fetch(HKS.bildirimUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/xml; charset=utf-8',
-        'SOAPAction': await soapAction('IBildirimService', method),
+        'SOAPAction': soapAction('IBildirimService', method),
       },
       body: envelope,
     });
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
 
     const parser = new XMLParser({ ignoreAttributes:false, attributeNamePrefix:'@_', textNodeName:'#text' });
     const parsed = parser.parse(raw);
-    const resp = await pickSoapResponse(parsed, method);
+    const resp = pickSoapResponse(parsed, method);
     const result = resp?.[`${method}Result`];
 
     if (String(result?.IslemKodu) !== '1') {
