@@ -143,18 +143,25 @@ export class HksService {
     try {
       console.log('HKS testConnection başlıyor...');
       
-      // Mock data döndür (geliştirme aşamasında)
-      console.log('HKS mock test döndürülüyor...');
+      // BildirimService test
+      console.log('BildirimService test ediliyor...');
+      const bildirimStatus = await this.testBildirimService()
+      console.log('BildirimService test sonucu:', bildirimStatus);
+      
+      // GenelService test
+      console.log('GenelService test ediliyor...');
+      const genelStatus = await this.testGenelService()
+      console.log('GenelService test sonucu:', genelStatus);
       
       const result = {
         bildirimService: {
           url: this.BILDIRIM_SERVICE_URL,
-          status: 'Bağlantı başarılı (Mock)',
+          status: bildirimStatus ? 'Bağlantı başarılı' : 'Bağlantı başarısız',
           lastCheck: new Date().toISOString()
         },
         genelService: {
           url: this.GENEL_SERVICE_URL,
-          status: 'Bağlantı başarılı (Mock)',
+          status: genelStatus ? 'Bağlantı başarılı' : 'Bağlantı başarısız',
           lastCheck: new Date().toISOString()
         }
       };
@@ -340,8 +347,7 @@ export class HksService {
       }
     } catch (error) {
       console.error('Künye listesi çekme hatası:', error)
-      // Hata durumunda mock data döndür
-      return this.getMockKunyeListesi(params)
+      throw error; // Gerçek hatayı fırlat
     }
   }
 
@@ -425,8 +431,7 @@ export class HksService {
       }
     } catch (error) {
       console.error('Künye detayı çekme hatası:', error)
-      // Hata durumunda mock data döndür
-      return this.getMockKunyeDetay(kunyeNo)
+      throw error; // Gerçek hatayı fırlat
     }
   }
 
