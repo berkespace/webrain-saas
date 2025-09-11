@@ -137,13 +137,19 @@ export class HksService {
   // HKS servislerine bağlantı testi
   static async testConnection(): Promise<HksServiceStatus> {
     try {
+      console.log('HKS testConnection başlıyor...');
+      
       // BildirimService test
+      console.log('BildirimService test ediliyor...');
       const bildirimStatus = await this.testBildirimService()
+      console.log('BildirimService test sonucu:', bildirimStatus);
       
       // GenelService test
+      console.log('GenelService test ediliyor...');
       const genelStatus = await this.testGenelService()
+      console.log('GenelService test sonucu:', genelStatus);
       
-      return {
+      const result = {
         bildirimService: {
           url: this.BILDIRIM_SERVICE_URL,
           status: bildirimStatus ? 'Bağlantı başarılı' : 'Bağlantı başarısız',
@@ -154,7 +160,10 @@ export class HksService {
           status: genelStatus ? 'Bağlantı başarılı' : 'Bağlantı başarısız',
           lastCheck: new Date().toISOString()
         }
-      }
+      };
+      
+      console.log('HKS testConnection sonucu:', result);
+      return result;
     } catch (error) {
       console.error('HKS bağlantı testi hatası:', error)
       throw new Error('HKS servislerine bağlanılamadı')
