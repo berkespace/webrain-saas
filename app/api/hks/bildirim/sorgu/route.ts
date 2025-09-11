@@ -10,14 +10,15 @@ export async function POST(req: NextRequest) {
   try {
     const { KunyeNo = 0, BaslangicTarihi, BitisTarihi, KalanMiktariSifirdanBuyukOlanlar = true } = await req.json();
 
-    const method = 'BildirimSorgulama'; // WSDL'deki GERÇEK operasyon adıyla eşleşmeli
+    const method = 'BildirimServisBildirimcininYaptigiBildirimListesi'; // C# proxy ile aynı
     const payload = {
       Istek: {
         KunyeTuru: 1,
-        KunyeNo,
-        BaslangicTarihi,
-        BitisTarihi,
-        KalanMiktariSifirdanBuyukOlanlar
+        KunyeNo: KunyeNo ?? 0,
+        // C# DateTime tipine yakın format: 'YYYY-MM-DDTHH:mm:ss'
+        BaslangicTarihi: `${BaslangicTarihi}T00:00:00`,
+        BitisTarihi: `${BitisTarihi}T00:00:00`,
+        KalanMiktariSifirdanBuyukOlanlar: !!KalanMiktariSifirdanBuyukOlanlar
       }
     };
 
@@ -44,8 +45,12 @@ export async function POST(req: NextRequest) {
       return Response.json({ ok:false, islemKodu: result?.IslemKodu, hata: result?.HataKodlari ?? result?.Mesaj, raw: raw.slice(0,2000) }, { status: 500 });
     }
 
-    const arr = result?.Bildirimler ?? [];
-    const bildirimler = Array.isArray(arr) ? arr : [arr];
+    const sonuc = result?.Sonuc;
+    if (Number(sonuc?.HataKodu) !== 0) {
+      return Response.json({ ok:false, hataKodu: sonuc?.HataKodu, mesaj: sonuc?.Mesaj, raw: raw.slice(0,2000) }, { status: 500 });
+    }
+
+    const bildirimler = Array.isArray(sonuc?.Bildirimler) ? sonuc.Bildirimler : (sonuc?.Bildirimler ? [sonuc.Bildirimler] : []);
 
     const mapped = bildirimler.map((b:any, i:number) => ({
       id: String(b?.Id ?? i+1),

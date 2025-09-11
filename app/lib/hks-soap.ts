@@ -19,10 +19,10 @@ export function buildSoapEnvelope(method: string, payload: Record<string, any> =
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="${HKS.ns}">
   <soap:Body>
     <tns:${method}>
-      <tns:UserName>${HKS.u}</tns:UserName>
+      ${body}
       <tns:Password>${HKS.p}</tns:Password>
       <tns:ServicePassword>${HKS.sp}</tns:ServicePassword>
-      ${body}
+      <tns:UserName>${HKS.u}</tns:UserName>
     </tns:${method}>
   </soap:Body>
 </soap:Envelope>`;
