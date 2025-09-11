@@ -61,21 +61,17 @@ export interface HksServiceStatus {
 // SOAP Request Builder - HKS Kılavuzuna göre
 function buildSoapRequest(serviceUrl: string, method: string, parameters: any): string {
   // Objeleri XML'e çeviren recursive fonksiyon
-  function objectToXml(obj: any, key: string = ''): string {
+  function objectToXml(obj: any): string {
     if (typeof obj === 'object' && obj !== null) {
       const keys = Object.keys(obj);
-      if (keys.length === 0) {
-        return ''; // Boş obje için boş string döndür
-      }
-      return keys
-        .map(k => `<${k}>${objectToXml(obj[k], k)}</${k}>`)
-        .join('');
+      if (keys.length === 0) return '';
+      return keys.map(k => `<${k}>${objectToXml(obj[k])}</${k}>`).join('');
     }
-    return obj.toString();
+    return (obj ?? '').toString();
   }
 
-  const soapBody = Object.keys(parameters)
-    .map(key => `<${key}>${objectToXml(parameters[key], key)}</${key}>`)
+  const soapBody = Object.keys(parameters || {})
+    .map(key => `<tns:${key}>${objectToXml(parameters[key])}</tns:${key}>`)
     .join('');
 
   const soapRequest = `<?xml version="1.0" encoding="utf-8"?>
@@ -90,21 +86,21 @@ function buildSoapRequest(serviceUrl: string, method: string, parameters: any): 
   </soap:Body>
 </soap:Envelope>`;
 
-  // Debug: SOAP request'i logla
+  // Debug: SOAP request'i logla (PII maskeleyerek)
   console.log('SOAP Request:', {
     method,
     serviceUrl,
-    soapAction: `http://hks.hal.gov.tr/WebServices/IBildirimService/${method}`,
+    soapAction: `http://www.gtb.gov.tr//WebServices/IBildirimService/${method}`,
     requestBody: soapRequest.substring(0, 500) + '...'
   });
 
   return soapRequest;
 }
 
-// SOAP Response Parser
+// SOAP Response Parser - Esnek prefix desteği
 function parseSoapResponse(xmlResponse: string, method: string): any {
   try {
-    // Debug: Response'u logla
+    // Debug: Response'u logla (PII maskeleyerek)
     console.log('SOAP Response:', {
       method,
       responseLength: xmlResponse.length,
@@ -118,15 +114,24 @@ function parseSoapResponse(xmlResponse: string, method: string): any {
     });
     
     const parsed = parser.parse(xmlResponse);
-    const soapBody = parsed['soap:Envelope']?.['soap:Body'];
     
-    // Debug: Parsed response'u logla
-    console.log('Parsed SOAP Body:', soapBody);
+    // Esnek envelope ve body yakalama
+    const env = parsed['soap:Envelope'] || parsed['Envelope'];
+    const body = env?.['soap:Body'] || env?.['Body'];
     
-    if (soapBody?.[`tns:${method}Response`]) {
-      return soapBody[`tns:${method}Response`];
+    if (!body) {
+      console.log('SOAP Body bulunamadı');
+      return null;
     }
     
+    // Method response'unu prefix'ten bağımsız yakala
+    const respKey = Object.keys(body).find(k => k.endsWith(`${method}Response`));
+    if (respKey) {
+      console.log('SOAP Response bulundu:', respKey);
+      return body[respKey];
+    }
+    
+    console.log('SOAP Response bulunamadı, mevcut keys:', Object.keys(body));
     return null;
   } catch (error) {
     console.error('SOAP Response parsing error:', error);
@@ -135,8 +140,8 @@ function parseSoapResponse(xmlResponse: string, method: string): any {
 }
 
 export class HksService {
-  private static readonly BILDIRIM_SERVICE_URL = 'https://hks.hal.gov.tr/WebServices/BildirimService.svc?wsdl'
-  private static readonly GENEL_SERVICE_URL = 'https://hks.hal.gov.tr/WebServices/GenelService.svc?wsdl'
+  private static readonly BILDIRIM_SERVICE_URL = 'https://hks.hal.gov.tr/WebServices/BildirimService.svc'
+  private static readonly GENEL_SERVICE_URL = 'https://hks.hal.gov.tr/WebServices/GenelService.svc'
   
   // HKS servislerine bağlantı testi
   static async testConnection(): Promise<HksServiceStatus> {
@@ -190,11 +195,11 @@ export class HksService {
 
       console.log('BildirimService test başlıyor...');
       
-      const response = await fetch(`${HKS_CONFIG.bildirimServiceUrl}?wsdl`, {
+      const response = await fetch(HKS_CONFIG.bildirimServiceUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BildirimTurleriListesi`
+          'SOAPAction': 'http://www.gtb.gov.tr//WebServices/IBildirimService/BildirimTurleriListesi'
         },
         body: soapRequest
       });
@@ -237,11 +242,11 @@ export class HksService {
         }
       );
 
-      const response = await fetch(`${HKS_CONFIG.genelServiceUrl}?wsdl`, {
+      const response = await fetch(HKS_CONFIG.genelServiceUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IGenelService/GenelServisIller`
+          'SOAPAction': 'http://www.gtb.gov.tr//WebServices/IGenelService/GenelServisIller'
         },
         body: soapRequest
       });
@@ -293,15 +298,15 @@ export class HksService {
 
       const soapRequest = buildSoapRequest(
         HKS_CONFIG.bildirimServiceUrl,
-        'BaseRequestMessageOf_BildirimSorguIstek',
+        'BildirimSorgulama',
         parameters
       );
 
-      const response = await fetch(`${HKS_CONFIG.bildirimServiceUrl}?wsdl`, {
+      const response = await fetch(HKS_CONFIG.bildirimServiceUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://hks.hal.gov.tr/WebServices/IBildirimService/BaseRequestMessageOf_BildirimSorguIstek`
+          'SOAPAction': 'http://www.gtb.gov.tr//WebServices/IBildirimService/BildirimSorgulama'
         },
         body: soapRequest
       });
@@ -311,11 +316,11 @@ export class HksService {
       }
 
       const xmlResponse = await response.text();
-      const parsedResponse = parseSoapResponse(xmlResponse, 'BaseRequestMessageOf_BildirimSorguIstek');
+      const parsedResponse = parseSoapResponse(xmlResponse, 'BildirimSorgulama');
 
       // HKS response kontrolü (PHP örneğine göre)
-      if (parsedResponse?.BaseRequestMessageOf_BildirimSorguIstekResult) {
-        const result = parsedResponse.BaseRequestMessageOf_BildirimSorguIstekResult;
+      if (parsedResponse?.BildirimSorgulamaResult) {
+        const result = parsedResponse.BildirimSorgulamaResult;
         
         // İşlem kodu kontrolü
         if (result.IslemKodu !== '1') {
@@ -367,15 +372,15 @@ export class HksService {
 
       const soapRequest = buildSoapRequest(
         HKS_CONFIG.bildirimServiceUrl,
-        'BaseRequestMessageOf_BildirimSorguIstek',
+        'BildirimSorgulama',
         parameters
       );
 
-      const response = await fetch(`${HKS_CONFIG.bildirimServiceUrl}?wsdl`, {
+      const response = await fetch(HKS_CONFIG.bildirimServiceUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://hks.hal.gov.tr/WebServices/IBildirimService/BaseRequestMessageOf_BildirimSorguIstek`
+          'SOAPAction': 'http://www.gtb.gov.tr//WebServices/IBildirimService/BildirimSorgulama'
         },
         body: soapRequest
       });
@@ -385,10 +390,10 @@ export class HksService {
       }
 
       const xmlResponse = await response.text();
-      const parsedResponse = parseSoapResponse(xmlResponse, 'BaseRequestMessageOf_BildirimSorguIstek');
+      const parsedResponse = parseSoapResponse(xmlResponse, 'BildirimSorgulama');
 
-      if (parsedResponse?.BaseRequestMessageOf_BildirimSorguIstekResult) {
-        const result = parsedResponse.BaseRequestMessageOf_BildirimSorguIstekResult;
+      if (parsedResponse?.BildirimSorgulamaResult) {
+        const result = parsedResponse.BildirimSorgulamaResult;
         
         // İşlem kodu kontrolü
         if (result.IslemKodu !== '1') {
