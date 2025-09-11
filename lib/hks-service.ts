@@ -174,6 +174,8 @@ export class HksService {
         }
       );
 
+      console.log('BildirimService test başlıyor...');
+      
       const response = await fetch(`${HKS_CONFIG.bildirimServiceUrl}?wsdl`, {
         method: 'POST',
         headers: {
@@ -183,7 +185,12 @@ export class HksService {
         body: soapRequest
       });
 
+      console.log('BildirimService response status:', response.status);
+      console.log('BildirimService response headers:', Object.fromEntries(response.headers.entries()));
+
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('BildirimService HTTP hatası:', response.status, errorText);
         return false;
       }
 
