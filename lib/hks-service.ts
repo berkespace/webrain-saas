@@ -56,14 +56,14 @@ function buildSoapRequest(serviceUrl: string, method: string, parameters: any): 
     .join('');
 
   return `<?xml version="1.0" encoding="utf-8"?>
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:hks="http://hks.hal.gov.tr/WebServices">
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.gtb.gov.tr//WebServices">
   <soap:Body>
-    <hks:${method}>
-      <hks:UserName>${HKS_CONFIG.username}</hks:UserName>
-      <hks:Password>${HKS_CONFIG.password}</hks:Password>
-      <hks:ServicePassword>${HKS_CONFIG.servicePassword}</hks:ServicePassword>
+    <tns:${method}>
+      <tns:UserName>${HKS_CONFIG.username}</tns:UserName>
+      <tns:Password>${HKS_CONFIG.password}</tns:Password>
+      <tns:ServicePassword>${HKS_CONFIG.servicePassword}</tns:ServicePassword>
       ${soapBody}
-    </hks:${method}>
+    </tns:${method}>
   </soap:Body>
 </soap:Envelope>`;
 }
@@ -80,8 +80,8 @@ function parseSoapResponse(xmlResponse: string, method: string): any {
     const parsed = parser.parse(xmlResponse);
     const soapBody = parsed['soap:Envelope']?.['soap:Body'];
     
-    if (soapBody?.[`hks:${method}Response`]) {
-      return soapBody[`hks:${method}Response`];
+    if (soapBody?.[`tns:${method}Response`]) {
+      return soapBody[`tns:${method}Response`];
     }
     
     return null;
@@ -144,7 +144,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://hks.hal.gov.tr/WebServices/IBildirimService/BildirimServisBildirimcininYaptigiBildirimListesi`
+          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BildirimServisBildirimcininYaptigiBildirimListesi`
         },
         body: soapRequest
       });
@@ -181,7 +181,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://hks.hal.gov.tr/WebServices/IGenelService/UlkeListesi`
+          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IGenelService/UlkeListesi`
         },
         body: soapRequest
       });
@@ -239,7 +239,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://hks.hal.gov.tr/WebServices/IBildirimService/BildirimServisBildirimcininYaptigiBildirimListesi`
+          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BildirimServisBildirimcininYaptigiBildirimListesi`
         },
         body: soapRequest
       });
@@ -312,7 +312,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://hks.hal.gov.tr/WebServices/IBildirimService/BildirimServisBildirimcininYaptigiBildirimListesi`
+          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BildirimServisBildirimcininYaptigiBildirimListesi`
         },
         body: soapRequest
       });
