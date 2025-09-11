@@ -56,7 +56,7 @@ function buildSoapRequest(serviceUrl: string, method: string, parameters: any): 
     .join('');
 
   return `<?xml version="1.0" encoding="utf-8"?>
-<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://www.gtb.gov.tr//WebServices">
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://hks.hal.gov.tr/WebServices">
   <soap:Body>
     <tns:${method}>
       <tns:UserName>${HKS_CONFIG.username}</tns:UserName>
@@ -137,7 +137,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BaseRequestMessageOf_BildirimTurleriIstek`
+          'SOAPAction': `http://hks.hal.gov.tr/WebServices/IBildirimService/BaseRequestMessageOf_BildirimTurleriIstek`
         },
         body: soapRequest
       });
@@ -176,7 +176,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IGenelService/BaseRequestMessageOf_IllerIstek`
+          'SOAPAction': `http://hks.hal.gov.tr/WebServices/IGenelService/BaseRequestMessageOf_IllerIstek`
         },
         body: soapRequest
       });
@@ -236,7 +236,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BaseRequestMessageOf_BildirimSorguIstek`
+          'SOAPAction': `http://hks.hal.gov.tr/WebServices/IBildirimService/BaseRequestMessageOf_BildirimSorguIstek`
         },
         body: soapRequest
       });
@@ -311,7 +311,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://www.gtb.gov.tr//WebServices/IBildirimService/BaseRequestMessageOf_BildirimSorguIstek`
+          'SOAPAction': `http://hks.hal.gov.tr/WebServices/IBildirimService/BaseRequestMessageOf_BildirimSorguIstek`
         },
         body: soapRequest
       });
