@@ -9,16 +9,14 @@ const HKS_CONFIG = {
   genelServiceUrl: 'https://hks.hal.gov.tr/WebServices/GenelService.svc',
   username: process.env.HKS_USERNAME || 'test_user',
   password: process.env.HKS_PASSWORD || 'test_pass',
-  webservice: process.env.HKS_WEBSERVICE || '',
-  servicePassword: process.env.HKS_WEBSERVICE || '!1QAZWSX' // HKS_WEBSERVICE değerini ServicePassword olarak kullan
+  servicePassword: process.env.HKS_SERVICE_PASSWORD || '!1QAZWSX'
 };
 
 // Debug: Environment variables kontrolü
 console.log('HKS Config:', {
   username: HKS_CONFIG.username ? 'SET' : 'NOT SET',
   password: HKS_CONFIG.password ? 'SET' : 'NOT SET',
-  webservice: HKS_CONFIG.webservice ? 'SET' : 'NOT SET',
-  servicePassword: HKS_CONFIG.servicePassword
+  servicePassword: HKS_CONFIG.servicePassword ? 'SET' : 'NOT SET'
 });
 
 export interface HksKunye {

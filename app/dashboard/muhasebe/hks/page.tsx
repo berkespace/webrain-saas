@@ -52,17 +52,24 @@ export default function HKSPage() {
   const loadKunyeler = async () => {
     setLoading(true)
     try {
-      const params = new URLSearchParams()
-      params.set('action', 'kunye-listesi')
-      if (searchTerm) params.set('search', searchTerm)
-      
-      const response = await fetch(`/api/hks?${params.toString()}`, { cache: 'no-store' })
+      const response = await fetch('/api/hks/bildirim/sorgu', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          BaslangicTarihi: '2025-08-12',
+          BitisTarihi: '2025-09-11',
+          KunyeNo: searchTerm ? parseInt(searchTerm) : 0,
+          KalanMiktariSifirdanBuyukOlanlar: true
+        })
+      })
       const data = await response.json()
       
-      if (data.success) {
-        setKunyeler(data.data.kunyeler || [])
+      if (data.ok) {
+        setKunyeler(data.items || [])
       } else {
-        console.error('Künye listesi yüklenemedi:', data.error)
+        console.error('Künye listesi yüklenemedi:', data.error || data.hata)
       }
     } catch (error) {
       console.error('Künye listesi yükleme hatası:', error)
@@ -73,10 +80,15 @@ export default function HKSPage() {
   const testConnection = async () => {
     setConnectionStatus('checking')
     try {
-      const response = await fetch('/api/hks?action=test-connection', { cache: 'no-store' })
-      const data = await response.json()
+      // İller API'sini test et
+      const illerResponse = await fetch('/api/hks/genel/iller', { cache: 'no-store' })
+      const illerData = await illerResponse.json()
       
-      if (data.success) {
+      // Bildirim türleri API'sini test et
+      const turlerResponse = await fetch('/api/hks/bildirim/turler', { cache: 'no-store' })
+      const turlerData = await turlerResponse.json()
+      
+      if (illerData.ok && turlerData.ok) {
         setConnectionStatus('connected')
       } else {
         setConnectionStatus('disconnected')
