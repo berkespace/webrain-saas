@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Search, Eye, RefreshCw, Wifi, WifiOff, Calendar, User, MapPin } from 'lucide-react'
+import { Search, Eye, RefreshCw, Wifi, WifiOff, Calendar, User, MapPin, AlertCircle } from 'lucide-react'
+import { toast } from 'sonner'
 
 interface Kunye {
   id: string
@@ -41,6 +42,17 @@ interface KunyeDetay {
   }>
 }
 
+// Safe fetch helper with better error handling
+async function safeFetch(input: RequestInfo, init?: RequestInit) {
+  const res = await fetch(input, init);
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok || j?.ok === false) {
+    const msg = j?.hata || j?.mesaj || j?.error || j?.raw || `HTTP ${res.status}`;
+    throw new Error(typeof msg === 'string' ? msg : JSON.stringify(msg));
+  }
+  return j;
+}
+
 export default function HKSPage() {
   const [kunyeler, setKunyeler] = useState<Kunye[]>([])
   const [loading, setLoading] = useState(true)
@@ -48,11 +60,13 @@ export default function HKSPage() {
   const [selectedKunye, setSelectedKunye] = useState<KunyeDetay | null>(null)
   const [detailModalOpen, setDetailModalOpen] = useState(false)
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking')
+  const [error, setError] = useState<string | null>(null)
 
   const loadKunyeler = async () => {
     setLoading(true)
+    setError(null)
     try {
-      const response = await fetch('/api/hks/bildirim/sorgu', {
+      const data = await safeFetch('/api/hks/bildirim/sorgu', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,38 +78,35 @@ export default function HKSPage() {
           KalanMiktariSifirdanBuyukOlanlar: true
         })
       })
-      const data = await response.json()
       
-      if (data.ok) {
-        setKunyeler(data.items || [])
-      } else {
-        console.error('Künye listesi yüklenemedi:', data.error || data.hata)
-      }
-    } catch (error) {
-      console.error('Künye listesi yükleme hatası:', error)
+      setKunyeler(data.items || [])
+    } catch (error: any) {
+      console.error('HKS ERROR:', error?.message);
+      setError(error?.message || 'Künye listesi yüklenemedi');
+      toast.error(error?.message || 'Künye listesi yüklenemedi');
     }
     setLoading(false)
   }
 
   const testConnection = async () => {
     setConnectionStatus('checking')
+    setError(null)
     try {
-      // İller API'sini test et
-      const illerResponse = await fetch('/api/hks/genel/iller', { cache: 'no-store' })
-      const illerData = await illerResponse.json()
+      // Self-check API'sini test et
+      const selfCheckData = await safeFetch('/api/hks/_selfcheck', { cache: 'no-store' })
       
-      // Bildirim türleri API'sini test et
-      const turlerResponse = await fetch('/api/hks/bildirim/turler', { cache: 'no-store' })
-      const turlerData = await turlerResponse.json()
-      
-      if (illerData.ok && turlerData.ok) {
+      if (selfCheckData.ok && selfCheckData.checks.every((c: any) => c.ok)) {
         setConnectionStatus('connected')
+        toast.success('HKS bağlantısı başarılı!')
       } else {
         setConnectionStatus('disconnected')
+        toast.error('HKS servislerine erişilemiyor')
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Bağlantı testi hatası:', error)
       setConnectionStatus('disconnected')
+      setError(error?.message || 'Bağlantı testi başarısız')
+      toast.error(error?.message || 'Bağlantı testi başarısız')
     }
   }
 
@@ -171,6 +182,19 @@ export default function HKSPage() {
           </Button>
         </div>
       </div>
+
+      {/* Hata Gösterimi */}
+      {error && (
+        <Card className="border-red-200 bg-red-50">
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-2 text-red-700">
+              <AlertCircle className="h-4 w-4" />
+              <span className="font-medium">Hata:</span>
+              <span className="text-sm">{error}</span>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Bağlantı Durumu Kartı */}
       <Card>
