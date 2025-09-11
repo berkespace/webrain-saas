@@ -15,7 +15,7 @@ function toXml(obj: any): string {
   return Object.keys(obj).map(k => `<tns:${k}>${toXml(obj[k])}</tns:${k}>`).join('');
 }
 
-export function buildSoapEnvelope(method: string, payload: Record<string, any> = {}) {
+export async function buildSoapEnvelope(method: string, payload: Record<string, any> = {}) {
   const body = Object.keys(payload).map(k => `<tns:${k}>${toXml(payload[k])}</tns:${k}>`).join('');
   return `<?xml version="1.0" encoding="utf-8"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="${HKS.ns}">
@@ -30,11 +30,11 @@ export function buildSoapEnvelope(method: string, payload: Record<string, any> =
 </soap:Envelope>`;
 }
 
-export function soapAction(iface: 'IGenelService'|'IBildirimService', method: string) {
+export async function soapAction(iface: 'IGenelService'|'IBildirimService', method: string) {
   return `${HKS.ns}/${iface}/${method}`;
 }
 
-export function pickSoapResponse(parsed: any, method: string) {
+export async function pickSoapResponse(parsed: any, method: string) {
   const env = parsed?.['soap:Envelope'] ?? parsed?.Envelope;
   const body = env?.['soap:Body'] ?? env?.Body;
   if (!body) return null;

@@ -12,13 +12,13 @@ export async function GET() {
     }
 
     const method = 'GenelServisIller';
-    const envelope = buildSoapEnvelope(method, { Istek: {} });
+    const envelope = await buildSoapEnvelope(method, { Istek: {} });
 
     const res = await fetch(HKS.genelUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/xml; charset=utf-8',
-        'SOAPAction': soapAction('IGenelService', method),
+        'SOAPAction': await soapAction('IGenelService', method),
       },
       body: envelope,
     });
@@ -28,7 +28,7 @@ export async function GET() {
 
     const parser = new XMLParser({ ignoreAttributes:false, attributeNamePrefix:'@_', textNodeName:'#text' });
     const parsed = parser.parse(raw);
-    const resp = pickSoapResponse(parsed, method);
+    const resp = await pickSoapResponse(parsed, method);
     const result = resp?.[`${method}Result`];
 
     if (String(result?.IslemKodu) !== '1') {
