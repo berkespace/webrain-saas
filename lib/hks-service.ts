@@ -158,7 +158,9 @@ export class HksService {
         HKS_CONFIG.bildirimServiceUrl,
         'BaseRequestMessageOf_BildirimTurleriIstek',
         {
-          Istek: 'BildirimTurleriIstek'
+          Istek: {
+            BildirimTurleriIstek: 'BildirimTurleriIstek'
+          }
         }
       );
 
@@ -197,7 +199,9 @@ export class HksService {
         HKS_CONFIG.genelServiceUrl,
         'BaseRequestMessageOf_IllerIstek',
         {
-          Istek: 'IllerIstek'
+          Istek: {
+            IllerIstek: 'IllerIstek'
+          }
         }
       );
 
