@@ -70,6 +70,7 @@ function buildSoapRequest(serviceUrl: string, method: string, parameters: any): 
     <tns:${method}>
       <tns:UserName>${HKS_CONFIG.username}</tns:UserName>
       <tns:Password>${HKS_CONFIG.password}</tns:Password>
+      <tns:WebService>${HKS_CONFIG.webservice}</tns:WebService>
       <tns:ServicePassword>${HKS_CONFIG.servicePassword}</tns:ServicePassword>
       ${soapBody}
     </tns:${method}>
