@@ -175,11 +175,12 @@ export class HksService {
     try {
       const soapRequest = buildSoapRequest(
         HKS_CONFIG.bildirimServiceUrl,
-        'BaseRequestMessageOf_BildirimTurleriIstek',
+        'BildirimTurleriListesi',
         {
-          Istek: {
-            BildirimTurleriIstek: 'BildirimTurleriIstek'
-          }
+          UserName: HKS_CONFIG.username,
+          Password: HKS_CONFIG.password,
+          ServicePassword: HKS_CONFIG.servicePassword,
+          Istek: {}
         }
       );
 
@@ -189,7 +190,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://hks.hal.gov.tr/WebServices/IBildirimService/BaseRequestMessageOf_BildirimTurleriIstek`
+          'SOAPAction': `http://hks.hal.gov.tr/WebServices/IBildirimService/BildirimTurleriListesi`
         },
         body: soapRequest
       });
@@ -204,10 +205,10 @@ export class HksService {
       }
 
       const xmlResponse = await response.text();
-      const parsedResponse = parseSoapResponse(xmlResponse, 'BaseRequestMessageOf_BildirimTurleriIstek');
+      const parsedResponse = parseSoapResponse(xmlResponse, 'BildirimTurleriListesi');
       
-      if (parsedResponse?.BaseRequestMessageOf_BildirimTurleriIstekResult) {
-        const result = parsedResponse.BaseRequestMessageOf_BildirimTurleriIstekResult;
+      if (parsedResponse?.BildirimTurleriListesiResult) {
+        const result = parsedResponse.BildirimTurleriListesiResult;
         return result.IslemKodu === '1';
       }
       
@@ -223,11 +224,12 @@ export class HksService {
     try {
       const soapRequest = buildSoapRequest(
         HKS_CONFIG.genelServiceUrl,
-        'BaseRequestMessageOf_IllerIstek',
+        'GenelServisIller',
         {
-          Istek: {
-            IllerIstek: 'IllerIstek'
-          }
+          UserName: HKS_CONFIG.username,
+          Password: HKS_CONFIG.password,
+          ServicePassword: HKS_CONFIG.servicePassword,
+          Istek: {}
         }
       );
 
@@ -235,7 +237,7 @@ export class HksService {
         method: 'POST',
         headers: {
           'Content-Type': 'text/xml; charset=utf-8',
-          'SOAPAction': `http://hks.hal.gov.tr/WebServices/IGenelService/BaseRequestMessageOf_IllerIstek`
+          'SOAPAction': `http://hks.hal.gov.tr/WebServices/IGenelService/GenelServisIller`
         },
         body: soapRequest
       });
@@ -245,10 +247,10 @@ export class HksService {
       }
 
       const xmlResponse = await response.text();
-      const parsedResponse = parseSoapResponse(xmlResponse, 'BaseRequestMessageOf_IllerIstek');
+      const parsedResponse = parseSoapResponse(xmlResponse, 'GenelServisIller');
       
-      if (parsedResponse?.BaseRequestMessageOf_IllerIstekResult) {
-        const result = parsedResponse.BaseRequestMessageOf_IllerIstekResult;
+      if (parsedResponse?.GenelServisIllerResult) {
+        const result = parsedResponse.GenelServisIllerResult;
         return result.IslemKodu === '1';
       }
       

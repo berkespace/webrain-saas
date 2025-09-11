@@ -211,11 +211,11 @@ export default function MalKabulDuzenle() {
           variant: "destructive",
         })
       } else {
-        toast({
-          title: "Erişim Reddedildi",
-          description: "Bu sayfaya erişim yetkiniz bulunmamaktadır",
-          variant: "destructive",
-        })
+      toast({
+        title: "Erişim Reddedildi",
+        description: "Bu sayfaya erişim yetkiniz bulunmamaktadır",
+        variant: "destructive",
+      })
       }
       router.push('/dashboard')
     }
@@ -441,7 +441,7 @@ export default function MalKabulDuzenle() {
         setShowFinalReceipt(true)
       } else {
         // Mal Kabulcu her durumda mal kabul sayfasına yönlendirilir
-        router.push('/dashboard/mal-kabul')
+          router.push('/dashboard/mal-kabul')
       }
     } catch (error) {
       console.error('Güncelleme hatası:', error)
@@ -599,9 +599,9 @@ export default function MalKabulDuzenle() {
                   font-size: 13px;
                   font-weight: bold;
                   margin-top: 15px;
-                  padding: 8px;
-                  background: #000;
-                  color: #fff;
+                  padding: 8px; 
+                  background: #000; 
+                  color: #fff; 
                   border-radius: 4px;
                   border: 2px solid #000;
                 }
@@ -1456,18 +1456,18 @@ export default function MalKabulDuzenle() {
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="girisKg">Giriş KG</Label>
-                      <Input
-                        id="girisKg"
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        value={formData.girisKg}
-                        onChange={(e) => handleInputChange('girisKg', e.target.value)}
-                        readOnly
-                      />
-                    </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="girisKg">Giriş KG</Label>
+                        <Input
+                          id="girisKg"
+                          type="number"
+                          step="0.01"
+                          min="0"
+                          value={formData.girisKg}
+                          onChange={(e) => handleInputChange('girisKg', e.target.value)}
+                          readOnly
+                        />
+                      </div>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
@@ -1560,9 +1560,9 @@ export default function MalKabulDuzenle() {
                     </p>
                   )}
                   {formData.status === 'NETLENDI' && (
-                    <p className="text-xs text-green-600 bg-green-50 p-2 rounded">
-                      ✓ Bu ürün netlendi. Son fiş yazdırılacak ve işlem tamamlanacak.
-                    </p>
+                  <p className="text-xs text-green-600 bg-green-50 p-2 rounded">
+                    ✓ Bu ürün netlendi. Son fiş yazdırılacak ve işlem tamamlanacak.
+                  </p>
                   )}
                   {formData.status === 'IADE' && (
                     <p className="text-xs text-red-600 bg-red-50 p-2 rounded">
@@ -1662,36 +1662,36 @@ export default function MalKabulDuzenle() {
             <div className="mb-4 bg-muted/50 p-4 rounded-lg border border-border">
               <h4 className="font-bold text-center mb-3 text-foreground">Son Fiş Önizleme</h4>
               <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
+                  <div className="flex justify-between">
                   <span className="font-medium text-foreground"><strong>Fiş No:</strong></span>
                   <span className="text-foreground">{record.fisNo}</span>
-                </div>
-                <div className="flex justify-between">
+                  </div>
+                  <div className="flex justify-between">
                   <span className="font-medium text-foreground"><strong>Tarih:</strong></span>
                   <span className="text-foreground">{new Date(record.tarih).toLocaleDateString('tr-TR')}</span>
-                </div>
-                <div className="flex justify-between">
+                  </div>
+                  <div className="flex justify-between">
                   <span className="font-medium text-foreground"><strong>Satıcı:</strong></span>
                   <span className="text-foreground">
-                    {record.saticiTipi === 'MUSTAHSIL' && record.mustahsil 
-                      ? `${record.mustahsil.ad} ${record.mustahsil.soyad}`
-                      : record.saticiTipi === 'KOMISYONCU' && record.komisyoncu && record.uretici
-                      ? `${record.komisyoncu.dukkanAdi} - ${record.uretici.ad} ${record.uretici.soyad}`
-                      : record.saticiTipi === 'OZEL_FIRMA' && record.ozelFirma
-                      ? record.ozelFirma.firmaAdi
-                      : 'Bilinmeyen'
-                    }
-                  </span>
-                </div>
-                <div className="flex justify-between">
+                      {record.saticiTipi === 'MUSTAHSIL' && record.mustahsil 
+                        ? `${record.mustahsil.ad} ${record.mustahsil.soyad}`
+                        : record.saticiTipi === 'KOMISYONCU' && record.komisyoncu && record.uretici
+                        ? `${record.komisyoncu.dukkanAdi} - ${record.uretici.ad} ${record.uretici.soyad}`
+                        : record.saticiTipi === 'OZEL_FIRMA' && record.ozelFirma
+                        ? record.ozelFirma.firmaAdi
+                        : 'Bilinmeyen'
+                      }
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
                   <span className="font-medium text-foreground"><strong>Ürün:</strong></span>
                   <span className="text-foreground">{record.urunler.ad}</span>
-                </div>
+                  </div>
                 
                 {isAdetBased ? (
                   // ADET birimi için adet bilgileri
                   <>
-                    <div className="flex justify-between">
+                  <div className="flex justify-between">
                       <span className="font-medium text-foreground"><strong>Adet Sayısı:</strong></span>
                       <span className="text-foreground">{formData.adetSayisi} adet</span>
                     </div>
@@ -1737,13 +1737,13 @@ export default function MalKabulDuzenle() {
                     </div>
                   </>
                 )}
-              </div>
-              
+                  </div>
+                  
               {/* QR Kod ve Barkod Önizleme */}
               <div className="mt-4 pt-4 border-t border-border">
                 <h5 className="font-bold text-center mb-3 text-foreground">QR Kod ve Barkod</h5>
                 <div className="flex flex-col items-center gap-3">
-                  <div className="text-center">
+                        <div className="text-center">
                     <div className="text-xs text-muted-foreground mb-2">QR Kod</div>
                     {qrDataUrl ? (
                       <img src={qrDataUrl} alt="QR Kod" className="w-16 h-16 mx-auto border border-border rounded" />
@@ -1752,18 +1752,18 @@ export default function MalKabulDuzenle() {
                         QR Kod
                       </div>
                     )}
-                  </div>
-                  <div className="text-center">
+                        </div>
+                        <div className="text-center">
                     <div className="text-xs text-muted-foreground mb-2">Barkod</div>
                     {barcodeDataUrl ? (
                       <img src={barcodeDataUrl} alt="Barkod" className="w-24 h-12 mx-auto border border-border rounded" />
                     ) : (
                       <div className="w-24 h-12 mx-auto border border-border rounded bg-muted flex items-center justify-center text-xs text-muted-foreground">
                         Barkod
-                      </div>
+                        </div>
                     )}
-                  </div>
-                </div>
+                      </div>
+                    </div>
                 <div className="text-center text-xs text-muted-foreground mt-3">
                   Bu fiş ürünün son evrakıdır
                 </div>
@@ -1772,7 +1772,7 @@ export default function MalKabulDuzenle() {
 
             {/* Yazdırma Butonu */}
             <div className="flex justify-center gap-4">
-              <Button onClick={async () => {
+                          <Button onClick={async () => {
               try {
                 // Son fiş yazdırma işlemi
                 const finalReceiptData = {
@@ -1880,7 +1880,7 @@ export default function MalKabulDuzenle() {
                           background: #fff;
                         }
                         .header { 
-                          text-align: center;
+                          text-align: center; 
                           font-weight: bold; 
                           font-size: 16px; 
                           margin-bottom: 6px; 
@@ -2036,12 +2036,12 @@ export default function MalKabulDuzenle() {
                       <div class="section">
                           <div class="section-title">FİŞ BİLGİLERİ</div>
                         <div class="row">
-                            <span class="label">Fiş No:</span>
-                            <span class="value">${finalReceiptData.fisNo}</span>
+                          <span class="label">Fiş No:</span>
+                          <span class="value">${finalReceiptData.fisNo}</span>
                         </div>
                         <div class="row">
-                            <span class="label">Tarih:</span>
-                            <span class="value">${new Date(finalReceiptData.tarih).toLocaleDateString('tr-TR')}</span>
+                          <span class="label">Tarih:</span>
+                          <span class="value">${new Date(finalReceiptData.tarih).toLocaleDateString('tr-TR')}</span>
                         </div>
                         <div class="row">
                             <span class="label">Mal Kabulcu:</span>
@@ -2168,8 +2168,8 @@ export default function MalKabulDuzenle() {
                         <div class="row">
                           <span class="label">Palet:</span>
                           <span class="value">${finalReceiptData.paletAdi} (${finalReceiptData.paletSayisi})</span>
-                        </div>
-                        ` : ''}
+                      </div>
+                      ` : ''}
                       </div>
                       
                       <div class="section">
@@ -2199,12 +2199,12 @@ export default function MalKabulDuzenle() {
                       
                       <div class="copy-info">
                         Bu fiş son durum için yazdırılmıştır
-                      </div>
+                          </div>
                       
                       <div style="text-align: center; margin: 15px 0; padding: 10px; background: #ffeb3b; border: 2px solid #f57f17; border-radius: 5px;">
                         <div class="section-title" style="font-size: 14px; font-weight: bold; color: black; line-height: 1.4;">
                           ⚠️ ÖNEMLİ UYARI ⚠️
-                        </div>
+                          </div>
                         <div class="section-title" style="font-size: 13px; font-weight: bold; color: #5d1f0a; margin-top: 5px;">
                           Bu fişi tekrar geldiğinizde getirmeniz kolaylık sağlayacaktır!
                         </div>
@@ -2214,11 +2214,11 @@ export default function MalKabulDuzenle() {
                       
                       <div class="qr-code">
                         <img src="${qrDataUrl}" alt="QR Code" style="width: 80px; height: 80px; display: block; margin: 10px auto;" />
-                      </div>
+                        </div>
                       
                       <div class="barcode">
                         <img src="${barcodeDataUrl}" alt="Barcode" style="width: 100%; height: 50px; display: block; margin: 10px auto;" />
-                      </div>
+                        </div>
                       
                       <div class="thank-you">
                         Bizi tercih ettiğiniz için teşekkür ederiz!

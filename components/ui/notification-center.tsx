@@ -249,27 +249,27 @@ export function NotificationCenter() {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="icon" className="relative">
-          <Bell className="h-4 w-4" />
-          {unreadCount > 0 && (
+        <Bell className="h-4 w-4" />
+        {unreadCount > 0 && (
             <Badge 
               variant="destructive" 
               className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
             >
-              {unreadCount > 9 ? '9+' : unreadCount}
+            {unreadCount > 9 ? '9+' : unreadCount}
             </Badge>
-          )}
-        </Button>
+        )}
+      </Button>
       </DialogTrigger>
-      
+
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Bell className="h-5 w-5" />
-            Bildirimler
-            {unreadCount > 0 && (
+          <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Bell className="h-5 w-5" />
+                Bildirimler
+                {unreadCount > 0 && (
               <Badge variant="secondary">{unreadCount} okunmamış</Badge>
-            )}
-          </DialogTitle>
+                )}
+              </DialogTitle>
           <DialogDescription>
             Sistem bildirimleri ve iş akışı uyarıları
           </DialogDescription>
@@ -289,8 +289,8 @@ export function NotificationCenter() {
           </div>
           
           <div className="flex gap-2">
-            {unreadCount > 0 && (
-              <Button
+              {unreadCount > 0 && (
+                <Button
                 variant="outline"
                 size="sm"
                 onClick={markAllAsRead}
@@ -304,27 +304,27 @@ export function NotificationCenter() {
             {isPushSupported && (
               <Button
                 variant="outline"
-                size="sm"
+                  size="sm"
                 onClick={isPushEnabled ? disablePushNotifications : enablePushNotifications}
-              >
+                >
                 <Smartphone className="h-4 w-4 mr-1" />
                 Push {isPushEnabled ? 'Kapat' : 'Aç'}
-              </Button>
-            )}
-          </div>
+                </Button>
+              )}
+            </div>
         </div>
-
+          
         {/* Bildirim Listesi */}
         <div className="flex-1 overflow-y-auto space-y-3">
-          {notifications.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
+            {notifications.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
               <Bell className="h-12 w-12 mx-auto mb-4 opacity-30" />
               <p>Henüz bildirim yok</p>
-            </div>
-          ) : (
-            notifications.map((notification) => (
-              <Card 
-                key={notification.id} 
+              </div>
+            ) : (
+              notifications.map((notification) => (
+                <Card 
+                  key={notification.id} 
                 className={`${getNotificationColor(notification.priority)} ${
                   !notification.isRead ? 'border-l-4 border-l-blue-500' : ''
                 }`}
@@ -340,7 +340,7 @@ export function NotificationCenter() {
                       {!notification.isRead && (
                         <Badge variant="secondary" className="text-xs">Yeni</Badge>
                       )}
-                    </div>
+                          </div>
                     
                     <div className="flex items-center gap-1">
                       {notification.actionUrl && (
@@ -391,7 +391,7 @@ export function NotificationCenter() {
                       <Badge variant="outline" className="text-xs">
                         {notification.priority}
                       </Badge>
-                    </div>
+                      </div>
                     
                     <div className="flex items-center gap-2">
                       {notification.isEmailSent && (
@@ -402,12 +402,12 @@ export function NotificationCenter() {
                       )}
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            ))
-          )}
-        </div>
-      </DialogContent>
-    </Dialog>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
   )
 }
