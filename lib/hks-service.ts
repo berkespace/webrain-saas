@@ -7,8 +7,8 @@ import { XMLParser } from 'fast-xml-parser';
 const HKS_CONFIG = {
   bildirimServiceUrl: 'https://hks.hal.gov.tr/WebServices/BildirimService.svc',
   genelServiceUrl: 'https://hks.hal.gov.tr/WebServices/GenelService.svc',
-  username: process.env.HKS_USERNAME || '',
-  password: process.env.HKS_PASSWORD || '',
+  username: process.env.HKS_USERNAME || 'test_user',
+  password: process.env.HKS_PASSWORD || 'test_pass',
   webservice: process.env.HKS_WEBSERVICE || '',
   servicePassword: process.env.HKS_WEBSERVICE || '!1QAZWSX' // HKS_WEBSERVICE değerini ServicePassword olarak kullan
 };
@@ -210,6 +210,7 @@ export class HksService {
       if (!response.ok) {
         const errorText = await response.text();
         console.error('BildirimService HTTP hatası:', response.status, errorText);
+        console.error('BildirimService request body:', soapRequest.substring(0, 500));
         return false;
       }
 
