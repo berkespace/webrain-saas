@@ -63,7 +63,11 @@ function buildSoapRequest(serviceUrl: string, method: string, parameters: any): 
   // Objeleri XML'e çeviren recursive fonksiyon
   function objectToXml(obj: any, key: string = ''): string {
     if (typeof obj === 'object' && obj !== null) {
-      return Object.keys(obj)
+      const keys = Object.keys(obj);
+      if (keys.length === 0) {
+        return ''; // Boş obje için boş string döndür
+      }
+      return keys
         .map(k => `<${k}>${objectToXml(obj[k], k)}</${k}>`)
         .join('');
     }
