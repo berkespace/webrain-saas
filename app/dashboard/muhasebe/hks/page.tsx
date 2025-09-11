@@ -296,7 +296,7 @@ export default function HKSPage() {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-500">Durum</label>
-                    <p>{getStatusBadge(selectedKunye.durum)}</p>
+                    <div>{getStatusBadge(selectedKunye.durum)}</div>
                   </div>
                 </div>
               </div>
