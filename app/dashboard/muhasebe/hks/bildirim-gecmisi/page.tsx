@@ -101,11 +101,16 @@ export default function HKSBildirimGecmisiPage() {
         if (kunyeData.items && kunyeData.items.length > 0) {
           const uniqueSifatlar = new Map()
           kunyeData.items.forEach((item: any) => {
-            if (item.sifati && item.sifatAdi) {
+            if (item.sifati) {
+              // Sıfat ID'sine göre doğru adı belirle
+              let sifatAdi = `Sıfat ${item.sifati}`
+              if (item.sifati === '2') sifatAdi = 'İhracat'
+              else if (item.sifati === '6') sifatAdi = 'Tüccar (Hal İçi)'
+              
               uniqueSifatlar.set(item.sifati, {
                 id: item.sifati,
-                ad: item.sifatAdi,
-                aciklama: `${item.sifatAdi} sıfatı`
+                ad: sifatAdi,
+                aciklama: `${sifatAdi} sıfatı`
               })
             }
           })

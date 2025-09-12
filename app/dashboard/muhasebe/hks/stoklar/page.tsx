@@ -101,10 +101,15 @@ export default function HKSStoklarPage() {
           kunyeData.items.forEach((item: any) => {
             const sifati = item.sifati
             if (sifati && !uniqueSifatlar.has(parseInt(sifati))) {
+              // Sıfat ID'sine göre doğru adı belirle
+              let sifatAdi = `Sıfat ${sifati}`
+              if (sifati === '2') sifatAdi = 'İhracat'
+              else if (sifati === '6') sifatAdi = 'Tüccar (Hal İçi)'
+              
               uniqueSifatlar.set(parseInt(sifati), {
                 id: parseInt(sifati),
-                ad: item.sifatAdi || `Sıfat ${sifati}`,
-                aciklama: `Sıfat ${sifati} açıklaması`
+                ad: sifatAdi,
+                aciklama: `${sifatAdi} açıklaması`
               })
             }
           })
