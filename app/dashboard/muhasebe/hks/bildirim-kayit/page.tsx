@@ -291,6 +291,7 @@ export default function HKSBildirimKayitPage() {
   }
 
   const yukleBildirimciBilgileri = async () => {
+    console.log('Bildirimci bilgileri yükleniyor...')
     setBildirimciSorguLoading(true)
     
     try {
@@ -301,37 +302,58 @@ export default function HKSBildirimKayitPage() {
         body: JSON.stringify({ tcKimlikVergiNolar: ['4640538224'] })
       })
       
+      console.log('Kayıtlı kişi sorgu sonucu:', data)
+      
       if (data.ok && data.items && data.items.length > 0) {
         const sonuc = data.items[0]
+        console.log('Sorgu sonucu:', sonuc)
         
         if (sonuc.kayitliKisiMi) {
           // Bildirimci bilgilerini otomatik doldur
-          setFormData(prev => ({
-            ...prev,
+          const yeniFormData = {
             bildirimciTcKimlikVergiNo: '4640538224',
             bildirimciAdSoyadUnvan: 'HÜNERLER GIDA PAZARLAMA LİMİTED ŞİRKETİ ANTALYA KEPEZ ŞUBESİ',
             bildirimciSifat: sonuc.sifatlari && sonuc.sifatlari.length > 0 ? sonuc.sifatlari[0].toString() : '6' // Varsayılan Tüccar Hal İçi
+          }
+          
+          console.log('Form data güncelleniyor:', yeniFormData)
+          
+          setFormData(prev => ({
+            ...prev,
+            ...yeniFormData
           }))
           
           toast.success('Bildirimci bilgileri otomatik yüklendi!')
         } else {
           // Kayıtlı değilse manuel bilgileri doldur
-          setFormData(prev => ({
-            ...prev,
+          const yeniFormData = {
             bildirimciTcKimlikVergiNo: '4640538224',
             bildirimciAdSoyadUnvan: 'HÜNERLER GIDA PAZARLAMA LİMİTED ŞİRKETİ ANTALYA KEPEZ ŞUBESİ',
             bildirimciSifat: '6' // Tüccar Hal İçi
+          }
+          
+          console.log('Form data güncelleniyor (manuel):', yeniFormData)
+          
+          setFormData(prev => ({
+            ...prev,
+            ...yeniFormData
           }))
           
           toast.warning('Bildirimci kayıtlı değil, manuel bilgiler yüklendi.')
         }
       } else {
         // API çalışmıyorsa manuel bilgileri doldur
-        setFormData(prev => ({
-          ...prev,
+        const yeniFormData = {
           bildirimciTcKimlikVergiNo: '4640538224',
           bildirimciAdSoyadUnvan: 'HÜNERLER GIDA PAZARLAMA LİMİTED ŞİRKETİ ANTALYA KEPEZ ŞUBESİ',
           bildirimciSifat: '6' // Tüccar Hal İçi
+        }
+        
+        console.log('Form data güncelleniyor (API hatası):', yeniFormData)
+        
+        setFormData(prev => ({
+          ...prev,
+          ...yeniFormData
         }))
         
         toast.info('Bildirimci bilgileri manuel olarak yüklendi.')
@@ -340,11 +362,17 @@ export default function HKSBildirimKayitPage() {
       console.error('Bildirimci bilgileri yükleme hatası:', error?.message);
       
       // Hata durumunda da manuel bilgileri doldur
-      setFormData(prev => ({
-        ...prev,
+      const yeniFormData = {
         bildirimciTcKimlikVergiNo: '4640538224',
         bildirimciAdSoyadUnvan: 'HÜNERLER GIDA PAZARLAMA LİMİTED ŞİRKETİ ANTALYA KEPEZ ŞUBESİ',
         bildirimciSifat: '6' // Tüccar Hal İçi
+      }
+      
+      console.log('Form data güncelleniyor (hata):', yeniFormData)
+      
+      setFormData(prev => ({
+        ...prev,
+        ...yeniFormData
       }))
       
       toast.info('Bildirimci bilgileri manuel olarak yüklendi.')
@@ -360,6 +388,11 @@ export default function HKSBildirimKayitPage() {
     loadUrunler()
     yukleBildirimciBilgileri()
   }, [])
+
+  // Debug: Form data değişikliklerini logla
+  useEffect(() => {
+    console.log('Form data güncellendi:', formData)
+  }, [formData])
 
   useEffect(() => {
     if (formData.ilId) {
