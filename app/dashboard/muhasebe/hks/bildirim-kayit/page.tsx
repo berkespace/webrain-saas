@@ -86,6 +86,8 @@ export default function HKSBildirimKayitPage() {
   const [ilceler, setIlceler] = useState<Ilce[]>([]);
   const [urunler, setUrunler] = useState<Urun[]>([]);
   const [urunCinsleri, setUrunCinsleri] = useState<UrunCinsi[]>([]);
+  const [kisiSorguLoading, setKisiSorguLoading] = useState(false);
+  const [kisiSorguSonucu, setKisiSorguSonucu] = useState<any>(null);
   
   const [formData, setFormData] = useState<BildirimFormData>({
     bildirimciTcKimlikVergiNo: '',
@@ -216,6 +218,39 @@ export default function HKSBildirimKayitPage() {
     }
   }
 
+  const sorgulaKayitliKisi = async (tcKimlikVergiNo: string) => {
+    if (!tcKimlikVergiNo) return;
+    
+    setKisiSorguLoading(true)
+    setKisiSorguSonucu(null)
+    
+    try {
+      const data = await safeFetch('/api/hks/bildirim/kayitli-kisi-sorgu', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tcKimlikVergiNolar: [tcKimlikVergiNo] })
+      })
+      
+      if (data.ok && data.items && data.items.length > 0) {
+        const sonuc = data.items[0]
+        setKisiSorguSonucu(sonuc)
+        
+        if (sonuc.kayitliKisiMi) {
+          toast.success('Kişi kayıtlı! Sıfatlar: ' + (sonuc.sifatlari || []).join(', '))
+        } else {
+          toast.warning('Kişi kayıtlı değil. Bilgileri manuel olarak giriniz.')
+        }
+      } else {
+        toast.error('Kişi sorgulanamadı')
+      }
+    } catch (error: any) {
+      console.error('Kayıtlı kişi sorgu hatası:', error?.message);
+      toast.error('Kişi sorgulanamadı: ' + error?.message)
+    } finally {
+      setKisiSorguLoading(false)
+    }
+  }
+
   useEffect(() => {
     loadSifatlar()
     loadUlkeler()
@@ -335,11 +370,27 @@ export default function HKSBildirimKayitPage() {
       {/* Kimden veya Kime Bilgileri */}
       <div>
         <h3 className="text-lg font-semibold mb-4 text-orange-600">Kimden veya Kime Bilgileri</h3>
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-          <p className="text-yellow-800 text-sm">
-            <strong>Uyarı:</strong> Sorguladığınız kişi kayıtlı değil. Lütfen kişinin bilgilerini giriniz.
-          </p>
-        </div>
+        {kisiSorguSonucu && (
+          <div className={`rounded-lg p-4 mb-4 ${
+            kisiSorguSonucu.kayitliKisiMi 
+              ? 'bg-green-50 border border-green-200' 
+              : 'bg-yellow-50 border border-yellow-200'
+          }`}>
+            <p className={`text-sm ${
+              kisiSorguSonucu.kayitliKisiMi 
+                ? 'text-green-800' 
+                : 'text-yellow-800'
+            }`}>
+              <strong>
+                {kisiSorguSonucu.kayitliKisiMi ? 'Bilgi:' : 'Uyarı:'}
+              </strong> 
+              {kisiSorguSonucu.kayitliKisiMi 
+                ? ` Kişi kayıtlı! Sıfatlar: ${(kisiSorguSonucu.sifatlari || []).join(', ')}`
+                : ' Sorguladığınız kişi kayıtlı değil. Lütfen kişinin bilgilerini giriniz.'
+              }
+            </p>
+          </div>
+        )}
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -364,12 +415,25 @@ export default function HKSBildirimKayitPage() {
           
           <div>
             <Label htmlFor="kisiDogumTarihi">Doğum Tarihi *</Label>
-            <Input
-              id="kisiDogumTarihi"
-              type="date"
-              value={formData.kisiDogumTarihi}
-              onChange={(e) => handleInputChange('kisiDogumTarihi', e.target.value)}
-            />
+            <div className="flex gap-2">
+              <Input
+                id="kisiDogumTarihi"
+                type="date"
+                value={formData.kisiDogumTarihi}
+                onChange={(e) => handleInputChange('kisiDogumTarihi', e.target.value)}
+                className="flex-1"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => sorgulaKayitliKisi(formData.kisiTcKimlikVergiNo)}
+                disabled={!formData.kisiTcKimlikVergiNo || kisiSorguLoading}
+                className="px-3"
+              >
+                {kisiSorguLoading ? 'Sorgulanıyor...' : 'Sorgula'}
+              </Button>
+            </div>
           </div>
           
           <div>
