@@ -456,6 +456,11 @@ export function Sidebar() {
               title: 'Bildirim Geçmişi',
               href: '/dashboard/muhasebe/hks/bildirim-gecmisi',
               icon: <History className="h-4 w-4" />
+            },
+            {
+              title: 'Bildirim Kayıt',
+              href: '/dashboard/muhasebe/hks/bildirim-kayit',
+              icon: <Plus className="h-4 w-4" />
             }
           ]
         },
@@ -571,6 +576,11 @@ export function Sidebar() {
               title: 'Bildirim Geçmişi',
               href: '/dashboard/muhasebe/hks/bildirim-gecmisi',
               icon: <History className="h-4 w-4" />
+            },
+            {
+              title: 'Bildirim Kayıt',
+              href: '/dashboard/muhasebe/hks/bildirim-kayit',
+              icon: <Plus className="h-4 w-4" />
             }
           ]
         }
@@ -818,6 +828,11 @@ export function Sidebar() {
               title: 'Bildirim Geçmişi',
               href: '/dashboard/muhasebe/hks/bildirim-gecmisi',
               icon: <History className="h-4 w-4" />
+            },
+            {
+              title: 'Bildirim Kayıt',
+              href: '/dashboard/muhasebe/hks/bildirim-kayit',
+              icon: <Plus className="h-4 w-4" />
             }
           ]
         }
