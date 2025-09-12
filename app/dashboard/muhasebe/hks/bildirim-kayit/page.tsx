@@ -46,13 +46,21 @@ interface UrunCinsi {
 }
 
 interface BildirimFormData {
-  // Adım 1: Sıfat ve Kişi Bilgileri
-  sifat: string;
-  tcKimlikVergiNo: string;
-  adSoyadUnvan: string;
-  dogumTarihi: string;
-  gsmNumarasi: string;
-  email: string;
+  // Adım 1: Bildirimciye Ait Bilgiler
+  bildirimciTcKimlikVergiNo: string;
+  bildirimciSifat: string;
+  bildirimciAdSoyadUnvan: string;
+  
+  // Bildirim Genel Bilgileri
+  bildirimTuru: string; // Satın Alım, Satış
+  
+  // Kimden veya Kime Bilgileri
+  kisiTcKimlikVergiNo: string;
+  kisiAdSoyadUnvan: string;
+  kisiDogumTarihi: string;
+  kisiGsmNumarasi: string;
+  kisiEmail: string;
+  kisiSifat: string;
   
   // Adım 2: Ürün Bilgileri
   urunId: string;
@@ -80,12 +88,16 @@ export default function HKSBildirimKayitPage() {
   const [urunCinsleri, setUrunCinsleri] = useState<UrunCinsi[]>([]);
   
   const [formData, setFormData] = useState<BildirimFormData>({
-    sifat: '',
-    tcKimlikVergiNo: '',
-    adSoyadUnvan: '',
-    dogumTarihi: '',
-    gsmNumarasi: '',
-    email: '',
+    bildirimciTcKimlikVergiNo: '',
+    bildirimciSifat: '',
+    bildirimciAdSoyadUnvan: '',
+    bildirimTuru: '',
+    kisiTcKimlikVergiNo: '',
+    kisiAdSoyadUnvan: '',
+    kisiDogumTarihi: '',
+    kisiGsmNumarasi: '',
+    kisiEmail: '',
+    kisiSifat: '',
     urunId: '',
     urunCinsiId: '',
     miktar: '',
@@ -258,73 +270,145 @@ export default function HKSBildirimKayitPage() {
   }
 
   const renderStep1 = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <Label htmlFor="sifat">Sıfat *</Label>
-          <Select value={formData.sifat} onValueChange={(value) => handleInputChange('sifat', value)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Sıfat seçin" />
-            </SelectTrigger>
-            <SelectContent>
-              {sifatlar.map((sifat) => (
-                <SelectItem key={sifat.id} value={sifat.id.toString()}>
-                  {sifat.ad}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+    <div className="space-y-8">
+      {/* Bildirimciye Ait Bilgiler */}
+      <div>
+        <h3 className="text-lg font-semibold mb-4 text-blue-600">Bildirimciye Ait Bilgiler</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <Label htmlFor="bildirimciTcKimlikVergiNo">T.C. Kimlik / Vergi No *</Label>
+            <Input
+              id="bildirimciTcKimlikVergiNo"
+              value={formData.bildirimciTcKimlikVergiNo}
+              onChange={(e) => handleInputChange('bildirimciTcKimlikVergiNo', e.target.value)}
+              placeholder="T.C. Kimlik veya Vergi No"
+            />
+          </div>
+          
+          <div>
+            <Label htmlFor="bildirimciSifat">Sıfat *</Label>
+            <Select value={formData.bildirimciSifat} onValueChange={(value) => handleInputChange('bildirimciSifat', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Sıfat seçin" />
+              </SelectTrigger>
+              <SelectContent>
+                {sifatlar.map((sifat) => (
+                  <SelectItem key={sifat.id} value={sifat.id.toString()}>
+                    {sifat.ad}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="md:col-span-2">
+            <Label htmlFor="bildirimciAdSoyadUnvan">Ad Soyadı / Unvanı *</Label>
+            <Input
+              id="bildirimciAdSoyadUnvan"
+              value={formData.bildirimciAdSoyadUnvan}
+              onChange={(e) => handleInputChange('bildirimciAdSoyadUnvan', e.target.value)}
+              placeholder="Ad Soyadı veya Unvan"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Bildirim Genel Bilgileri */}
+      <div>
+        <h3 className="text-lg font-semibold mb-4 text-green-600">Bildirim Genel Bilgileri</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <Label htmlFor="bildirimTuru">Bildirim Türü *</Label>
+            <Select value={formData.bildirimTuru} onValueChange={(value) => handleInputChange('bildirimTuru', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Bildirim türü seçin" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="satinalim">Satın Alım</SelectItem>
+                <SelectItem value="satis">Satış</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </div>
+
+      {/* Kimden veya Kime Bilgileri */}
+      <div>
+        <h3 className="text-lg font-semibold mb-4 text-orange-600">Kimden veya Kime Bilgileri</h3>
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+          <p className="text-yellow-800 text-sm">
+            <strong>Uyarı:</strong> Sorguladığınız kişi kayıtlı değil. Lütfen kişinin bilgilerini giriniz.
+          </p>
         </div>
         
-        <div>
-          <Label htmlFor="tcKimlikVergiNo">T.C. Kimlik / Vergi No *</Label>
-          <Input
-            id="tcKimlikVergiNo"
-            value={formData.tcKimlikVergiNo}
-            onChange={(e) => handleInputChange('tcKimlikVergiNo', e.target.value)}
-            placeholder="T.C. Kimlik veya Vergi No"
-          />
-        </div>
-        
-        <div>
-          <Label htmlFor="adSoyadUnvan">Ad Soyadı / Unvanı *</Label>
-          <Input
-            id="adSoyadUnvan"
-            value={formData.adSoyadUnvan}
-            onChange={(e) => handleInputChange('adSoyadUnvan', e.target.value)}
-            placeholder="Ad Soyadı veya Unvan"
-          />
-        </div>
-        
-        <div>
-          <Label htmlFor="dogumTarihi">Doğum Tarihi *</Label>
-          <Input
-            id="dogumTarihi"
-            type="date"
-            value={formData.dogumTarihi}
-            onChange={(e) => handleInputChange('dogumTarihi', e.target.value)}
-          />
-        </div>
-        
-        <div>
-          <Label htmlFor="gsmNumarasi">GSM Numarası *</Label>
-          <Input
-            id="gsmNumarasi"
-            value={formData.gsmNumarasi}
-            onChange={(e) => handleInputChange('gsmNumarasi', e.target.value)}
-            placeholder="(5XX) XXX XX XX"
-          />
-        </div>
-        
-        <div>
-          <Label htmlFor="email">E-posta</Label>
-          <Input
-            id="email"
-            type="email"
-            value={formData.email}
-            onChange={(e) => handleInputChange('email', e.target.value)}
-            placeholder="email@example.com"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <Label htmlFor="kisiTcKimlikVergiNo">T.C. Kimlik / Vergi No *</Label>
+            <Input
+              id="kisiTcKimlikVergiNo"
+              value={formData.kisiTcKimlikVergiNo}
+              onChange={(e) => handleInputChange('kisiTcKimlikVergiNo', e.target.value)}
+              placeholder="T.C. Kimlik veya Vergi No"
+            />
+          </div>
+          
+          <div>
+            <Label htmlFor="kisiAdSoyadUnvan">Ad Soyadı / Unvanı *</Label>
+            <Input
+              id="kisiAdSoyadUnvan"
+              value={formData.kisiAdSoyadUnvan}
+              onChange={(e) => handleInputChange('kisiAdSoyadUnvan', e.target.value)}
+              placeholder="Ad Soyadı veya Unvan"
+            />
+          </div>
+          
+          <div>
+            <Label htmlFor="kisiDogumTarihi">Doğum Tarihi *</Label>
+            <Input
+              id="kisiDogumTarihi"
+              type="date"
+              value={formData.kisiDogumTarihi}
+              onChange={(e) => handleInputChange('kisiDogumTarihi', e.target.value)}
+            />
+          </div>
+          
+          <div>
+            <Label htmlFor="kisiGsmNumarasi">GSM Numarası *</Label>
+            <Input
+              id="kisiGsmNumarasi"
+              value={formData.kisiGsmNumarasi}
+              onChange={(e) => handleInputChange('kisiGsmNumarasi', e.target.value)}
+              placeholder="(5XX) XXX XX XX"
+              className="border-red-300 focus:border-red-500"
+            />
+          </div>
+          
+          <div>
+            <Label htmlFor="kisiEmail">E-posta</Label>
+            <Input
+              id="kisiEmail"
+              type="email"
+              value={formData.kisiEmail}
+              onChange={(e) => handleInputChange('kisiEmail', e.target.value)}
+              placeholder="email@example.com"
+            />
+          </div>
+          
+          <div>
+            <Label htmlFor="kisiSifat">Sıfatı *</Label>
+            <Select value={formData.kisiSifat} onValueChange={(value) => handleInputChange('kisiSifat', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Sıfat seçin" />
+              </SelectTrigger>
+              <SelectContent>
+                {sifatlar.map((sifat) => (
+                  <SelectItem key={sifat.id} value={sifat.id.toString()}>
+                    {sifat.ad}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </div>
     </div>
@@ -475,7 +559,7 @@ export default function HKSBildirimKayitPage() {
 
   const getStepTitle = () => {
     switch (currentStep) {
-      case 1: return 'Sıfat ve Kişi Bilgileri'
+      case 1: return 'Bildirimci ve Kişi Bilgileri'
       case 2: return 'Ürün Bilgileri'
       case 3: return 'Konum Bilgileri'
       default: return 'Bildirim Kayıt'
