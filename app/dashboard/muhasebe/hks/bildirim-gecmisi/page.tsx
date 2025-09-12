@@ -48,7 +48,7 @@ export default function HKSBildirimGecmisiPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedSifat, setSelectedSifat] = useState<number | ''>('')
+  const [selectedSifat, setSelectedSifat] = useState<string>('all')
   const [selectedMonth, setSelectedMonth] = useState('2025-01')
   const [activeTab, setActiveTab] = useState<'bize-yapilan' | 'bizim-yaptigimiz'>('bize-yapilan')
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking')
@@ -152,7 +152,7 @@ export default function HKSBildirimGecmisiPage() {
             baslangic: startDate,
             bitis: endDate,
             kunyeNo: searchTerm ? parseInt(searchTerm) : 0,
-            sifat: selectedSifat || undefined
+            sifat: selectedSifat === 'all' ? undefined : selectedSifat
           }
         : {
             BaslangicTarihi: startDate,

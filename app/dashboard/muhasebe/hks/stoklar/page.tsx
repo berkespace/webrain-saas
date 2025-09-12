@@ -54,7 +54,7 @@ export default function HKSStoklarPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedMonth, setSelectedMonth] = useState('2025-01')
-  const [selectedSifat, setSelectedSifat] = useState<string>('')
+  const [selectedSifat, setSelectedSifat] = useState<string>('all')
   const [sifatlar, setSifatlar] = useState<Sifat[]>([])
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking')
 
@@ -155,7 +155,7 @@ export default function HKSStoklarPage() {
           baslangic: startDate,
           bitis: endDate,
           kunyeNo: 0,
-          sifat: selectedSifat || undefined
+          sifat: selectedSifat === 'all' ? undefined : selectedSifat
         })
       })
       
@@ -337,7 +337,7 @@ export default function HKSStoklarPage() {
               <SelectValue placeholder="Tüm sıfatlar" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Tüm sıfatlar</SelectItem>
+              <SelectItem value="all">Tüm sıfatlar</SelectItem>
               {sifatlar.map((sifat) => (
                 <SelectItem key={sifat.id} value={sifat.id.toString()}>
                   {sifat.ad}
