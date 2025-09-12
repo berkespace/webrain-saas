@@ -1,7 +1,7 @@
 'use server';
 import { XMLParser } from 'fast-xml-parser';
 
-export const HKS = {
+const HKS = {
   bildirimUrl: 'https://hks.hal.gov.tr/WebServices/BildirimService.svc',
   genelUrl: 'https://hks.hal.gov.tr/WebServices/GenelService.svc',
   ns: 'http://www.gtb.gov.tr//WebServices',
@@ -25,6 +25,11 @@ const ORDER: Record<string, string[]> = {
 
   // GenelService tarafında genelde User/Pass önde olabiliyor; emin değilsek Bildirim'deki sırayı kullanalım:
   GenelServisIller: ['Istek','Password','ServicePassword','UserName'],
+  
+  // SOAP body element names:
+  BaseRequestMessageOf_BildirimSorguIstek: ['Istek','Password','ServicePassword','UserName'],
+  BaseRequestMessageOf_IllerIstek: ['Istek','Password','ServicePassword','UserName'],
+  BaseRequestMessageOf_BildirimTurleriIstek: ['Istek','Password','ServicePassword','UserName'],
 };
 
 function toXml(obj: any): string {
@@ -35,7 +40,7 @@ function toXml(obj: any): string {
     .join('');
 }
 
-export function buildSoapEnvelope(method: string, parts: Record<string, any>) {
+export async function buildSoapEnvelope(method: string, parts: Record<string, any>) {
   const order = ORDER[method] ?? ['Istek','Password','ServicePassword','UserName'];
   const body = order
     .map(name => (name in parts) ? `<tns:${name}>${toXml(parts[name])}</tns:${name}>` : '')
@@ -51,20 +56,34 @@ export function buildSoapEnvelope(method: string, parts: Record<string, any>) {
 </soap:Envelope>`;
 }
 
-export function soapAction(iface: 'IGenelService'|'IBildirimService', method: string) {
+export async function soapAction(iface: 'IGenelService'|'IBildirimService', method: string) {
   return `${HKS.ns}/${iface}/${method}`;
 }
 
 // Bu servis iki farklı shape ile görülebilir; ikisini de destekle:
-export function parseSoap(raw: string, method: string) {
-  const parser = new XMLParser({ ignoreAttributes:false, attributeNamePrefix:'@_', textNodeName:'#text' });
+export async function parseSoap(raw: string, method: string) {
+  const parser = new XMLParser({ 
+    ignoreAttributes: false, 
+    attributeNamePrefix: '@_', 
+    textNodeName: '#text',
+    parseAttributeValue: false,
+    parseTagValue: false
+  });
   const parsed = parser.parse(raw);
-  const env = parsed['soap:Envelope'] || parsed['Envelope'];
-  const body = env?.['soap:Body'] || env?.['Body'];
+  const env = parsed['s:Envelope'] || parsed['soap:Envelope'] || parsed['Envelope'];
+  const body = env?.['s:Body'] || env?.['soap:Body'] || env?.['Body'];
   if (!body) return { ok:false, error:'NO_SOAP_BODY', raw };
 
   // 1) WCF tarzı: <MethodResponse><HataKodlari/><IslemKodu/><Sonuc/></MethodResponse>
-  const respKey = Object.keys(body).find(k => k.endsWith(`${method}Response`));
+  // HKS uses BaseResponseMessageOf_* pattern
+  const respKey = Object.keys(body).find(k => 
+    k.endsWith(`${method}Response`) || 
+    k.includes('Response') ||
+    k.includes('BaseResponseMessageOf_') ||
+    k.includes('Cevap') ||
+    k.includes('BildirimSorguCevap') || // BildirimServisBildirimciyeYapilanBildirimListesi için
+    k.includes('BaseResponseMessageOf_BildirimSorguCevap') // Tam isim
+  );
   const resp = respKey ? body[respKey] : null;
 
   if (resp && (resp.HataKodlari !== undefined || resp.IslemKodu !== undefined || resp.Sonuc !== undefined)) {

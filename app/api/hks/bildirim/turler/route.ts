@@ -2,16 +2,24 @@ import 'server-only';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-import { HKS, buildSoapEnvelope, soapAction, parseSoap } from '@/app/lib/hks-soap';
+import { buildSoapEnvelope, soapAction, parseSoap } from '@/app/lib/hks-soap';
 
 export async function GET() {
   try {
+    const HKS = {
+      bildirimUrl: 'https://hks.hal.gov.tr/WebServices/BildirimService.svc',
+      u: process.env.HKS_USERNAME ?? '',
+      p: process.env.HKS_PASSWORD ?? '',
+      sp: process.env.HKS_SERVICE_PASSWORD ?? '',
+    };
+
     if (!HKS.u || !HKS.p || !HKS.sp) {
       return Response.json({ ok:false, error:'ENV_MISSING' }, { status: 500 });
     }
 
     const method = 'BildirimServisBildirimTurleri';
-    const envelope = buildSoapEnvelope(method, {
+    const soapBodyElement = 'BaseRequestMessageOf_BildirimTurleriIstek';
+    const envelope = await buildSoapEnvelope(soapBodyElement, {
       Istek: {},
       Password: HKS.p,
       ServicePassword: HKS.sp,
@@ -22,7 +30,7 @@ export async function GET() {
       method: 'POST',
       headers: {
         'Content-Type': 'text/xml; charset=utf-8',
-        'SOAPAction': soapAction('IBildirimService', method),
+        'SOAPAction': await soapAction('IBildirimService', method),
       },
       body: envelope,
     });
@@ -30,23 +38,26 @@ export async function GET() {
     const txt = await r.text();
     if (!r.ok) return Response.json({ ok:false, status:r.status, raw:txt.slice(0,2000) }, { status:500 });
 
-    const ps = parseSoap(txt, method);
+    const ps = await parseSoap(txt, method);
     if (!ps.ok) return Response.json({ ok:false, error:ps.error, raw:ps.raw.slice(0,2000) }, { status:500 });
 
     // WCF şekli: IslemKodu / Sonuc / HataKodlari
     if (ps.type === 'WCF') {
-      if (String(ps.islemKodu) !== '1') {
+      // Check if there are any errors in hataKodlari
+      if (ps.hataKodlari && !ps.hataKodlari['@_i:nil']) {
         return Response.json({ ok:false, islemKodu:ps.islemKodu, hataKodlari:ps.hataKodlari, raw:ps.raw.slice(0,2000) }, { status:500 });
       }
 
       const sonuc = ps.sonuc;
-      if (Number(sonuc?.HataKodu ?? -1) !== 0) {
-        return Response.json({ ok:false, hataKodu:sonuc?.HataKodu, mesaj:sonuc?.Mesaj, raw:ps.raw.slice(0,2000) }, { status:500 });
+      const hataKodu = sonuc?.['a:HataKodu'] ?? sonuc?.HataKodu ?? -1;
+      if (Number(hataKodu) !== 0) {
+        return Response.json({ ok:false, hataKodu, mesaj:sonuc?.Mesaj, raw:ps.raw.slice(0,2000) }, { status:500 });
       }
 
-      const list = sonuc?.Turler ?? sonuc?.BildirimTurleri ?? [];
-      const items = Array.isArray(list) ? list : (list ? [list] : []);
-      return Response.json({ ok:true, count: items.length, items });
+      // Handle the actual HKS response structure
+      const turlerData = sonuc?.['a:BildirimTurleri']?.['b:BildirimTuruDTO'] ?? sonuc?.Turler ?? sonuc?.BildirimTurleri ?? [];
+      const items = Array.isArray(turlerData) ? turlerData : (turlerData ? [turlerData] : []);
+      return Response.json({ ok:true, count: items.length, items, sonuc });
     }
 
     // Eski RESULT şekli

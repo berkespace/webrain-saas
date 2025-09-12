@@ -2,15 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Search, Eye, RefreshCw, Wifi, WifiOff, Calendar, User, MapPin, AlertCircle } from 'lucide-react'
+import { RefreshCw, Wifi, WifiOff, Calendar, AlertCircle, Package, FileText, Settings } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface Kunye {
-  id: string
   kunyeNo: string
   hayvanTuru: string // Ürün Adı
   irk: string // Ürün Cinsi
@@ -18,20 +15,6 @@ interface Kunye {
   dogumTarihi: string // Üretim Tarihi
   sahipAdi: string // Malın Sahibi
   sahipTc: string
-  kayitTarihi: string // Bildirim Tarihi
-  durum: string
-}
-
-interface KunyeDetay {
-  kunyeNo: string
-  hayvanTuru: string // Ürün Adı
-  irk: string // Ürün Cinsi
-  cinsiyet: string
-  dogumTarihi: string // Üretim Tarihi
-  dogumYeri: string // Üretim Yeri
-  sahipAdi: string // Malın Sahibi
-  sahipTc: string
-  sahipAdres: string
   kayitTarihi: string // Bildirim Tarihi
   durum: string
   notlar: string
@@ -40,6 +23,27 @@ interface KunyeDetay {
     işlem: string
     açıklama: string
   }>
+  // HKS specific fields
+  urunTuru: string
+  miktar: string
+  kalanMiktar: string
+  birimAd: string
+  fiyat: string
+  bildirimTuru: string
+  bildirimciTc: string
+  ureticiTc: string
+  aracPlaka: string
+  belgeNo: string
+  belgeTipi: string
+  sifati: string
+  gidecekIsyeriId: string
+  gidecekYerTuruId: string
+  analizStatus: string
+  rusumMiktari: string
+  uniqueId: string
+  malinKodNo: string
+  malinCinsKodNo: string
+  malinTuruKodNo: string
 }
 
 // Safe fetch helper with better error handling
@@ -54,48 +58,96 @@ async function safeFetch(input: RequestInfo, init?: RequestInit) {
 }
 
 export default function HKSPage() {
-  const [kunyeler, setKunyeler] = useState<Kunye[]>([])
-  const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedKunye, setSelectedKunye] = useState<KunyeDetay | null>(null)
-  const [detailModalOpen, setDetailModalOpen] = useState(false)
+  const [bizeYapilanKunyeler, setBizeYapilanKunyeler] = useState<Kunye[]>([])
+  const [bizimYaptigimizKunyeler, setBizimYaptigimizKunyeler] = useState<Kunye[]>([])
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking')
   const [error, setError] = useState<string | null>(null)
+  const [selectedMonth, setSelectedMonth] = useState<string>('2025-01') // YYYY-MM format
 
-  const loadKunyeler = async () => {
-    setLoading(true)
-    setError(null)
+
+  const loadBizeYapilanKunyeler = async () => {
     try {
-      const data = await safeFetch('/api/hks/bildirim/sorgu', {
+      // Seçilen aya göre tarih aralığı hesapla
+      const [year, month] = selectedMonth.split('-')
+      const startDate = `${year}-${month}-01`
+      const endDate = `${year}-${month}-${new Date(parseInt(year), parseInt(month), 0).getDate()}`
+      
+      const data = await safeFetch('/api/hks/bildirimciye', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          BaslangicTarihi: '2025-08-12',
-          BitisTarihi: '2025-09-11',
-          KunyeNo: searchTerm ? parseInt(searchTerm) : 0,
-          KalanMiktariSifirdanBuyukOlanlar: true
+          baslangic: startDate,
+          bitis: endDate,
+          kunyeNo: 0
         })
       })
       
-      setKunyeler(data.items || [])
+      // Map HKS API data to KunyeDetay format
+      const mappedKunyeler = (data.items || []).map((item: any) => ({
+        kunyeNo: item.kunyeNo || '',
+        hayvanTuru: item.urunAdi || '', // Ürün Adı
+        irk: item.urunCinsi || '', // Ürün Cinsi
+        cinsiyet: '', // Not available in HKS data
+        dogumTarihi: item.bildirimTarihi || '', // Use bildirimTarihi as dogumTarihi
+        dogumYeri: '', // Not available in HKS data
+        sahipAdi: item.malinSahibiTc || '', // Use TC as name for now
+        sahipTc: item.malinSahibiTc || '',
+        sahipAdres: '', // Not available in HKS data
+        kayitTarihi: item.bildirimTarihi || '', // Bildirim Tarihi
+        durum: 'Aktif', // Default status
+        notlar: `Miktar: ${item.miktar} ${item.birimAd || ''}`,
+        geçmişİşlemler: [],
+        // HKS specific fields
+        urunTuru: item.urunTuru || '',
+        miktar: item.miktar || '',
+        kalanMiktar: item.kalanMiktar || '',
+        birimAd: item.birimAd || '',
+        fiyat: item.fiyat || '',
+        bildirimTuru: item.bildirimTuru || '',
+        bildirimciTc: item.bildirimciTc || '',
+        ureticiTc: item.ureticiTc || '',
+        aracPlaka: item.aracPlaka || '',
+        belgeNo: item.belgeNo || '',
+        belgeTipi: item.belgeTipi || '',
+        sifati: item.sifati || '',
+        gidecekIsyeriId: item.gidecekIsyeriId || '',
+        gidecekYerTuruId: item.gidecekYerTuruId || '',
+        analizStatus: item.analizStatus || '',
+        rusumMiktari: item.rusumMiktari || '',
+        uniqueId: item.uniqueId || '',
+        malinKodNo: item.malinKodNo || '',
+        malinCinsKodNo: item.malinCinsKodNo || '',
+        malinTuruKodNo: item.malinTuruKodNo || ''
+      }))
+
+      // Sort by bildirimTarihi (newest first)
+      const sortedKunyeler = [...mappedKunyeler].sort((a, b) => {
+        const dateA = new Date(a.kayitTarihi || 0)
+        const dateB = new Date(b.kayitTarihi || 0)
+        return dateB.getTime() - dateA.getTime() // Newest first
+      })
+      
+      setBizeYapilanKunyeler(sortedKunyeler)
     } catch (error: any) {
       console.error('HKS ERROR:', error?.message);
       setError(error?.message || 'Künye listesi yüklenemedi');
       toast.error(error?.message || 'Künye listesi yüklenemedi');
     }
-    setLoading(false)
   }
 
   const testConnection = async () => {
     setConnectionStatus('checking')
     setError(null)
     try {
-      // Self-check API'sini test et
-      const selfCheckData = await safeFetch('/api/hks/_selfcheck', { cache: 'no-store' })
+      // Test both working endpoints
+      const [illerData, bildirimTurleriData] = await Promise.all([
+        safeFetch('/api/hks/genel/iller', { cache: 'no-store' }).catch(() => ({ ok: false })),
+        safeFetch('/api/hks/bildirim/turler', { cache: 'no-store' }).catch(() => ({ ok: false }))
+      ])
       
-      if (selfCheckData.ok && selfCheckData.checks.every((c: any) => c.ok)) {
+      if (illerData.ok && bildirimTurleriData.ok) {
         setConnectionStatus('connected')
         toast.success('HKS bağlantısı başarılı!')
       } else {
@@ -110,48 +162,90 @@ export default function HKSPage() {
     }
   }
 
-  const loadKunyeDetay = async (kunyeNo: string) => {
+  const loadBizimYaptigimizKunyeler = async () => {
     try {
-      const response = await fetch(`/api/hks?action=kunye-detay&kunyeNo=${kunyeNo}`, { cache: 'no-store' })
-      const data = await response.json()
+      // Seçilen aya göre tarih aralığı hesapla
+      const [year, month] = selectedMonth.split('-')
+      const startDate = `${year}-${month}-01`
+      const endDate = `${year}-${month}-${new Date(parseInt(year), parseInt(month), 0).getDate()}`
       
-      if (data.success) {
-        setSelectedKunye(data.data)
-        setDetailModalOpen(true)
-      } else {
-        console.error('Künye detayı yüklenemedi:', data.error)
-      }
-    } catch (error) {
-      console.error('Künye detayı yükleme hatası:', error)
+      const data = await safeFetch('/api/hks/bildirim/sorgu', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          BaslangicTarihi: startDate,
+          BitisTarihi: endDate,
+          KunyeNo: 0,
+          KalanMiktariSifirdanBuyukOlanlar: true
+        })
+      })
+      
+      // Map HKS API data to KunyeDetay format
+      const mappedKunyeler = (data.items || []).map((item: any) => ({
+        kunyeNo: item.kunyeNo || '',
+        hayvanTuru: item.urunAdi || '', // Ürün Adı
+        irk: item.urunCinsi || '', // Ürün Cinsi
+        cinsiyet: '', // Not available in HKS data
+        dogumTarihi: item.bildirimTarihi || '', // Use bildirimTarihi as dogumTarihi
+        dogumYeri: '', // Not available in HKS data
+        sahipAdi: item.malinSahibiTc || '', // Use TC as name for now
+        sahipTc: item.malinSahibiTc || '',
+        sahipAdres: '', // Not available in HKS data
+        kayitTarihi: item.bildirimTarihi || '', // Bildirim Tarihi
+        durum: 'Aktif', // Default status
+        notlar: `Miktar: ${item.miktar} ${item.birimAd || ''}`,
+        geçmişİşlemler: [],
+        // HKS specific fields
+        urunTuru: item.urunTuru || '',
+        miktar: item.miktar || '',
+        kalanMiktar: item.kalanMiktar || '',
+        birimAd: item.birimAd || '',
+        fiyat: item.fiyat || '',
+        bildirimTuru: item.bildirimTuru || '',
+        bildirimciTc: item.bildirimciTc || '',
+        ureticiTc: item.ureticiTc || '',
+        aracPlaka: item.aracPlaka || '',
+        belgeNo: item.belgeNo || '',
+        belgeTipi: item.belgeTipi || '',
+        sifati: item.sifati || '',
+        gidecekIsyeriId: item.gidecekIsyeriId || '',
+        gidecekYerTuruId: item.gidecekYerTuruId || '',
+        analizStatus: item.analizStatus || '',
+        rusumMiktari: item.rusumMiktari || '',
+        uniqueId: item.uniqueId || '',
+        malinKodNo: item.malinKodNo || '',
+        malinCinsKodNo: item.malinCinsKodNo || '',
+        malinTuruKodNo: item.malinTuruKodNo || ''
+      }))
+
+      // Tarihe göre sırala (en yeni önce)
+      const sortedKunyeler = [...mappedKunyeler].sort((a, b) => {
+        const dateA = new Date(a.kayitTarihi || 0)
+        const dateB = new Date(b.kayitTarihi || 0)
+        return dateB.getTime() - dateA.getTime() // Newest first
+      })
+      
+      setBizimYaptigimizKunyeler(sortedKunyeler)
+    } catch (error: any) {
+      console.error('HKS ERROR:', error?.message);
+      setError(error?.message || 'Künye listesi yüklenemedi');
+      toast.error(error?.message || 'Künye listesi yüklenemedi');
     }
   }
 
   useEffect(() => {
-    loadKunyeler()
+    loadBizeYapilanKunyeler()
+    loadBizimYaptigimizKunyeler()
     testConnection()
   }, [])
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      loadKunyeler()
-    }, 500)
-    return () => clearTimeout(timeoutId)
-  }, [searchTerm])
+    loadBizeYapilanKunyeler()
+    loadBizimYaptigimizKunyeler()
+  }, [selectedMonth])
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('tr-TR')
-  }
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'Aktif':
-        return <Badge variant="default" className="bg-green-500">Aktif</Badge>
-      case 'Pasif':
-        return <Badge variant="secondary">Pasif</Badge>
-      default:
-        return <Badge variant="outline">{status}</Badge>
-    }
-  }
 
   const getConnectionIcon = () => {
     switch (connectionStatus) {
@@ -164,12 +258,36 @@ export default function HKSPage() {
     }
   }
 
+  // Dashboard istatistikleri hesapla
+  const getDashboardStats = () => {
+    const totalBildirimler = bizeYapilanKunyeler.length + bizimYaptigimizKunyeler.length
+    const toplamStokMiktari = bizeYapilanKunyeler.reduce((total, kunye) => {
+      return total + parseFloat(kunye.kalanMiktar || '0')
+    }, 0)
+    const farkliUrunCesidi = new Set(bizeYapilanKunyeler.map(k => k.hayvanTuru || k.urunTuru)).size
+    const bugunBildirimler = bizeYapilanKunyeler.filter(kunye => {
+      const today = new Date().toDateString()
+      const kunyeDate = new Date(kunye.kayitTarihi || 0).toDateString()
+      return today === kunyeDate
+    }).length
+
+    return {
+      totalBildirimler,
+      toplamStokMiktari,
+      farkliUrunCesidi,
+      bugunBildirimler
+    }
+  }
+
+  const stats = getDashboardStats()
+
   return (
     <div className="mt-10 ml-10 mr-10 space-y-6">
+      {/* Header */}
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">HKS - Hal Kayıt Sistemi</h1>
-          <p className="text-muted-foreground mt-2">Ticaret Bakanlığı HKS web servisleri entegrasyonu</p>
+          <p className="text-muted-foreground mt-2">Ana Sayfa - Ticaret Bakanlığı HKS web servisleri entegrasyonu</p>
         </div>
         <div className="flex items-center gap-2">
           {getConnectionIcon()}
@@ -183,11 +301,117 @@ export default function HKSPage() {
         </div>
       </div>
 
+      {/* Dashboard İstatistikleri */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Toplam Bildirim</CardTitle>
+            <FileText className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalBildirimler}</div>
+            <p className="text-xs text-muted-foreground">
+              Bu ay: {stats.bugunBildirimler} bugün
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Toplam Stok</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.toplamStokMiktari.toFixed(1)}</div>
+            <p className="text-xs text-muted-foreground">Kg stokta</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Ürün Çeşidi</CardTitle>
+            <Calendar className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.farkliUrunCesidi}</div>
+            <p className="text-xs text-muted-foreground">Farklı ürün</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">HKS Durumu</CardTitle>
+            {getConnectionIcon()}
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {connectionStatus === 'connected' ? 'Aktif' : 'Pasif'}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {connectionStatus === 'connected' ? 'Bağlantı sağlandı' : 'Bağlantı sorunu'}
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Hızlı Erişim Kartları */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.location.href = '/dashboard/muhasebe/hks/stoklar'}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Package className="h-5 w-5 text-blue-600" />
+              Stoklarımız
+            </CardTitle>
+            <CardDescription>Güncel stok durumu ve ürün bazlı özet</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>Toplam Stok:</span>
+                <span className="font-medium">{stats.toplamStokMiktari.toFixed(1)} Kg</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span>Ürün Çeşidi:</span>
+                <span className="font-medium">{stats.farkliUrunCesidi}</span>
+              </div>
+            </div>
+            <Button variant="outline" size="sm" className="w-full mt-4">
+              Stokları Görüntüle →
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => window.location.href = '/dashboard/muhasebe/hks/bildirim-gecmisi'}>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-green-600" />
+              Bildirim Geçmişi
+            </CardTitle>
+            <CardDescription>Detaylı bildirim raporları ve filtreleme</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>Toplam Bildirim:</span>
+                <span className="font-medium">{stats.totalBildirimler}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span>Bugün:</span>
+                <span className="font-medium">{stats.bugunBildirimler}</span>
+              </div>
+            </div>
+            <Button variant="outline" size="sm" className="w-full mt-4">
+              Geçmişi Görüntüle →
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Hata Gösterimi */}
       {error && (
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20">
           <CardContent className="pt-6">
-            <div className="flex items-center gap-2 text-red-700">
+            <div className="flex items-center gap-2 text-red-700 dark:text-red-400">
               <AlertCircle className="h-4 w-4" />
               <span className="font-medium">Hata:</span>
               <span className="text-sm">{error}</span>
@@ -196,194 +420,129 @@ export default function HKSPage() {
         </Card>
       )}
 
-      {/* Bağlantı Durumu Kartı */}
+      {/* Sistem Bilgileri */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* HKS Servis Durumu */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Wifi className="h-5 w-5" />
+              HKS Servis Durumu
+            </CardTitle>
+            <CardDescription>Ticaret Bakanlığı HKS web servisleri</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className={`w-3 h-3 rounded-full ${connectionStatus === 'connected' ? 'bg-green-500' : 'bg-red-500'}`} />
+                  <span className="text-sm font-medium">BildirimService</span>
+                </div>
+                <Badge variant={connectionStatus === 'connected' ? 'default' : 'destructive'}>
+                  {connectionStatus === 'connected' ? 'Aktif' : 'Pasif'}
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className={`w-3 h-3 rounded-full ${connectionStatus === 'connected' ? 'bg-green-500' : 'bg-red-500'}`} />
+                  <span className="text-sm font-medium">GenelService</span>
+                </div>
+                <Badge variant={connectionStatus === 'connected' ? 'default' : 'destructive'}>
+                  {connectionStatus === 'connected' ? 'Aktif' : 'Pasif'}
+                </Badge>
+              </div>
+              <div className="text-xs text-muted-foreground mt-2">
+                Endpoint: hks.hal.gov.tr
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Sistem Özellikleri */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Settings className="h-5 w-5" />
+              Sistem Özellikleri
+            </CardTitle>
+            <CardDescription>Mevcut HKS entegrasyon özellikleri</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-sm">
+                <div className="w-2 h-2 bg-green-500 rounded-full" />
+                <span>İl listesi sorgulama</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <div className="w-2 h-2 bg-green-500 rounded-full" />
+                <span>Bildirim türleri listesi</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <div className="w-2 h-2 bg-green-500 rounded-full" />
+                <span>Bildirim sorgulama</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <div className="w-2 h-2 bg-green-500 rounded-full" />
+                <span>Aylık tarih filtreleme</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <div className="w-2 h-2 bg-green-500 rounded-full" />
+                <span>Gerçek zamanlı arama</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Son Bildirimler Özeti */}
       <Card>
         <CardHeader>
-          <CardTitle>HKS Servis Durumu</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Calendar className="h-5 w-5" />
+            Son Bildirimler Özeti
+          </CardTitle>
+          <CardDescription>Bu ayki bildirim aktivitesi</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="flex items-center gap-2">
-              <div className={`w-3 h-3 rounded-full ${connectionStatus === 'connected' ? 'bg-green-500' : 'bg-red-500'}`} />
-              <span className="text-sm">BildirimService</span>
-              <span className="text-xs text-muted-foreground">hks.hal.gov.tr</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <h4 className="font-medium text-blue-600">Bize Yapılan Bildirimler</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span>Toplam Bildirim:</span>
+                  <span className="font-medium">{bizeYapilanKunyeler.length}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Bugün:</span>
+                  <span className="font-medium">{stats.bugunBildirimler}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Toplam Stok:</span>
+                  <span className="font-medium">{stats.toplamStokMiktari.toFixed(1)} Kg</span>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className={`w-3 h-3 rounded-full ${connectionStatus === 'connected' ? 'bg-green-500' : 'bg-red-500'}`} />
-              <span className="text-sm">GenelService</span>
-              <span className="text-xs text-muted-foreground">hks.hal.gov.tr</span>
+            <div className="space-y-3">
+              <h4 className="font-medium text-green-600">Bizim Yaptığımız Bildirimler</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span>Toplam Bildirim:</span>
+                  <span className="font-medium">{bizimYaptigimizKunyeler.length}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Farklı Ürün:</span>
+                  <span className="font-medium">{stats.farkliUrunCesidi}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Son Güncelleme:</span>
+                  <span className="font-medium">{new Date().toLocaleDateString('tr-TR')}</span>
+                </div>
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Arama ve Filtreler */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Künye Arama</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Künye numarası, sahip adı veya TC ile ara..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-            <Button onClick={loadKunyeler} disabled={loading}>
-              {loading ? <RefreshCw className="h-4 w-4 animate-spin" /> : 'Yenile'}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Künye Listesi */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Künye Listesi</CardTitle>
-          <CardDescription>{kunyeler.length} kayıt bulundu</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left p-3">Künye No</th>
-                  <th className="text-left p-3">Ürün Adı</th>
-                  <th className="text-left p-3">Ürün Cinsi</th>
-                  <th className="text-left p-3">Üretim Tarihi</th>
-                  <th className="text-left p-3">Malın Sahibi</th>
-                  <th className="text-left p-3">TC Kimlik No</th>
-                  <th className="text-left p-3">Bildirim Tarihi</th>
-                  <th className="text-left p-3">Durum</th>
-                  <th className="text-left p-3">İşlemler</th>
-                </tr>
-              </thead>
-              <tbody>
-                {kunyeler.map((kunye) => (
-                  <tr key={kunye.id} className="border-b hover:bg-muted/50">
-                    <td className="p-3 font-mono text-sm">{kunye.kunyeNo}</td>
-                    <td className="p-3 text-sm">{kunye.hayvanTuru}</td>
-                    <td className="p-3 text-sm">{kunye.irk}</td>
-                    <td className="p-3 text-sm">{formatDate(kunye.dogumTarihi)}</td>
-                    <td className="p-3 text-sm font-medium">{kunye.sahipAdi}</td>
-                    <td className="p-3 text-sm font-mono">{kunye.sahipTc}</td>
-                    <td className="p-3 text-sm">{formatDate(kunye.kayitTarihi)}</td>
-                    <td className="p-3">{getStatusBadge(kunye.durum)}</td>
-                    <td className="p-3">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => loadKunyeDetay(kunye.kunyeNo)}
-                        className="flex items-center gap-2"
-                      >
-                        <Eye className="h-4 w-4" />
-                        Detay
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Künye Detay Modal */}
-      <Dialog open={detailModalOpen} onOpenChange={setDetailModalOpen}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Künye Detayı - {selectedKunye?.kunyeNo}</DialogTitle>
-          </DialogHeader>
-          {selectedKunye && (
-            <div className="space-y-6">
-              {/* Temel Bilgiler */}
-              <div>
-                <h3 className="font-semibold mb-3">Temel Bilgiler</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Künye No</label>
-                    <p className="font-mono">{selectedKunye.kunyeNo}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Ürün Adı</label>
-                    <p>{selectedKunye.hayvanTuru}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Ürün Cinsi</label>
-                    <p>{selectedKunye.irk}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Üretim Tarihi</label>
-                    <p>{formatDate(selectedKunye.dogumTarihi)}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Üretim Yeri</label>
-                    <p>{selectedKunye.dogumYeri}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Bildirim Tarihi</label>
-                    <p>{formatDate(selectedKunye.kayitTarihi)}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Durum</label>
-                    <div>{getStatusBadge(selectedKunye.durum)}</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Malın Sahibi Bilgileri */}
-              <div>
-                <h3 className="font-semibold mb-3">Malın Sahibi Bilgileri</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Malın Sahibi</label>
-                    <p>{selectedKunye.sahipAdi}</p>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">TC Kimlik No</label>
-                    <p className="font-mono">{selectedKunye.sahipTc}</p>
-                  </div>
-                  <div className="col-span-2">
-                    <label className="text-sm font-medium text-gray-500">Adres</label>
-                    <p>{selectedKunye.sahipAdres}</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Notlar */}
-              {selectedKunye.notlar && (
-                <div>
-                  <h3 className="font-semibold mb-3">Notlar</h3>
-                  <p className="text-sm text-gray-600">{selectedKunye.notlar}</p>
-                </div>
-              )}
-
-              {/* Geçmiş İşlemler */}
-              <div>
-                <h3 className="font-semibold mb-3">Geçmiş İşlemler</h3>
-                <div className="space-y-2">
-                  {selectedKunye.geçmişİşlemler.map((işlem, index) => (
-                    <div key={index} className="flex items-center gap-3 p-3 border rounded-lg">
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
-                      <div className="flex-1">
-                        <div className="font-medium">{işlem.işlem}</div>
-                        <div className="text-sm text-muted-foreground">{işlem.açıklama}</div>
-                      </div>
-                      <div className="text-sm text-muted-foreground">{formatDate(işlem.tarih)}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

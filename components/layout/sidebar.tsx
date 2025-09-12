@@ -25,7 +25,9 @@ import {
   Building,
   Apple,
   CreditCard,
-  Database
+  Database,
+  Warehouse,
+  History
 } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
@@ -424,11 +426,6 @@ export function Sidebar() {
               icon: <FileText className="h-4 w-4" />
             },
             {
-              title: 'HKS - Hal Kayıt Sistemi',
-              href: '/dashboard/muhasebe/hks',
-              icon: <Database className="h-4 w-4" />
-            },
-            {
               title: 'Finansal Raporlar',
               href: '/dashboard/muhasebe/raporlar',
               icon: <BarChart3 className="h-4 w-4" />
@@ -437,6 +434,28 @@ export function Sidebar() {
               title: 'Ödeme Takibi',
               href: '/dashboard/muhasebe/odemeler',
               icon: <FileText className="h-4 w-4" />
+            }
+          ]
+        },
+        {
+          title: 'HKS - Hal Kayıt Sistemi',
+          href: '#',
+          icon: <Database className="h-4 w-4" />,
+          children: [
+            {
+              title: 'Ana Sayfa',
+              href: '/dashboard/muhasebe/hks',
+              icon: <Database className="h-4 w-4" />
+            },
+            {
+              title: 'Stoklarımız',
+              href: '/dashboard/muhasebe/hks/stoklar',
+              icon: <Warehouse className="h-4 w-4" />
+            },
+            {
+              title: 'Bildirim Geçmişi',
+              href: '/dashboard/muhasebe/hks/bildirim-gecmisi',
+              icon: <History className="h-4 w-4" />
             }
           ]
         },
@@ -530,6 +549,28 @@ export function Sidebar() {
               title: 'Cari Hesaplar',
               href: '/dashboard/muhasebe/cari-hesaplar',
               icon: <CreditCard className="h-4 w-4" />
+            }
+          ]
+        },
+        {
+          title: 'HKS - Hal Kayıt Sistemi',
+          href: '#',
+          icon: <Database className="h-4 w-4" />,
+          children: [
+            {
+              title: 'Ana Sayfa',
+              href: '/dashboard/muhasebe/hks',
+              icon: <Database className="h-4 w-4" />
+            },
+            {
+              title: 'Stoklarımız',
+              href: '/dashboard/muhasebe/hks/stoklar',
+              icon: <Warehouse className="h-4 w-4" />
+            },
+            {
+              title: 'Bildirim Geçmişi',
+              href: '/dashboard/muhasebe/hks/bildirim-gecmisi',
+              icon: <History className="h-4 w-4" />
             }
           ]
         }
@@ -747,11 +788,6 @@ export function Sidebar() {
               icon: <FileText className="h-4 w-4" />
             },
             {
-              title: 'HKS - Hal Kayıt Sistemi',
-              href: '/dashboard/muhasebe/hks',
-              icon: <Database className="h-4 w-4" />
-            },
-            {
               title: 'Finansal Raporlar',
               href: '/dashboard/muhasebe/raporlar',
               icon: <BarChart3 className="h-4 w-4" />
@@ -760,6 +796,28 @@ export function Sidebar() {
               title: 'Ödeme Takibi',
               href: '/dashboard/muhasebe/odemeler',
               icon: <FileText className="h-4 w-4" />
+            }
+          ]
+        },
+        {
+          title: 'HKS - Hal Kayıt Sistemi',
+          href: '#',
+          icon: <Database className="h-4 w-4" />,
+          children: [
+            {
+              title: 'Ana Sayfa',
+              href: '/dashboard/muhasebe/hks',
+              icon: <Database className="h-4 w-4" />
+            },
+            {
+              title: 'Stoklarımız',
+              href: '/dashboard/muhasebe/hks/stoklar',
+              icon: <Warehouse className="h-4 w-4" />
+            },
+            {
+              title: 'Bildirim Geçmişi',
+              href: '/dashboard/muhasebe/hks/bildirim-gecmisi',
+              icon: <History className="h-4 w-4" />
             }
           ]
         }
