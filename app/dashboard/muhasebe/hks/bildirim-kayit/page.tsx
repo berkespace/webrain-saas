@@ -88,6 +88,7 @@ export default function HKSBildirimKayitPage() {
   const [urunCinsleri, setUrunCinsleri] = useState<UrunCinsi[]>([]);
   const [kisiSorguLoading, setKisiSorguLoading] = useState(false);
   const [kisiSorguSonucu, setKisiSorguSonucu] = useState<any>(null);
+  const [bildirimciSorguLoading, setBildirimciSorguLoading] = useState(false);
   
   const [formData, setFormData] = useState<BildirimFormData>({
     bildirimciTcKimlikVergiNo: '',
@@ -251,11 +252,75 @@ export default function HKSBildirimKayitPage() {
     }
   }
 
+  const yukleBildirimciBilgileri = async () => {
+    setBildirimciSorguLoading(true)
+    
+    try {
+      // Önce bizim vergi numaramızı sorgula
+      const data = await safeFetch('/api/hks/bildirim/kayitli-kisi-sorgu', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tcKimlikVergiNolar: ['4640538224'] })
+      })
+      
+      if (data.ok && data.items && data.items.length > 0) {
+        const sonuc = data.items[0]
+        
+        if (sonuc.kayitliKisiMi) {
+          // Bildirimci bilgilerini otomatik doldur
+          setFormData(prev => ({
+            ...prev,
+            bildirimciTcKimlikVergiNo: '4640538224',
+            bildirimciAdSoyadUnvan: 'HÜNERLER GIDA PAZARLAMA LİMİTED ŞİRKETİ ANTALYA KEPEZ ŞUBESİ',
+            bildirimciSifat: sonuc.sifatlari && sonuc.sifatlari.length > 0 ? sonuc.sifatlari[0].toString() : '6' // Varsayılan Tüccar Hal İçi
+          }))
+          
+          toast.success('Bildirimci bilgileri otomatik yüklendi!')
+        } else {
+          // Kayıtlı değilse manuel bilgileri doldur
+          setFormData(prev => ({
+            ...prev,
+            bildirimciTcKimlikVergiNo: '4640538224',
+            bildirimciAdSoyadUnvan: 'HÜNERLER GIDA PAZARLAMA LİMİTED ŞİRKETİ ANTALYA KEPEZ ŞUBESİ',
+            bildirimciSifat: '6' // Tüccar Hal İçi
+          }))
+          
+          toast.warning('Bildirimci kayıtlı değil, manuel bilgiler yüklendi.')
+        }
+      } else {
+        // API çalışmıyorsa manuel bilgileri doldur
+        setFormData(prev => ({
+          ...prev,
+          bildirimciTcKimlikVergiNo: '4640538224',
+          bildirimciAdSoyadUnvan: 'HÜNERLER GIDA PAZARLAMA LİMİTED ŞİRKETİ ANTALYA KEPEZ ŞUBESİ',
+          bildirimciSifat: '6' // Tüccar Hal İçi
+        }))
+        
+        toast.info('Bildirimci bilgileri manuel olarak yüklendi.')
+      }
+    } catch (error: any) {
+      console.error('Bildirimci bilgileri yükleme hatası:', error?.message);
+      
+      // Hata durumunda da manuel bilgileri doldur
+      setFormData(prev => ({
+        ...prev,
+        bildirimciTcKimlikVergiNo: '4640538224',
+        bildirimciAdSoyadUnvan: 'HÜNERLER GIDA PAZARLAMA LİMİTED ŞİRKETİ ANTALYA KEPEZ ŞUBESİ',
+        bildirimciSifat: '6' // Tüccar Hal İçi
+      }))
+      
+      toast.info('Bildirimci bilgileri manuel olarak yüklendi.')
+    } finally {
+      setBildirimciSorguLoading(false)
+    }
+  }
+
   useEffect(() => {
     loadSifatlar()
     loadUlkeler()
     loadIller()
     loadUrunler()
+    yukleBildirimciBilgileri()
   }, [])
 
   useEffect(() => {
@@ -308,7 +373,12 @@ export default function HKSBildirimKayitPage() {
     <div className="space-y-8">
       {/* Bildirimciye Ait Bilgiler */}
       <div>
-        <h3 className="text-lg font-semibold mb-4 text-blue-600">Bildirimciye Ait Bilgiler</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-blue-600">Bildirimciye Ait Bilgiler</h3>
+          {bildirimciSorguLoading && (
+            <div className="text-sm text-blue-600">Bildirimci bilgileri yükleniyor...</div>
+          )}
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <Label htmlFor="bildirimciTcKimlikVergiNo">T.C. Kimlik / Vergi No *</Label>
@@ -317,13 +387,19 @@ export default function HKSBildirimKayitPage() {
               value={formData.bildirimciTcKimlikVergiNo}
               onChange={(e) => handleInputChange('bildirimciTcKimlikVergiNo', e.target.value)}
               placeholder="T.C. Kimlik veya Vergi No"
+              disabled={true}
+              className="bg-gray-50"
             />
           </div>
           
           <div>
             <Label htmlFor="bildirimciSifat">Sıfat *</Label>
-            <Select value={formData.bildirimciSifat} onValueChange={(value) => handleInputChange('bildirimciSifat', value)}>
-              <SelectTrigger>
+            <Select 
+              value={formData.bildirimciSifat} 
+              onValueChange={(value) => handleInputChange('bildirimciSifat', value)}
+              disabled={true}
+            >
+              <SelectTrigger className="bg-gray-50">
                 <SelectValue placeholder="Sıfat seçin" />
               </SelectTrigger>
               <SelectContent>
@@ -343,6 +419,8 @@ export default function HKSBildirimKayitPage() {
               value={formData.bildirimciAdSoyadUnvan}
               onChange={(e) => handleInputChange('bildirimciAdSoyadUnvan', e.target.value)}
               placeholder="Ad Soyadı veya Unvan"
+              disabled={true}
+              className="bg-gray-50"
             />
           </div>
         </div>
