@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-const HKS_URL = 'https://95.0.51.130/WebServices/GenelService.svc'
+const HKS_URL = 'https://hks.hal.gov.tr/WebServices/GenelService.svc'
 const USERNAME = process.env.HKS_USERNAME || ''
 const PASSWORD = process.env.HKS_PASSWORD || ''
 const SERVICE_PASSWORD = process.env.HKS_SERVICE_PASSWORD || ''

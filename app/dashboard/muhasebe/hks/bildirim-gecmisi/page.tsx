@@ -10,27 +10,62 @@ import { RefreshCw, Search, Download, Filter, Eye, Calendar, Truck, FileText } f
 import { toast } from 'sonner';
 
 interface Kunye {
+  // Temel bilgiler
+  id: string;
   kunyeNo: string;
+  
+  // Ürün bilgileri
+  malinKodNo: string;
+  malinAdi: string;
+  malinCinsKodNo: string;
+  malinCinsi: string;
+  malinMiktari: string;
+  malinSatisFiyati: string;
+  malinTuruKodNo: string;
+  malinTuru: string;
+  
+  // Miktar ve birim bilgileri
+  miktarBirimId: string;
+  miktarBirimiAd: string;
+  kalanMiktar: string;
+  
+  // Bildirim bilgileri
+  bildirimTarihi: string;
+  bildirimTuru: string;
+  bildirimciTcKimlikVergiNo: string;
+  
+  // Kişi bilgileri
+  malinSahibiTcKimlikVergiNo: string;
+  ureticiTcKimlikVergiNo: string;
+  
+  // Araç ve belge bilgileri
+  aracPlakaNo: string;
+  belgeNo: string;
+  belgeTipi: string;
+  
+  // Sıfat ve yer bilgileri
+  sifat: string;
+  gidecekYerTuruId: string;
+  gidecekIsyeriId: string;
+  
+  // Diğer bilgiler
+  uniqueId: string;
+  analizStatus: string;
+  rusumMiktari: string;
+  
+  // Geriye uyumluluk için eski alanlar (deprecated)
   hayvanTuru: string;
   urunTuru: string;
   miktar: string;
-  kalanMiktar: string;
   birimAd: string;
   fiyat: string;
-  bildirimTarihi: string;
   malinSahibiTc: string;
-  belgeNo: string;
-  belgeTipi: string;
   sifati: string;
   aracPlaka: string;
   ureticiTc: string;
   bildirimciTc: string;
-  bildirimTuru: string;
-  gidecekIsyeriId: string;
+  bildirimciUnvan: string;
   gidecekYerTuruId: string;
-  analizStatus: string;
-  rusumMiktari: string;
-  uniqueId: string;
   malinKodNo: string;
   malinCinsKodNo: string;
   malinTuruKodNo: string;
@@ -43,29 +78,51 @@ interface Sifat {
   aciklama: string;
 }
 
+interface BelgeTipi {
+  id: string;
+  ad: string;
+  aciklama: string;
+}
+
+interface IsletmeTuru {
+  id: string;
+  ad: string;
+}
+
 export default function HKSBildirimGecmisiPage() {
   const [kunyeler, setKunyeler] = useState<Kunye[]>([])
+  const [bizimKunyeler, setBizimKunyeler] = useState<Kunye[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedSifat, setSelectedSifat] = useState<string>('all')
-  const [selectedMonth, setSelectedMonth] = useState('2025-01')
+  const [selectedMonth, setSelectedMonth] = useState(() => {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, '0')
+    return `${year}-${month}`
+  })
   const [activeTab, setActiveTab] = useState<'bize-yapilan' | 'bizim-yaptigimiz'>('bize-yapilan')
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'disconnected'>('checking')
   const [sifatlar, setSifatlar] = useState<Sifat[]>([])
+  const [belgeTipleri, setBelgeTipleri] = useState<BelgeTipi[]>([])
+  const [isletmeTurleri, setIsletmeTurleri] = useState<IsletmeTuru[]>([])
+  const [bildirimTurleri, setBildirimTurleri] = useState<BelgeTipi[]>([])
   const [selectedKunye, setSelectedKunye] = useState<Kunye | null>(null)
   const [detailModalOpen, setDetailModalOpen] = useState(false)
 
   // Safe fetch wrapper
   const safeFetch = async (url: string, options?: RequestInit) => {
     try {
+      console.log('API çağrısı:', url, options?.method || 'GET')
       const response = await fetch(url, options)
       if (!response.ok) {
+        console.error('HTTP hatası:', response.status, response.statusText, 'URL:', url)
         throw new Error(`HTTP ${response.status}: ${response.statusText}`)
       }
       return await response.json()
     } catch (error: any) {
-      console.error('Fetch error:', error)
+      console.error('Fetch error:', error, 'URL:', url)
       throw error
     }
   }
@@ -143,29 +200,115 @@ export default function HKSBildirimGecmisiPage() {
     }
   }
 
-  const loadKunyeler = async () => {
-    setLoading(true)
-    setError(null)
+  const loadBelgeTipleri = async () => {
     try {
+      const data = await safeFetch('/api/hks/bildirim/belge-tipleri', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      })
+      
+      if (data.ok && data.items) {
+        setBelgeTipleri(data.items)
+      }
+    } catch (error) {
+      console.error('Belge tipleri yüklenemedi:', error)
+      // Hardcoded fallback
+      setBelgeTipleri([
+        { id: '207', ad: 'Fatura', aciklama: 'Satış faturası' },
+        { id: '208', ad: 'İrsaliye', aciklama: 'Mal irsaliyesi' },
+        { id: '209', ad: 'Gümrük Beyannamesi', aciklama: 'Gümrük beyannamesi' },
+        { id: '210', ad: 'İrsaliyeli Fatura', aciklama: 'İrsaliyeli fatura' },
+        { id: '0', ad: 'Belge Yok', aciklama: 'Belge bulunmuyor' }
+      ])
+    }
+  }
+
+  const loadIsletmeTurleri = async () => {
+    try {
+      const data = await safeFetch('/api/hks/genel/isletme-turleri', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      })
+      
+      if (data.ok && data.items) {
+        setIsletmeTurleri(data.items)
+      }
+    } catch (error) {
+      console.error('İşletme türleri yüklenemedi:', error)
+      // Hardcoded fallback
+      setIsletmeTurleri([
+        { id: '4', ad: 'Tasnifleme ve Ambalajlama' },
+        { id: '5', ad: 'Hal İçi Deposu' },
+        { id: '7', ad: 'Hal İçi İşyeri' },
+        { id: '8', ad: 'Hal Dışı İşyeri' },
+        { id: '12', ad: 'Dağıtım Merkezi' }
+      ])
+    }
+  }
+
+  const loadBildirimTurleri = async () => {
+    try {
+      const data = await safeFetch('/api/hks/bildirim/bildirim-turleri', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      })
+      
+      if (data.ok && data.items) {
+        setBildirimTurleri(data.items)
+      }
+    } catch (error) {
+      console.error('Bildirim türleri yüklenemedi:', error)
+      // Hardcoded fallback
+      setBildirimTurleri([
+        { id: '195', ad: 'Satış Bildirimi' },
+        { id: '196', ad: 'Alış Bildirimi' },
+        { id: '197', ad: 'Transfer Bildirimi' },
+        { id: '198', ad: 'İade Bildirimi' },
+        { id: '199', ad: 'Fire Bildirimi' }
+      ])
+    }
+  }
+
+  const loadKunyeler = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      
+      // Her iki tab için de çalış
+      console.log('loadKunyeler: Aktif sekme:', activeTab)
+      
       const [year, month] = selectedMonth.split('-')
       const startDate = `${year}-${month}-01`
-      const endDate = `${year}-${month}-${new Date(parseInt(year), parseInt(month), 0).getDate()}`
       
-      const endpoint = activeTab === 'bize-yapilan' ? '/api/hks/bildirimciye' : '/api/hks/bildirim/sorgu'
-      const body = activeTab === 'bize-yapilan' 
-        ? {
-            baslangic: startDate,
-            bitis: endDate,
-            kunyeNo: searchTerm ? parseInt(searchTerm) : 0,
-            sifat: selectedSifat === 'all' ? undefined : selectedSifat
-          }
-        : {
-            BaslangicTarihi: startDate,
-            BitisTarihi: endDate,
-            KunyeNo: searchTerm ? parseInt(searchTerm) : 0,
-            KalanMiktariSifirdanBuyukOlanlar: true,
-            Sifat: selectedSifat || undefined
-          }
+      // Güncel ay için bugüne kadar, geçmiş aylar için ayın sonuna kadar
+      const now = new Date()
+      const currentYear = now.getFullYear()
+      const currentMonth = now.getMonth() + 1
+      const isCurrentMonth = parseInt(year) === currentYear && parseInt(month) === currentMonth
+      
+      const endDate = isCurrentMonth 
+        ? `${year}-${month}-${String(now.getDate()).padStart(2, '0')}` // Bugüne kadar
+        : `${year}-${month}-${new Date(parseInt(year), parseInt(month), 0).getDate()}` // Ayın sonuna kadar
+      
+      // Tab'a göre endpoint belirle
+      const endpoint = activeTab === 'bize-yapilan' 
+        ? '/api/hks/bildirimciye' 
+        : '/api/hks/bildirim/sorgu'
+      const body: any = {
+        baslangic: startDate,
+        bitis: endDate,
+        kunyeNo: searchTerm ? parseInt(searchTerm) : 0,
+      }
+      
+      // Sifat sadece 'all' değilse ekle
+      if (selectedSifat !== 'all') {
+        body.sifat = selectedSifat
+      }
+      
+      console.log('API çağrısı yapılıyor:', endpoint, body)
       
       const data = await safeFetch(endpoint, {
         method: 'POST',
@@ -175,41 +318,38 @@ export default function HKSBildirimGecmisiPage() {
         body: JSON.stringify(body)
       })
       
-      const mappedKunyeler = (data.items || []).map((item: any) => ({
-        kunyeNo: item.kunyeNo || '',
-        hayvanTuru: item.urunAdi || '',
-        urunTuru: item.urunTuru || '',
-        miktar: item.miktar || '',
-        kalanMiktar: item.kalanMiktar || '',
-        birimAd: item.birimAd || '',
-        fiyat: item.fiyat || '',
-        bildirimTarihi: item.bildirimTarihi || '',
-        malinSahibiTc: item.malinSahibiTc || '',
-        belgeNo: item.belgeNo || '',
-        belgeTipi: item.belgeTipi || '',
-        sifati: item.sifati || '',
-        aracPlaka: item.aracPlaka || '',
-        ureticiTc: item.ureticiTc || '',
-        bildirimciTc: item.bildirimciTc || '',
-        bildirimTuru: item.bildirimTuru || '',
-        gidecekIsyeriId: item.gidecekIsyeriId || '',
-        gidecekYerTuruId: item.gidecekYerTuruId || '',
-        analizStatus: item.analizStatus || '',
-        rusumMiktari: item.rusumMiktari || '',
-        uniqueId: item.uniqueId || '',
-        malinKodNo: item.malinKodNo || '',
-        malinCinsKodNo: item.malinCinsKodNo || '',
-        malinTuruKodNo: item.malinTuruKodNo || '',
-        durum: item.durum || 'Aktif'
-      }))
-
-      const sortedKunyeler = [...mappedKunyeler].sort((a, b) => {
-        const dateA = new Date(a.bildirimTarihi || 0)
-        const dateB = new Date(b.bildirimTarihi || 0)
-        return dateB.getTime() - dateA.getTime()
+      if (!data.ok) {
+        throw new Error(data.error || 'Veri yüklenemedi')
+      }
+      
+      let items = data.items || []
+      
+      // Bildirimci ünvanlarını ekle
+      if (data.bildirimciUnvanlari) {
+        items = items.map((item: any) => ({
+          ...item,
+          bildirimciUnvan: data.bildirimciUnvanlari[item.bildirimciTc] || ''
+        }))
+      }
+      
+      // Filtreleme - items'ı direkt kullan
+      const filteredKunyeler = items
+      
+      // Sıralama (en yeni tarih önce)
+      const sortedKunyeler = [...filteredKunyeler].sort((a, b) => {
+        const dateA = new Date(a.bildirimTarihi).getTime()
+        const dateB = new Date(b.bildirimTarihi).getTime()
+        return dateB - dateA
       })
       
-      setKunyeler(sortedKunyeler)
+      // Tab'a göre doğru state'e yaz
+      if (activeTab === 'bize-yapilan') {
+        setKunyeler(sortedKunyeler)
+        console.log('Bize yapılan bildirimler yüklendi:', sortedKunyeler.length, 'kayıt')
+      } else {
+        setBizimKunyeler(sortedKunyeler)
+        console.log('Bizim yaptığımız bildirimler yüklendi:', sortedKunyeler.length, 'kayıt')
+      }
     } catch (error: any) {
       console.error('Künye verileri yüklenemedi:', error?.message)
       setError(error?.message || 'Künye verileri yüklenemedi')
@@ -307,12 +447,17 @@ export default function HKSBildirimGecmisiPage() {
   }
 
   useEffect(() => {
-    loadSifatlar()
+    console.log('HKS sayfası yüklendi')
     loadKunyeler()
     testConnection()
+    loadBelgeTipleri()
+    loadIsletmeTurleri()
+    loadBildirimTurleri()
   }, [])
 
+
   useEffect(() => {
+    console.log('Tab/filter değişikliği:', { activeTab, selectedMonth, selectedSifat, searchTerm })
     const timeoutId = setTimeout(() => {
       loadKunyeler()
     }, 500)
@@ -332,21 +477,48 @@ export default function HKSBildirimGecmisiPage() {
   const safeString = (value: any) => {
     if (value === null || value === undefined) return '-'
     if (typeof value === 'object') return '-'
-    return String(value).replace(/@_i:nil/g, '') || '-'
+    const str = String(value).replace(/@_i:nil/g, '')
+    return str === '' ? '-' : str
+  }
+
+  const getBelgeTipiAdi = (belgeTipiId: string) => {
+    const belgeTipi = belgeTipleri.find(bt => bt.id === belgeTipiId)
+    return belgeTipi ? belgeTipi.ad : belgeTipiId
+  }
+
+  const getIsletmeTuruAdi = (isletmeTuruId: string) => {
+    const isletmeTuru = isletmeTurleri.find(it => it.id === isletmeTuruId)
+    return isletmeTuru ? isletmeTuru.ad : isletmeTuruId
+  }
+
+  const getBildirimTuruAdi = (bildirimTuruId: string) => {
+    const bildirimTuru = bildirimTurleri.find(bt => bt.id === bildirimTuruId)
+    return bildirimTuru ? bildirimTuru.ad : bildirimTuruId
   }
 
   const getFilteredKunyeler = () => {
-    let filtered = [...kunyeler]
+    const currentKunyeler = activeTab === 'bize-yapilan' ? kunyeler : bizimKunyeler
+    console.log('getFilteredKunyeler: activeTab =', activeTab, 'currentKunyeler.length =', currentKunyeler.length)
+    let filtered = [...currentKunyeler]
 
-    // Plaka arama
+    // Genel arama
     if (searchTerm) {
       filtered = filtered.filter(kunye => 
-        kunye.aracPlaka.toLowerCase().includes(searchTerm.toLowerCase()) ||
         kunye.kunyeNo.includes(searchTerm) ||
-        kunye.belgeNo.toLowerCase().includes(searchTerm.toLowerCase())
+        kunye.malinKodNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        kunye.malinAdi.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        kunye.malinCinsi.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        kunye.malinTuru.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        kunye.aracPlakaNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        kunye.belgeNo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        kunye.bildirimciTcKimlikVergiNo.includes(searchTerm) ||
+        kunye.malinSahibiTcKimlikVergiNo.includes(searchTerm) ||
+        kunye.ureticiTcKimlikVergiNo.includes(searchTerm) ||
+        kunye.uniqueId.toLowerCase().includes(searchTerm.toLowerCase())
       )
     }
 
+    console.log('getFilteredKunyeler: filtered.length =', filtered.length)
     return filtered
   }
 
@@ -404,7 +576,7 @@ export default function HKSBildirimGecmisiPage() {
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
             }`}
           >
-            Bizim Yaptığımız Bildirimler ({kunyeler.length})
+            Bizim Yaptığımız Bildirimler ({bizimKunyeler.length})
           </button>
         </nav>
       </div>
@@ -419,18 +591,25 @@ export default function HKSBildirimGecmisiPage() {
               <SelectValue placeholder="Ay seçin" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="2025-01">Ocak 2025</SelectItem>
-              <SelectItem value="2025-02">Şubat 2025</SelectItem>
-              <SelectItem value="2025-03">Mart 2025</SelectItem>
-              <SelectItem value="2025-04">Nisan 2025</SelectItem>
-              <SelectItem value="2025-05">Mayıs 2025</SelectItem>
-              <SelectItem value="2025-06">Haziran 2025</SelectItem>
-              <SelectItem value="2025-07">Temmuz 2025</SelectItem>
-              <SelectItem value="2025-08">Ağustos 2025</SelectItem>
-              <SelectItem value="2025-09">Eylül 2025</SelectItem>
-              <SelectItem value="2025-10">Ekim 2025</SelectItem>
-              <SelectItem value="2025-11">Kasım 2025</SelectItem>
-              <SelectItem value="2025-12">Aralık 2025</SelectItem>
+              {(() => {
+                const months = [
+                  'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+                  'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
+                ]
+                const now = new Date()
+                const currentYear = now.getFullYear()
+                const currentMonth = now.getMonth() + 1
+                
+                return months.map((month, index) => {
+                  const monthValue = `${currentYear}-${String(index + 1).padStart(2, '0')}`
+                  const isCurrentMonth = index + 1 === currentMonth
+                  return (
+                    <SelectItem key={monthValue} value={monthValue}>
+                      {month} {currentYear} {isCurrentMonth ? '(Güncel)' : ''}
+                    </SelectItem>
+                  )
+                })
+              })()}
             </SelectContent>
           </Select>
         </div>
@@ -459,7 +638,7 @@ export default function HKSBildirimGecmisiPage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
-              placeholder="Plaka, künye, belge no..."
+              placeholder="Künye, ürün, plaka, TC, belge no..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -495,7 +674,14 @@ export default function HKSBildirimGecmisiPage() {
           {loading ? (
             <div className="text-center py-8">
               <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4" />
-              <p className="text-muted-foreground">Bildirim verileri yükleniyor...</p>
+              <p className="text-muted-foreground">
+                {selectedMonth === (() => {
+                  const now = new Date()
+                  const year = now.getFullYear()
+                  const month = String(now.getMonth() + 1).padStart(2, '0')
+                  return `${year}-${month}`
+                })() ? 'Güncel ay verileri yükleniyor...' : 'Seçilen ay verileri yükleniyor...'}
+              </p>
             </div>
           ) : error ? (
             <div className="text-center py-8">
@@ -517,30 +703,54 @@ export default function HKSBildirimGecmisiPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead>Bildirim Tarihi</TableHead>
                     <TableHead>Künye No</TableHead>
-                    <TableHead>Ürün</TableHead>
+                    <TableHead>Ürün Adı</TableHead>
+                    <TableHead>Ürün Cinsi</TableHead>
+                    <TableHead>Ürün Türü</TableHead>
                     <TableHead>Miktar</TableHead>
-                    <TableHead>Kalan</TableHead>
-                    <TableHead>Fiyat</TableHead>
-                    <TableHead>Tarih</TableHead>
-                    <TableHead>Plaka</TableHead>
+                    <TableHead>Birim</TableHead>
+                    <TableHead>Kalan Miktar</TableHead>
+                    <TableHead>Satış Fiyatı</TableHead>
+                    <TableHead>Bildirim Türü</TableHead>
+                    <TableHead>Bildirimci TC</TableHead>
+                    <TableHead>Bildirimci</TableHead>
+                    <TableHead>Mal Sahibi TC</TableHead>
+                    <TableHead>Üretici TC</TableHead>
+                    <TableHead>Araç Plaka</TableHead>
                     <TableHead>Belge No</TableHead>
+                    <TableHead>Belge Tipi</TableHead>
                     <TableHead>Sıfat</TableHead>
+                    <TableHead>Gidecek Yer Türü</TableHead>
+                    <TableHead>Gidecek İşyeri</TableHead>
+                    <TableHead>Rüsum Miktarı</TableHead>
                     <TableHead>İşlemler</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {getFilteredKunyeler().map((kunye, index) => (
                     <TableRow key={index}>
-                      <TableCell className="font-medium">{safeString(kunye.kunyeNo)}</TableCell>
-                      <TableCell>{safeString(kunye.hayvanTuru)}</TableCell>
-                      <TableCell>{safeString(kunye.miktar)} {safeString(kunye.birimAd)}</TableCell>
-                      <TableCell>{safeString(kunye.kalanMiktar)} {safeString(kunye.birimAd)}</TableCell>
-                      <TableCell>{safeString(kunye.fiyat)} ₺</TableCell>
-                      <TableCell>{formatDate(kunye.bildirimTarihi)}</TableCell>
-                      <TableCell>{safeString(kunye.aracPlaka)}</TableCell>
+                      <TableCell className="font-medium">{formatDate(kunye.bildirimTarihi)}</TableCell>
+                      <TableCell>{safeString(kunye.kunyeNo)}</TableCell>
+                      <TableCell>{safeString(kunye.malinAdi)}</TableCell>
+                      <TableCell>{safeString(kunye.malinCinsi)}</TableCell>
+                      <TableCell>{safeString(kunye.malinTuru)}</TableCell>
+                      <TableCell>{safeString(kunye.malinMiktari)}</TableCell>
+                      <TableCell>{safeString(kunye.miktarBirimiAd)}</TableCell>
+                      <TableCell>{safeString(kunye.kalanMiktar)}</TableCell>
+                      <TableCell>{safeString(kunye.malinSatisFiyati)} ₺</TableCell>
+                      <TableCell>{getBildirimTuruAdi(safeString(kunye.bildirimTuru))}</TableCell>
+                      <TableCell>{safeString(kunye.bildirimciTcKimlikVergiNo)}</TableCell>
+                      <TableCell>{safeString(kunye.bildirimciUnvan)}</TableCell>
+                      <TableCell>{safeString(kunye.malinSahibiTcKimlikVergiNo)}</TableCell>
+                      <TableCell>{safeString(kunye.ureticiTcKimlikVergiNo)}</TableCell>
+                      <TableCell>{safeString(kunye.aracPlakaNo)}</TableCell>
                       <TableCell>{safeString(kunye.belgeNo)}</TableCell>
-                      <TableCell>{safeString(kunye.sifati)}</TableCell>
+                      <TableCell>{getBelgeTipiAdi(safeString(kunye.belgeTipi))}</TableCell>
+                      <TableCell>{safeString(kunye.sifat)}</TableCell>
+                      <TableCell>{getIsletmeTuruAdi(safeString(kunye.gidecekYerTuruId))}</TableCell>
+                      <TableCell>{safeString(kunye.gidecekIsyeriId)}</TableCell>
+                      <TableCell>{safeString(kunye.rusumMiktari)} ₺</TableCell>
                       <TableCell>
                         <Button
                           variant="outline"

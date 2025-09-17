@@ -8,14 +8,14 @@ export async function POST(request: NextRequest) {
     const soapEnvelope = `<?xml version="1.0" encoding="utf-8"?>
 <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
   <soap:Body>
-    <BaseRequestMessageOf_UrunlerIstek xmlns="http://www.gtb.gov.tr//WebServices" xmlns:a="http://schemas.datacontract.org/2004/07/GTB.HKS.Urun.ServiceContract">
+    <BaseRequestMessageOf_UrunBirimleriIstek xmlns="http://www.gtb.gov.tr//WebServices" xmlns:a="http://schemas.datacontract.org/2004/07/GTB.HKS.Urun.ServiceContract">
       <Istek>
-        <!-- Ürünler listesi için boş istek -->
+        <!-- Ürün birimleri listesi için boş istek -->
       </Istek>
       <Password>${process.env.HKS_PASSWORD || ''}</Password>
       <ServicePassword>${process.env.HKS_SERVICE_PASSWORD || ''}</ServicePassword>
       <UserName>${process.env.HKS_USERNAME || ''}</UserName>
-    </BaseRequestMessageOf_UrunlerIstek>
+    </BaseRequestMessageOf_UrunBirimleriIstek>
   </soap:Body>
 </soap:Envelope>`;
 
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       method: 'POST',
       headers: {
         'Content-Type': 'text/xml; charset=utf-8',
-        'SOAPAction': 'http://www.gtb.gov.tr//WebServices/IUrunService/UrunServiceUrunler'
+        'SOAPAction': 'http://www.gtb.gov.tr//WebServices/IUrunService/UrunServiceUrunBirimleri'
       },
       body: soapEnvelope
     });
@@ -33,33 +33,32 @@ export async function POST(request: NextRequest) {
     }
 
     const xmlText = await response.text();
-    const parsedData = await parseSoap(xmlText, 'UrunServiceUrunler');
+    const parsedData = await parseSoap(xmlText, 'UrunServiceUrunBirimleri');
 
     if (!parsedData.ok) {
       throw new Error(parsedData.error || 'SOAP parsing failed');
     }
 
-    // HKS'den gelen XML'de veri yapısı: sonuc["a:Urunler"]["b:UrunDTO"]
-    const urunler = parsedData.sonuc?.["a:Urunler"]?.["b:UrunDTO"] || [];
+    const urunBirimleri = parsedData.sonuc?.["a:UrunBirimleri"]?.["b:UrunBirimiDTO"] || [];
 
-    if (urunler.length === 0) {
-      throw new Error('HKS servisi boş array döndü');
+    if (urunBirimleri.length === 0) {
+      throw new Error('HKS servisi boş array döndü - fallback kullanılacak');
     }
 
-    const mappedUrunler = urunler.map((urun: any) => ({
-      id: urun["b:Id"] || urun.Id || urun.id || '',
-      ad: urun["b:UrunAdi"] || urun.UrunAdi || urun.urunAdi || ''
+    const mappedBirimler = urunBirimleri.map((birim: any) => ({
+      id: birim["b:Id"] || birim.Id || birim.id || '',
+      ad: birim["b:UrunBirimAdi"] || birim.UrunBirimAdi || birim.urunBirimAdi || ''
     }));
 
     return NextResponse.json({
       ok: true,
-      count: mappedUrunler.length,
-      items: mappedUrunler,
+      count: mappedBirimler.length,
+      items: mappedBirimler,
       note: 'HKS servisinden alındı'
     });
 
   } catch (error: any) {
-    console.error('HKS Ürünler servisi hatası:', error);
+    console.error('HKS Ürün Birimleri servisi hatası:', error);
     return NextResponse.json({ 
       ok: false, 
       error: String(error?.message || error), 

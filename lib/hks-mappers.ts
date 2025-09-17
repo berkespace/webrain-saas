@@ -56,30 +56,62 @@ export async function mapBildirimciyeYapilan(xml: string) {
   }
 
   const items = arr.map((b: any, i: number) => ({
+    // Temel bilgiler
     id: String(b?.['b:KunyeNo'] ?? b?.KunyeNo ?? i + 1),
     kunyeNo: b?.['b:KunyeNo'] ?? b?.KunyeNo ?? '',
+    
+    // Ürün bilgileri
+    malinKodNo: b?.['b:MalinKodNo'] ?? b?.MalinKodNo ?? '',
+    malinAdi: b?.['b:MalinAdi'] ?? b?.MalinAdi ?? '',
+    malinCinsKodNo: b?.['b:MalinCinsKodNo'] ?? b?.MalinCinsKodNo ?? '',
+    malinCinsi: b?.['b:MalinCinsi'] ?? b?.MalinCinsi ?? '',
+    malinMiktari: b?.['b:MalinMiktari'] ?? b?.MalinMiktari ?? '',
+    malinSatisFiyati: b?.['b:MalinSatisFiyati'] ?? b?.MalinSatisFiyati ?? '',
+    malinTuruKodNo: b?.['b:MalinTuruKodNo'] ?? b?.MalinTuruKodNo ?? '',
+    malinTuru: b?.['b:MalinTuru'] ?? b?.MalinTuru ?? '',
+    
+    // Miktar ve birim bilgileri
+    miktarBirimId: b?.['b:MiktarBirimId'] ?? b?.MiktarBirimId ?? '',
+    miktarBirimiAd: b?.['b:MiktarBirimiAd'] ?? b?.MiktarBirimiAd ?? '',
+    kalanMiktar: b?.['b:KalanMiktar'] ?? b?.KalanMiktar ?? '',
+    
+    // Bildirim bilgileri
+    bildirimTarihi: b?.['b:BildirimTarihi'] ?? b?.BildirimTarihi ?? '',
+    bildirimTuru: b?.['b:BildirimTuru'] ?? b?.BildirimTuru ?? '',
+    bildirimciTcKimlikVergiNo: b?.['b:BildirimciTcKimlikVergiNo'] ?? b?.BildirimciTcKimlikVergiNo ?? '',
+    
+    // Kişi bilgileri
+    malinSahibiTcKimlikVergiNo: b?.['b:MalinSahibiTcKimlikVergiNo'] ?? b?.MalinSahibiTcKimlikVergiNo ?? '',
+    ureticiTcKimlikVergiNo: b?.['b:UreticiTcKimlikVergiNo'] ?? b?.UreticiTcKimlikVergiNo ?? '',
+    
+    // Araç ve belge bilgileri
+    aracPlakaNo: b?.['b:AracPlakaNo'] ?? b?.AracPlakaNo ?? '',
+    belgeNo: b?.['b:BelgeNo'] ?? b?.BelgeNo ?? '',
+    belgeTipi: b?.['b:BelgeTipi'] ?? b?.BelgeTipi ?? '',
+    
+    // Sıfat ve yer bilgileri
+    sifat: b?.['b:Sifat'] ?? b?.Sifat ?? '',
+    gidecekYerTuruId: b?.['b:GidecekYerTuruId'] ?? b?.GidecekYerTuruId ?? '',
+    gidecekIsyeriId: b?.['b:GidecekIsyeriId'] ?? b?.GidecekIsyeriId ?? '',
+    
+    // Diğer bilgiler
+    uniqueId: b?.['b:UniqueId'] ?? b?.UniqueId ?? '',
+    analizStatus: b?.['b:AnalizStatus'] ?? b?.AnalizStatus ?? '',
+    rusumMiktari: b?.['b:RusumMiktari'] ?? b?.RusumMiktari ?? '',
+    
+    // Geriye uyumluluk için eski alanlar (deprecated)
     urunAdi: b?.['b:MalinAdi'] ?? b?.MalinAdi ?? '',
     urunTuru: b?.['b:MalinTuru'] ?? b?.MalinTuru ?? '',
     urunCinsi: b?.['b:MalinCinsi'] ?? b?.MalinCinsi ?? '',
     miktar: b?.['b:MalinMiktari'] ?? b?.MalinMiktari ?? '',
-    kalanMiktar: b?.['b:KalanMiktar'] ?? b?.KalanMiktar ?? '',
     birimId: b?.['b:MiktarBirimId'] ?? b?.MiktarBirimId ?? '',
     birimAd: b?.['b:MiktarBirimiAd'] ?? b?.MiktarBirimiAd ?? '',
     fiyat: b?.['b:MalinSatisFiyati'] ?? b?.MalinSatisFiyati ?? '',
-    bildirimTarihi: b?.['b:BildirimTarihi'] ?? b?.BildirimTarihi ?? '',
-    bildirimTuru: b?.['b:BildirimTuru'] ?? b?.BildirimTuru ?? '',
     bildirimciTc: b?.['b:BildirimciTcKimlikVergiNo'] ?? b?.BildirimciTcKimlikVergiNo ?? '',
     malinSahibiTc: b?.['b:MalinSahibiTcKimlikVergiNo'] ?? b?.MalinSahibiTcKimlikVergiNo ?? '',
     ureticiTc: b?.['b:UreticiTcKimlikVergiNo'] ?? b?.UreticiTcKimlikVergiNo ?? '',
     aracPlaka: b?.['b:AracPlakaNo'] ?? b?.AracPlakaNo ?? '',
-    belgeNo: b?.['b:BelgeNo'] ?? b?.BelgeNo ?? '',
-    belgeTipi: b?.['b:BelgeTipi'] ?? b?.BelgeTipi ?? '',
     sifati: b?.['b:Sifat'] ?? b?.Sifat ?? '',
-    gidecekIsyeriId: b?.['b:GidecekIsyeriId'] ?? b?.GidecekIsyeriId ?? '',
-    gidecekYerTuruId: b?.['b:GidecekYerTuruId'] ?? b?.GidecekYerTuruId ?? '',
-    analizStatus: b?.['b:AnalizStatus'] ?? b?.AnalizStatus ?? '',
-    rusumMiktari: b?.['b:RusumMiktari'] ?? b?.RusumMiktari ?? '',
-    uniqueId: b?.['b:UniqueId'] ?? b?.UniqueId ?? '',
     malinKodNo: b?.['b:MalinKodNo'] ?? b?.MalinKodNo ?? '',
     malinCinsKodNo: b?.['b:MalinCinsKodNo'] ?? b?.MalinCinsKodNo ?? '',
     malinTuruKodNo: b?.['b:MalinTuruKodNo'] ?? b?.MalinTuruKodNo ?? '',

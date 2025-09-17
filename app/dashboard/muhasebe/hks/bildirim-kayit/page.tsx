@@ -6,32 +6,43 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { ArrowLeft, ArrowRight, Save, User, Package, MapPin, Calendar } from 'lucide-react';
+import { ArrowLeft, Save, User, Package, Search, CheckCircle, Plus, Trash2, Eye } from 'lucide-react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
-interface Sifat {
-  id: number;
-  ad: string;
-  aciklama: string;
+interface Cari {
+  tcKimlikVergiNo: string;
+  unvan: string;
+  sifat: string;
 }
 
-interface Ulke {
+interface KayitliKisi {
+  tcKimlikVergiNo: string;
+  kayitliKisiMi: boolean;
+  sifatlari: number[];
+}
+
+interface HalIciIsyeri {
+  id: string;
+  isyeriAdi: string;
+  tcKimlikVergiNo: string;
+  halId: string;
+  halAdi: string;
+}
+
+interface MalinNiteligi {
   id: string;
   ad: string;
 }
 
-interface Il {
+interface UrunBirimi {
   id: string;
   ad: string;
 }
 
-interface Ilce {
-  id: string;
-  ad: string;
-}
-
-interface Urun {
+interface UretimSekli {
   id: string;
   ad: string;
 }
@@ -39,78 +50,90 @@ interface Urun {
 interface UrunCinsi {
   id: string;
   ad: string;
-  urunId: string;
   uretimSekliId: string;
+  urunId: string;
   urunKodu: string;
   ithalmi: boolean;
 }
 
-interface BildirimFormData {
-  // Adım 1: Bildirimciye Ait Bilgiler
+interface Urun {
+  id: string;
+  ad: string;
+}
+
+interface StokKunye {
+  kunyeNo: string;
+  malinAdi: string;
+  malinCinsi: string;
+  malinTuru: string;
+  malinMiktari: string;
+  miktarBirimiAd: string;
+  kalanMiktar: string;
+  malinSatisFiyati: string;
+  bildirimTuru: string;
   bildirimciTcKimlikVergiNo: string;
-  bildirimciSifat: string;
-  bildirimciAdSoyadUnvan: string;
-  
-  // Bildirim Genel Bilgileri
-  bildirimTuru: string; // Satın Alım, Satış
-  
-  // Kimden veya Kime Bilgileri
-  kisiTcKimlikVergiNo: string;
-  kisiAdSoyadUnvan: string;
-  kisiDogumTarihi: string;
-  kisiGsmNumarasi: string;
-  kisiEmail: string;
-  kisiSifat: string;
-  
-  // Adım 2: Ürün Bilgileri
+  bildirimciUnvan: string;
+  malinSahibiTcKimlikVergiNo: string;
+  ureticiTcKimlikVergiNo: string;
+  aracPlakaNo: string;
+  belgeNo: string;
+  belgeTipi: string;
+  sifat: string;
+  gidecekYerTuruId: string;
+  gidecekIsyeriId: string;
+  uniqueId: string;
+  analizStatus: string;
+  rusumMiktari: string;
+}
+
+interface SecilenKunye {
+  kunye: StokKunye;
+  miktar: number;
+  fiyat: number;
+}
+
+interface UrunSatir {
+  id: string;
   urunId: string;
+  urunAdi: string;
   urunCinsiId: string;
-  miktar: string;
+  urunCinsiAdi: string;
+  malinNiteligiId: string;
+  malinNiteligiAdi: string;
+  uretimSekliId: string;
+  uretimSekliAdi: string;
+  miktar: number;
   birim: string;
-  fiyat: string;
-  
-  // Adım 3: Konum Bilgileri
-  ulkeId: string;
-  ilId: string;
-  ilceId: string;
-  adres: string;
+  fiyat: number;
+  secilenKunyeler: SecilenKunye[];
+  toplamMiktar: number;
+  satisKunyeNo: string;
+  basarili: boolean;
 }
 
 export default function HKSBildirimKayitPage() {
   const router = useRouter();
-  const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [sifatlar, setSifatlar] = useState<Sifat[]>([]);
-  const [ulkeler, setUlkeler] = useState<Ulke[]>([]);
-  const [iller, setIller] = useState<Il[]>([]);
-  const [ilceler, setIlceler] = useState<Ilce[]>([]);
+  const [cariler, setCariler] = useState<Cari[]>([]);
   const [urunler, setUrunler] = useState<Urun[]>([]);
-  const [urunCinsleri, setUrunCinsleri] = useState<UrunCinsi[]>([]);
-  const [kisiSorguLoading, setKisiSorguLoading] = useState(false);
-  const [kisiSorguSonucu, setKisiSorguSonucu] = useState<any>(null);
-  const [bildirimciSorguLoading, setBildirimciSorguLoading] = useState(false);
+  const [stokKunyeler, setStokKunyeler] = useState<StokKunye[]>([]);
+  const [urunSatirlari, setUrunSatirlari] = useState<UrunSatir[]>([]);
+  const [seciliCari, setSeciliCari] = useState<Cari | null>(null);
+  const [kunyeModalOpen, setKunyeModalOpen] = useState(false);
+  const [seciliUrunSatir, setSeciliUrunSatir] = useState<UrunSatir | null>(null);
+  const [carilerLoading, setCarilerLoading] = useState(false);
+  const [stokLoading, setStokLoading] = useState(false);
   
-  const [formData, setFormData] = useState<BildirimFormData>({
-    bildirimciTcKimlikVergiNo: '',
-    bildirimciSifat: '',
-    bildirimciAdSoyadUnvan: '',
-    bildirimTuru: '',
-    kisiTcKimlikVergiNo: '',
-    kisiAdSoyadUnvan: '',
-    kisiDogumTarihi: '',
-    kisiGsmNumarasi: '',
-    kisiEmail: '',
-    kisiSifat: '',
-    urunId: '',
-    urunCinsiId: '',
-    miktar: '',
-    birim: '',
-    fiyat: '',
-    ulkeId: '',
-    ilId: '',
-    ilceId: '',
-    adres: ''
-  });
+  // Yeni state'ler
+  const [manuelTcNo, setManuelTcNo] = useState('');
+  const [kayitliKisi, setKayitliKisi] = useState<KayitliKisi | null>(null);
+  const [halIciIsyerleri, setHalIciIsyerleri] = useState<HalIciIsyeri[]>([]);
+  const [malinNitelikleri, setMalinNitelikleri] = useState<MalinNiteligi[]>([]);
+  const [urunBirimleri, setUrunBirimleri] = useState<UrunBirimi[]>([]);
+  const [uretimSekilleri, setUretimSekilleri] = useState<UretimSekli[]>([]);
+  const [urunCinsleri, setUrunCinsleri] = useState<UrunCinsi[]>([]);
+  const [sifatlar, setSifatlar] = useState<{id: string, ad: string}[]>([]);
+  
 
   // Safe fetch wrapper
   const safeFetch = async (url: string, options?: RequestInit) => {
@@ -126,72 +149,173 @@ export default function HKSBildirimKayitPage() {
     }
   }
 
-  const loadSifatlar = async () => {
+  const loadCariler = async () => {
+    setCarilerLoading(true);
     try {
-      setSifatlar([
-        { id: 2, ad: 'İhracat', aciklama: 'İhracat sıfatı' },
-        { id: 6, ad: 'Tüccar (Hal İçi)', aciklama: 'Hal içi tüccar sıfatı' }
-      ])
+      const now = new Date();
+      const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      
+      const data = await safeFetch('/api/hks/cariler', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          baslangic: startDate.toISOString().split('T')[0],
+          bitis: endDate.toISOString().split('T')[0]
+        })
+      });
+      
+      if (data.ok && data.items) {
+        setCariler(data.items);
+        toast.success(`${data.count} adet cari yüklendi`);
+      } else {
+        toast.error('Cariler yüklenemedi');
+      }
     } catch (error: any) {
-      console.error('Sıfatlar yüklenemedi:', error?.message);
+      console.error('Cariler yüklenemedi:', error?.message);
+      toast.error('Cariler yüklenemedi: ' + error?.message);
+    } finally {
+      setCarilerLoading(false);
     }
   }
 
-  const loadUlkeler = async () => {
+  const manuelKisiSorgu = async () => {
+    if (!manuelTcNo.trim()) {
+      toast.error('Lütfen TC/Vergi No girin');
+      return;
+    }
+
     try {
-      const data = await safeFetch('/api/hks/genel/ulkeler', {
+      // Paralel olarak hem kişi sorgusu hem de hal içi işyeri sorgusu yap
+      const [kisiData, halIciData] = await Promise.all([
+        safeFetch('/api/hks/bildirim/manuel-kisi-sorgu', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tcKimlikVergiNolar: [manuelTcNo.trim()]
+          })
+        }),
+        safeFetch('/api/hks/genel/hal-ici-isyeri', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tcKimlikVergiNo: manuelTcNo.trim()
+          })
+        })
+      ]);
+      
+      // Kişi sorgusu sonucu
+      if (kisiData.ok && kisiData.items && kisiData.items.length > 0) {
+        const kisi = kisiData.items[0];
+        setKayitliKisi(kisi);
+        
+        if (kisi.kayitliKisiMi) {
+          toast.success('Kişi HKS sisteminde kayıtlı');
+          // Sıfatları yükle
+          loadSifatlar();
+        } else {
+          toast.error('Kişi HKS sisteminde kayıtlı değil');
+        }
+      } else {
+        toast.error('Kişi sorgulanamadı - HKS servisi boş döndü');
+      }
+
+      // Hal içi işyeri sorgusu sonucu
+      if (halIciData.ok && halIciData.items && halIciData.items.length > 0) {
+        setHalIciIsyerleri(halIciData.items);
+        toast.success(`${halIciData.count} adet hal içi işyeri bulundu`);
+      } else {
+        setHalIciIsyerleri([]);
+        toast.info('Hal içi işyeri bulunamadı');
+      }
+    } catch (error: any) {
+      console.error('Manuel kişi sorgu hatası:', error?.message);
+      toast.error('Kişi sorgulanamadı: ' + error?.message);
+    }
+  }
+
+  const loadSifatlar = async () => {
+    try {
+      const data = await safeFetch('/api/hks/bildirim/sifatlar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({})
-      })
+      });
       
       if (data.ok && data.items) {
-        setUlkeler(data.items)
+        setSifatlar(data.items);
       } else {
-        // Fallback: Türkiye'yi ekle
-        setUlkeler([{ id: '1', ad: 'Türkiye' }])
+        toast.error('Sıfatlar yüklenemedi');
+        setSifatlar([]);
       }
     } catch (error: any) {
-      console.error('Ülkeler yüklenemedi:', error?.message);
-      // Fallback: Türkiye'yi ekle
-      setUlkeler([{ id: '1', ad: 'Türkiye' }])
+      console.error('Sıfatlar yüklenemedi:', error?.message);
+      toast.error('Sıfatlar yüklenemedi: ' + error?.message);
+      setSifatlar([]);
     }
   }
 
-  const loadIller = async () => {
+  const loadMalinNitelikleri = async () => {
     try {
-      const data = await safeFetch('/api/hks/genel/iller', {
-        method: 'GET'
-      })
-      
-      if (data.ok && data.items) {
-        setIller(data.items)
-      } else {
-        // Fallback: Antalya'yı ekle
-        setIller([{ id: '7', ad: 'Antalya' }])
-      }
-    } catch (error: any) {
-      console.error('İller yüklenemedi:', error?.message);
-      // Fallback: Antalya'yı ekle
-      setIller([{ id: '7', ad: 'Antalya' }])
-    }
-  }
-
-  const loadIlceler = async (ilId: string) => {
-    if (!ilId) return;
-    
-    try {
-      const data = await safeFetch('/api/hks/genel/ilceler', {
+      const data = await safeFetch('/api/hks/urun/malin-niteligi', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ilId })
-      })
+        body: JSON.stringify({})
+      });
       
       if (data.ok && data.items) {
-        setIlceler(data.items)
+        setMalinNitelikleri(data.items);
       }
     } catch (error: any) {
-      console.error('İlçeler yüklenemedi:', error?.message);
+      console.error('Malın nitelikleri yüklenemedi:', error?.message);
+    }
+  }
+
+  const loadUrunBirimleri = async () => {
+    try {
+      const data = await safeFetch('/api/hks/urun/urun-birimleri', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      
+      if (data.ok && data.items) {
+        setUrunBirimleri(data.items);
+      }
+    } catch (error: any) {
+      console.error('Ürün birimleri yüklenemedi:', error?.message);
+    }
+  }
+
+  const loadUretimSekilleri = async () => {
+    try {
+      const data = await safeFetch('/api/hks/urun/uretim-sekilleri', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      
+      if (data.ok && data.items) {
+        setUretimSekilleri(data.items);
+      }
+    } catch (error: any) {
+      console.error('Üretim şekilleri yüklenemedi:', error?.message);
+    }
+  }
+
+  const loadUrunCinsleri = async (urunId: string) => {
+    try {
+      const data = await safeFetch('/api/hks/urun/urun-cinsleri', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ urunId })
+      });
+      
+      if (data.ok && data.items) {
+        setUrunCinsleri(data.items);
+      }
+    } catch (error: any) {
+      console.error('Ürün cinsleri yüklenemedi:', error?.message);
     }
   }
 
@@ -201,592 +325,298 @@ export default function HKSBildirimKayitPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({})
-      })
+      });
       
       if (data.ok && data.items) {
-        setUrunler(data.items)
+        setUrunler(data.items);
       } else {
-        // Fallback: Örnek ürünler ekle
-        setUrunler([
-          { id: '1', ad: 'Domates' },
-          { id: '2', ad: 'Salatalık' },
-          { id: '3', ad: 'Biber' },
-          { id: '4', ad: 'Patlıcan' },
-          { id: '5', ad: 'Soğan' }
-        ])
+        toast.error('Ürünler yüklenemedi');
+        setUrunler([]);
       }
     } catch (error: any) {
       console.error('Ürünler yüklenemedi:', error?.message);
-      // Fallback: Örnek ürünler ekle
-      setUrunler([
-        { id: '1', ad: 'Domates' },
-        { id: '2', ad: 'Salatalık' },
-        { id: '3', ad: 'Biber' },
-        { id: '4', ad: 'Patlıcan' },
-        { id: '5', ad: 'Soğan' }
-      ])
+      toast.error('Ürünler yüklenemedi: ' + error?.message);
+      setUrunler([]);
     }
   }
 
-  const loadUrunCinsleri = async (urunId: string) => {
-    if (!urunId) return;
-    
+  const loadStokKunyeler = async () => {
+    setStokLoading(true);
     try {
-      const data = await safeFetch('/api/hks/urun/cinsler', {
+      const now = new Date();
+      const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      
+      const data = await safeFetch('/api/hks/stok/kunyeler', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ urunId })
-      })
+        body: JSON.stringify({
+          baslangic: startDate.toISOString().split('T')[0],
+          bitis: endDate.toISOString().split('T')[0],
+          kunyeNo: 0,
+          KalanMiktariSifirdanBuyukOlanlar: true
+        })
+      });
       
       if (data.ok && data.items) {
-        setUrunCinsleri(data.items)
+        setStokKunyeler(data.items);
       } else {
-        // Fallback: Örnek cinsler ekle
-        setUrunCinsleri([
-          { id: '1', ad: 'Kırmızı', urunId, uretimSekliId: '1', urunKodu: '001', ithalmi: false },
-          { id: '2', ad: 'Yeşil', urunId, uretimSekliId: '1', urunKodu: '002', ithalmi: false }
-        ])
+        toast.error('Stok künyeleri yüklenemedi');
       }
     } catch (error: any) {
-      console.error('Ürün cinsleri yüklenemedi:', error?.message);
-      // Fallback: Örnek cinsler ekle
-      setUrunCinsleri([
-        { id: '1', ad: 'Kırmızı', urunId, uretimSekliId: '1', urunKodu: '001', ithalmi: false },
-        { id: '2', ad: 'Yeşil', urunId, uretimSekliId: '1', urunKodu: '002', ithalmi: false }
-      ])
+      console.error('Stok künyeleri yüklenemedi:', error?.message);
+      toast.error('Stok künyeleri yüklenemedi: ' + error?.message);
+    } finally {
+      setStokLoading(false);
     }
   }
 
-  const sorgulaKayitliKisi = async (tcKimlikVergiNo: string) => {
-    if (!tcKimlikVergiNo) return;
-    
-    setKisiSorguLoading(true)
-    setKisiSorguSonucu(null)
-    
-    try {
-      const data = await safeFetch('/api/hks/bildirim/kayitli-kisi-sorgu', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tcKimlikVergiNolar: [tcKimlikVergiNo] })
-      })
-      
-      if (data.ok && data.items && data.items.length > 0) {
-        const sonuc = data.items[0]
-        setKisiSorguSonucu(sonuc)
-        
-        if (sonuc.kayitliKisiMi) {
-          toast.success('Kişi kayıtlı! Sıfatlar: ' + (sonuc.sifatlari || []).join(', '))
-        } else {
-          toast.warning('Kişi kayıtlı değil. Bilgileri manuel olarak giriniz.')
-        }
-      } else {
-        toast.error('Kişi sorgulanamadı')
-      }
-    } catch (error: any) {
-      console.error('Kayıtlı kişi sorgu hatası:', error?.message);
-      toast.error('Kişi sorgulanamadı: ' + error?.message)
-    } finally {
-      setKisiSorguLoading(false)
-    }
+  const addUrunSatir = () => {
+    const newSatir: UrunSatir = {
+      id: Date.now().toString(),
+      urunId: '',
+      urunAdi: '',
+      urunCinsiId: '',
+      urunCinsiAdi: '',
+      malinNiteligiId: '',
+      malinNiteligiAdi: '',
+      uretimSekliId: '',
+      uretimSekliAdi: '',
+      miktar: 0,
+      birim: 'Kg',
+      fiyat: 0,
+      secilenKunyeler: [],
+      toplamMiktar: 0,
+      satisKunyeNo: '',
+      basarili: false
+    };
+    setUrunSatirlari(prev => [...prev, newSatir]);
   }
 
-  const yukleBildirimciBilgileri = async () => {
-    console.log('Bildirimci bilgileri yükleniyor...')
-    setBildirimciSorguLoading(true)
-    
-    try {
-      // Önce bizim vergi numaramızı sorgula
-      const data = await safeFetch('/api/hks/bildirim/kayitli-kisi-sorgu', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tcKimlikVergiNolar: ['4640538224'] })
-      })
-      
-      console.log('Kayıtlı kişi sorgu sonucu:', data)
-      
-      if (data.ok && data.items && data.items.length > 0) {
-        const sonuc = data.items[0]
-        console.log('Sorgu sonucu:', sonuc)
-        
-        if (sonuc.kayitliKisiMi) {
-          // Bildirimci bilgilerini otomatik doldur
-          const yeniFormData = {
-            bildirimciTcKimlikVergiNo: '4640538224',
-            bildirimciAdSoyadUnvan: 'HÜNERLER GIDA PAZARLAMA LİMİTED ŞİRKETİ ANTALYA KEPEZ ŞUBESİ',
-            bildirimciSifat: sonuc.sifatlari && sonuc.sifatlari.length > 0 ? sonuc.sifatlari[0].toString() : '6' // Varsayılan Tüccar Hal İçi
-          }
-          
-          console.log('Form data güncelleniyor:', yeniFormData)
-          
-          setFormData(prev => ({
-            ...prev,
-            ...yeniFormData
-          }))
-          
-          toast.success('Bildirimci bilgileri otomatik yüklendi!')
-        } else {
-          // Kayıtlı değilse manuel bilgileri doldur
-          const yeniFormData = {
-            bildirimciTcKimlikVergiNo: '4640538224',
-            bildirimciAdSoyadUnvan: 'HÜNERLER GIDA PAZARLAMA LİMİTED ŞİRKETİ ANTALYA KEPEZ ŞUBESİ',
-            bildirimciSifat: '6' // Tüccar Hal İçi
-          }
-          
-          console.log('Form data güncelleniyor (manuel):', yeniFormData)
-          
-          setFormData(prev => ({
-            ...prev,
-            ...yeniFormData
-          }))
-          
-          toast.warning('Bildirimci kayıtlı değil, manuel bilgiler yüklendi.')
-        }
-      } else {
-        // API çalışmıyorsa manuel bilgileri doldur
-        const yeniFormData = {
-          bildirimciTcKimlikVergiNo: '4640538224',
-          bildirimciAdSoyadUnvan: 'HÜNERLER GIDA PAZARLAMA LİMİTED ŞİRKETİ ANTALYA KEPEZ ŞUBESİ',
-          bildirimciSifat: '6' // Tüccar Hal İçi
-        }
-        
-        console.log('Form data güncelleniyor (API hatası):', yeniFormData)
-        
-        setFormData(prev => ({
-          ...prev,
-          ...yeniFormData
-        }))
-        
-        toast.info('Bildirimci bilgileri manuel olarak yüklendi.')
-      }
-    } catch (error: any) {
-      console.error('Bildirimci bilgileri yükleme hatası:', error?.message);
-      
-      // Hata durumunda da manuel bilgileri doldur
-      const yeniFormData = {
-        bildirimciTcKimlikVergiNo: '4640538224',
-        bildirimciAdSoyadUnvan: 'HÜNERLER GIDA PAZARLAMA LİMİTED ŞİRKETİ ANTALYA KEPEZ ŞUBESİ',
-        bildirimciSifat: '6' // Tüccar Hal İçi
-      }
-      
-      console.log('Form data güncelleniyor (hata):', yeniFormData)
-      
-      setFormData(prev => ({
-        ...prev,
-        ...yeniFormData
-      }))
-      
-      toast.info('Bildirimci bilgileri manuel olarak yüklendi.')
-    } finally {
-      setBildirimciSorguLoading(false)
-    }
+  const removeUrunSatir = (id: string) => {
+    setUrunSatirlari(prev => prev.filter(satir => satir.id !== id));
   }
+
+  const updateUrunSatir = (id: string, field: keyof UrunSatir, value: any) => {
+    setUrunSatirlari(prev => prev.map(satir => 
+      satir.id === id ? { ...satir, [field]: value } : satir
+    ));
+  }
+
+  const openKunyeModal = (satir: UrunSatir) => {
+    setSeciliUrunSatir(satir);
+    setKunyeModalOpen(true);
+  }
+
+  const selectKunye = (kunye: StokKunye, miktar: number, fiyat: number) => {
+    if (!seciliUrunSatir) return;
+
+    const secilenKunye: SecilenKunye = {
+      kunye,
+      miktar,
+      fiyat
+    };
+
+    const updatedSatir = {
+      ...seciliUrunSatir,
+      secilenKunyeler: [...seciliUrunSatir.secilenKunyeler, secilenKunye],
+      toplamMiktar: seciliUrunSatir.secilenKunyeler.reduce((sum, sk) => sum + sk.miktar, 0) + miktar
+    };
+
+    updateUrunSatir(seciliUrunSatir.id, 'secilenKunyeler', updatedSatir.secilenKunyeler);
+    updateUrunSatir(seciliUrunSatir.id, 'toplamMiktar', updatedSatir.toplamMiktar);
+
+    setKunyeModalOpen(false);
+    setSeciliUrunSatir(null);
+  }
+
+  const removeKunye = (satirId: string, kunyeNo: string) => {
+    setUrunSatirlari(prev => prev.map(satir => {
+      if (satir.id === satirId) {
+        const newKunyeler = satir.secilenKunyeler.filter(sk => sk.kunye.kunyeNo !== kunyeNo);
+        const newToplamMiktar = newKunyeler.reduce((sum, sk) => sum + sk.miktar, 0);
+        return {
+          ...satir,
+          secilenKunyeler: newKunyeler,
+          toplamMiktar: newToplamMiktar
+        };
+      }
+      return satir;
+    }));
+  }
+
 
   useEffect(() => {
-    loadSifatlar()
-    loadUlkeler()
-    loadIller()
+    loadCariler()
     loadUrunler()
-    yukleBildirimciBilgileri()
+    loadStokKunyeler()
+    loadMalinNitelikleri()
+    loadUrunBirimleri()
+    loadUretimSekilleri()
   }, [])
 
-  // Debug: Form data değişikliklerini logla
-  useEffect(() => {
-    console.log('Form data güncellendi:', formData)
-  }, [formData])
-
-  useEffect(() => {
-    if (formData.ilId) {
-      loadIlceler(formData.ilId)
-    }
-  }, [formData.ilId])
-
-  useEffect(() => {
-    if (formData.urunId) {
-      loadUrunCinsleri(formData.urunId)
-    }
-  }, [formData.urunId])
-
-  const handleInputChange = (field: keyof BildirimFormData, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }))
-  }
-
-  const nextStep = () => {
-    if (currentStep < 3) {
-      setCurrentStep(currentStep + 1)
-    }
-  }
-
-  const prevStep = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
-    }
-  }
-
   const handleSubmit = async () => {
-    setLoading(true)
+    if (!seciliCari) {
+      toast.error('Lütfen bir cari seçin');
+      return;
+    }
+
+    if (urunSatirlari.length === 0) {
+      toast.error('Lütfen en az bir ürün ekleyin');
+      return;
+    }
+
+    setLoading(true);
     try {
-      // TODO: Bildirim kayıt API'sini implement et
-      console.log('Bildirim kayıt verisi:', formData)
-      toast.success('Bildirim başarıyla kaydedildi!')
-      router.push('/dashboard/muhasebe/hks')
+      // Bildirim kayıt verilerini hazırla - HKS çalışma prensiplerine uygun
+      const bildirimler = urunSatirlari.flatMap(satir => 
+        satir.secilenKunyeler.map(sk => ({
+          uniqueId: `BILDIRIM_${Date.now()}_${sk.kunye.kunyeNo}`,
+          bildirimciSifat: '6', // Tüccar Hal İçi
+          bildirimTuru: '195', // Satış
+          kisiSifat: seciliCari.sifat,
+          kisiTcKimlikVergiNo: seciliCari.tcKimlikVergiNo,
+          kisiAdSoyadUnvan: seciliCari.unvan,
+          kisiEmail: '', // Eposta bilgisi hariç diğer bilgiler zorunlu
+          kisiGsmNumarasi: '05551234567', // Zorunlu alan
+          yurtDisiMi: false,
+          // Çalışma prensiplerine göre kayıtlı olmayan kişi için ek bilgiler
+          kisiAdres: 'Test Adres',
+          kisiIlId: 6, // Antalya
+          kisiIlceId: 1, // Kepez
+          kisiBeldeId: 1,
+          referansKunyeNo: sk.kunye.kunyeNo,
+          malinMiktari: sk.miktar,
+          malinSatisFiyat: sk.fiyat,
+          gidecekYerIsletmeTuruId: '8', // Hal Dışı İşyeri
+          gidecekIsyeriId: 0,
+          gidecekUlkeId: 0,
+          gidecekYerIlId: 6, // Antalya (zorunlu alan)
+          gidecekYerIlceId: 1, // Kepez (zorunlu alan) 
+          gidecekYerBeldeId: 1, // Zorunlu alan
+          belgeNo: `FATURA_${Date.now()}`, // Satış için belge numarası gerekli
+          belgeTipi: 207, // Fatura (kullanıcının verdiği mapping'e göre)
+          aracPlakaNo: '' // Plaka bilgisi zorunlu değil, belgeNo veya aracPlakaNo'dan biri yeterli
+        }))
+      );
+
+      const data = await safeFetch('/api/hks/bildirim/kaydet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bildirimler })
+      });
+
+      if (data.ok && data.items) {
+        // Başarılı künyeleri güncelle
+        data.items.forEach((sonuc: any) => {
+          const satir = urunSatirlari.find(s => 
+            s.secilenKunyeler.some(sk => sk.kunye.kunyeNo === sonuc.referansKunyeNo)
+          );
+          if (satir) {
+            updateUrunSatir(satir.id, 'satisKunyeNo', sonuc.YeniKunyeNo);
+            updateUrunSatir(satir.id, 'basarili', true);
+          }
+        });
+
+        toast.success(`${data.count} adet bildirim başarıyla kaydedildi!`);
+      } else {
+        toast.error('Bildirim kaydedilemedi');
+      }
     } catch (error: any) {
-      console.error('Bildirim kayıt hatası:', error)
-      toast.error('Bildirim kaydedilemedi: ' + error?.message)
+      console.error('Bildirim kayıt hatası:', error);
+      toast.error('Bildirim kaydedilemedi: ' + error?.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
-  const renderStep1 = () => (
-    <div className="space-y-8">
-      {/* Bildirimciye Ait Bilgiler */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-blue-600">Bildirimciye Ait Bilgiler</h3>
-          {bildirimciSorguLoading && (
-            <div className="text-sm text-blue-600">Bildirimci bilgileri yükleniyor...</div>
-          )}
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <Label htmlFor="bildirimciTcKimlikVergiNo">T.C. Kimlik / Vergi No *</Label>
-            <Input
-              id="bildirimciTcKimlikVergiNo"
-              value={formData.bildirimciTcKimlikVergiNo}
-              onChange={(e) => handleInputChange('bildirimciTcKimlikVergiNo', e.target.value)}
-              placeholder="T.C. Kimlik veya Vergi No"
-              disabled={true}
-              className="bg-gray-50"
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="bildirimciSifat">Sıfat *</Label>
-            <Select 
-              value={formData.bildirimciSifat} 
-              onValueChange={(value) => handleInputChange('bildirimciSifat', value)}
-              disabled={true}
-            >
-              <SelectTrigger className="bg-gray-50">
-                <SelectValue placeholder="Sıfat seçin" />
-              </SelectTrigger>
-              <SelectContent>
-                {sifatlar.map((sifat) => (
-                  <SelectItem key={sifat.id} value={sifat.id.toString()}>
-                    {sifat.ad}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <div className="md:col-span-2">
-            <Label htmlFor="bildirimciAdSoyadUnvan">Ad Soyadı / Unvanı *</Label>
-            <Input
-              id="bildirimciAdSoyadUnvan"
-              value={formData.bildirimciAdSoyadUnvan}
-              onChange={(e) => handleInputChange('bildirimciAdSoyadUnvan', e.target.value)}
-              placeholder="Ad Soyadı veya Unvan"
-              disabled={true}
-              className="bg-gray-50"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Bildirim Genel Bilgileri */}
-      <div>
-        <h3 className="text-lg font-semibold mb-4 text-green-600">Bildirim Genel Bilgileri</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <Label htmlFor="bildirimTuru">Bildirim Türü *</Label>
-            <Select value={formData.bildirimTuru} onValueChange={(value) => handleInputChange('bildirimTuru', value)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Bildirim türü seçin" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="satinalim">Satın Alım</SelectItem>
-                <SelectItem value="satis">Satış</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </div>
-
-      {/* Kimden veya Kime Bilgileri */}
-      <div>
-        <h3 className="text-lg font-semibold mb-4 text-orange-600">Kimden veya Kime Bilgileri</h3>
-        {kisiSorguSonucu && (
-          <div className={`rounded-lg p-4 mb-4 ${
-            kisiSorguSonucu.kayitliKisiMi 
-              ? 'bg-green-50 border border-green-200' 
-              : 'bg-yellow-50 border border-yellow-200'
-          }`}>
-            <p className={`text-sm ${
-              kisiSorguSonucu.kayitliKisiMi 
-                ? 'text-green-800' 
-                : 'text-yellow-800'
-            }`}>
-              <strong>
-                {kisiSorguSonucu.kayitliKisiMi ? 'Bilgi:' : 'Uyarı:'}
-              </strong> 
-              {kisiSorguSonucu.kayitliKisiMi 
-                ? ` Kişi kayıtlı! Sıfatlar: ${(kisiSorguSonucu.sifatlari || []).join(', ')}`
-                : ' Sorguladığınız kişi kayıtlı değil. Lütfen kişinin bilgilerini giriniz.'
-              }
-            </p>
-          </div>
-        )}
+  const renderKunyeModal = () => (
+    <Dialog open={kunyeModalOpen} onOpenChange={setKunyeModalOpen}>
+      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Künye Seçimi - {seciliUrunSatir?.urunAdi}</DialogTitle>
+        </DialogHeader>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <Label htmlFor="kisiTcKimlikVergiNo">T.C. Kimlik / Vergi No *</Label>
-            <Input
-              id="kisiTcKimlikVergiNo"
-              value={formData.kisiTcKimlikVergiNo}
-              onChange={(e) => handleInputChange('kisiTcKimlikVergiNo', e.target.value)}
-              placeholder="T.C. Kimlik veya Vergi No"
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="kisiAdSoyadUnvan">Ad Soyadı / Unvanı *</Label>
-            <Input
-              id="kisiAdSoyadUnvan"
-              value={formData.kisiAdSoyadUnvan}
-              onChange={(e) => handleInputChange('kisiAdSoyadUnvan', e.target.value)}
-              placeholder="Ad Soyadı veya Unvan"
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="kisiDogumTarihi">Doğum Tarihi *</Label>
-            <div className="flex gap-2">
-              <Input
-                id="kisiDogumTarihi"
-                type="date"
-                value={formData.kisiDogumTarihi}
-                onChange={(e) => handleInputChange('kisiDogumTarihi', e.target.value)}
-                className="flex-1"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => sorgulaKayitliKisi(formData.kisiTcKimlikVergiNo)}
-                disabled={!formData.kisiTcKimlikVergiNo || kisiSorguLoading}
-                className="px-3"
-              >
-                {kisiSorguLoading ? 'Sorgulanıyor...' : 'Sorgula'}
-              </Button>
+        <div className="space-y-4">
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <h4 className="font-semibold text-blue-800 mb-2">Ürün Bilgileri</h4>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="text-gray-600">Ürün:</span>
+                <p className="font-medium">{seciliUrunSatir?.urunAdi}</p>
+              </div>
+              <div>
+                <span className="text-gray-600">İstenen Miktar:</span>
+                <p className="font-medium">{seciliUrunSatir?.miktar} {seciliUrunSatir?.birim}</p>
+              </div>
+              <div>
+                <span className="text-gray-600">Seçilen Miktar:</span>
+                <p className="font-medium">{seciliUrunSatir?.toplamMiktar} {seciliUrunSatir?.birim}</p>
+              </div>
+              <div>
+                <span className="text-gray-600">Kalan Miktar:</span>
+                <p className="font-medium text-red-600">
+                  {(seciliUrunSatir?.miktar || 0) - (seciliUrunSatir?.toplamMiktar || 0)} {seciliUrunSatir?.birim}
+                </p>
+              </div>
             </div>
           </div>
-          
-          <div>
-            <Label htmlFor="kisiGsmNumarasi">GSM Numarası *</Label>
-            <Input
-              id="kisiGsmNumarasi"
-              value={formData.kisiGsmNumarasi}
-              onChange={(e) => handleInputChange('kisiGsmNumarasi', e.target.value)}
-              placeholder="(5XX) XXX XX XX"
-              className="border-red-300 focus:border-red-500"
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="kisiEmail">E-posta</Label>
-            <Input
-              id="kisiEmail"
-              type="email"
-              value={formData.kisiEmail}
-              onChange={(e) => handleInputChange('kisiEmail', e.target.value)}
-              placeholder="email@example.com"
-            />
-          </div>
-          
-          <div>
-            <Label htmlFor="kisiSifat">Sıfatı *</Label>
-            <Select value={formData.kisiSifat} onValueChange={(value) => handleInputChange('kisiSifat', value)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Sıfat seçin" />
-              </SelectTrigger>
-              <SelectContent>
-                {sifatlar.map((sifat) => (
-                  <SelectItem key={sifat.id} value={sifat.id.toString()}>
-                    {sifat.ad}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+
+          <div className="border rounded-lg overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Künye No</TableHead>
+                  <TableHead>Ürün Adı</TableHead>
+                  <TableHead>Ürün Cinsi</TableHead>
+                  <TableHead>Kalan Miktar</TableHead>
+                  <TableHead>Birim</TableHead>
+                  <TableHead>Satış Fiyatı</TableHead>
+                  <TableHead>İşlem</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {stokKunyeler
+                  .filter(kunye => kunye.malinAdi === seciliUrunSatir?.urunAdi)
+                  .map((kunye) => (
+                    <TableRow key={kunye.kunyeNo}>
+                      <TableCell className="font-medium">{kunye.kunyeNo}</TableCell>
+                      <TableCell>{kunye.malinAdi}</TableCell>
+                      <TableCell>{kunye.malinCinsi}</TableCell>
+                      <TableCell>{kunye.kalanMiktar}</TableCell>
+                      <TableCell>{kunye.miktarBirimiAd}</TableCell>
+                      <TableCell>{kunye.malinSatisFiyati} ₺</TableCell>
+                      <TableCell>
+                        <Button 
+                          onClick={() => {
+                            const miktar = Math.min(
+                              parseFloat(kunye.kalanMiktar),
+                              (seciliUrunSatir?.miktar || 0) - (seciliUrunSatir?.toplamMiktar || 0)
+                            );
+                            if (miktar > 0) {
+                              selectKunye(kunye, miktar, seciliUrunSatir?.fiyat || 0);
+                            }
+                          }}
+                          size="sm"
+                          variant="outline"
+                          disabled={
+                            (seciliUrunSatir?.miktar || 0) - (seciliUrunSatir?.toplamMiktar || 0) <= 0
+                          }
+                        >
+                          <CheckCircle className="h-4 w-4 mr-1" />
+                          Seç
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
           </div>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 
-  const renderStep2 = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <Label htmlFor="urunId">Ürün *</Label>
-          <Select value={formData.urunId} onValueChange={(value) => handleInputChange('urunId', value)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Ürün seçin" />
-            </SelectTrigger>
-            <SelectContent>
-              {urunler.map((urun) => (
-                <SelectItem key={urun.id} value={urun.id}>
-                  {urun.ad}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        
-        <div>
-          <Label htmlFor="urunCinsiId">Ürün Cinsi *</Label>
-          <Select 
-            value={formData.urunCinsiId} 
-            onValueChange={(value) => handleInputChange('urunCinsiId', value)}
-            disabled={!formData.urunId}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Ürün cinsi seçin" />
-            </SelectTrigger>
-            <SelectContent>
-              {urunCinsleri.map((cins) => (
-                <SelectItem key={cins.id} value={cins.id}>
-                  {cins.ad}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        
-        <div>
-          <Label htmlFor="miktar">Miktar *</Label>
-          <Input
-            id="miktar"
-            type="number"
-            value={formData.miktar}
-            onChange={(e) => handleInputChange('miktar', e.target.value)}
-            placeholder="Miktar"
-          />
-        </div>
-        
-        <div>
-          <Label htmlFor="birim">Birim *</Label>
-          <Input
-            id="birim"
-            value={formData.birim}
-            onChange={(e) => handleInputChange('birim', e.target.value)}
-            placeholder="Kg, Ton, Adet vb."
-          />
-        </div>
-        
-        <div>
-          <Label htmlFor="fiyat">Birim Fiyat *</Label>
-          <Input
-            id="fiyat"
-            type="number"
-            step="0.01"
-            value={formData.fiyat}
-            onChange={(e) => handleInputChange('fiyat', e.target.value)}
-            placeholder="0.00"
-          />
-        </div>
-      </div>
-    </div>
-  )
-
-  const renderStep3 = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <Label htmlFor="ulkeId">Ülke *</Label>
-          <Select value={formData.ulkeId} onValueChange={(value) => handleInputChange('ulkeId', value)}>
-            <SelectTrigger>
-              <SelectValue placeholder="Ülke seçin" />
-            </SelectTrigger>
-            <SelectContent>
-              {ulkeler.map((ulke) => (
-                <SelectItem key={ulke.id} value={ulke.id}>
-                  {ulke.ad}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        
-        <div>
-          <Label htmlFor="ilId">İl *</Label>
-          <Select value={formData.ilId} onValueChange={(value) => handleInputChange('ilId', value)}>
-            <SelectTrigger>
-              <SelectValue placeholder="İl seçin" />
-            </SelectTrigger>
-            <SelectContent>
-              {iller.map((il) => (
-                <SelectItem key={il.id} value={il.id}>
-                  {il.ad}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        
-        <div>
-          <Label htmlFor="ilceId">İlçe *</Label>
-          <Select 
-            value={formData.ilceId} 
-            onValueChange={(value) => handleInputChange('ilceId', value)}
-            disabled={!formData.ilId}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="İlçe seçin" />
-            </SelectTrigger>
-            <SelectContent>
-              {ilceler.map((ilce) => (
-                <SelectItem key={ilce.id} value={ilce.id}>
-                  {ilce.ad}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        
-        <div>
-          <Label htmlFor="adres">Adres *</Label>
-          <Input
-            id="adres"
-            value={formData.adres}
-            onChange={(e) => handleInputChange('adres', e.target.value)}
-            placeholder="Detaylı adres bilgisi"
-          />
-        </div>
-      </div>
-    </div>
-  )
-
-  const getStepTitle = () => {
-    switch (currentStep) {
-      case 1: return 'Bildirimci ve Kişi Bilgileri'
-      case 2: return 'Ürün Bilgileri'
-      case 3: return 'Konum Bilgileri'
-      default: return 'Bildirim Kayıt'
-    }
-  }
-
-  const getStepIcon = () => {
-    switch (currentStep) {
-      case 1: return <User className="h-5 w-5" />
-      case 2: return <Package className="h-5 w-5" />
-      case 3: return <MapPin className="h-5 w-5" />
-      default: return <Calendar className="h-5 w-5" />
-    }
-  }
 
   return (
     <div className="mt-10 ml-10 mr-10 space-y-6">
@@ -794,7 +624,7 @@ export default function HKSBildirimKayitPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">HKS - Bildirim Kayıt</h1>
-          <p className="text-muted-foreground mt-2">Yeni bildirim kaydı oluşturun</p>
+          <p className="text-muted-foreground mt-2">Stoktaki künyeleri kullanarak bildirim kaydı oluşturun</p>
         </div>
         <Button 
           variant="outline" 
@@ -805,64 +635,430 @@ export default function HKSBildirimKayitPage() {
         </Button>
       </div>
 
-      {/* Progress Steps */}
-      <div className="flex items-center justify-center space-x-8">
-        {[1, 2, 3].map((step) => (
-          <div key={step} className="flex items-center">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-              currentStep >= step 
-                ? 'bg-blue-500 text-white' 
-                : 'bg-gray-200 text-gray-600'
-            }`}>
-              {step}
-            </div>
-            {step < 3 && (
-              <div className={`w-16 h-1 mx-4 ${
-                currentStep > step ? 'bg-blue-500' : 'bg-gray-200'
-              }`} />
-            )}
-          </div>
-        ))}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Sol Panel - Cari Seçimi */}
+        <div className="lg:col-span-1">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="h-5 w-5" />
+                Müşteri Seçimi
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Manuel Kişi Sorgulama */}
+              <div className="space-y-3">
+                <Label>Manuel Kişi Sorgulama</Label>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="TC/Vergi No girin"
+                    value={manuelTcNo}
+                    onChange={(e) => setManuelTcNo(e.target.value)}
+                  />
+                  <Button 
+                    onClick={manuelKisiSorgu}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <Search className="h-4 w-4 mr-2" />
+                    Sorgula
+                  </Button>
+                </div>
+                
+                {(kayitliKisi || halIciIsyerleri.length > 0) && (
+                  <div className="space-y-3">
+                    {/* Kişi Bilgileri */}
+                    {kayitliKisi && (
+                      <div className={`border rounded-lg p-3 ${
+                        kayitliKisi.kayitliKisiMi ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
+                      }`}>
+                        <h4 className={`font-semibold mb-2 ${
+                          kayitliKisi.kayitliKisiMi ? 'text-green-800' : 'text-red-800'
+                        }`}>
+                          {kayitliKisi.kayitliKisiMi ? 'Kayıtlı Kişi' : 'Kayıtlı Değil'}
+                        </h4>
+                        <div className="text-sm space-y-1">
+                          <p><span className="text-gray-600">TC/Vergi No:</span> {kayitliKisi.tcKimlikVergiNo}</p>
+                          {kayitliKisi.kayitliKisiMi && (
+                            <div>
+                              <span className="text-gray-600">Sıfatları:</span>
+                              <div className="mt-1">
+                                {kayitliKisi.sifatlari.map((sifatId, index) => {
+                                  const sifat = sifatlar.find(s => s.id === sifatId.toString());
+                                  return (
+                                    <span key={index} className="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mr-1 mb-1">
+                                      {sifat?.ad || `Sıfat ${sifatId}`}
+                                    </span>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        
+                        {kayitliKisi.kayitliKisiMi && (
+                          <Button 
+                            onClick={() => {
+                              const sifat = sifatlar.find(s => kayitliKisi.sifatlari.includes(parseInt(s.id)));
+                              setSeciliCari({
+                                tcKimlikVergiNo: kayitliKisi.tcKimlikVergiNo,
+                                unvan: `TC: ${kayitliKisi.tcKimlikVergiNo}`,
+                                sifat: sifat?.id || kayitliKisi.sifatlari[0].toString()
+                              });
+                            }}
+                            size="sm"
+                            className="mt-2 w-full"
+                          >
+                            Bu Kişiyi Seç
+                          </Button>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Hal İçi İşyeri Bilgileri */}
+                    {halIciIsyerleri.length > 0 && (
+                      <div className="border rounded-lg p-3 bg-blue-50 border-blue-200">
+                        <h4 className="font-semibold mb-2 text-blue-800">
+                          Hal İçi İşyeri ({halIciIsyerleri.length})
+                        </h4>
+                        <div className="space-y-2">
+                          {halIciIsyerleri.map((isyeri, index) => (
+                            <div key={index} className="bg-white p-2 rounded border">
+                              <div className="text-sm space-y-1">
+                                <p><span className="text-gray-600">İşyeri:</span> <span className="font-medium">{isyeri.isyeriAdi}</span></p>
+                                <p><span className="text-gray-600">Hal:</span> {isyeri.halAdi}</p>
+                                <p><span className="text-gray-600">Hal ID:</span> {isyeri.halId}</p>
+                              </div>
+                              <Button 
+                                onClick={() => {
+                                  setSeciliCari({
+                                    tcKimlikVergiNo: isyeri.tcKimlikVergiNo,
+                                    unvan: isyeri.isyeriAdi,
+                                    sifat: '6' // Tüccar Hal İçi
+                                  });
+                                }}
+                                size="sm"
+                                className="mt-2 w-full"
+                                variant="outline"
+                              >
+                                Bu İşyerini Seç
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Mevcut Cariler */}
+              <div className="border-t pt-4">
+                <div className="flex gap-2">
+                  <Button 
+                    onClick={loadCariler} 
+                    disabled={carilerLoading}
+                    variant="outline"
+                    size="sm"
+                    className="flex-1"
+                  >
+                    <Search className="h-4 w-4 mr-2" />
+                    {carilerLoading ? 'Yükleniyor...' : 'Carileri Yükle'}
+                  </Button>
+                </div>
+                
+                {cariler.length > 0 && (
+                  <div className="space-y-2 mt-3">
+                    <Label>Mevcut Cariler</Label>
+                    <Select 
+                      value={seciliCari?.tcKimlikVergiNo || ''} 
+                      onValueChange={(value) => {
+                        const cari = cariler.find(c => c.tcKimlikVergiNo === value);
+                        setSeciliCari(cari || null);
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Cari seçin" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {cariler.map((cari) => (
+                          <SelectItem key={cari.tcKimlikVergiNo} value={cari.tcKimlikVergiNo}>
+                            {cari.unvan}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </div>
+
+              {seciliCari && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                  <h4 className="font-semibold text-green-800 mb-2">Seçilen Cari</h4>
+                  <div className="text-sm space-y-1">
+                    <p><span className="text-gray-600">Unvan:</span> {seciliCari.unvan}</p>
+                    <p><span className="text-gray-600">TC/Vergi No:</span> {seciliCari.tcKimlikVergiNo}</p>
+                    <p><span className="text-gray-600">Sıfat:</span> {seciliCari.sifat}</p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Orta Panel - Ürün Datagrid */}
+        <div className="lg:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Package className="h-5 w-5" />
+                  Ürün Listesi
+                </div>
+                <Button onClick={addUrunSatir} size="sm">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Ürün Ekle
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {urunSatirlari.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <Package className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                  <p>Henüz ürün eklenmedi</p>
+                  <p className="text-sm">Yukarıdaki "Ürün Ekle" butonuna tıklayarak ürün ekleyebilirsiniz</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {urunSatirlari.map((satir) => (
+                    <div key={satir.id} className={`border rounded-lg p-4 ${
+                      satir.basarili ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200'
+                    }`}>
+                      <div className="grid grid-cols-1 md:grid-cols-8 gap-4 items-end">
+                        <div>
+                          <Label>Ürün</Label>
+                          <Select 
+                            value={satir.urunId} 
+                            onValueChange={(value) => {
+                              const urun = urunler.find(u => u.id === value);
+                              updateUrunSatir(satir.id, 'urunId', value);
+                              updateUrunSatir(satir.id, 'urunAdi', urun?.ad || '');
+                              // Ürün cinslerini yükle
+                              loadUrunCinsleri(value);
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Ürün seçin" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {urunler.map((urun) => (
+                                <SelectItem key={urun.id} value={urun.id}>
+                                  {urun.ad}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div>
+                          <Label>Ürün Cinsi</Label>
+                          <Select 
+                            value={satir.urunCinsiId} 
+                            onValueChange={(value) => {
+                              const cins = urunCinsleri.find(c => c.id === value);
+                              updateUrunSatir(satir.id, 'urunCinsiId', value);
+                              updateUrunSatir(satir.id, 'urunCinsiAdi', cins?.ad || '');
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Cins seçin" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {urunCinsleri.map((cins) => (
+                                <SelectItem key={cins.id} value={cins.id}>
+                                  {cins.ad}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div>
+                          <Label>Malın Niteliği</Label>
+                          <Select 
+                            value={satir.malinNiteligiId} 
+                            onValueChange={(value) => {
+                              const nitelik = malinNitelikleri.find(n => n.id === value);
+                              updateUrunSatir(satir.id, 'malinNiteligiId', value);
+                              updateUrunSatir(satir.id, 'malinNiteligiAdi', nitelik?.ad || '');
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Nitelik seçin" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {malinNitelikleri.map((nitelik) => (
+                                <SelectItem key={nitelik.id} value={nitelik.id}>
+                                  {nitelik.ad}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div>
+                          <Label>Üretim Şekli</Label>
+                          <Select 
+                            value={satir.uretimSekliId} 
+                            onValueChange={(value) => {
+                              const sekil = uretimSekilleri.find(s => s.id === value);
+                              updateUrunSatir(satir.id, 'uretimSekliId', value);
+                              updateUrunSatir(satir.id, 'uretimSekliAdi', sekil?.ad || '');
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Şekil seçin" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {uretimSekilleri.map((sekil) => (
+                                <SelectItem key={sekil.id} value={sekil.id}>
+                                  {sekil.ad}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div>
+                          <Label>Miktar</Label>
+                          <Input
+                            type="number"
+                            value={satir.miktar}
+                            onChange={(e) => updateUrunSatir(satir.id, 'miktar', parseFloat(e.target.value) || 0)}
+                            placeholder="0"
+                          />
+                        </div>
+                        
+                        <div>
+                          <Label>Birim</Label>
+                          <Select 
+                            value={satir.birim} 
+                            onValueChange={(value) => updateUrunSatir(satir.id, 'birim', value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Birim seçin" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {urunBirimleri.map((birim) => (
+                                <SelectItem key={birim.id} value={birim.ad}>
+                                  {birim.ad}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div>
+                          <Label>Fiyat</Label>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            value={satir.fiyat}
+                            onChange={(e) => updateUrunSatir(satir.id, 'fiyat', parseFloat(e.target.value) || 0)}
+                            placeholder="0.00"
+                          />
+                        </div>
+                        
+                        <div className="flex gap-2">
+                          <Button 
+                            onClick={() => openKunyeModal(satir)}
+                            disabled={!satir.urunId || satir.miktar <= 0}
+                            variant="outline"
+                            size="sm"
+                          >
+                            <Eye className="h-4 w-4 mr-2" />
+                            Künye Seç
+                          </Button>
+                          
+                          <Button 
+                            onClick={() => removeUrunSatir(satir.id)}
+                            variant="outline"
+                            size="sm"
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      {/* Seçilen Künyeler */}
+                      {satir.secilenKunyeler.length > 0 && (
+                        <div className="mt-4 pt-4 border-t">
+                          <h5 className="font-semibold mb-2">Seçilen Künyeler:</h5>
+                          <div className="space-y-2">
+                            {satir.secilenKunyeler.map((sk, index) => (
+                              <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                                <div className="flex items-center gap-4 text-sm">
+                                  <span className="font-medium">Künye: {sk.kunye.kunyeNo}</span>
+                                  <span>Miktar: {sk.miktar} {satir.birim}</span>
+                                  <span>Fiyat: {sk.fiyat} ₺</span>
+                                </div>
+                                <Button 
+                                  onClick={() => removeKunye(satir.id, sk.kunye.kunyeNo)}
+                                  variant="outline"
+                                  size="sm"
+                                  className="text-red-600 hover:text-red-700"
+                                >
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            ))}
+                          </div>
+                          <div className="mt-2 text-sm">
+                            <span className="text-gray-600">Toplam Seçilen: </span>
+                            <span className="font-medium">{satir.toplamMiktar} {satir.birim}</span>
+                            <span className="text-gray-600 ml-4">Kalan: </span>
+                            <span className="font-medium text-red-600">
+                              {satir.miktar - satir.toplamMiktar} {satir.birim}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Satış Künye No */}
+                      {satir.basarili && satir.satisKunyeNo && (
+                        <div className="mt-4 pt-4 border-t">
+                          <div className="bg-green-100 border border-green-300 rounded-lg p-3">
+                            <div className="flex items-center gap-2 text-green-800">
+                              <CheckCircle className="h-4 w-4" />
+                              <span className="font-semibold">Başarılı!</span>
+                            </div>
+                            <p className="text-sm mt-1">
+                              <span className="text-gray-600">Satış Künye No:</span> 
+                              <span className="font-medium ml-2">{satir.satisKunyeNo}</span>
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
 
-      {/* Form Card */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            {getStepIcon()}
-            {getStepTitle()}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {currentStep === 1 && renderStep1()}
-          {currentStep === 2 && renderStep2()}
-          {currentStep === 3 && renderStep3()}
-          
-          {/* Navigation Buttons */}
-          <div className="flex justify-between mt-8">
-            <Button 
-              variant="outline" 
-              onClick={prevStep}
-              disabled={currentStep === 1}
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Önceki
-            </Button>
-            
-            {currentStep < 3 ? (
-              <Button onClick={nextStep}>
-                Sonraki
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
-            ) : (
-              <Button onClick={handleSubmit} disabled={loading}>
-                <Save className="h-4 w-4 mr-2" />
-                {loading ? 'Kaydediliyor...' : 'Kaydet'}
-              </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Kaydet Butonu */}
+      <div className="flex justify-end">
+        <Button onClick={handleSubmit} disabled={loading || !seciliCari || urunSatirlari.length === 0}>
+          <Save className="h-4 w-4 mr-2" />
+          {loading ? 'Kaydediliyor...' : 'Bildirimleri Kaydet'}
+        </Button>
+      </div>
+
+      {/* Künye Seçim Modal */}
+      {renderKunyeModal()}
     </div>
   )
 }
