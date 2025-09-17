@@ -84,6 +84,8 @@ interface StokKunye {
   uniqueId: string;
   analizStatus: string;
   rusumMiktari: string;
+  rusumBorcu?: string;
+  ortalamaFiyat?: string;
 }
 
 interface SecilenKunye {
@@ -532,7 +534,7 @@ export default function HKSBildirimKayitPage() {
 
   const renderKunyeModal = () => (
     <Dialog open={kunyeModalOpen} onOpenChange={setKunyeModalOpen}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-6xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Künye Seçimi - {seciliUrunSatir?.urunAdi}</DialogTitle>
         </DialogHeader>
@@ -562,8 +564,8 @@ export default function HKSBildirimKayitPage() {
             </div>
           </div>
 
-          <div className="border rounded-lg overflow-hidden">
-            <Table>
+          <div className="border rounded-lg overflow-x-auto">
+            <Table className="min-w-[1200px]">
               <TableHeader>
                 <TableRow>
                   <TableHead>Künye No</TableHead>
@@ -572,6 +574,8 @@ export default function HKSBildirimKayitPage() {
                   <TableHead>Kalan Miktar</TableHead>
                   <TableHead>Birim</TableHead>
                   <TableHead>Satış Fiyatı</TableHead>
+                  <TableHead>Ortalama Fiyat</TableHead>
+                  <TableHead>Rüsum Borcu</TableHead>
                   <TableHead>İşlem</TableHead>
                 </TableRow>
               </TableHeader>
@@ -586,6 +590,12 @@ export default function HKSBildirimKayitPage() {
                       <TableCell>{kunye.kalanMiktar}</TableCell>
                       <TableCell>{kunye.miktarBirimiAd}</TableCell>
                       <TableCell>{kunye.malinSatisFiyati} ₺</TableCell>
+                      <TableCell>
+                        {kunye.ortalamaFiyat ? `${kunye.ortalamaFiyat} ₺` : '-'}
+                      </TableCell>
+                      <TableCell>
+                        {kunye.rusumBorcu ? `${kunye.rusumBorcu} ₺` : '-'}
+                      </TableCell>
                       <TableCell>
                         <Button 
                           onClick={() => {

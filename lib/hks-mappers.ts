@@ -98,6 +98,8 @@ export async function mapBildirimciyeYapilan(xml: string) {
     uniqueId: b?.['b:UniqueId'] ?? b?.UniqueId ?? '',
     analizStatus: b?.['b:AnalizStatus'] ?? b?.AnalizStatus ?? '',
     rusumMiktari: b?.['b:RusumMiktari'] ?? b?.RusumMiktari ?? '',
+    rusumBorcu: b?.['b:RusumBorcu'] ?? b?.RusumBorcu ?? '',
+    ortalamaFiyat: b?.['b:OrtalamaFiyat'] ?? b?.OrtalamaFiyat ?? '',
     
     // Geriye uyumluluk için eski alanlar (deprecated)
     urunAdi: b?.['b:MalinAdi'] ?? b?.MalinAdi ?? '',

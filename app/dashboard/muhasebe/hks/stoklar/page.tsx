@@ -41,6 +41,8 @@ interface StokOzeti {
   birim: string;
   toplamKayit: number;
   sonGuncelleme: string;
+  ortalamaFiyat?: number;
+  toplamRusumBorcu?: number;
 }
 
 interface Sifat {
@@ -170,7 +172,9 @@ export default function HKSStoklarPage() {
         birim: string, 
         urunAdi: string, 
         toplamKayit: number,
-        sonGuncelleme: string 
+        sonGuncelleme: string,
+        fiyatlar: number[],
+        rusumBorclari: number[]
       }>()
       
       data.items?.forEach((item: any) => {
@@ -178,6 +182,8 @@ export default function HKSStoklarPage() {
         const miktar = parseFloat(item.kalanMiktar || '0')
         const birim = item.birimAd || 'Kg'
         const bildirimTarihi = item.bildirimTarihi || ''
+        const fiyat = parseFloat(item.fiyat || item.malinSatisFiyati || '0')
+        const rusumBorcu = parseFloat(item.rusumBorcu || '0')
         
         if (miktar > 0) {
           const key = `${urunAdi}_${birim}`
@@ -185,6 +191,8 @@ export default function HKSStoklarPage() {
             const existing = stokMap.get(key)!
             existing.miktar += miktar
             existing.toplamKayit += 1
+            if (fiyat > 0) existing.fiyatlar.push(fiyat)
+            if (rusumBorcu > 0) existing.rusumBorclari.push(rusumBorcu)
             // En son tarihi al
             if (bildirimTarihi > existing.sonGuncelleme) {
               existing.sonGuncelleme = bildirimTarihi
@@ -195,7 +203,9 @@ export default function HKSStoklarPage() {
               birim, 
               urunAdi, 
               toplamKayit: 1,
-              sonGuncelleme: bildirimTarihi
+              sonGuncelleme: bildirimTarihi,
+              fiyatlar: fiyat > 0 ? [fiyat] : [],
+              rusumBorclari: rusumBorcu > 0 ? [rusumBorcu] : []
             })
           }
         }
@@ -204,8 +214,13 @@ export default function HKSStoklarPage() {
       const stokOzeti = Array.from(stokMap.values())
         .sort((a, b) => b.miktar - a.miktar)
         .map(stok => ({
-          ...stok,
-          sonGuncelleme: stok.sonGuncelleme ? new Date(stok.sonGuncelleme).toLocaleDateString('tr-TR') : '-'
+          urunAdi: stok.urunAdi,
+          miktar: stok.miktar,
+          birim: stok.birim,
+          toplamKayit: stok.toplamKayit,
+          sonGuncelleme: stok.sonGuncelleme ? new Date(stok.sonGuncelleme).toLocaleDateString('tr-TR') : '-',
+          ortalamaFiyat: stok.fiyatlar.length > 0 ? stok.fiyatlar.reduce((a, b) => a + b, 0) / stok.fiyatlar.length : undefined,
+          toplamRusumBorcu: stok.rusumBorclari.length > 0 ? stok.rusumBorclari.reduce((a, b) => a + b, 0) : undefined
         }))
       
       setStoklar(stokOzeti)
@@ -354,7 +369,7 @@ export default function HKSStoklarPage() {
       </div>
 
       {/* Özet Kartları */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Toplam Stok</CardTitle>
@@ -402,6 +417,37 @@ export default function HKSStoklarPage() {
               {stoklar.reduce((total, stok) => total + stok.toplamKayit, 0)}
             </div>
             <p className="text-xs text-muted-foreground">Bildirim kaydı</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Ortalama Fiyat</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {(() => {
+                const fiyatliStoklar = stoklar.filter(s => s.ortalamaFiyat);
+                return fiyatliStoklar.length > 0 
+                  ? (fiyatliStoklar.reduce((sum, s) => sum + s.ortalamaFiyat!, 0) / fiyatliStoklar.length).toFixed(2)
+                  : '0.00';
+              })()} ₺
+            </div>
+            <p className="text-xs text-muted-foreground">Genel ortalama</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Toplam Rüsum Borcu</CardTitle>
+            <AlertCircle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {stoklar.reduce((total, stok) => total + (stok.toplamRusumBorcu || 0), 0).toFixed(2)} ₺
+            </div>
+            <p className="text-xs text-muted-foreground">Toplam borç</p>
           </CardContent>
         </Card>
       </div>
@@ -455,6 +501,18 @@ export default function HKSStoklarPage() {
                           <p className="text-sm text-gray-600 dark:text-gray-400">
                             {stok.toplamKayit} kayıt • Son güncelleme: {stok.sonGuncelleme}
                           </p>
+                          <div className="flex gap-4 mt-1">
+                            {stok.ortalamaFiyat && (
+                              <span className="text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded">
+                                Ort. Fiyat: {stok.ortalamaFiyat.toFixed(2)} ₺
+                              </span>
+                            )}
+                            {stok.toplamRusumBorcu && (
+                              <span className="text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-2 py-1 rounded">
+                                Rüsum Borcu: {stok.toplamRusumBorcu.toFixed(2)} ₺
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
