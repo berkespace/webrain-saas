@@ -183,7 +183,18 @@ export default function HKSStoklarPage() {
         const birim = item.birimAd || 'Kg'
         const bildirimTarihi = item.bildirimTarihi || ''
         const fiyat = parseFloat(item.fiyat || item.malinSatisFiyati || '0')
-        const rusumBorcu = parseFloat(item.rusumBorcu || '0')
+        const rusumBorcu = parseFloat(item.rusumBorcu || item.rusumMiktari || '0')
+        
+        // Debug: İlk birkaç item'ı logla
+        if (data.items.indexOf(item) < 3) {
+          console.log('Stok Item Debug:', {
+            urunAdi,
+            fiyat,
+            rusumBorcu,
+            rusumMiktari: item.rusumMiktari,
+            malinSatisFiyati: item.malinSatisFiyati
+          })
+        }
         
         if (miktar > 0) {
           const key = `${urunAdi}_${birim}`
@@ -288,6 +299,10 @@ export default function HKSStoklarPage() {
     return stoklar.reduce((total, stok) => total + stok.miktar, 0)
   }
 
+  const formatNumber = (num: number) => {
+    return new Intl.NumberFormat('tr-TR').format(num)
+  }
+
   const getToplamUrunCesidi = () => {
     return stoklar.length
   }
@@ -376,7 +391,7 @@ export default function HKSStoklarPage() {
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{getToplamStok().toFixed(1)}</div>
+            <div className="text-2xl font-bold">{formatNumber(getToplamStok())}</div>
             <p className="text-xs text-muted-foreground">Toplam miktar</p>
           </CardContent>
         </Card>
@@ -399,7 +414,7 @@ export default function HKSStoklarPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {getEnCokStok() ? `${getEnCokStok()!.miktar.toFixed(1)}` : '0'}
+              {getEnCokStok() ? formatNumber(getEnCokStok()!.miktar) : '0'}
             </div>
             <p className="text-xs text-muted-foreground">
               {getEnCokStok()?.urunAdi || 'Ürün yok'}
@@ -414,7 +429,7 @@ export default function HKSStoklarPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stoklar.reduce((total, stok) => total + stok.toplamKayit, 0)}
+              {formatNumber(stoklar.reduce((total, stok) => total + stok.toplamKayit, 0))}
             </div>
             <p className="text-xs text-muted-foreground">Bildirim kaydı</p>
           </CardContent>
@@ -445,7 +460,7 @@ export default function HKSStoklarPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {stoklar.reduce((total, stok) => total + (stok.toplamRusumBorcu || 0), 0).toFixed(2)} ₺
+              {formatNumber(stoklar.reduce((total, stok) => total + (stok.toplamRusumBorcu || 0), 0))} ₺
             </div>
             <p className="text-xs text-muted-foreground">Toplam borç</p>
           </CardContent>
@@ -504,12 +519,12 @@ export default function HKSStoklarPage() {
                           <div className="flex gap-4 mt-1">
                             {stok.ortalamaFiyat && (
                               <span className="text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded">
-                                Ort. Fiyat: {stok.ortalamaFiyat.toFixed(2)} ₺
+                                Ort. Fiyat: {formatNumber(stok.ortalamaFiyat)} ₺
                               </span>
                             )}
                             {stok.toplamRusumBorcu && (
                               <span className="text-xs bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 px-2 py-1 rounded">
-                                Rüsum Borcu: {stok.toplamRusumBorcu.toFixed(2)} ₺
+                                Rüsum Borcu: {formatNumber(stok.toplamRusumBorcu)} ₺
                               </span>
                             )}
                           </div>
@@ -518,7 +533,7 @@ export default function HKSStoklarPage() {
                     </div>
                     <div className="text-right">
                       <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {stok.miktar.toFixed(1)}
+                        {formatNumber(stok.miktar)}
                       </div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
                         {stok.birim}
